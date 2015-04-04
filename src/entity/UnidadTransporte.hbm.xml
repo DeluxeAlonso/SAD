@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 04/04/2015 02:29:49 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="entity.UnidadTransporte" table="unidad_transporte" catalog="saddb" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tipoUnidadTransporte" class="entity.TipoUnidadTransporte" fetch="select">
+            <column name="id_tipo_unidad_transporte" not-null="true" />
+        </many-to-one>
+        <property name="transportista" type="string">
+            <column name="transportista" length="60" />
+        </property>
+        <property name="placa" type="string">
+            <column name="placa" length="6" />
+        </property>
+        <property name="capacidad" type="java.lang.Integer">
+            <column name="capacidad" />
+        </property>
+        <set name="despachos" table="despacho" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_unidad_transporte" not-null="true" />
+            </key>
+            <one-to-many class="entity.Despacho" />
+        </set>
+    </class>
+</hibernate-mapping>

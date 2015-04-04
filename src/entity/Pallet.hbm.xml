@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 04/04/2015 02:29:49 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="entity.Pallet" table="pallet" catalog="saddb" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="despacho" class="entity.Despacho" fetch="select">
+            <column name="Despacho_id" not-null="true" />
+        </many-to-one>
+        <many-to-one name="tipoPallet" class="entity.TipoPallet" fetch="select">
+            <column name="id_tipo_pallet" not-null="true" />
+        </many-to-one>
+        <many-to-one name="ubicacion" class="entity.Ubicacion" fetch="select">
+            <column name="id_ubicacion" not-null="true" />
+        </many-to-one>
+        <property name="ean128" type="string">
+            <column name="ean128" length="128" />
+        </property>
+        <property name="fechaRegistro" type="timestamp">
+            <column name="fecha_registro" length="19" />
+        </property>
+        <set name="historialMovimientoses" table="historial_movimientos" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_pallet" not-null="true" />
+            </key>
+            <one-to-many class="entity.HistorialMovimientos" />
+        </set>
+        <set name="itemProductos" table="item_producto" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_pallet" not-null="true" />
+            </key>
+            <one-to-many class="entity.ItemProducto" />
+        </set>
+    </class>
+</hibernate-mapping>
