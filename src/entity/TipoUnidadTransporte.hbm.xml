@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 04/04/2015 02:29:49 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="entity.TipoUnidadTransporte" table="tipo_unidad_transporte" catalog="saddb" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="condicion" class="entity.Condicion" fetch="select">
+            <column name="Condicion_id" not-null="true" />
+        </many-to-one>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="200" />
+        </property>
+        <set name="tipoPallets" table="tipo_unidad_transporte_x_tipo_pallet" inverse="false" lazy="true" fetch="select">
+            <key>
+                <column name="id_tipo_unidad_transporte" not-null="true" />
+            </key>
+            <many-to-many entity-name="entity.TipoPallet">
+                <column name="id_tipo_pallet" not-null="true" />
+            </many-to-many>
+        </set>
+        <set name="unidadTransportes" table="unidad_transporte" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_tipo_unidad_transporte" not-null="true" />
+            </key>
+            <one-to-many class="entity.UnidadTransporte" />
+        </set>
+    </class>
+</hibernate-mapping>
