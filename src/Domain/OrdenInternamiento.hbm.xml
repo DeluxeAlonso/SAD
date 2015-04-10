@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 04/04/2015 02:29:49 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="saddb" name="Domain.OrdenInternamiento" optimistic-lock="version" table="orden_internamiento">
+    <id name="id" type="java.lang.Integer">
+      <column name="id"/>
+      <generator class="identity"/>
+    </id>
+    <property name="fecha" type="timestamp">
+      <column length="19" name="fecha"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="ordenInternamientoXProductos" table="orden_internamiento_x_producto">
+      <key>
+        <column name="id_orden_internamiento" not-null="true"/>
+      </key>
+      <one-to-many class="Domain.OrdenInternamientoXProducto"/>
+    </set>
+  </class>
+</hibernate-mapping>

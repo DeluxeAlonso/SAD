@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 04/04/2015 02:29:49 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="saddb" name="Domain.ItemProducto" optimistic-lock="version" table="item_producto">
+    <id name="id" type="java.lang.Integer">
+      <column name="id"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="Domain.Pallet" fetch="select" name="pallet">
+      <column name="id_pallet" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="Domain.Producto" fetch="select" name="producto">
+      <column name="id_producto" not-null="true"/>
+    </many-to-one>
+    <property name="ean13" type="string">
+      <column length="13" name="ean13"/>
+    </property>
+    <property name="fechaVencimiento" type="date">
+      <column length="10" name="fecha_vencimiento"/>
+    </property>
+    <property name="fechaRegistro" type="timestamp">
+      <column length="19" name="fecha_registro"/>
+    </property>
+  </class>
+</hibernate-mapping>

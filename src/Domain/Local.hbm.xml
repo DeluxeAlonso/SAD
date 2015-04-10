@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 04/04/2015 02:29:49 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="saddb" name="Domain.Local" optimistic-lock="version" table="local">
+    <id name="id" type="java.lang.Integer">
+      <column name="id"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="Domain.Cliente" fetch="select" name="cliente">
+      <column name="Cliente_id" not-null="true"/>
+    </many-to-one>
+    <property name="latitud" type="java.lang.Double">
+      <column name="latitud" precision="22" scale="0"/>
+    </property>
+    <property name="longitud" type="java.lang.Double">
+      <column name="longitud" precision="22" scale="0"/>
+    </property>
+    <property name="nombre" type="string">
+      <column length="60" name="nombre"/>
+    </property>
+    <property name="descripcion" type="string">
+      <column length="200" name="descripcion"/>
+    </property>
+    <property name="direccion" type="string">
+      <column length="200" name="direccion"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="pedidos" table="pedido">
+      <key>
+        <column name="Local_id" not-null="true"/>
+      </key>
+      <one-to-many class="Domain.Pedido"/>
+    </set>
+  </class>
+</hibernate-mapping>

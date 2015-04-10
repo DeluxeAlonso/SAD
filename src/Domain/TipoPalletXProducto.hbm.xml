@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 04/04/2015 02:29:49 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="saddb" name="Domain.TipoPalletXProducto" optimistic-lock="version" table="tipo_pallet_x_producto">
+    <composite-id class="Domain.TipoPalletXProductoId" name="id">
+      <key-property name="idTipoPallet" type="int">
+        <column name="id_tipo_pallet"/>
+      </key-property>
+      <key-property name="idProducto" type="int">
+        <column name="id_producto"/>
+      </key-property>
+    </composite-id>
+    <many-to-one class="Domain.Producto" fetch="select" insert="false" name="producto" update="false">
+      <column name="id_producto" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="Domain.TipoPallet" fetch="select" insert="false" name="tipoPallet" update="false">
+      <column name="id_tipo_pallet" not-null="true"/>
+    </many-to-one>
+    <property name="cantidadProductos" type="java.lang.Integer">
+      <column name="cantidad_productos"/>
+    </property>
+  </class>
+</hibernate-mapping>

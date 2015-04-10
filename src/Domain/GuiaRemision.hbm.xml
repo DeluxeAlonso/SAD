@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 04/04/2015 02:29:49 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="saddb" name="Domain.GuiaRemision" optimistic-lock="version" table="guia_remision">
+    <id name="id" type="java.lang.Integer">
+      <column name="id"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="Domain.Despacho" fetch="select" name="despacho">
+      <column name="id_despacho" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="Domain.PedidoParcial" fetch="select" name="pedidoParcial">
+      <column name="id_pedido_parcial" not-null="true"/>
+    </many-to-one>
+    <set fetch="select" inverse="true" lazy="true" name="pedidoParcials" table="pedido_parcial">
+      <key>
+        <column name="id_guia_remision" not-null="true"/>
+      </key>
+      <one-to-many class="Domain.PedidoParcial"/>
+    </set>
+  </class>
+</hibernate-mapping>

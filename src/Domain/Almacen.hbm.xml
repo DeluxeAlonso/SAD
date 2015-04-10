@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 04/04/2015 02:29:49 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="saddb" name="Domain.Almacen" optimistic-lock="version" table="almacen">
+    <id name="id" type="java.lang.Integer">
+      <column name="id"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="Domain.Condicion" fetch="select" name="condicion">
+      <column name="id_tipo_almacen" not-null="true"/>
+    </many-to-one>
+    <property name="descripcion" type="string">
+      <column length="200" name="descripcion"/>
+    </property>
+    <property name="capacidad" type="java.lang.Integer">
+      <column name="capacidad"/>
+    </property>
+    <property name="area" type="java.lang.Integer">
+      <column name="area"/>
+    </property>
+    <property name="fechaRegistro" type="timestamp">
+      <column length="19" name="fecha_registro"/>
+    </property>
+    <property name="estado" type="string">
+      <column length="20" name="estado"/>
+    </property>
+    <property name="ubicLibres" type="java.lang.Integer">
+      <column name="ubic_libres"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="racks" table="rack">
+      <key>
+        <column name="id_almacen"/>
+      </key>
+      <one-to-many class="Domain.Rack"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="historialMovimientosesForIdAlmacenOut" table="historial_movimientos">
+      <key>
+        <column name="id_almacen_out" not-null="true"/>
+      </key>
+      <one-to-many class="Domain.HistorialMovimientos"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="historialMovimientosesForIdAlmacenIn" table="historial_movimientos">
+      <key>
+        <column name="id_almacen_in" not-null="true"/>
+      </key>
+      <one-to-many class="Domain.HistorialMovimientos"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="kardexes" table="kardex">
+      <key>
+        <column name="id_almacen" not-null="true"/>
+      </key>
+      <one-to-many class="Domain.Kardex"/>
+    </set>
+  </class>
+</hibernate-mapping>
