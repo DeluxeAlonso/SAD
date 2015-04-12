@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 04/04/2015 02:29:49 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="saddb" name="entity.Ubicacion" optimistic-lock="version" table="ubicacion">
+    <id name="id" type="int">
+      <column name="id"/>
+      <generator class="assigned"/>
+    </id>
+    <many-to-one class="entity.Rack" fetch="select" name="rack">
+      <column name="id_rack" not-null="true"/>
+    </many-to-one>
+    <property name="fila" type="java.lang.Integer">
+      <column name="fila"/>
+    </property>
+    <property name="columna" type="java.lang.Integer">
+      <column name="columna"/>
+    </property>
+    <property name="lado" type="string">
+      <column length="1" name="lado"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="pallets" table="pallet">
+      <key>
+        <column name="id_ubicacion" not-null="true"/>
+      </key>
+      <one-to-many class="entity.Pallet"/>
+    </set>
+  </class>
+</hibernate-mapping>

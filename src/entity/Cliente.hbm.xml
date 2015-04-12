@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 04/04/2015 02:29:49 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="saddb" name="entity.Cliente" optimistic-lock="version" table="cliente">
+    <id name="id" type="java.lang.Integer">
+      <column name="id"/>
+      <generator class="identity"/>
+    </id>
+    <property name="nombre" type="string">
+      <column length="60" name="nombre"/>
+    </property>
+    <property name="ruc" type="string">
+      <column length="11" name="ruc"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="locals" table="local">
+      <key>
+        <column name="Cliente_id" not-null="true"/>
+      </key>
+      <one-to-many class="entity.Local"/>
+    </set>
+  </class>
+</hibernate-mapping>

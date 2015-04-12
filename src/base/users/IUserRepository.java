@@ -6,7 +6,7 @@
 package base.users;
 
 import base.IRepository;
-import Domain.Usuario;
+import entity.Usuario;
 
 /**
  *

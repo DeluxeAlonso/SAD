@@ -5,6 +5,10 @@
  */
 package client.general;
 
+import application.users.UserApplication;
+import infraestructure.user.UserRepository;
+import util.InstanceFactory;
+
 /**
  *
  * @author Nevermade
@@ -16,6 +20,7 @@ public class MainForm extends javax.swing.JFrame {
      */
     public MainForm() {
         initComponents();
+        
     }
 
     /**

@@ -6,7 +6,7 @@
 package infraestructure.user;
 
 import base.users.IUserRepository;
-import Domain.Usuario;
+import entity.Usuario;
 import java.util.ArrayList;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;

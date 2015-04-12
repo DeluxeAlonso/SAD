@@ -5,33 +5,28 @@
  */
 package client.users;
 
+import application.users.UserApplication;
 import client.general.AppStart;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-
+import client.general.MainForm;
+import infraestructure.user.UserRepository;
+import util.InstanceFactory;
 
 /**
  *
  * @author Nevermade
  */
-
-
 public class LoginForm extends javax.swing.JFrame {
-    
+
+    UserApplication userApplication = new UserApplication(InstanceFactory.Instance.getInstance("userRepository", UserRepository.class));
+
     /**
      * Creates new form View
      */
     public LoginForm() {
-        try {
-            initComponents();
-            AppStart.initConfig.start();
-        } catch (InstantiationException ex) {
-            Logger.getLogger(LoginForm.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(LoginForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
-       
+
+        initComponents();
+        AppStart.initConfig.start();
+
     }
 
     /**
@@ -113,10 +108,10 @@ public class LoginForm extends javax.swing.JFrame {
 
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
         // TODO add your handling code here:
-        /*if(userController.login(userTxt.getText(), pwTxt.getText())){
+        if (userApplication.login(userTxt.getText(), pwTxt.getText())) {
             new MainForm().setVisible(true);
             dispose();
-        }*/
+        }
     }//GEN-LAST:event_loginBtnActionPerformed
 
     /**
@@ -146,7 +141,7 @@ public class LoginForm extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-        
+
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

@@ -20,9 +20,7 @@ public class AppStart {
     public AppStart() {
     }
 
-    public void start()
-            throws InstantiationException,
-            IllegalAccessException {
+    public void start() {
         InstanceFactory.Instance.register("userRepository", UserRepository.class);
 
     }

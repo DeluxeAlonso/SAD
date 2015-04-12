@@ -7,37 +7,52 @@ package util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
  *
  * @author dabarca
  */
-public class InstanceFactory<T> {
+public class InstanceFactory {
 
     public static InstanceFactory Instance = new InstanceFactory();
 
-    private Map<String, T> typeMap = new HashMap<String, T>();
+    private Map<String, Object> typeMap = new HashMap<String, Object>();
 
     private InstanceFactory() {
     }
 
-    public void register(String s, Class<T> type) throws InstantiationException,
-        IllegalAccessException{       
-        T object = type.newInstance();        
+    public <T> void  register(String s, Class<T> type) {       
+        T object=null;        
+        try {
+            object = type.newInstance();
+        } catch (InstantiationException ex) {
+            Logger.getLogger(InstanceFactory.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(InstanceFactory.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if (object != null) {
             typeMap.put(s, object);
         }
     }
 
-    public T getInstance(String s, Class<T> type) throws InstantiationException,
-        IllegalAccessException{
+    public <T> T getInstance(String s, Class<T> type) {
         if(typeMap.containsKey(s)){
-            return typeMap.get(s);
+            return (T)typeMap.get(s);
         }else{
-             T instance = type.newInstance();
-             typeMap.put(s, instance);
-             return instance;
+             T instance=null;
+            try {
+                instance = type.newInstance();
+            } catch (InstantiationException ex) {
+                Logger.getLogger(InstanceFactory.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(InstanceFactory.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if(instance!=null)
+                typeMap.put(s, instance);
+            return instance;
         }     
     }
 
