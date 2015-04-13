@@ -33,17 +33,98 @@ public class MainForm extends javax.swing.JFrame {
     private void initComponents() {
 
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItem11 = new javax.swing.JMenuItem();
+        jMenu5 = new javax.swing.JMenu();
+        jMenuItem5 = new javax.swing.JMenuItem();
+        jMenuItem6 = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem12 = new javax.swing.JMenuItem();
+        jMenuItem13 = new javax.swing.JMenuItem();
+        jMenuItem14 = new javax.swing.JMenuItem();
+        jMenuItem15 = new javax.swing.JMenuItem();
+        jMenuItem16 = new javax.swing.JMenuItem();
+        jMenu4 = new javax.swing.JMenu();
+        jMenu6 = new javax.swing.JMenu();
+        jMenuItem7 = new javax.swing.JMenuItem();
+        jMenuItem8 = new javax.swing.JMenuItem();
+        jMenuItem10 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sistema de Almacenes y Despacho");
 
-        jMenu1.setText("File");
+        jMenu2.setText("Movimientos");
+
+        jMenuItem2.setText("Internamiento");
+        jMenu2.add(jMenuItem2);
+
+        jMenuItem3.setText("Pedido");
+        jMenu2.add(jMenuItem3);
+
+        jMenuBar1.add(jMenu2);
+
+        jMenu3.setText("Operaciones");
+
+        jMenuItem1.setText("Ajuste De Inventario");
+        jMenu3.add(jMenuItem1);
+
+        jMenuItem4.setText("Despacho");
+        jMenu3.add(jMenuItem4);
+
+        jMenuItem11.setText("Devoluciones");
+        jMenu3.add(jMenuItem11);
+
+        jMenuBar1.add(jMenu3);
+
+        jMenu5.setText("Mantenimientos");
+
+        jMenuItem5.setText("Almacén");
+        jMenu5.add(jMenuItem5);
+
+        jMenuItem6.setText("Unidad de Transporte");
+        jMenu5.add(jMenuItem6);
+
+        jMenuBar1.add(jMenu5);
+
+        jMenu1.setText("Reportes");
+
+        jMenuItem12.setText("Kardex");
+        jMenu1.add(jMenuItem12);
+
+        jMenuItem13.setText("Stock");
+        jMenu1.add(jMenuItem13);
+
+        jMenuItem14.setText("Guías De Remisión");
+        jMenu1.add(jMenuItem14);
+
+        jMenuItem15.setText("Disponibilidad de Almacén");
+        jMenu1.add(jMenuItem15);
+
+        jMenuItem16.setText("Caducidad de Productos");
+        jMenu1.add(jMenuItem16);
+
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
+        jMenu4.setText("Usuarios");
+        jMenuBar1.add(jMenu4);
+
+        jMenu6.setText("Interfaces");
+
+        jMenuItem7.setText("Personal");
+        jMenu6.add(jMenuItem7);
+
+        jMenuItem8.setText("Clientes");
+        jMenu6.add(jMenuItem8);
+
+        jMenuItem10.setText("Productos");
+        jMenu6.add(jMenuItem10);
+
+        jMenuBar1.add(jMenu6);
 
         setJMenuBar(jMenuBar1);
 
@@ -55,7 +136,7 @@ public class MainForm extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 279, Short.MAX_VALUE)
+            .addGap(0, 281, Short.MAX_VALUE)
         );
 
         pack();
@@ -69,6 +150,25 @@ public class MainForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenu jMenu5;
+    private javax.swing.JMenu jMenu6;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem10;
+    private javax.swing.JMenuItem jMenuItem11;
+    private javax.swing.JMenuItem jMenuItem12;
+    private javax.swing.JMenuItem jMenuItem13;
+    private javax.swing.JMenuItem jMenuItem14;
+    private javax.swing.JMenuItem jMenuItem15;
+    private javax.swing.JMenuItem jMenuItem16;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem7;
+    private javax.swing.JMenuItem jMenuItem8;
     // End of variables declaration//GEN-END:variables
 }
