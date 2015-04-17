@@ -42,7 +42,7 @@ public class LoginForm extends javax.swing.JFrame {
         pwLbl = new javax.swing.JLabel();
         loginBtn = new javax.swing.JButton();
         userTxt = new javax.swing.JTextField();
-        pwTxt = new javax.swing.JTextField();
+        pwTxt = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Ingreso");
@@ -75,8 +75,8 @@ public class LoginForm extends javax.swing.JFrame {
                     .addComponent(pwLbl))
                 .addGap(45, 45, 45)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(pwTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
-                    .addComponent(userTxt))
+                    .addComponent(userTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+                    .addComponent(pwTxt))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(171, Short.MAX_VALUE)
@@ -153,7 +153,7 @@ public class LoginForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton loginBtn;
     private javax.swing.JLabel pwLbl;
-    private javax.swing.JTextField pwTxt;
+    private javax.swing.JPasswordField pwTxt;
     private javax.swing.JLabel userLbl;
     private javax.swing.JTextField userTxt;
     // End of variables declaration//GEN-END:variables

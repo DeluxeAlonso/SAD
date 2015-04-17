@@ -5,9 +5,11 @@
  */
 package client.general;
 
-import application.users.UserApplication;
-import infraestructure.user.UserRepository;
-import util.InstanceFactory;
+import client.users.UserForm;
+import java.beans.PropertyVetoException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFrame;
 
 /**
  *
@@ -15,12 +17,14 @@ import util.InstanceFactory;
  */
 public class MainForm extends javax.swing.JFrame {
 
+    private UserForm userForm = null;
+
     /**
      * Creates new form MainForm
      */
     public MainForm() {
         initComponents();
-        
+        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
     }
 
     /**
@@ -49,7 +53,7 @@ public class MainForm extends javax.swing.JFrame {
         jMenuItem14 = new javax.swing.JMenuItem();
         jMenuItem15 = new javax.swing.JMenuItem();
         jMenuItem16 = new javax.swing.JMenuItem();
-        jMenu4 = new javax.swing.JMenu();
+        UserMenu = new javax.swing.JMenu();
         jMenu6 = new javax.swing.JMenu();
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
@@ -110,8 +114,13 @@ public class MainForm extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
-        jMenu4.setText("Usuarios");
-        jMenuBar1.add(jMenu4);
+        UserMenu.setText("Usuarios");
+        UserMenu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                UserMenuMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(UserMenu);
 
         jMenu6.setText("Interfaces");
 
@@ -142,16 +151,29 @@ public class MainForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void UserMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UserMenuMouseClicked
+        if (userForm==null || !userForm.isShowing() ) {
+            userForm = new UserForm();
+            userForm.setVisible(true);
+            getContentPane().add(userForm);
+            try {
+                // TODO add your handling code here:
+                userForm.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_UserMenuMouseClicked
+
     /**
      * @param args the command line arguments
      */
-  
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu UserMenu;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
     private javax.swing.JMenuBar jMenuBar1;
