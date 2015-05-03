@@ -24,17 +24,14 @@ public class InstanceFactory {
     private InstanceFactory() {
     }
 
-    public <T> void  register(String s, Class<T> type) {       
-        T object=null;        
-        try {
-            object = type.newInstance();
-        } catch (InstantiationException ex) {
-            Logger.getLogger(InstanceFactory.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(InstanceFactory.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        if (object != null) {
-            typeMap.put(s, object);
+    public <T>  void  register(String s, Class<T> typeA) throws Exception {       
+        T application=null; 
+        
+        application=typeA.newInstance();
+             
+        if (application != null) {
+            
+            typeMap.put(s, application);
         }
     }
 

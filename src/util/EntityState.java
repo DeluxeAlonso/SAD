@@ -12,7 +12,10 @@ package util;
 public  class EntityState {
     
     public static enum Users { ACTIVO , INACTIVO };
-   
+    public static String[] getUsersState(){
+         String[] userState={"Activo","Inactivo"};
+         return userState;
+    }
     
     public static enum Profile {JEFE_ALMACEN,SUPERVISOR,ADMIN};
     

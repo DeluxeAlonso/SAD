@@ -1,23 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 04/04/2015 02:29:49 AM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 02/05/2015 05:43:38 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-  <class catalog="saddb" name="entity.GuiaRemision" optimistic-lock="version" table="guia_remision">
-    <id name="id" type="java.lang.Integer">
-      <column name="id"/>
-      <generator class="identity"/>
-    </id>
-    <many-to-one class="entity.Despacho" fetch="select" name="despacho">
-      <column name="id_despacho" not-null="true"/>
-    </many-to-one>
-    <many-to-one class="entity.PedidoParcial" fetch="select" name="pedidoParcial">
-      <column name="id_pedido_parcial" not-null="true"/>
-    </many-to-one>
-    <set fetch="select" inverse="true" lazy="true" name="pedidoParcials" table="pedido_parcial">
-      <key>
-        <column name="id_guia_remision" not-null="true"/>
-      </key>
-      <one-to-many class="entity.PedidoParcial"/>
-    </set>
-  </class>
+    <class name="entity.GuiaRemision" table="guia_remision" catalog="saddb" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="despacho" class="entity.Despacho" fetch="select">
+            <column name="id_despacho" not-null="true" />
+        </many-to-one>
+        <many-to-one name="pedidoParcial" class="entity.PedidoParcial" fetch="select">
+            <column name="id_pedido_parcial" not-null="true" />
+        </many-to-one>
+        <set name="pedidoParcials" table="pedido_parcial" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_guia_remision" not-null="true" />
+            </key>
+            <one-to-many class="entity.PedidoParcial" />
+        </set>
+    </class>
 </hibernate-mapping>

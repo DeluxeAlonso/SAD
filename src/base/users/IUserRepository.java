@@ -12,6 +12,6 @@ import entity.Usuario;
  *
  * @author dabarca
  */
-public interface IUserRepository extends IRepository{
-   Usuario getUser(String email, String password); 
+public interface IUserRepository extends IRepository<Usuario>{
+   Usuario getUser(String email); 
 }

@@ -1,5 +1,5 @@
 package entity;
-// Generated 04/04/2015 02:29:48 AM by Hibernate Tools 4.3.1
+// Generated 02/05/2015 05:43:37 PM by Hibernate Tools 4.3.1
 
 
 
@@ -18,6 +18,7 @@ public class Usuario  implements java.io.Serializable {
      private String apellidoPaterno;
      private String apellidoMaterno;
      private String respuesta;
+     private Byte estado;
 
     public Usuario() {
     }
@@ -28,7 +29,7 @@ public class Usuario  implements java.io.Serializable {
         this.correo = correo;
         this.password = password;
     }
-    public Usuario(String idUsuario, Perfil perfil, PreguntaSecreta preguntaSecreta, String correo, String password, String nombre, String apellidoPaterno, String apellidoMaterno, String respuesta) {
+    public Usuario(String idUsuario, Perfil perfil, PreguntaSecreta preguntaSecreta, String correo, String password, String nombre, String apellidoPaterno, String apellidoMaterno, String respuesta, Byte estado) {
        this.idUsuario = idUsuario;
        this.perfil = perfil;
        this.preguntaSecreta = preguntaSecreta;
@@ -38,6 +39,7 @@ public class Usuario  implements java.io.Serializable {
        this.apellidoPaterno = apellidoPaterno;
        this.apellidoMaterno = apellidoMaterno;
        this.respuesta = respuesta;
+       this.estado = estado;
     }
    
     public String getIdUsuario() {
@@ -102,6 +104,13 @@ public class Usuario  implements java.io.Serializable {
     
     public void setRespuesta(String respuesta) {
         this.respuesta = respuesta;
+    }
+    public Byte getEstado() {
+        return this.estado;
+    }
+    
+    public void setEstado(Byte estado) {
+        this.estado = estado;
     }
 
 

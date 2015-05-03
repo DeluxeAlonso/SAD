@@ -1,35 +1,39 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 04/04/2015 02:29:49 AM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 02/05/2015 05:43:38 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-  <class catalog="saddb" name="entity.Usuario" optimistic-lock="version" table="usuario">
-    <id name="idUsuario" type="string">
-      <column length="10" name="idUsuario"/>
-      <generator class="assigned"/>
-    </id>
-    <many-to-one class="entity.Perfil" fetch="select" name="perfil">
-      <column name="idPerfil"/>
-    </many-to-one>
-    <many-to-one class="entity.PreguntaSecreta" fetch="select" name="preguntaSecreta">
-      <column name="idPregunta_Secreta"/>
-    </many-to-one>
-    <property name="correo" type="string">
-      <column length="100" name="correo" not-null="true"/>
-    </property>
-    <property name="password" type="string">
-      <column length="20" name="password" not-null="true"/>
-    </property>
-    <property name="nombre" type="string">
-      <column length="50" name="nombre"/>
-    </property>
-    <property name="apellidoPaterno" type="string">
-      <column length="50" name="apellido_paterno"/>
-    </property>
-    <property name="apellidoMaterno" type="string">
-      <column length="50" name="apellido_materno"/>
-    </property>
-    <property name="respuesta" type="string">
-      <column length="45" name="respuesta"/>
-    </property>
-  </class>
+    <class name="entity.Usuario" table="usuario" catalog="saddb" optimistic-lock="version">
+        <id name="idUsuario" type="string">
+            <column name="idUsuario" length="10" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="perfil" class="entity.Perfil" fetch="select">
+            <column name="idPerfil" />
+        </many-to-one>
+        <many-to-one name="preguntaSecreta" class="entity.PreguntaSecreta" fetch="select">
+            <column name="idPregunta_Secreta" />
+        </many-to-one>
+        <property name="correo" type="string">
+            <column name="correo" length="100" not-null="true" />
+        </property>
+        <property name="password" type="string">
+            <column name="password" length="20" not-null="true" />
+        </property>
+        <property name="nombre" type="string">
+            <column name="nombre" length="50" />
+        </property>
+        <property name="apellidoPaterno" type="string">
+            <column name="apellido_paterno" length="50" />
+        </property>
+        <property name="apellidoMaterno" type="string">
+            <column name="apellido_materno" length="50" />
+        </property>
+        <property name="respuesta" type="string">
+            <column name="respuesta" length="45" />
+        </property>
+        <property name="estado" type="java.lang.Byte">
+            <column name="estado" precision="2" scale="0" />
+        </property>
+    </class>
 </hibernate-mapping>

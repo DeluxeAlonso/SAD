@@ -36,6 +36,7 @@ public class MainForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        mainPanel = new javax.swing.JDesktopPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
@@ -61,6 +62,19 @@ public class MainForm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sistema de Almacenes y Despacho");
+
+        mainPanel.setDragMode(javax.swing.JDesktopPane.OUTLINE_DRAG_MODE);
+
+        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
+        mainPanel.setLayout(mainPanelLayout);
+        mainPanelLayout.setHorizontalGroup(
+            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 416, Short.MAX_VALUE)
+        );
+        mainPanelLayout.setVerticalGroup(
+            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 281, Short.MAX_VALUE)
+        );
 
         jMenu2.setText("Movimientos");
 
@@ -141,11 +155,11 @@ public class MainForm extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addComponent(mainPanel, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 281, Short.MAX_VALUE)
+            .addComponent(mainPanel, javax.swing.GroupLayout.Alignment.TRAILING)
         );
 
         pack();
@@ -155,7 +169,7 @@ public class MainForm extends javax.swing.JFrame {
         if (userForm==null || !userForm.isShowing() ) {
             userForm = new UserForm();
             userForm.setVisible(true);
-            getContentPane().add(userForm);
+            mainPanel.add(userForm);
             try {
                 // TODO add your handling code here:
                 userForm.setSelected(true);
@@ -192,5 +206,6 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
+    private javax.swing.JDesktopPane mainPanel;
     // End of variables declaration//GEN-END:variables
 }

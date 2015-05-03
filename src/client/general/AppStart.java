@@ -1,7 +1,9 @@
 package client.general;
 
 
-import infraestructure.user.UserRepository;
+import application.users.UserApplication;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.InstanceFactory;
 
 /*
@@ -21,7 +23,11 @@ public class AppStart {
     }
 
     public void start() {
-        InstanceFactory.Instance.register("userRepository", UserRepository.class);
+        try {
+            InstanceFactory.Instance.register("userApplication", UserApplication.class);
+        } catch (Exception ex) {
+            Logger.getLogger(AppStart.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 

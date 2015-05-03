@@ -5,30 +5,56 @@
  */
 package client.users;
 
-import java.awt.CardLayout;
+import application.users.UserApplication;
+import entity.Usuario;
+import java.util.ArrayList;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
+import util.EntityState;
+import util.InstanceFactory;
 
 /**
  *
  * @author dabarca
  */
-public class UserForm extends javax.swing.JInternalFrame {
-    private CardLayout cl;
+public class UserForm extends javax.swing.JInternalFrame{
+    UserApplication userApplication=InstanceFactory.Instance.getInstance("userApplicaiton",UserApplication.class);
+    
     /**
      * Creates new form UserForm
      */
     public UserForm() {
-        initComponents();
-        
-        //Register panels
-        userMainPanel.add(new DefaultUserForm(),"defaultUserForm");        
-        
-                
-                
-        cl=((CardLayout)userMainPanel.getLayout());
-        cl.show(userMainPanel,"defaultUserForm");
+        initComponents();  
+        //Initialize profileComboBox
+        profileCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getProfiles()));
+        clearUserGrid();
+        fillTableWithUsers();
         
     }
-
+    
+    public void clearUserGrid(){
+        DefaultTableModel model=(DefaultTableModel)usersGrid.getModel();
+        model.setRowCount(0);
+    }
+    
+    public void fillTableWithUsers(){
+        DefaultTableModel model=(DefaultTableModel)usersGrid.getModel();
+        ArrayList<Usuario> users=userApplication.getAllUsers();
+        for(Usuario user : users){
+            
+        String profileName=user.getPerfil()!=null?user.getPerfil().getNombrePerfil():""; 
+        String state=user.getEstado()!=null?EntityState.getUsersState()[user.getEstado()-1]:"";
+            model.addRow(new Object[]{
+                user.getIdUsuario(),
+                user.getNombre()+" "+user.getApellidoPaterno()+""+user.getApellidoMaterno(),
+                user.getCorreo(),
+                state,
+                profileName
+            });
+        }
+        
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -39,15 +65,124 @@ public class UserForm extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        userMainPanel = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        searchBtn = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        emailTxt = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        usersGrid = new javax.swing.JTable();
+        jSeparator1 = new javax.swing.JSeparator();
+        newBtn = new javax.swing.JButton();
+        editBtn = new javax.swing.JButton();
+        deleteBtn = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        profileCombo = new javax.swing.JComboBox();
         jPanel2 = new javax.swing.JPanel();
 
         setClosable(true);
-        setMaximizable(true);
         setTitle("Usuarios");
 
-        userMainPanel.setLayout(new java.awt.CardLayout());
-        jTabbedPane1.addTab("Usuarios", userMainPanel);
+        searchBtn.setText("Buscar");
+
+        jLabel1.setText("Correo:");
+
+        usersGrid.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Nombre", "Correo", "Estado", "Perfil"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(usersGrid);
+
+        newBtn.setText("Nuevo");
+        newBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newBtnActionPerformed(evt);
+            }
+        });
+
+        editBtn.setText("Editar");
+
+        deleteBtn.setText("Eliminar");
+
+        jLabel2.setText("Perfil:");
+
+        profileCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(34, 34, 34)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(newBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(editBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(deleteBtn))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jScrollPane1)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGap(16, 16, 16)
+                            .addComponent(jLabel1)
+                            .addGap(18, 18, 18)
+                            .addComponent(emailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(26, 26, 26)
+                            .addComponent(jLabel2)
+                            .addGap(18, 18, 18)
+                            .addComponent(profileCombo, 0, 111, Short.MAX_VALUE)
+                            .addGap(18, 18, 18)
+                            .addComponent(searchBtn)
+                            .addGap(79, 79, 79))
+                        .addComponent(jSeparator1)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(46, 46, 46)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(emailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchBtn)
+                    .addComponent(jLabel2)
+                    .addComponent(profileCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(29, 29, 29)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(newBtn)
+                    .addComponent(editBtn)
+                    .addComponent(deleteBtn))
+                .addGap(18, 86, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25))
+        );
+
+        jTabbedPane1.addTab("Usuarios", jPanel1);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -82,10 +217,28 @@ public class UserForm extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void newBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newBtnActionPerformed
+        // TODO add your handling code here:
+              
+        NewUser newUser=new NewUser((JFrame)SwingUtilities.getWindowAncestor(this),true);
+        newUser.setVisible(true);
+    }//GEN-LAST:event_newBtnActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton deleteBtn;
+    private javax.swing.JButton editBtn;
+    private javax.swing.JTextField emailTxt;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JPanel userMainPanel;
+    private javax.swing.JButton newBtn;
+    private javax.swing.JComboBox profileCombo;
+    private javax.swing.JButton searchBtn;
+    private javax.swing.JTable usersGrid;
     // End of variables declaration//GEN-END:variables
 }

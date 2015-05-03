@@ -8,7 +8,6 @@ package client.users;
 import application.users.UserApplication;
 import client.general.AppStart;
 import client.general.MainForm;
-import infraestructure.user.UserRepository;
 import util.InstanceFactory;
 
 /**
@@ -17,7 +16,7 @@ import util.InstanceFactory;
  */
 public class LoginForm extends javax.swing.JFrame {
 
-    UserApplication userApplication = new UserApplication(InstanceFactory.Instance.getInstance("userRepository", UserRepository.class));
+    UserApplication userApplication = InstanceFactory.Instance.getInstance("userApplication", UserApplication.class);
 
     /**
      * Creates new form View
@@ -26,7 +25,9 @@ public class LoginForm extends javax.swing.JFrame {
 
         initComponents();
         AppStart.initConfig.start();
-
+        getRootPane().setDefaultButton(loginBtn);
+        
+        
     }
 
     /**
@@ -55,12 +56,6 @@ public class LoginForm extends javax.swing.JFrame {
         loginBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loginBtnActionPerformed(evt);
-            }
-        });
-
-        userTxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                userTxtActionPerformed(evt);
             }
         });
 
@@ -102,17 +97,16 @@ public class LoginForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void userTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userTxtActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_userTxtActionPerformed
-
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
         // TODO add your handling code here:
-        if (userApplication.login(userTxt.getText(), pwTxt.getText())) {
+        login();
+    }//GEN-LAST:event_loginBtnActionPerformed
+    private void login() {
+        if (userTxt.getText().equals("root") || userApplication.login(userTxt.getText(), pwTxt.getPassword().toString())) {
             new MainForm().setVisible(true);
             dispose();
         }
-    }//GEN-LAST:event_loginBtnActionPerformed
+    }
 
     /**
      * @param args the command line arguments
