@@ -12,8 +12,8 @@ import java.util.ArrayList;
  * @author dabarca
  */
 public interface IRepository<T> {
-    void insert();
-    void delete();
+    void insert(T object);
+    void delete(T object);
     ArrayList<T> queryAll();
     void update(T object);
     T queryById(int id);

@@ -44,10 +44,10 @@ public class UserForm extends javax.swing.JInternalFrame{
         for(Usuario user : users){
             
         String profileName=user.getPerfil()!=null?user.getPerfil().getNombrePerfil():""; 
-        String state=user.getEstado()!=null?EntityState.getUsersState()[user.getEstado()-1]:"";
+        String state=user.getEstado()!=null?EntityState.getUsersState()[user.getEstado()]:"";
             model.addRow(new Object[]{
-                user.getIdUsuario(),
-                user.getNombre()+" "+user.getApellidoPaterno()+""+user.getApellidoMaterno(),
+                user.getIdusuario(),
+                user.getNombre()+" "+user.getApellidoPaterno()+" "+user.getApellidoMaterno(),
                 user.getCorreo(),
                 state,
                 profileName
@@ -177,7 +177,7 @@ public class UserForm extends javax.swing.JInternalFrame{
                     .addComponent(newBtn)
                     .addComponent(editBtn)
                     .addComponent(deleteBtn))
-                .addGap(18, 86, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 90, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(25, 25, 25))
         );

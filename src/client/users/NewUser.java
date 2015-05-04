@@ -5,7 +5,11 @@
  */
 package client.users;
 
+import application.users.UserApplication;
+import entity.Usuario;
+import java.util.UUID;
 import util.EntityState;
+import util.InstanceFactory;
 import util.Tools;
 
 /**
@@ -13,17 +17,17 @@ import util.Tools;
  * @author Nevermade
  */
 public class NewUser extends javax.swing.JDialog {
-
+    UserApplication userApplication=InstanceFactory.Instance.getInstance("userApplication", UserApplication.class);
     /**
      * Creates new form NewUser
      */
     public NewUser(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        initComponents();
+        initComponents();       
         //initialize user states combo
         stateCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getUsersState()));
-    }
-
+        profileCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getProfiles()));
+    }    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -37,8 +41,8 @@ public class NewUser extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         nameTxt = new javax.swing.JTextField();
-        firstName = new javax.swing.JTextField();
-        secondName = new javax.swing.JTextField();
+        firstNameTxt = new javax.swing.JTextField();
+        secondNameTxt = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         emailTxt = new javax.swing.JTextField();
         stateCombo = new javax.swing.JComboBox();
@@ -48,6 +52,8 @@ public class NewUser extends javax.swing.JDialog {
         autoGeneratePassBtn = new javax.swing.JButton();
         saveTxt = new javax.swing.JButton();
         cancelBtn = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        profileCombo = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Nuevo Usuario");
@@ -74,6 +80,11 @@ public class NewUser extends javax.swing.JDialog {
         });
 
         saveTxt.setText("Guardar");
+        saveTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveTxtActionPerformed(evt);
+            }
+        });
 
         cancelBtn.setText("Cancelar");
         cancelBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -81,6 +92,10 @@ public class NewUser extends javax.swing.JDialog {
                 cancelBtnActionPerformed(evt);
             }
         });
+
+        jLabel7.setText("Perfil:");
+
+        profileCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -94,24 +109,31 @@ public class NewUser extends javax.swing.JDialog {
                     .addComponent(jLabel3)
                     .addComponent(jLabel4)
                     .addComponent(jLabel6)
-                    .addComponent(jLabel5))
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(passwordTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
-                    .addComponent(emailTxt, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(secondName)
-                    .addComponent(firstName)
-                    .addComponent(stateCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(nameTxt))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
-                .addComponent(autoGeneratePassBtn)
-                .addGap(51, 51, 51))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(cancelBtn)
-                .addGap(43, 43, 43)
-                .addComponent(saveTxt)
-                .addGap(61, 61, 61))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(profileCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(227, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(cancelBtn)
+                                .addGap(18, 18, 18)
+                                .addComponent(saveTxt))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(passwordTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
+                                    .addComponent(emailTxt, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(secondNameTxt)
+                                    .addComponent(firstNameTxt)
+                                    .addComponent(stateCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(nameTxt))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(autoGeneratePassBtn)))
+                        .addGap(19, 19, 19))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -123,11 +145,11 @@ public class NewUser extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(firstName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(firstNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(secondName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(secondNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
@@ -141,7 +163,11 @@ public class NewUser extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(stateCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 55, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel7)
+                    .addComponent(profileCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveTxt)
                     .addComponent(cancelBtn))
@@ -161,26 +187,40 @@ public class NewUser extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_cancelBtnActionPerformed
 
+    private void saveTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveTxtActionPerformed
+        // TODO add your handling code here:
+        Usuario user=new Usuario();
+        user.setIdusuario(UUID.randomUUID().toString().replace("-", ""));
+        user.setNombre(nameTxt.getText());
+        user.setApellidoPaterno(firstNameTxt.getText());
+        user.setApellidoMaterno(firstNameTxt.getText());
+        user.setCorreo(emailTxt.getText());        
+        user.setPassword(passwordTxt.getText());
+        user.setEstado(stateCombo.getSelectedIndex());
+        userApplication.createUser(user);
+    }//GEN-LAST:event_saveTxtActionPerformed
+
     /**
      * @param args the command line arguments
      */
-   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton autoGeneratePassBtn;
     private javax.swing.JButton cancelBtn;
     private javax.swing.JTextField emailTxt;
-    private javax.swing.JTextField firstName;
+    private javax.swing.JTextField firstNameTxt;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JTextField nameTxt;
     private javax.swing.JTextField passwordTxt;
+    private javax.swing.JComboBox profileCombo;
     private javax.swing.JButton saveTxt;
-    private javax.swing.JTextField secondName;
+    private javax.swing.JTextField secondNameTxt;
     private javax.swing.JComboBox stateCombo;
     // End of variables declaration//GEN-END:variables
 }

@@ -18,9 +18,5 @@ public class Tools {
         SecureRandom random = new SecureRandom();
         return new BigInteger(130, random).toString(32).substring(0,length);
     }
-    public static Object setDefault(Object in, Object def){
-        if(in==null)
-            return def;
-        return in;
-    }
+    
 }

@@ -102,7 +102,7 @@ public class LoginForm extends javax.swing.JFrame {
         login();
     }//GEN-LAST:event_loginBtnActionPerformed
     private void login() {
-        if (userTxt.getText().equals("root") || userApplication.login(userTxt.getText(), pwTxt.getPassword().toString())) {
+        if (userTxt.getText().equals("root") || userApplication.login(userTxt.getText(), new String(pwTxt.getPassword()))) {
             new MainForm().setVisible(true);
             dispose();
         }

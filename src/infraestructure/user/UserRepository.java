@@ -6,14 +6,13 @@
 package infraestructure.user;
 
 import base.users.IUserRepository;
-import entity.PreguntaSecreta;
 import entity.Usuario;
 import java.util.ArrayList;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import util.HibernateUtil;
-import util.Tools;
 
 /**
  *
@@ -40,12 +39,26 @@ public class UserRepository implements IUserRepository {
     }
 
     @Override
-    public void insert() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void insert(Usuario object) {
+        Transaction trns = null;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {            
+            trns=session.beginTransaction();
+            session.save(object);                      
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.flush();
+            session.close();
+        }
     }
 
     @Override
-    public void delete() {
+    public void delete(Usuario object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -53,24 +66,22 @@ public class UserRepository implements IUserRepository {
     public ArrayList<Usuario> queryAll() {
         String hql="from Usuario";
         ArrayList<Usuario> users=null;
-        try {
-            Session session = HibernateUtil.getSessionFactory().openSession();
-            session.beginTransaction();
+        
+        Transaction trns = null;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {            
+            trns=session.beginTransaction();
             Query q = session.createQuery(hql);              
-            users = (ArrayList<Usuario>) q.list();
-            for(Usuario user : users){
-                user.setIdUsuario((String)Tools.setDefault(user.getIdUsuario(),""));
-                user.setNombre((String)Tools.setDefault(user.getNombre(),""));
-                user.setApellidoPaterno((String)Tools.setDefault(user.getApellidoPaterno(),""));
-                user.setApellidoMaterno((String)Tools.setDefault(user.getApellidoMaterno(),""));
-                user.setPassword((String)Tools.setDefault(user.getPassword(), ""));
-                user.setRespuesta((String)Tools.setDefault(user.getRespuesta(), ""));
-                //user.setEstado((Byte)Tools.setDefault(user.getEstado(),0));
-                user.setPreguntaSecreta((PreguntaSecreta)Tools.setDefault(user.getPreguntaSecreta(), null));
-            }
+            users = (ArrayList<Usuario>) q.list();          
             session.getTransaction().commit();
-        } catch (HibernateException he) {
-            he.printStackTrace();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.flush();
+            session.close();
         }
         return users;
     }
