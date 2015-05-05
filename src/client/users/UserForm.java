@@ -65,6 +65,7 @@ public class UserForm extends javax.swing.JInternalFrame{
     private void initComponents() {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         searchBtn = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -77,10 +78,22 @@ public class UserForm extends javax.swing.JInternalFrame{
         deleteBtn = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         profileCombo = new javax.swing.JComboBox();
-        jPanel2 = new javax.swing.JPanel();
 
         setClosable(true);
         setTitle("Usuarios");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 659, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 422, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Perfiles", jPanel2);
 
         searchBtn.setText("Buscar");
 
@@ -183,19 +196,6 @@ public class UserForm extends javax.swing.JInternalFrame{
         );
 
         jTabbedPane1.addTab("Usuarios", jPanel1);
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 659, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 422, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("Perfiles", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
