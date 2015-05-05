@@ -1,3 +1,5 @@
-alter table usuario modify column estado integer;;
-alter table usuario modify column password varchar(50);
-alter table usuario modify column idusuario varchar(40);
+ALTER TABLE Usuario
+  ADD estado integer NULL
+    AFTER idPregunta_Secreta;
+alter table Usuario modify column password varchar(50);
+alter table Usuario modify column idusuario varchar(40);
