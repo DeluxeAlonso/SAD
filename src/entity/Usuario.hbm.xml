@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 04/04/2015 02:29:49 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated 03/05/2015 07:54:53 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entity.Usuario" table="usuario" catalog="saddb" optimistic-lock="version">
-        <id name="idUsuario" type="string">
-            <column name="idUsuario" length="10" />
+        <id name="idusuario" type="string">
+            <column name="idusuario" length="40" />
             <generator class="assigned" />
         </id>
         <many-to-one name="perfil" class="entity.Perfil" fetch="select">
@@ -18,7 +18,7 @@
             <column name="correo" length="100" not-null="true" />
         </property>
         <property name="password" type="string">
-            <column name="password" length="20" not-null="true" />
+            <column name="password" length="50" />
         </property>
         <property name="nombre" type="string">
             <column name="nombre" length="50" />
@@ -31,6 +31,9 @@
         </property>
         <property name="respuesta" type="string">
             <column name="respuesta" length="45" />
+        </property>
+        <property name="estado" type="java.lang.Integer">
+            <column name="estado" />
         </property>
     </class>
 </hibernate-mapping>

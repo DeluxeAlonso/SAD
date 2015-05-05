@@ -3,24 +3,31 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package view.user;
+package client.users;
 
-import controller.user.UserController;
-import view.general.MainForm;
+import application.users.UserApplication;
+import client.general.AppStart;
+import client.general.MainForm;
+import util.InstanceFactory;
 
 /**
  *
  * @author Nevermade
  */
-
-
 public class LoginForm extends javax.swing.JFrame {
-    public static UserController userController=new UserController();
+
+    UserApplication userApplication = InstanceFactory.Instance.getInstance("userApplication", UserApplication.class);
+
     /**
      * Creates new form View
      */
     public LoginForm() {
+
         initComponents();
+        AppStart.initConfig.start();
+        getRootPane().setDefaultButton(loginBtn);
+        
+        
     }
 
     /**
@@ -36,7 +43,7 @@ public class LoginForm extends javax.swing.JFrame {
         pwLbl = new javax.swing.JLabel();
         loginBtn = new javax.swing.JButton();
         userTxt = new javax.swing.JTextField();
-        pwTxt = new javax.swing.JTextField();
+        pwTxt = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Ingreso");
@@ -52,12 +59,6 @@ public class LoginForm extends javax.swing.JFrame {
             }
         });
 
-        userTxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                userTxtActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -69,8 +70,8 @@ public class LoginForm extends javax.swing.JFrame {
                     .addComponent(pwLbl))
                 .addGap(45, 45, 45)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(pwTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
-                    .addComponent(userTxt))
+                    .addComponent(userTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+                    .addComponent(pwTxt))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(171, Short.MAX_VALUE)
@@ -96,17 +97,16 @@ public class LoginForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void userTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userTxtActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_userTxtActionPerformed
-
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
         // TODO add your handling code here:
-        if(userController.login(userTxt.getText(), pwTxt.getText())){
+        login();
+    }//GEN-LAST:event_loginBtnActionPerformed
+    private void login() {
+        if (userTxt.getText().equals("root") || userApplication.login(userTxt.getText(), new String(pwTxt.getPassword()))) {
             new MainForm().setVisible(true);
             dispose();
         }
-    }//GEN-LAST:event_loginBtnActionPerformed
+    }
 
     /**
      * @param args the command line arguments
@@ -147,7 +147,7 @@ public class LoginForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton loginBtn;
     private javax.swing.JLabel pwLbl;
-    private javax.swing.JTextField pwTxt;
+    private javax.swing.JPasswordField pwTxt;
     private javax.swing.JLabel userLbl;
     private javax.swing.JTextField userTxt;
     // End of variables declaration//GEN-END:variables

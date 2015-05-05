@@ -1,5 +1,5 @@
 package entity;
-// Generated 04/04/2015 02:29:48 AM by Hibernate Tools 4.3.1
+// Generated 03/05/2015 07:54:51 PM by Hibernate Tools 4.3.1
 
 
 
@@ -9,7 +9,7 @@ package entity;
 public class Usuario  implements java.io.Serializable {
 
 
-     private String idUsuario;
+     private String idusuario;
      private Perfil perfil;
      private PreguntaSecreta preguntaSecreta;
      private String correo;
@@ -18,18 +18,18 @@ public class Usuario  implements java.io.Serializable {
      private String apellidoPaterno;
      private String apellidoMaterno;
      private String respuesta;
+     private Integer estado;
 
     public Usuario() {
     }
 
 	
-    public Usuario(String idUsuario, String correo, String password) {
-        this.idUsuario = idUsuario;
+    public Usuario(String idusuario, String correo) {
+        this.idusuario = idusuario;
         this.correo = correo;
-        this.password = password;
     }
-    public Usuario(String idUsuario, Perfil perfil, PreguntaSecreta preguntaSecreta, String correo, String password, String nombre, String apellidoPaterno, String apellidoMaterno, String respuesta) {
-       this.idUsuario = idUsuario;
+    public Usuario(String idusuario, Perfil perfil, PreguntaSecreta preguntaSecreta, String correo, String password, String nombre, String apellidoPaterno, String apellidoMaterno, String respuesta, Integer estado) {
+       this.idusuario = idusuario;
        this.perfil = perfil;
        this.preguntaSecreta = preguntaSecreta;
        this.correo = correo;
@@ -38,14 +38,15 @@ public class Usuario  implements java.io.Serializable {
        this.apellidoPaterno = apellidoPaterno;
        this.apellidoMaterno = apellidoMaterno;
        this.respuesta = respuesta;
+       this.estado = estado;
     }
    
-    public String getIdUsuario() {
-        return this.idUsuario;
+    public String getIdusuario() {
+        return this.idusuario;
     }
     
-    public void setIdUsuario(String idUsuario) {
-        this.idUsuario = idUsuario;
+    public void setIdusuario(String idusuario) {
+        this.idusuario = idusuario;
     }
     public Perfil getPerfil() {
         return this.perfil;
@@ -102,6 +103,13 @@ public class Usuario  implements java.io.Serializable {
     
     public void setRespuesta(String respuesta) {
         this.respuesta = respuesta;
+    }
+    public Integer getEstado() {
+        return this.estado;
+    }
+    
+    public void setEstado(Integer estado) {
+        this.estado = estado;
     }
 
 
