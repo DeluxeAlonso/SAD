@@ -5,7 +5,9 @@
  */
 package client.general;
 
+import client.transportunit.*;
 import client.users.UserForm;
+import client.warehouse.WarehouseForm;
 import java.beans.PropertyVetoException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +20,8 @@ import javax.swing.JFrame;
 public class MainForm extends javax.swing.JFrame {
 
     private UserForm userForm = null;
-
+    private TUForm TUForm = null;
+    private WarehouseForm warehouseForm = null;
     /**
      * Creates new form MainForm
      */
@@ -46,8 +49,8 @@ public class MainForm extends javax.swing.JFrame {
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem11 = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
-        jMenuItem5 = new javax.swing.JMenuItem();
-        jMenuItem6 = new javax.swing.JMenuItem();
+        WarehouseMenu = new javax.swing.JMenuItem();
+        TUFrame = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem12 = new javax.swing.JMenuItem();
         jMenuItem13 = new javax.swing.JMenuItem();
@@ -100,12 +103,30 @@ public class MainForm extends javax.swing.JFrame {
         jMenuBar1.add(jMenu3);
 
         jMenu5.setText("Mantenimientos");
+        jMenu5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu5MouseClicked(evt);
+            }
+        });
 
-        jMenuItem5.setText("Almacén");
-        jMenu5.add(jMenuItem5);
+        WarehouseMenu.setText("Almacén");
+        WarehouseMenu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                WarehouseMenuMousePressed(evt);
+            }
+        });
+        jMenu5.add(WarehouseMenu);
 
-        jMenuItem6.setText("Unidad de Transporte");
-        jMenu5.add(jMenuItem6);
+        TUFrame.setText("Unidad de Transporte");
+        TUFrame.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TUFrameMouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                TUFrameMousePressed(evt);
+            }
+        });
+        jMenu5.add(TUFrame);
 
         jMenuBar1.add(jMenu5);
 
@@ -179,12 +200,59 @@ public class MainForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_UserMenuMouseClicked
 
+    private void jMenu5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu5MouseClicked
+        System.out.println("HOla mundo");
+    }//GEN-LAST:event_jMenu5MouseClicked
+
+    private void TUFrameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TUFrameMouseClicked
+        // TODO add your handling code here:
+        // TODO add your handling code here:
+        System.out.println("HOla mundo 2");
+        
+    }//GEN-LAST:event_TUFrameMouseClicked
+
+    private void TUFrameMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TUFrameMousePressed
+        // TODO add your handling code here:
+        System.out.println("HOla mundo 3");
+        if (TUForm==null || !TUForm.isShowing() ) {
+            TUForm = new TUForm();
+            TUForm.setVisible(true);
+            mainPanel.add(TUForm);
+            try {
+                // TODO add your handling code here:
+                TUForm.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_TUFrameMousePressed
+
+    private void WarehouseMenuMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WarehouseMenuMousePressed
+        // TODO add your handling code here:
+        if (warehouseForm==null || !warehouseForm.isShowing() ) {
+            warehouseForm = new WarehouseForm();
+            warehouseForm.setVisible(true);
+            mainPanel.add(warehouseForm);
+            try {
+                // TODO add your handling code here:
+                warehouseForm.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        
+        
+    }//GEN-LAST:event_WarehouseMenuMousePressed
+
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem TUFrame;
     private javax.swing.JMenu UserMenu;
+    private javax.swing.JMenuItem WarehouseMenu;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -202,8 +270,6 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JDesktopPane mainPanel;
