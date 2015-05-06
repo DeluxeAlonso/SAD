@@ -7,6 +7,8 @@ package client.product;
 
 import java.io.File;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -113,7 +115,8 @@ public class ProductView extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnFileChooserActionPerformed
 
     private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
-        // TODO add your handling code here:
+        NewProductView newProductView = new NewProductView((JFrame)SwingUtilities.getWindowAncestor(this),true);
+        newProductView.setVisible(true);
     }//GEN-LAST:event_btnNewProductActionPerformed
 
 

@@ -342,7 +342,7 @@ public class UserView extends javax.swing.JInternalFrame{
     private void newBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newBtnActionPerformed
         // TODO add your handling code here:
               
-        NewView newUser=new NewView((JFrame)SwingUtilities.getWindowAncestor(this),true);
+        NewUserView newUser=new NewUserView((JFrame)SwingUtilities.getWindowAncestor(this),true);
         newUser.setVisible(true);
     }//GEN-LAST:event_newBtnActionPerformed
 
