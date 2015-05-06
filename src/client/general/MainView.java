@@ -5,10 +5,11 @@
  */
 package client.general;
 
+import client.product.ProductView;
 import client.transportunit.*;
-import client.users.EditUser;
-import client.users.UserForm;
-import client.warehouse.WarehouseForm;
+import client.users.EditUserView;
+import client.users.UserView;
+import client.warehouse.WarehouseView;
 import java.beans.PropertyVetoException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,15 +19,16 @@ import javax.swing.JFrame;
  *
  * @author Nevermade
  */
-public class MainForm extends javax.swing.JFrame {
+public class MainView extends javax.swing.JFrame {
 
-    private UserForm userForm = null;
-    private TUForm TUForm = null;
-    private WarehouseForm warehouseForm = null;
+    private UserView userView = null;
+    private TransportUnitView transportUnitView = null;
+    private WarehouseView warehouseView = null;
+    private ProductView productView = null;
     /**
      * Creates new form MainForm
      */
-    public MainForm() {
+    public MainView() {
         initComponents();
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
     }
@@ -169,6 +171,11 @@ public class MainForm extends javax.swing.JFrame {
         jMenu6.add(jMenuItem8);
 
         jMenuItem10.setText("Productos");
+        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem10ActionPerformed(evt);
+            }
+        });
         jMenu6.add(jMenuItem10);
 
         jMenuBar1.add(jMenu6);
@@ -202,57 +209,54 @@ public class MainForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void UserMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UserMenuMouseClicked
-        if (userForm==null || !userForm.isShowing() ) {
-            userForm = new UserForm();
-            userForm.setVisible(true);
-            mainPanel.add(userForm);
+        if (userView==null || !userView.isShowing() ) {
+            userView = new UserView();
+            userView.setVisible(true);
+            mainPanel.add(userView);
             try {
                 // TODO add your handling code here:
-                userForm.setSelected(true);
+                userView.setSelected(true);
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_UserMenuMouseClicked
 
     private void jMenu5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu5MouseClicked
-        System.out.println("HOla mundo");
     }//GEN-LAST:event_jMenu5MouseClicked
 
     private void TUFrameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TUFrameMouseClicked
         // TODO add your handling code here:
         // TODO add your handling code here:
-        System.out.println("HOla mundo 2");
         
     }//GEN-LAST:event_TUFrameMouseClicked
 
     private void TUFrameMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TUFrameMousePressed
         // TODO add your handling code here:
-        System.out.println("HOla mundo 3");
-        if (TUForm==null || !TUForm.isShowing() ) {
-            TUForm = new TUForm();
-            TUForm.setVisible(true);
-            mainPanel.add(TUForm);
+        if (transportUnitView==null || !transportUnitView.isShowing() ) {
+            transportUnitView = new TransportUnitView();
+            transportUnitView.setVisible(true);
+            mainPanel.add(transportUnitView);
             try {
                 // TODO add your handling code here:
-                TUForm.setSelected(true);
+                transportUnitView.setSelected(true);
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_TUFrameMousePressed
 
     private void WarehouseMenuMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WarehouseMenuMousePressed
         // TODO add your handling code here:
-        if (warehouseForm==null || !warehouseForm.isShowing() ) {
-            warehouseForm = new WarehouseForm();
-            warehouseForm.setVisible(true);
-            mainPanel.add(warehouseForm);
+        if (warehouseView==null || !warehouseView.isShowing() ) {
+            warehouseView = new WarehouseView();
+            warehouseView.setVisible(true);
+            mainPanel.add(warehouseView);
             try {
                 // TODO add your handling code here:
-                warehouseForm.setSelected(true);
+                warehouseView.setSelected(true);
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         
@@ -262,8 +266,22 @@ public class MainForm extends javax.swing.JFrame {
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
         // TODO add your handling code here:
-        new EditUser(this, true).setVisible(true);        
+        new EditUserView(this, true).setVisible(true);        
     }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+        if (productView==null || !productView.isShowing() ) {
+            productView = new ProductView();
+            productView.setVisible(true);
+            mainPanel.add(productView);
+            try {
+                // TODO add your handling code here:
+                productView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
 
     /**
      * @param args the command line arguments

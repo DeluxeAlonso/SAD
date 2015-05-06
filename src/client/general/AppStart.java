@@ -2,8 +2,10 @@ package client.general;
 
 
 import application.users.UserApplication;
+import entity.Condicion;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import util.EntityType;
 import util.InstanceFactory;
 
 /*
@@ -28,7 +30,15 @@ public class AppStart {
         } catch (Exception ex) {
             Logger.getLogger(AppStart.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        loadEntityType();
+    }
+    
+    private void loadEntityType(){
+        //al final se tiene que cargar el arreglo desde la base de datos
+        Condicion c1 = new Condicion(); c1.setId(1); c1.setNombre("Normal");
+        Condicion c2 = new Condicion(); c2.setId(2); c2.setNombre("Refrigerado");
+        EntityType.CONDITIONS.add(c1); 
+        EntityType.CONDITIONS.add(c2); 
     }
 
 }

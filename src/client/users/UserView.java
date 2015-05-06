@@ -20,13 +20,13 @@ import util.Strings;
  *
  * @author dabarca
  */
-public class UserForm extends javax.swing.JInternalFrame{
+public class UserView extends javax.swing.JInternalFrame{
     UserApplication userApplication=InstanceFactory.Instance.getInstance("userApplicaiton",UserApplication.class);
     
     /**
      * Creates new form UserForm
      */
-    public UserForm() {
+    public UserView() {
         initComponents();  
         //Initialize profileComboBox
         profileCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getProfiles()));
@@ -342,7 +342,7 @@ public class UserForm extends javax.swing.JInternalFrame{
     private void newBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newBtnActionPerformed
         // TODO add your handling code here:
               
-        NewUser newUser=new NewUser((JFrame)SwingUtilities.getWindowAncestor(this),true);
+        NewView newUser=new NewView((JFrame)SwingUtilities.getWindowAncestor(this),true);
         newUser.setVisible(true);
     }//GEN-LAST:event_newBtnActionPerformed
 

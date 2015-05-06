@@ -16,12 +16,12 @@ import util.Tools;
  *
  * @author Nevermade
  */
-public class NewUser extends javax.swing.JDialog {
+public class NewView extends javax.swing.JDialog {
     UserApplication userApplication=InstanceFactory.Instance.getInstance("userApplication", UserApplication.class);
     /**
      * Creates new form NewUser
      */
-    public NewUser(java.awt.Frame parent, boolean modal) {
+    public NewView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();       
         //initialize user states combo

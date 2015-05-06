@@ -12,12 +12,12 @@ import javax.swing.SwingUtilities;
  *
  * @author Nevermade
  */
-public class EditUser extends javax.swing.JDialog {
+public class EditUserView extends javax.swing.JDialog {
 
     /**
      * Creates new form EditUser
      */
-    public EditUser(java.awt.Frame parent, boolean modal) {
+    public EditUserView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
     }
@@ -178,7 +178,7 @@ public class EditUser extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        new ChangePasswordForm((JFrame)SwingUtilities.getWindowAncestor(this), true).setVisible(true);
+        new ChangePasswordView((JFrame)SwingUtilities.getWindowAncestor(this), true).setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
  

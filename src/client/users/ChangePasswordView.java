@@ -12,12 +12,12 @@ import util.Strings;
  *
  * @author Nevermade
  */
-public class ChangePasswordForm extends javax.swing.JDialog {
+public class ChangePasswordView extends javax.swing.JDialog {
 
     /**
      * Creates new form ChangePasswordForm
      */
-    public ChangePasswordForm(java.awt.Frame parent, boolean modal) {
+    public ChangePasswordView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
     }

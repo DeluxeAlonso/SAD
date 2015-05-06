@@ -12,12 +12,12 @@ import util.Strings;
  *
  * @author Nevermade
  */
-public class ForgotPasswordForm extends javax.swing.JFrame {
+public class ForgotPasswordView extends javax.swing.JFrame {
 
     /**
      * Creates new form ForgotPasswordForm
      */
-    public ForgotPasswordForm() {
+    public ForgotPasswordView() {
         initComponents();
     }
 
@@ -126,7 +126,7 @@ public class ForgotPasswordForm extends javax.swing.JFrame {
 
     private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked
         // TODO add your handling code here:
-        new LoginForm().setVisible(true);
+        new LoginView().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jLabel4MouseClicked
 
