@@ -21,7 +21,21 @@ public class Strings {
     (si falta algún caso documentenlo aquí)
     */
     
+    
+    /*GENERAL MESSAGES*/
+    
+    /*END*/
+    
+    /*PROFILE MESSAGES*/
+    
+    
+    /*END*/
+    
+    
+    /*USER MODULE MESSAGES*/
     public static final String MESSAGE_RECOVER_PASSWORD="Se ha enviado su nueva contraseña a su dirección de correo.";
     public static final String MESSAGE_RESTABLISH_PASSWORD="Se ha enviado la nueva contraseña al correo del usuario.";
     public static final String MESSAGE_CHANGE_PASSWORD="Se ha modificado su contraseña satisfactoriamente.";
+    public static final String MESSAGE_NEW_USER_CREATED="El usuario se ha registrado con éxito.";
+    /*END*/
 }

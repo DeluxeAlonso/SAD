@@ -6,13 +6,16 @@
 package client.users;
 
 import application.users.UserApplication;
+import entity.Accion;
 import entity.Usuario;
 import java.util.ArrayList;
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import util.EntityState;
+import util.EntityType;
 import util.InstanceFactory;
 import util.Strings;
 
@@ -20,43 +23,64 @@ import util.Strings;
  *
  * @author dabarca
  */
-public class UserView extends javax.swing.JInternalFrame{
-    UserApplication userApplication=InstanceFactory.Instance.getInstance("userApplicaiton",UserApplication.class);
-    
+public class UserView extends javax.swing.JInternalFrame {
+
+    UserApplication userApplication = InstanceFactory.Instance.getInstance("userApplicaiton", UserApplication.class);
+    public static UserView userView;
+
     /**
      * Creates new form UserForm
      */
     public UserView() {
-        initComponents();  
+        initComponents();
+        ActionOriginList.setModel(new DefaultListModel());
+        ActionDestList.setModel(new DefaultListModel());
         //Initialize profileComboBox
-        profileCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getProfiles()));
-        clearUserGrid();
-        fillTableWithUsers();
+        userView = this;
+        profileCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.PROFILES_NAMES));
+        refreshGrid();
+        fillOriginList();
+
+    }
+
+    public void fillOriginList() {
+
+        DefaultListModel listModel = (DefaultListModel)ActionOriginList.getModel();
+        for (Accion a : EntityType.ACTIONS) {
+            listModel.addElement(a.getNombre());            
+        }        
+        ActionOriginList.setModel(listModel);
         
     }
-    
-    public void clearUserGrid(){
-        DefaultTableModel model=(DefaultTableModel)usersGrid.getModel();
+
+    public void clearUserGrid() {
+        DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();
         model.setRowCount(0);
     }
-    
-    public void fillTableWithUsers(){
-        DefaultTableModel model=(DefaultTableModel)usersGrid.getModel();
-        ArrayList<Usuario> users=userApplication.getAllUsers();
-        for(Usuario user : users){
-            
-        String profileName=user.getPerfil()!=null?user.getPerfil().getNombrePerfil():""; 
-        String state=user.getEstado()!=null?EntityState.getUsersState()[user.getEstado()]:"";
+
+    public void fillTableWithUsers() {
+        DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();
+        ArrayList<Usuario> users = userApplication.getAllUsers();
+        for (Usuario user : users) {
+
+            String profileName = user.getPerfil() != null ? user.getPerfil().getNombrePerfil() : "";
+            String state = user.getEstado() != null ? EntityState.getUsersState()[user.getEstado()] : "";
             model.addRow(new Object[]{
                 user.getIdusuario(),
-                user.getNombre()+" "+user.getApellidoPaterno()+" "+user.getApellidoMaterno(),
+                user.getNombre() + " " + user.getApellidoPaterno() + " " + user.getApellidoMaterno(),
                 user.getCorreo(),
                 state,
                 profileName
             });
         }
-        
+
     }
+
+    public void refreshGrid() {
+        clearUserGrid();
+        fillTableWithUsers();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -76,18 +100,17 @@ public class UserView extends javax.swing.JInternalFrame{
         jSeparator1 = new javax.swing.JSeparator();
         newBtn = new javax.swing.JButton();
         editBtn = new javax.swing.JButton();
-        deleteBtn = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         profileCombo = new javax.swing.JComboBox();
         jButton7 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jSeparator2 = new javax.swing.JSeparator();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
+        ActionOriginList = new javax.swing.JList();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList();
+        ActionDestList = new javax.swing.JList();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
@@ -144,8 +167,6 @@ public class UserView extends javax.swing.JInternalFrame{
             }
         });
 
-        deleteBtn.setText("Eliminar");
-
         jLabel2.setText("Perfil:");
 
         profileCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -186,8 +207,6 @@ public class UserView extends javax.swing.JInternalFrame{
                                 .addComponent(newBtn)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(editBtn)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(deleteBtn)
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton7)))))
                 .addContainerGap())
@@ -208,32 +227,31 @@ public class UserView extends javax.swing.JInternalFrame{
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(newBtn)
                     .addComponent(editBtn)
-                    .addComponent(deleteBtn)
                     .addComponent(jButton7))
                 .addGap(42, 42, 42)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(74, Short.MAX_VALUE))
+                .addContainerGap(82, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Usuarios", jPanel1);
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
+        ActionOriginList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane2.setViewportView(jList1);
+        jScrollPane2.setViewportView(ActionOriginList);
 
         jButton1.setText(">>");
 
         jButton2.setText("<<");
 
-        jList2.setModel(new javax.swing.AbstractListModel() {
+        ActionDestList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane3.setViewportView(jList2);
+        jScrollPane3.setViewportView(ActionDestList);
 
         jButton3.setText("Modificar");
 
@@ -341,35 +359,36 @@ public class UserView extends javax.swing.JInternalFrame{
 
     private void newBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newBtnActionPerformed
         // TODO add your handling code here:
-              
-        NewUserView newUser=new NewUserView((JFrame)SwingUtilities.getWindowAncestor(this),true);
-        newUser.setVisible(true);
+
+        NewUserView newUserView = new NewUserView((JFrame) SwingUtilities.getWindowAncestor(this), true);
+        newUserView.setVisible(true);
     }//GEN-LAST:event_newBtnActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
-        String s = (String)JOptionPane.showInputDialog(
-                    this,
-                    "Ingrese el nombre de perfil:\n",                    
-                    "Nuevo Perfil",
-                    JOptionPane.PLAIN_MESSAGE
-                    );
+        String s = (String) JOptionPane.showInputDialog(
+                this,
+                "Ingrese el nombre de perfil:\n",
+                "Nuevo Perfil",
+                JOptionPane.PLAIN_MESSAGE
+        );
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(this,Strings.MESSAGE_RESTABLISH_PASSWORD);
+        JOptionPane.showMessageDialog(this, Strings.MESSAGE_RESTABLISH_PASSWORD);
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
         // TODO add your handling code here:
-       EditUserAdmin editUserAdmin=new EditUserAdmin((JFrame)SwingUtilities.getWindowAncestor(this),true);
-       editUserAdmin.setVisible(true); 
+        EditUserAdmin editUserAdmin = new EditUserAdmin((JFrame) SwingUtilities.getWindowAncestor(this), true);
+        editUserAdmin.setVisible(true);
     }//GEN-LAST:event_editBtnActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton deleteBtn;
+    private javax.swing.JList ActionDestList;
+    private javax.swing.JList ActionOriginList;
     private javax.swing.JButton editBtn;
     private javax.swing.JTextField emailTxt;
     private javax.swing.JButton jButton1;
@@ -383,8 +402,6 @@ public class UserView extends javax.swing.JInternalFrame{
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JList jList1;
-    private javax.swing.JList jList2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;

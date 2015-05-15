@@ -25,6 +25,8 @@ public class MainView extends javax.swing.JFrame {
     private TransportUnitView transportUnitView = null;
     private WarehouseView warehouseView = null;
     private ProductView productView = null;
+    private EditUserView editUserView = null;
+
     /**
      * Creates new form MainForm
      */
@@ -209,7 +211,7 @@ public class MainView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void UserMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UserMenuMouseClicked
-        if (userView==null || !userView.isShowing() ) {
+        if (userView == null || !userView.isShowing()) {
             userView = new UserView();
             userView.setVisible(true);
             mainPanel.add(userView);
@@ -228,12 +230,12 @@ public class MainView extends javax.swing.JFrame {
     private void TUFrameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TUFrameMouseClicked
         // TODO add your handling code here:
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_TUFrameMouseClicked
 
     private void TUFrameMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TUFrameMousePressed
         // TODO add your handling code here:
-        if (transportUnitView==null || !transportUnitView.isShowing() ) {
+        if (transportUnitView == null || !transportUnitView.isShowing()) {
             transportUnitView = new TransportUnitView();
             transportUnitView.setVisible(true);
             mainPanel.add(transportUnitView);
@@ -248,7 +250,7 @@ public class MainView extends javax.swing.JFrame {
 
     private void WarehouseMenuMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WarehouseMenuMousePressed
         // TODO add your handling code here:
-        if (warehouseView==null || !warehouseView.isShowing() ) {
+        if (warehouseView == null || !warehouseView.isShowing()) {
             warehouseView = new WarehouseView();
             warehouseView.setVisible(true);
             mainPanel.add(warehouseView);
@@ -259,18 +261,27 @@ public class MainView extends javax.swing.JFrame {
                 Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
-        
-        
+
+
     }//GEN-LAST:event_WarehouseMenuMousePressed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
         // TODO add your handling code here:
-        new EditUserView(this, true).setVisible(true);        
+        if (editUserView == null || !editUserView.isShowing()) {
+            editUserView = new EditUserView();
+            editUserView.setVisible(true);
+            mainPanel.add(editUserView);
+            try {
+                // TODO add your handling code here:
+                editUserView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
-        if (productView==null || !productView.isShowing() ) {
+        if (productView == null || !productView.isShowing()) {
             productView = new ProductView();
             productView.setVisible(true);
             mainPanel.add(productView);

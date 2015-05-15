@@ -12,13 +12,12 @@ import javax.swing.SwingUtilities;
  *
  * @author Nevermade
  */
-public class EditUserView extends javax.swing.JDialog {
+public class EditUserView extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form EditUser
      */
-    public EditUserView(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    public EditUserView() {
         initComponents();
     }
 
@@ -46,6 +45,7 @@ public class EditUserView extends javax.swing.JDialog {
         jComboBox1 = new javax.swing.JComboBox();
         jLabel6 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
+        jTextField2 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Actualizar Información");
@@ -85,6 +85,8 @@ public class EditUserView extends javax.swing.JDialog {
 
         jLabel6.setText("Respuesta:");
 
+        jTextField2.setText("jTextField2");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -119,6 +121,10 @@ public class EditUserView extends javax.swing.JDialog {
                         .addGap(111, 111, 111)
                         .addComponent(jButton1)))
                 .addContainerGap(54, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(62, 62, 62))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -147,7 +153,9 @@ public class EditUserView extends javax.swing.JDialog {
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(7, 7, 7)
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -196,6 +204,7 @@ public class EditUserView extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField nameTxt;
     private javax.swing.JButton saveTxt;
     private javax.swing.JTextField secondNameTxt;

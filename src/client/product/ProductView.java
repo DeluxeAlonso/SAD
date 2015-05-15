@@ -39,6 +39,8 @@ public class ProductView extends javax.swing.JInternalFrame {
         jTable1 = new javax.swing.JTable();
         btnNewProduct = new javax.swing.JButton();
 
+        setClosable(true);
+
         lblFileChooser.setText("Ingresar productos desde un archivo");
 
         btnFileChooser.setText("Seleccionar archivo");

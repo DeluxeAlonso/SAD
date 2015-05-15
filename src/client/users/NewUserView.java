@@ -8,8 +8,11 @@ package client.users;
 import application.users.UserApplication;
 import entity.Usuario;
 import java.util.UUID;
+import javax.swing.JOptionPane;
 import util.EntityState;
+import util.EntityType;
 import util.InstanceFactory;
+import util.Strings;
 import util.Tools;
 
 /**
@@ -26,8 +29,16 @@ public class NewUserView extends javax.swing.JDialog {
         initComponents();       
         //initialize user states combo
         stateCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getUsersState()));
-        profileCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getProfiles()));
-    }    
+        profileCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.PROFILES_NAMES));
+    }  
+    public void clearFields(){
+        nameTxt.setText("");
+        firstNameTxt.setText("");
+        secondNameTxt.setText("");
+        emailTxt.setText("");      
+        stateCombo.setSelectedIndex(0);
+        passwordTxt.setText(""); 
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -178,6 +189,7 @@ public class NewUserView extends javax.swing.JDialog {
 
     private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
         // TODO add your handling code here:
+        UserView.userView.refreshGrid();
         this.dispose();
     }//GEN-LAST:event_cancelBtnActionPerformed
 
@@ -187,12 +199,15 @@ public class NewUserView extends javax.swing.JDialog {
         user.setIdusuario(UUID.randomUUID().toString().replace("-", ""));
         user.setNombre(nameTxt.getText());
         user.setApellidoPaterno(firstNameTxt.getText());
-        user.setApellidoMaterno(firstNameTxt.getText());
+        user.setApellidoMaterno(secondNameTxt.getText());
         user.setCorreo(emailTxt.getText());      
         user.setEstado(stateCombo.getSelectedIndex());
+        user.setPassword(passwordTxt.getText());        
         userApplication.createUser(user);
+        JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_USER_CREATED);
+        clearFields();
     }//GEN-LAST:event_saveTxtActionPerformed
-
+    
     private void autoGeneratePassBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoGeneratePassBtnActionPerformed
         // TODO add your handling code here:
         passwordTxt.setText(Tools.generatePassword(10));
