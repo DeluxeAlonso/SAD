@@ -29,6 +29,7 @@ public class AppStart {
     public void start() {
         try {
             InstanceFactory.Instance.register("userApplication", UserApplication.class);
+            InstanceFactory.Instance.register("warehouseApplication", UserApplication.class);
         } catch (Exception ex) {
             Logger.getLogger(AppStart.class.getName()).log(Level.SEVERE, null, ex);
         }

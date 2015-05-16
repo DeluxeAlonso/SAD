@@ -9,6 +9,7 @@ import client.product.ProductView;
 import client.transportunit.*;
 import client.users.EditUserView;
 import client.users.UserView;
+import client.warehouse.PalletMovementsView;
 import client.warehouse.WarehouseView;
 import java.beans.PropertyVetoException;
 import java.util.logging.Level;
@@ -26,6 +27,7 @@ public class MainView extends javax.swing.JFrame {
     private WarehouseView warehouseView = null;
     private ProductView productView = null;
     private EditUserView editUserView = null;
+    private PalletMovementsView palletMovementsView = null;
 
     /**
      * Creates new form MainForm
@@ -49,6 +51,7 @@ public class MainView extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem6 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
@@ -93,6 +96,14 @@ public class MainView extends javax.swing.JFrame {
 
         jMenuItem3.setText("Pedido");
         jMenu2.add(jMenuItem3);
+
+        jMenuItem6.setText("Movimientos Pallets");
+        jMenuItem6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMenuItem6MousePressed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem6);
 
         jMenuBar1.add(jMenu2);
 
@@ -294,6 +305,21 @@ public class MainView extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem10ActionPerformed
 
+    private void jMenuItem6MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem6MousePressed
+                // TODO add your handling code here:
+        if (palletMovementsView == null || !palletMovementsView.isShowing()) {
+            palletMovementsView = new PalletMovementsView();
+            palletMovementsView.setVisible(true);
+            mainPanel.add(palletMovementsView);
+            try {
+                // TODO add your handling code here:
+                palletMovementsView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem6MousePressed
+
     /**
      * @param args the command line arguments
      */
@@ -321,6 +347,7 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JDesktopPane mainPanel;
