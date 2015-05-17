@@ -9,6 +9,10 @@ package infraestructure.warehouse;
 import base.warehouse.IWarehouseRepository;
 import entity.Almacen;
 import java.util.ArrayList;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import util.HibernateUtil;
 /**
  *
  * @author KEVIN BROWN
@@ -27,7 +31,51 @@ public class WarehouseRepository implements IWarehouseRepository{
 
     @Override
     public ArrayList<Almacen> queryAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String hql="from Almacen";
+        ArrayList<Almacen> warehouses=null;
+        
+        Transaction trns = null;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);              
+            warehouses = (ArrayList<Almacen>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.flush();
+            session.close();
+        }
+        return warehouses; //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public ArrayList<Almacen> queryWarehousesByType(int type) {
+        String hql="from Almacen where id_tipo_almacen=:type";
+        ArrayList<Almacen> warehouses=null;
+        
+        Transaction trns = null;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("type", type);
+            warehouses = (ArrayList<Almacen>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.flush();
+            session.close();
+        }
+        return warehouses; //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

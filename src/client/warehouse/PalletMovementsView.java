@@ -1,5 +1,15 @@
 package client.warehouse;
 
+import application.rack.RackApplication;
+import application.spot.SpotApplication;
+import application.warehouse.WarehouseApplication;
+import entity.Almacen;
+import entity.Rack;
+import entity.Ubicacion;
+import java.awt.event.ItemEvent;
+import java.util.ArrayList;
+import util.InstanceFactory;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -11,12 +21,83 @@ package client.warehouse;
  * @author KEVIN BROWN
  */
 public class PalletMovementsView extends javax.swing.JInternalFrame {
-
+    WarehouseApplication warehouseApplication = InstanceFactory.Instance.getInstance("warehouseApplicaiton", WarehouseApplication.class);
+    RackApplication rackApplication = InstanceFactory.Instance.getInstance("rackApplicaiton", RackApplication.class);
+    SpotApplication spotApplication = InstanceFactory.Instance.getInstance("spotApplicaiton", SpotApplication.class);
+    public static PalletMovementsView palletMovementsView;
+    public ArrayList<Almacen> warehousesFrom;
+    public ArrayList<Almacen> warehousesTo;
+    public ArrayList<Rack> racksFrom;
+    public ArrayList<Rack> racksTo;
+    public ArrayList<Ubicacion> spotsFrom;
+    public int warehouseSelected;
     /**
      * Creates new form PalletMovementsView
      */
     public PalletMovementsView() {
         initComponents();
+        //Initialize comboWarehouseFrom
+        palletMovementsView = this;
+        warehousesFrom = warehouseApplication.queryAll();
+        String[] warehousesName = new String[warehousesFrom.size()];
+        for(int i=0; i<warehousesFrom.size(); i++){
+            warehousesName[i] = warehousesFrom.get(i).getDescripcion();
+        }
+        comboWarehouseFrom.setModel(new javax.swing.DefaultComboBoxModel(warehousesName));
+        fillWarehousesTo(warehousesFrom.get(0).getCondicion().getId());
+        fillRacksFrom(warehousesFrom.get(0).getId());
+        fillRacksTo(warehousesTo.get(0).getId());
+        fillTableFrom(racksFrom.get(0).getId());
+    }
+    
+    public void clearComponents(){
+        comboWarehouseTo.removeAllItems();
+        comboRackTo.removeAllItems();
+        comboRackFrom.removeAllItems();
+    }
+    
+    public void fillWarehousesTo(int type){
+        comboWarehouseTo.removeAllItems();
+        warehousesTo = warehouseApplication.queryWarehousesByType(type);
+        if(warehousesTo.size()>0){
+            String[] warehousesName = new String[warehousesTo.size()];
+            for(int i=0; i<warehousesTo.size(); i++){
+                warehousesName[i] = warehousesTo.get(i).getDescripcion();
+            }
+            comboWarehouseTo.setModel(new javax.swing.DefaultComboBoxModel(warehousesName));
+        }
+    }
+    
+    public void fillRacksFrom(int warehouseId){
+        comboRackFrom.removeAllItems();
+        racksFrom = rackApplication.queryWarehousesByType(warehouseId);
+        if(racksFrom.size()>0){
+            String[] rackIdentifier = new String[racksFrom.size()];
+            for(int i=0; i<racksFrom.size(); i++){
+                rackIdentifier[i] = racksFrom.get(i).getId().toString();
+            }
+            comboRackFrom.setModel(new javax.swing.DefaultComboBoxModel(rackIdentifier));
+        }
+    }
+    
+    public void fillRacksTo(int warehouseId){
+        comboRackTo.removeAllItems();
+        racksTo = rackApplication.queryWarehousesByType(warehouseId);
+        if(racksTo.size()>0){
+            String[] rackIdentifier = new String[racksTo.size()];
+            for(int i=0; i<racksTo.size(); i++){
+                rackIdentifier[i] = racksTo.get(i).getId().toString();
+            }
+            comboRackTo.setModel(new javax.swing.DefaultComboBoxModel(rackIdentifier));
+        }
+    }
+    
+    public void fillTableFrom(int rackId){
+        /*
+        spotsFrom = spotApplication.querySpotsByRack(rackId);
+        System.out.println("Spots:");
+        System.out.println(spotsFrom.size());
+        */
     }
 
     /**
@@ -28,23 +109,121 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        comboWarehouseFrom = new javax.swing.JComboBox();
+        comboRackFrom = new javax.swing.JComboBox();
+        comboWarehouseTo = new javax.swing.JComboBox();
+        comboRackTo = new javax.swing.JComboBox();
+        jScrollPaneFrom = new javax.swing.JScrollPane();
+        tblPalletFrom = new javax.swing.JTable();
+        jScrollPaneTo = new javax.swing.JScrollPane();
+        tblPalletTo = new javax.swing.JTable();
+
         setClosable(true);
+        setTitle("Movimiento de Pallets");
+
+        comboWarehouseFrom.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboWarehouseFrom.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                comboWarehouseFromItemStateChanged(evt);
+            }
+        });
+
+        comboRackFrom.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        comboWarehouseTo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboWarehouseTo.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                comboWarehouseToItemStateChanged(evt);
+            }
+        });
+
+        comboRackTo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        tblPalletFrom.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPaneFrom.setViewportView(tblPalletFrom);
+
+        tblPalletTo.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPaneTo.setViewportView(tblPalletTo);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 394, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(comboWarehouseFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comboRackFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPaneFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(comboWarehouseTo, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(comboRackTo, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(179, 179, 179))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(jScrollPaneTo, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(42, 42, 42)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(comboWarehouseFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comboWarehouseTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(comboRackFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comboRackTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(44, 44, 44)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPaneFrom, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+                    .addComponent(jScrollPaneTo, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addContainerGap(102, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void comboWarehouseFromItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboWarehouseFromItemStateChanged
+        if(evt.getStateChange() == ItemEvent.SELECTED){
+            clearComponents();
+            fillWarehousesTo(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getCondicion().getId());
+            fillRacksFrom(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId());
+        }
+    }//GEN-LAST:event_comboWarehouseFromItemStateChanged
+
+    private void comboWarehouseToItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboWarehouseToItemStateChanged
+        if(evt.getStateChange() == ItemEvent.SELECTED){
+            fillRacksTo(warehousesTo.get(comboWarehouseTo.getSelectedIndex()).getId());
+        }
+    }//GEN-LAST:event_comboWarehouseToItemStateChanged
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox comboRackFrom;
+    private javax.swing.JComboBox comboRackTo;
+    private javax.swing.JComboBox comboWarehouseFrom;
+    private javax.swing.JComboBox comboWarehouseTo;
+    private javax.swing.JScrollPane jScrollPaneFrom;
+    private javax.swing.JScrollPane jScrollPaneTo;
+    private javax.swing.JTable tblPalletFrom;
+    private javax.swing.JTable tblPalletTo;
     // End of variables declaration//GEN-END:variables
 }

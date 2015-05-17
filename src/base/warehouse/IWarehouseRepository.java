@@ -8,11 +8,12 @@ package base.warehouse;
 import base.IRepository;
 import entity.Usuario;
 import entity.Almacen;
+import java.util.ArrayList;
 
 /**
  *
  * @author KEVIN BROWN
  */
 public interface IWarehouseRepository extends IRepository<Almacen>{
-   // 
+    ArrayList<Almacen> queryWarehousesByType(int type);
 }
