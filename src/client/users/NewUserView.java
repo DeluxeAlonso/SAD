@@ -139,10 +139,10 @@ public class NewUserView extends javax.swing.JDialog {
                         .addComponent(profileCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
             .addGroup(layout.createSequentialGroup()
-                .addGap(143, 143, 143)
-                .addComponent(cancelBtn)
-                .addGap(18, 18, 18)
+                .addGap(130, 130, 130)
                 .addComponent(saveTxt)
+                .addGap(36, 36, 36)
+                .addComponent(cancelBtn)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(

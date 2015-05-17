@@ -6,6 +6,7 @@
 package client.general;
 
 import client.product.ProductView;
+import client.reports.ProductCaducityReport;
 import client.transportunit.*;
 import client.users.EditUserView;
 import client.users.UserView;
@@ -28,6 +29,7 @@ public class MainView extends javax.swing.JFrame {
     private ProductView productView = null;
     private EditUserView editUserView = null;
     private PalletMovementsView palletMovementsView = null;
+    private ProductCaducityReport productCaducity=null;
 
     /**
      * Creates new form MainForm
@@ -163,6 +165,11 @@ public class MainView extends javax.swing.JFrame {
         jMenu1.add(jMenuItem15);
 
         jMenuItem16.setText("Caducidad de Productos");
+        jMenuItem16.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem16ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem16);
 
         jMenuBar1.add(jMenu1);
@@ -319,6 +326,21 @@ public class MainView extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jMenuItem6MousePressed
+
+    private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed
+        // TODO add your handling code here:
+        if (productCaducity == null || !productCaducity.isShowing()) {
+            productCaducity = new ProductCaducityReport();
+            productCaducity.setVisible(true);
+            mainPanel.add(productCaducity);
+            try {
+                // TODO add your handling code here:
+                productCaducity.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem16ActionPerformed
 
     /**
      * @param args the command line arguments
