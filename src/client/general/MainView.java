@@ -6,10 +6,10 @@
 package client.general;
 
 import client.product.ProductView;
-import client.reports.ProductCaducityReport;
+import client.report.ProductCaducityReport;
 import client.transportunit.*;
-import client.users.EditUserView;
-import client.users.UserView;
+import client.user.EditUserView;
+import client.user.UserView;
 import client.warehouse.PalletMovementsView;
 import client.warehouse.WarehouseView;
 import java.beans.PropertyVetoException;

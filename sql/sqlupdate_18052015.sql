@@ -1,0 +1,1 @@
+alter table saddb.accion drop column idPadre;

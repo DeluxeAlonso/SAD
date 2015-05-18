@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package client.users;
+package client.user;
 
-import application.users.UserApplication;
+import application.user.UserApplication;
 import client.general.AppStart;
 import client.general.MainView;
 import util.InstanceFactory;
