@@ -38,6 +38,7 @@ public class ControlCheckReportView extends javax.swing.JInternalFrame {
         lblTotalTime = new javax.swing.JLabel();
         btnExport = new javax.swing.JButton();
 
+        setClosable(true);
         setTitle("Reporte de Toma de Inventario");
 
         jLabel1.setText("Almacén:");

@@ -43,6 +43,7 @@ public class WarehouseControlCheckView extends javax.swing.JInternalFrame {
         cmbWarehouse = new javax.swing.JComboBox();
         btnStart = new javax.swing.JButton();
 
+        setClosable(true);
         setTitle("Iniciar Toma de Inventario");
 
         jLabel1.setText("Responsable:");

@@ -9,6 +9,7 @@
     <property name="hibernate.connection.password">root</property>
     <property name="hibernate.show_sql">true</property>
     <property name="hibernate.query.factory_class">org.hibernate.hql.internal.classic.ClassicQueryTranslatorFactory</property>
+    <property name="hibernate.current_session_context_class">thread</property>
     <mapping resource="entity/Despacho.hbm.xml"/>
     <mapping resource="entity/Cliente.hbm.xml"/>
     <mapping resource="entity/TipoUnidadTransporte.hbm.xml"/>

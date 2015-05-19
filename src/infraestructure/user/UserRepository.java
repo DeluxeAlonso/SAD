@@ -13,6 +13,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
+import util.Tools;
 
 /**
  *
@@ -22,18 +23,23 @@ public class UserRepository implements IUserRepository {
 
     @Override
     public Usuario getUser(String email) {
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
         Usuario user = null;
         String hql
                 = "from Usuario where correo=:email";
         try {
-            Session session = HibernateUtil.getSessionFactory().openSession();
+            
             session.beginTransaction();
             Query q = session.createQuery(hql);
             q.setParameter("email", email);
             user = (Usuario) q.uniqueResult();
             session.getTransaction().commit();
-        } catch (HibernateException he) {
-            he.printStackTrace();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
         }
         return user;
     }
@@ -41,7 +47,7 @@ public class UserRepository implements IUserRepository {
     @Override
     public void insert(Usuario object) {
         Transaction trns = null;
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
             session.save(object);                      
@@ -51,10 +57,7 @@ public class UserRepository implements IUserRepository {
                 trns.rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.flush();
-            session.close();
-        }
+        } 
     }
 
     @Override
@@ -68,7 +71,7 @@ public class UserRepository implements IUserRepository {
         ArrayList<Usuario> users=null;
         
         Transaction trns = null;
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
             Query q = session.createQuery(hql);              
@@ -79,10 +82,7 @@ public class UserRepository implements IUserRepository {
                 trns.rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.flush();
-            session.close();
-        }
+        } 
         return users;
     }
 
