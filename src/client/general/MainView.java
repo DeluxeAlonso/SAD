@@ -8,6 +8,7 @@ package client.general;
 import client.product.ProductView;
 import client.personal.PersonalView;
 import client.client.ClientView;
+import client.order.OrderView;
 import client.reports.RemissionGuideReport;
 import client.reports.StockReport;
 import client.report.ProductCaducityReport;
@@ -33,6 +34,7 @@ public class MainView extends javax.swing.JFrame {
     private ProductView productView = null;
     private PersonalView personalView = null;
     private ClientView clientView = null;
+    private OrderView orderView = null;
     private EditUserView editUserView = null;
     private PalletMovementsView palletMovementsView = null;
     private ProductCaducityReport productCaducity=null;
@@ -60,7 +62,7 @@ public class MainView extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem17 = new javax.swing.JMenuItem();
         jMenuItem6 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -104,8 +106,13 @@ public class MainView extends javax.swing.JFrame {
         jMenuItem2.setText("Internamiento");
         jMenu2.add(jMenuItem2);
 
-        jMenuItem3.setText("Pedido");
-        jMenu2.add(jMenuItem3);
+        jMenuItem17.setText("Pedidos");
+        jMenuItem17.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem17ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem17);
 
         jMenuItem6.setText("Movimientos Pallets");
         jMenuItem6.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -428,6 +435,21 @@ public class MainView extends javax.swing.JFrame {
         }           // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
+    private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
+        // TODO add your handling code here:
+        if (orderView == null || !orderView.isShowing()) {
+            orderView = new OrderView();
+            orderView.setVisible(true);
+            mainPanel.add(orderView);
+            try {
+                // TODO add your handling code here:
+                orderView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }  
+    }//GEN-LAST:event_jMenuItem17ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -451,8 +473,8 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem14;
     private javax.swing.JMenuItem jMenuItem15;
     private javax.swing.JMenuItem jMenuItem16;
+    private javax.swing.JMenuItem jMenuItem17;
     private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
