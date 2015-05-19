@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package application.users;
+package application.user;
 
-import base.users.IUserRepository;
+import base.user.IUserRepository;
 import entity.Usuario;
 import infraestructure.user.UserRepository;
 import java.io.IOException;

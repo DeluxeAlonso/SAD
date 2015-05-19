@@ -15,26 +15,27 @@ import java.util.ArrayList;
  * @author A20112449
  */
 public class EntityType {
-     public EntityType(){}
-    
-    
+
+    public EntityType() {
+    }
+
     public static ArrayList<Condicion> CONDITIONS = new ArrayList<>();
     public static ArrayList<Perfil> PROFILES = new ArrayList<>();
     public static ArrayList<Accion> ACTIONS = new ArrayList<>();
-    
+
     public static String[] PROFILES_NAMES;
-   
     
+
+    public static void fillProfileNames() {
+        PROFILES_NAMES = new String[PROFILES.size() + 1];
+        for (int i = 0; i < PROFILES.size()+1; i++) {
+            if (i == 0) {
+                PROFILES_NAMES[i] = "";
+            } else {
+                PROFILES_NAMES[i] = PROFILES.get(i-1).getNombrePerfil();
+            }
+        }
+    } 
     
-    
-    public static void fillProfileNames(){
-        PROFILES_NAMES= new String[PROFILES.size()];
-        for(int i=0;i<PROFILES.size();i++){
-            PROFILES_NAMES[i]=PROFILES.get(i).getNombrePerfil();
-        }        
-    }
-    
-    
-    
-   
+
 }

@@ -5,7 +5,7 @@
  */
 package infraestructure.user;
 
-import base.users.IUserRepository;
+import base.user.IUserRepository;
 import entity.Usuario;
 import java.util.ArrayList;
 import org.hibernate.HibernateException;
