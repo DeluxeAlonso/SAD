@@ -2,6 +2,7 @@ package client.general;
 
 
 import application.action.ActionApplication;
+import application.internment.InternmentApplication;
 import application.profile.ProfileApplication;
 import application.user.UserApplication;
 import entity.Condicion;
@@ -32,6 +33,7 @@ public class AppStart {
             InstanceFactory.Instance.register("warehouseApplication", UserApplication.class);
             InstanceFactory.Instance.register("profileApplication", ProfileApplication.class);
             InstanceFactory.Instance.register("accionApplication", ActionApplication.class);
+            InstanceFactory.Instance.register("internmentApplication", InternmentApplication.class);
         } catch (Exception ex) {
             Logger.getLogger(AppStart.class.getName()).log(Level.SEVERE, null, ex);
         }
