@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
+import org.hibernate.Hibernate;
 import util.EntityState;
 import util.EntityType;
 import util.InstanceFactory;
@@ -43,9 +44,12 @@ public class UserView extends javax.swing.JInternalFrame {
         actionDestList.setModel(new DefaultListModel());
         //Initialize profileComboBox
         userView = this;
+        profileApplication.refreshProfiles();
+        actionApplication.refreshActions();
         fillCombos();
         refreshGrid();
         fillOriginList();
+        
 
     }
 
@@ -81,8 +85,7 @@ public class UserView extends javax.swing.JInternalFrame {
     public void fillTableWithUsers() {
         DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();
         ArrayList<Usuario> users = userApplication.getAllUsers();
-        for (Usuario user : users) {
-
+        for (Usuario user : users) {            
             String profileName = user.getPerfil() != null ? user.getPerfil().getNombrePerfil() : "";
             String state = user.getEstado() != null ? EntityState.getUsersState()[user.getEstado()] : "";
             model.addRow(new Object[]{

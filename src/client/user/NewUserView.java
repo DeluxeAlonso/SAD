@@ -5,6 +5,7 @@
  */
 package client.user;
 
+import application.profile.ProfileApplication;
 import application.user.UserApplication;
 import entity.Usuario;
 import java.util.UUID;
@@ -21,6 +22,7 @@ import util.Tools;
  */
 public class NewUserView extends javax.swing.JDialog {
     UserApplication userApplication=InstanceFactory.Instance.getInstance("userApplication", UserApplication.class);
+    ProfileApplication profileApplication=InstanceFactory.Instance.getInstance("profileApplication", ProfileApplication.class);
     /**
      * Creates new form NewUser
      */
@@ -202,7 +204,8 @@ public class NewUserView extends javax.swing.JDialog {
         user.setApellidoMaterno(secondNameTxt.getText());
         user.setCorreo(emailTxt.getText());      
         user.setEstado(stateCombo.getSelectedIndex());
-        user.setPassword(passwordTxt.getText());        
+        user.setPassword(passwordTxt.getText());
+        user.setPerfil(profileApplication.getProfileInstance(profileCombo.getSelectedItem().toString()));
         userApplication.createUser(user);
         JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_USER_CREATED);
         clearFields();

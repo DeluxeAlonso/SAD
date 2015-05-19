@@ -13,6 +13,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
+import util.Tools;
 /**
  *
  * @author KEVIN BROWN
@@ -35,7 +36,7 @@ public class WarehouseRepository implements IWarehouseRepository{
         ArrayList<Almacen> warehouses=null;
         
         Transaction trns = null;
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
             Query q = session.createQuery(hql);              
@@ -46,9 +47,6 @@ public class WarehouseRepository implements IWarehouseRepository{
                 trns.rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.flush();
-            session.close();
         }
         return warehouses; //To change body of generated methods, choose Tools | Templates.
     }
@@ -59,7 +57,7 @@ public class WarehouseRepository implements IWarehouseRepository{
         ArrayList<Almacen> warehouses=null;
         
         Transaction trns = null;
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
             Query q = session.createQuery(hql);
@@ -71,9 +69,6 @@ public class WarehouseRepository implements IWarehouseRepository{
                 trns.rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.flush();
-            session.close();
         }
         return warehouses; //To change body of generated methods, choose Tools | Templates.
     }

@@ -9,6 +9,7 @@ import application.user.UserApplication;
 import client.general.AppStart;
 import client.general.MainView;
 import util.InstanceFactory;
+import util.Tools;
 
 /**
  *
@@ -49,6 +50,11 @@ public class LoginView extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Ingreso");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         userLbl.setText("Usuario:");
 
@@ -129,6 +135,11 @@ public class LoginView extends javax.swing.JFrame {
         new ForgotPasswordView().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jLabel2MouseClicked
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        Tools.closeSession();
+    }//GEN-LAST:event_formWindowClosing
     private void login() {
         if (userTxt.getText().equals("root") || userApplication.login(userTxt.getText(), new String(pwTxt.getPassword()))) {
             new MainView().setVisible(true);

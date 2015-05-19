@@ -12,6 +12,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
+import util.Tools;
 
 /**
  *
@@ -35,7 +36,7 @@ public class ProfileRepository implements IProfileRepository{
         ArrayList<Perfil> profiles=null;
         
         Transaction trns = null;
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
             Query q = session.createQuery(hql);              
@@ -46,17 +47,14 @@ public class ProfileRepository implements IProfileRepository{
                 trns.rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.flush();
-            session.close();
-        }
+        } 
         return profiles;
     }
 
     @Override
     public void update(Perfil object) {
         Transaction trns = null;
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = Tools.getSessionInstance();;
         try {            
             trns=session.beginTransaction();
             session.update(object);
@@ -66,10 +64,7 @@ public class ProfileRepository implements IProfileRepository{
                 trns.rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.flush();
-            session.close();
-        }
+        } 
     }
 
     @Override

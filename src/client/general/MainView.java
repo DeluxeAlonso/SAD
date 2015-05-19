@@ -6,18 +6,23 @@
 package client.general;
 
 import client.product.ProductView;
+import client.personal.PersonalView;
+import client.client.ClientView;
 import client.reports.RemissionGuideReport;
 import client.reports.StockReport;
 import client.report.ProductCaducityReport;
+import client.reports.KardexReport;
 import client.transportunit.*;
 import client.user.EditUserView;
 import client.user.UserView;
 import client.warehouse.PalletMovementsView;
 import client.warehouse.WarehouseView;
+import client.warehouseControlCheck.WarehouseControlCheckView;
 import java.beans.PropertyVetoException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import util.Tools;
 
 /**
  *
@@ -29,11 +34,15 @@ public class MainView extends javax.swing.JFrame {
     private TransportUnitView transportUnitView = null;
     private WarehouseView warehouseView = null;
     private ProductView productView = null;
+    private PersonalView personalView = null;
+    private ClientView clientView = null;
     private EditUserView editUserView = null;
     private PalletMovementsView palletMovementsView = null;
     private ProductCaducityReport productCaducity=null;
     private RemissionGuideReport remissionGuide=null;
     private StockReport stockReport = null;
+    private KardexReport kardexReport = null;
+    private WarehouseControlCheckView warehouseControlCheckView=null;
 
     /**
      * Creates new form MainForm
@@ -81,6 +90,11 @@ public class MainView extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sistema de Almacenes y Despacho");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         mainPanel.setDragMode(javax.swing.JDesktopPane.OUTLINE_DRAG_MODE);
 
@@ -115,7 +129,12 @@ public class MainView extends javax.swing.JFrame {
 
         jMenu3.setText("Operaciones");
 
-        jMenuItem1.setText("Ajuste De Inventario");
+        jMenuItem1.setText("Toma y Ajuste de Inventario");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem1);
 
         jMenuItem4.setText("Despacho");
@@ -157,6 +176,11 @@ public class MainView extends javax.swing.JFrame {
         jMenu1.setText("Reportes");
 
         jMenuItem12.setText("Kardex");
+        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem12ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem12);
 
         jMenuItem13.setText("Stock");
@@ -199,9 +223,19 @@ public class MainView extends javax.swing.JFrame {
         jMenu6.setText("Interfaces");
 
         jMenuItem7.setText("Personal");
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
         jMenu6.add(jMenuItem7);
 
         jMenuItem8.setText("Clientes");
+        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem8ActionPerformed(evt);
+            }
+        });
         jMenu6.add(jMenuItem8);
 
         jMenuItem10.setText("Productos");
@@ -385,6 +419,67 @@ public class MainView extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jMenuItem13ActionPerformed
+
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+        if (personalView == null || !personalView.isShowing()) {
+            personalView = new PersonalView();
+            personalView.setVisible(true);
+            mainPanel.add(personalView);
+            try {
+                // TODO add your handling code here:
+                personalView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
+
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+        if (clientView == null || !clientView.isShowing()) {
+            clientView = new ClientView();
+            clientView.setVisible(true);
+            mainPanel.add(clientView);
+            try {
+                // TODO add your handling code here:
+                clientView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }           // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem8ActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        Tools.closeSession();
+    }//GEN-LAST:event_formWindowClosing
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        if (warehouseControlCheckView == null || !warehouseControlCheckView.isShowing()) {
+            warehouseControlCheckView = new WarehouseControlCheckView(mainPanel);
+            warehouseControlCheckView.setVisible(true);
+            mainPanel.add(warehouseControlCheckView);
+            try {
+                // TODO add your handling code here:
+                warehouseControlCheckView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+        // TODO add your handling code here:
+           if (kardexReport == null || !kardexReport.isShowing()) {
+            kardexReport = new KardexReport();
+            kardexReport.setVisible(true);
+            mainPanel.add(kardexReport);
+            try {
+                // TODO add your handling code here:
+                kardexReport.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem12ActionPerformed
 
     /**
      * @param args the command line arguments
