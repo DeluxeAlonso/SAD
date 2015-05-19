@@ -33,10 +33,10 @@
               </Group>
               <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="profileCombo" alignment="0" min="-2" pref="116" max="-2" attributes="0"/>
-                  <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="nameTxt" alignment="0" min="-2" pref="218" max="-2" attributes="0"/>
+                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
                       <Component id="firstNameTxt" alignment="0" max="32767" attributes="0"/>
-                      <Component id="nameTxt" alignment="0" min="-2" pref="218" max="-2" attributes="0"/>
+                      <Component id="profileCombo" alignment="0" pref="116" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="0" pref="72" max="32767" attributes="0"/>
@@ -45,7 +45,10 @@
               <EmptySpace max="32767" attributes="0"/>
               <Component id="cancelBtn" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="saveTxt" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
+                  <Component id="saveTxt" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace min="-2" pref="77" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -62,8 +65,9 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="firstNameTxt" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="profileCombo" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -73,13 +77,16 @@
                   <Component id="saveTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="cancelBtn" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="35" max="32767" attributes="0"/>
+              <EmptySpace pref="28" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
     <Component class="javax.swing.JTextField" name="firstNameTxt">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="firstNameTxtActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">
       <Properties>
@@ -124,6 +131,11 @@
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
         <Property name="text" type="java.lang.String" value="Descripcion"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel4">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Racks"/>
       </Properties>
     </Component>
   </SubComponents>
