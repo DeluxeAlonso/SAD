@@ -9,6 +9,7 @@ import base.profile.IProfileRepository;
 import entity.Perfil;
 import infraestructure.profile.ProfileRepository;
 import java.util.ArrayList;
+import util.EntityType;
 
 /**
  *
@@ -37,5 +38,20 @@ public class ProfileApplication {
         }catch(Exception e){
             e.printStackTrace();
         }       
+    }
+    
+    public void refreshProfiles() {
+        
+        EntityType.PROFILES = getAllProfiles();
+        EntityType.fillProfileNames();
+        
+    }
+    
+    public Perfil getProfileInstance(String profileName){
+        for(Perfil p:EntityType.PROFILES){
+            if(p.getNombrePerfil().equals(profileName))
+                return p;
+        }
+        return null;
     }
 }

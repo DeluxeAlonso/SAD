@@ -20,6 +20,7 @@ import java.beans.PropertyVetoException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import util.Tools;
 
 /**
  *
@@ -85,6 +86,11 @@ public class MainView extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sistema de Almacenes y Despacho");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         mainPanel.setDragMode(javax.swing.JDesktopPane.OUTLINE_DRAG_MODE);
 
@@ -427,6 +433,11 @@ public class MainView extends javax.swing.JFrame {
             }
         }           // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem8ActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        Tools.closeSession();
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments

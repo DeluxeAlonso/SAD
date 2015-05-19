@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import util.HibernateUtil;
+import util.Tools;
 
 /**
  *
@@ -35,7 +35,7 @@ public class ActionRepository implements IActionRepository{
         ArrayList<Accion> actions=null;
         
         Transaction trns = null;
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
             Query q = session.createQuery(hql);              
@@ -46,9 +46,6 @@ public class ActionRepository implements IActionRepository{
                 trns.rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.flush();
-            session.close();
         }
         return actions;
     }
