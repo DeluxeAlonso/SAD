@@ -6,6 +6,8 @@
 package client.general;
 
 import client.product.ProductView;
+import client.personal.PersonalView;
+import client.client.ClientView;
 import client.reports.RemissionGuideReport;
 import client.reports.StockReport;
 import client.report.ProductCaducityReport;
@@ -29,6 +31,8 @@ public class MainView extends javax.swing.JFrame {
     private TransportUnitView transportUnitView = null;
     private WarehouseView warehouseView = null;
     private ProductView productView = null;
+    private PersonalView personalView = null;
+    private ClientView clientView = null;
     private EditUserView editUserView = null;
     private PalletMovementsView palletMovementsView = null;
     private ProductCaducityReport productCaducity=null;
@@ -199,9 +203,19 @@ public class MainView extends javax.swing.JFrame {
         jMenu6.setText("Interfaces");
 
         jMenuItem7.setText("Personal");
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
         jMenu6.add(jMenuItem7);
 
         jMenuItem8.setText("Clientes");
+        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem8ActionPerformed(evt);
+            }
+        });
         jMenu6.add(jMenuItem8);
 
         jMenuItem10.setText("Productos");
@@ -385,6 +399,34 @@ public class MainView extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jMenuItem13ActionPerformed
+
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+        if (personalView == null || !personalView.isShowing()) {
+            personalView = new PersonalView();
+            personalView.setVisible(true);
+            mainPanel.add(personalView);
+            try {
+                // TODO add your handling code here:
+                personalView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
+
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+        if (clientView == null || !clientView.isShowing()) {
+            clientView = new ClientView();
+            clientView.setVisible(true);
+            mainPanel.add(clientView);
+            try {
+                // TODO add your handling code here:
+                clientView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }           // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     /**
      * @param args the command line arguments
