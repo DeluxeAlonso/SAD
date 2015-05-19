@@ -5,6 +5,8 @@
  */
 package client.general;
 
+import client.internment.InternmentSelectView;
+import client.internment.InternmentView;
 import client.product.ProductView;
 import client.personal.PersonalView;
 import client.client.ClientView;
@@ -40,7 +42,7 @@ public class MainView extends javax.swing.JFrame {
     private RemissionGuideReport remissionGuide=null;
     private StockReport stockReport = null;
     private WarehouseControlCheckView warehouseControlCheckView=null;
-
+    private InternmentSelectView internmentSelectView = null;
     /**
      * Creates new form MainForm
      */
@@ -104,6 +106,11 @@ public class MainView extends javax.swing.JFrame {
         jMenu2.setText("Movimientos");
 
         jMenuItem2.setText("Internamiento");
+        jMenuItem2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMenuItem2MousePressed(evt);
+            }
+        });
         jMenu2.add(jMenuItem2);
 
         jMenuItem3.setText("Pedido");
@@ -448,6 +455,22 @@ public class MainView extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem2MousePressed
+        // TODO add your handling code here:
+                if (internmentSelectView == null || !internmentSelectView.isShowing()) {
+            internmentSelectView = new InternmentSelectView();
+            internmentSelectView.setVisible(true);
+            mainPanel.add(internmentSelectView);
+            try {
+                // TODO add your handling code here:
+                internmentSelectView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+    }//GEN-LAST:event_jMenuItem2MousePressed
 
     /**
      * @param args the command line arguments
