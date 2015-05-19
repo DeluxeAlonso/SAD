@@ -16,6 +16,7 @@ import client.user.EditUserView;
 import client.user.UserView;
 import client.warehouse.PalletMovementsView;
 import client.warehouse.WarehouseView;
+import client.warehouseControlCheck.WarehouseControlCheckView;
 import java.beans.PropertyVetoException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,6 +40,7 @@ public class MainView extends javax.swing.JFrame {
     private ProductCaducityReport productCaducity=null;
     private RemissionGuideReport remissionGuide=null;
     private StockReport stockReport = null;
+    private WarehouseControlCheckView warehouseControlCheckView=null;
 
     /**
      * Creates new form MainForm
@@ -125,7 +127,12 @@ public class MainView extends javax.swing.JFrame {
 
         jMenu3.setText("Operaciones");
 
-        jMenuItem1.setText("Ajuste De Inventario");
+        jMenuItem1.setText("Toma y Ajuste de Inventario");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem1);
 
         jMenuItem4.setText("Despacho");
@@ -438,6 +445,19 @@ public class MainView extends javax.swing.JFrame {
         // TODO add your handling code here:
         Tools.closeSession();
     }//GEN-LAST:event_formWindowClosing
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        if (warehouseControlCheckView == null || !warehouseControlCheckView.isShowing()) {
+            warehouseControlCheckView = new WarehouseControlCheckView(mainPanel);
+            warehouseControlCheckView.setVisible(true);
+            mainPanel.add(warehouseControlCheckView);
+            try {
+                // TODO add your handling code here:
+                warehouseControlCheckView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     /**
      * @param args the command line arguments
