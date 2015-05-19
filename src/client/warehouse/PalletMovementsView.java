@@ -39,15 +39,17 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
         //Initialize comboWarehouseFrom
         palletMovementsView = this;
         warehousesFrom = warehouseApplication.queryAll();
-        String[] warehousesName = new String[warehousesFrom.size()];
-        for(int i=0; i<warehousesFrom.size(); i++){
-            warehousesName[i] = warehousesFrom.get(i).getDescripcion();
+        if(warehousesFrom.size()>0){
+            String[] warehousesName = new String[warehousesFrom.size()];
+            for(int i=0; i<warehousesFrom.size(); i++){
+                warehousesName[i] = warehousesFrom.get(i).getDescripcion();
+            }
+            comboWarehouseFrom.setModel(new javax.swing.DefaultComboBoxModel(warehousesName));
+            fillWarehousesTo(warehousesFrom.get(0).getCondicion().getId());
+            fillRacksFrom(warehousesFrom.get(0).getId());
+            fillRacksTo(warehousesTo.get(0).getId());
+            fillTableFrom(racksFrom.get(0).getId());
         }
-        comboWarehouseFrom.setModel(new javax.swing.DefaultComboBoxModel(warehousesName));
-        fillWarehousesTo(warehousesFrom.get(0).getCondicion().getId());
-        fillRacksFrom(warehousesFrom.get(0).getId());
-        fillRacksTo(warehousesTo.get(0).getId());
-        fillTableFrom(racksFrom.get(0).getId());
     }
     
     public void clearComponents(){
@@ -121,23 +123,17 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
         setClosable(true);
         setTitle("Movimiento de Pallets");
 
-        comboWarehouseFrom.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         comboWarehouseFrom.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 comboWarehouseFromItemStateChanged(evt);
             }
         });
 
-        comboRackFrom.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        comboWarehouseTo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         comboWarehouseTo.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 comboWarehouseToItemStateChanged(evt);
             }
         });
-
-        comboRackTo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         tblPalletFrom.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
