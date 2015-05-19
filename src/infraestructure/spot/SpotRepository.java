@@ -13,7 +13,11 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
 import org.hibernate.criterion.Restrictions;
+
+import util.HibernateUtil;
+
 import util.Tools;
 
 /**
@@ -40,10 +44,7 @@ public class SpotRepository implements ISpotRepository{
                 trns.rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.flush();
-            session.close();
-        }
+        } 
         return spots; //To change body of generated methods, choose Tools | Templates.
     }
     /*

@@ -7,6 +7,7 @@ package client.general;
 
 import client.internment.InternmentSelectView;
 import client.internment.InternmentView;
+
 import client.devolution.DevolutionView;
 import client.product.ProductView;
 import client.personal.PersonalView;
@@ -15,6 +16,14 @@ import client.report.ProductCaducityReport;
 import client.reports.AvailabilityReport;
 import client.reports.RemissionGuideReport;
 import client.reports.StockReport;
+
+
+import client.product.ProductView;
+import client.personal.PersonalView;
+import client.client.ClientView;
+import client.reports.RemissionGuideReport;
+import client.reports.StockReport;
+import client.report.ProductCaducityReport;
 
 import client.transportunit.*;
 import client.user.EditUserView;
@@ -36,7 +45,9 @@ public class MainView extends javax.swing.JFrame {
     private UserView userView = null;
     private TransportUnitView transportUnitView = null;
     private WarehouseView warehouseView = null;
+
     private DevolutionView devolutionView = null;
+
     private ProductView productView = null;
     private PersonalView personalView = null;
     private ClientView clientView = null;
@@ -47,7 +58,9 @@ public class MainView extends javax.swing.JFrame {
     private StockReport stockReport = null;
     private WarehouseControlCheckView warehouseControlCheckView=null;
     private InternmentSelectView internmentSelectView = null;
+
     private AvailabilityReport availabilityReport=null;
+
 
     /**
      * Creates new form MainForm
@@ -146,11 +159,14 @@ public class MainView extends javax.swing.JFrame {
         jMenu3.add(jMenuItem4);
 
         jMenuItem11.setText("Devoluciones");
+<<<<<<< HEAD
         jMenuItem11.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jMenuItem11MousePressed(evt);
             }
         });
+=======
+>>>>>>> 19d7f81... kevin commit
         jMenu3.add(jMenuItem11);
 
         jMenuBar1.add(jMenu3);
@@ -162,7 +178,9 @@ public class MainView extends javax.swing.JFrame {
             }
         });
 
+
         WarehouseMenu.setText("AlmacÃ©n");
+
         WarehouseMenu.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 WarehouseMenuMousePressed(evt);
@@ -196,7 +214,9 @@ public class MainView extends javax.swing.JFrame {
         });
         jMenu1.add(jMenuItem13);
 
+
         jMenuItem14.setText("GuÃ­as De RemisiÃ³n");
+
         jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem14ActionPerformed(evt);
@@ -204,12 +224,14 @@ public class MainView extends javax.swing.JFrame {
         });
         jMenu1.add(jMenuItem14);
 
+
         jMenuItem15.setText("Disponibilidad de AlmacÃ©n");
         jMenuItem15.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jMenuItem15MousePressed(evt);
             }
         });
+
         jMenu1.add(jMenuItem15);
 
         jMenuItem16.setText("Caducidad de Productos");
@@ -258,7 +280,9 @@ public class MainView extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu6);
 
-        jMenu4.setText("SesiÃ³n");
+
+        jMenu4.setText("Sesión");
+
 
         jMenuItem5.setText("Actualizar datos");
         jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
@@ -450,7 +474,11 @@ public class MainView extends javax.swing.JFrame {
             clientView.setVisible(true);
             mainPanel.add(clientView);
             try {
+<<<<<<< HEAD
 
+=======
+                // TODO add your handling code here:
+>>>>>>> 19d7f81... kevin commit
                 clientView.setSelected(true);
             } catch (PropertyVetoException ex) {
                 Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
@@ -487,6 +515,7 @@ public class MainView extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_jMenuItem2MousePressed
+
     private void jMenuItem11MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem11MousePressed
         // TODO add your handling code here:
         if (devolutionView == null || !devolutionView.isShowing()) {
@@ -516,6 +545,7 @@ public class MainView extends javax.swing.JFrame {
             }
         }
     }
+
     /**
      * @param args the command line arguments
      */
@@ -548,4 +578,4 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JDesktopPane mainPanel;
     // End of variables declaration//GEN-END:variables
-}
+
