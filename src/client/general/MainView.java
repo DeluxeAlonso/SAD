@@ -5,10 +5,12 @@
  */
 package client.general;
 
+import client.devolution.DevolutionView;
 import client.product.ProductView;
+import client.report.ProductCaducityReport;
+import client.reports.AvailabilityReport;
 import client.reports.RemissionGuideReport;
 import client.reports.StockReport;
-import client.report.ProductCaducityReport;
 import client.transportunit.*;
 import client.user.EditUserView;
 import client.user.UserView;
@@ -28,12 +30,14 @@ public class MainView extends javax.swing.JFrame {
     private UserView userView = null;
     private TransportUnitView transportUnitView = null;
     private WarehouseView warehouseView = null;
+    private DevolutionView devolutionView = null;
     private ProductView productView = null;
     private EditUserView editUserView = null;
     private PalletMovementsView palletMovementsView = null;
     private ProductCaducityReport productCaducity=null;
     private RemissionGuideReport remissionGuide=null;
     private StockReport stockReport = null;
+    private AvailabilityReport availabilityReport=null;
 
     /**
      * Creates new form MainForm
@@ -122,6 +126,11 @@ public class MainView extends javax.swing.JFrame {
         jMenu3.add(jMenuItem4);
 
         jMenuItem11.setText("Devoluciones");
+        jMenuItem11.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMenuItem11MousePressed(evt);
+            }
+        });
         jMenu3.add(jMenuItem11);
 
         jMenuBar1.add(jMenu3);
@@ -176,6 +185,11 @@ public class MainView extends javax.swing.JFrame {
         jMenu1.add(jMenuItem14);
 
         jMenuItem15.setText("Disponibilidad de Almacén");
+        jMenuItem15.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMenuItem15MousePressed(evt);
+            }
+        });
         jMenu1.add(jMenuItem15);
 
         jMenuItem16.setText("Caducidad de Productos");
@@ -385,6 +399,36 @@ public class MainView extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jMenuItem13ActionPerformed
+
+    private void jMenuItem11MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem11MousePressed
+        // TODO add your handling code here:
+        if (devolutionView == null || !devolutionView.isShowing()) {
+            devolutionView = new DevolutionView();
+            devolutionView.setVisible(true);
+            mainPanel.add(devolutionView);
+            try {
+                // TODO add your handling code here:
+                devolutionView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem11MousePressed
+
+    private void jMenuItem15MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem15MousePressed
+        // TODO add your handling code here:
+        if (availabilityReport == null || !availabilityReport.isShowing()) {
+            availabilityReport = new AvailabilityReport();
+            availabilityReport.setVisible(true);
+            mainPanel.add(availabilityReport);
+            try {
+                // TODO add your handling code here:
+                availabilityReport.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem15MousePressed
 
     /**
      * @param args the command line arguments
