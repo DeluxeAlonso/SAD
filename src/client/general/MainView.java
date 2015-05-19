@@ -11,6 +11,7 @@ import client.client.ClientView;
 import client.reports.RemissionGuideReport;
 import client.reports.StockReport;
 import client.report.ProductCaducityReport;
+import client.reports.KardexReport;
 import client.transportunit.*;
 import client.user.EditUserView;
 import client.user.UserView;
@@ -40,6 +41,7 @@ public class MainView extends javax.swing.JFrame {
     private ProductCaducityReport productCaducity=null;
     private RemissionGuideReport remissionGuide=null;
     private StockReport stockReport = null;
+    private KardexReport kardexReport = null;
     private WarehouseControlCheckView warehouseControlCheckView=null;
 
     /**
@@ -174,6 +176,11 @@ public class MainView extends javax.swing.JFrame {
         jMenu1.setText("Reportes");
 
         jMenuItem12.setText("Kardex");
+        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem12ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem12);
 
         jMenuItem13.setText("Stock");
@@ -458,6 +465,21 @@ public class MainView extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+        // TODO add your handling code here:
+           if (kardexReport == null || !kardexReport.isShowing()) {
+            kardexReport = new KardexReport();
+            kardexReport.setVisible(true);
+            mainPanel.add(kardexReport);
+            try {
+                // TODO add your handling code here:
+                kardexReport.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem12ActionPerformed
 
     /**
      * @param args the command line arguments
