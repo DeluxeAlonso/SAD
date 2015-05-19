@@ -7,6 +7,8 @@ package client.general;
 
 import client.product.ProductView;
 import client.reports.ProductCaducityReport;
+import client.reports.RemissionGuideReport;
+import client.reports.StockReport;
 import client.transportunit.*;
 import client.users.EditUserView;
 import client.users.UserView;
@@ -30,6 +32,8 @@ public class MainView extends javax.swing.JFrame {
     private EditUserView editUserView = null;
     private PalletMovementsView palletMovementsView = null;
     private ProductCaducityReport productCaducity=null;
+    private RemissionGuideReport remissionGuide=null;
+    private StockReport stockReport = null;
 
     /**
      * Creates new form MainForm
@@ -156,9 +160,19 @@ public class MainView extends javax.swing.JFrame {
         jMenu1.add(jMenuItem12);
 
         jMenuItem13.setText("Stock");
+        jMenuItem13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem13ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem13);
 
         jMenuItem14.setText("Guías De Remisión");
+        jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem14ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem14);
 
         jMenuItem15.setText("Disponibilidad de Almacén");
@@ -341,6 +355,36 @@ public class MainView extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jMenuItem16ActionPerformed
+
+    private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
+        // TODO add your handling code here:
+        if (remissionGuide == null || !remissionGuide.isShowing()) {
+            remissionGuide = new RemissionGuideReport();
+            remissionGuide.setVisible(true);
+            mainPanel.add(remissionGuide);
+            try {
+                // TODO add your handling code here:
+                remissionGuide.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem14ActionPerformed
+
+    private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
+        // TODO add your handling code here:
+           if (stockReport == null || !stockReport.isShowing()) {
+            stockReport = new StockReport();
+            stockReport.setVisible(true);
+            mainPanel.add(stockReport);
+            try {
+                // TODO add your handling code here:
+                stockReport.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem13ActionPerformed
 
     /**
      * @param args the command line arguments
