@@ -5,13 +5,14 @@
  */
 package client.general;
 
+import client.internment.InternmentSelectView;
+import client.internment.InternmentView;
 import client.product.ProductView;
 import client.personal.PersonalView;
 import client.client.ClientView;
 import client.reports.RemissionGuideReport;
 import client.reports.StockReport;
 import client.report.ProductCaducityReport;
-import client.reports.KardexReport;
 import client.transportunit.*;
 import client.user.EditUserView;
 import client.user.UserView;
@@ -22,7 +23,6 @@ import java.beans.PropertyVetoException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
-import util.Tools;
 
 /**
  *
@@ -41,9 +41,8 @@ public class MainView extends javax.swing.JFrame {
     private ProductCaducityReport productCaducity=null;
     private RemissionGuideReport remissionGuide=null;
     private StockReport stockReport = null;
-    private KardexReport kardexReport = null;
     private WarehouseControlCheckView warehouseControlCheckView=null;
-
+    private InternmentSelectView internmentSelectView = null;
     /**
      * Creates new form MainForm
      */
@@ -90,11 +89,6 @@ public class MainView extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sistema de Almacenes y Despacho");
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                formWindowClosing(evt);
-            }
-        });
 
         mainPanel.setDragMode(javax.swing.JDesktopPane.OUTLINE_DRAG_MODE);
 
@@ -112,6 +106,11 @@ public class MainView extends javax.swing.JFrame {
         jMenu2.setText("Movimientos");
 
         jMenuItem2.setText("Internamiento");
+        jMenuItem2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMenuItem2MousePressed(evt);
+            }
+        });
         jMenu2.add(jMenuItem2);
 
         jMenuItem3.setText("Pedido");
@@ -176,11 +175,6 @@ public class MainView extends javax.swing.JFrame {
         jMenu1.setText("Reportes");
 
         jMenuItem12.setText("Kardex");
-        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem12ActionPerformed(evt);
-            }
-        });
         jMenu1.add(jMenuItem12);
 
         jMenuItem13.setText("Stock");
@@ -448,10 +442,6 @@ public class MainView extends javax.swing.JFrame {
         }           // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
-    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        // TODO add your handling code here:
-        Tools.closeSession();
-    }//GEN-LAST:event_formWindowClosing
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         if (warehouseControlCheckView == null || !warehouseControlCheckView.isShowing()) {
             warehouseControlCheckView = new WarehouseControlCheckView(mainPanel);
@@ -466,20 +456,21 @@ public class MainView extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
-    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+    private void jMenuItem2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem2MousePressed
         // TODO add your handling code here:
-           if (kardexReport == null || !kardexReport.isShowing()) {
-            kardexReport = new KardexReport();
-            kardexReport.setVisible(true);
-            mainPanel.add(kardexReport);
+                if (internmentSelectView == null || !internmentSelectView.isShowing()) {
+            internmentSelectView = new InternmentSelectView();
+            internmentSelectView.setVisible(true);
+            mainPanel.add(internmentSelectView);
             try {
                 // TODO add your handling code here:
-                kardexReport.setSelected(true);
+                internmentSelectView.setSelected(true);
             } catch (PropertyVetoException ex) {
                 Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }//GEN-LAST:event_jMenuItem12ActionPerformed
+        
+    }//GEN-LAST:event_jMenuItem2MousePressed
 
     /**
      * @param args the command line arguments
