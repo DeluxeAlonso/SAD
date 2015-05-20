@@ -16,7 +16,7 @@ import client.personal.PersonalView;
 import client.client.ClientView;
 import client.reports.RemissionGuideReport;
 import client.reports.StockReport;
-import client.report.ProductCaducityReport;
+import client.reports.ProductCaducityReport;
 
 import client.transportunit.*;
 import client.user.EditUserView;
