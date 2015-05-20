@@ -6,16 +6,9 @@
 package client.general;
 
 import client.internment.InternmentSelectView;
-import client.internment.InternmentView;
 
 import client.devolution.DevolutionView;
-import client.product.ProductView;
-import client.personal.PersonalView;
-import client.client.ClientView;
-import client.report.ProductCaducityReport;
 import client.reports.AvailabilityReport;
-import client.reports.RemissionGuideReport;
-import client.reports.StockReport;
 
 
 import client.product.ProductView;
@@ -159,14 +152,14 @@ public class MainView extends javax.swing.JFrame {
         jMenu3.add(jMenuItem4);
 
         jMenuItem11.setText("Devoluciones");
-<<<<<<< HEAD
+
         jMenuItem11.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jMenuItem11MousePressed(evt);
             }
         });
-=======
->>>>>>> 19d7f81... kevin commit
+
+
         jMenu3.add(jMenuItem11);
 
         jMenuBar1.add(jMenu3);
@@ -474,11 +467,9 @@ public class MainView extends javax.swing.JFrame {
             clientView.setVisible(true);
             mainPanel.add(clientView);
             try {
-<<<<<<< HEAD
 
-=======
                 // TODO add your handling code here:
->>>>>>> 19d7f81... kevin commit
+
                 clientView.setSelected(true);
             } catch (PropertyVetoException ex) {
                 Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
@@ -579,3 +570,4 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JDesktopPane mainPanel;
     // End of variables declaration//GEN-END:variables
 
+}
