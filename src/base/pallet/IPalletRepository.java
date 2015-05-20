@@ -3,17 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package base.spot;
+package base.pallet;
 
 import base.IRepository;
-import entity.Ubicacion;
+import entity.Pallet;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author prote_000
  */
-public interface ISpotRepository extends IRepository<Ubicacion>{
-    ArrayList<Ubicacion> querySpotsByRack(int rackId);
-    //List querySpotsByRackWithContent(int rackId);
+public interface IPalletRepository extends IRepository<Pallet>{
+    ArrayList<Pallet> queryPalletsByRack(int rackId);
 }

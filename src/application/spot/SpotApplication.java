@@ -29,4 +29,15 @@ public class SpotApplication {
         }
         return spots;
     }
+    /*
+    public List querySpotsByRackWithContent(int rackId){
+        List<Ubicacion> spots = null;
+        try {
+            spots = spotRepository.querySpotsByRackWithContent(rackId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return spots;
+    }
+    */
 }

@@ -1,13 +1,17 @@
 package client.warehouse;
 
+import application.pallet.PalletApplication;
 import application.rack.RackApplication;
 import application.spot.SpotApplication;
 import application.warehouse.WarehouseApplication;
 import entity.Almacen;
+import entity.Pallet;
 import entity.Rack;
 import entity.Ubicacion;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
 import util.InstanceFactory;
 
 /*
@@ -24,12 +28,14 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
     WarehouseApplication warehouseApplication = InstanceFactory.Instance.getInstance("warehouseApplicaiton", WarehouseApplication.class);
     RackApplication rackApplication = InstanceFactory.Instance.getInstance("rackApplicaiton", RackApplication.class);
     SpotApplication spotApplication = InstanceFactory.Instance.getInstance("spotApplicaiton", SpotApplication.class);
+    PalletApplication palletApplication = InstanceFactory.Instance.getInstance("palletApplicaiton", PalletApplication.class);
     public static PalletMovementsView palletMovementsView;
     public ArrayList<Almacen> warehousesFrom;
     public ArrayList<Almacen> warehousesTo;
     public ArrayList<Rack> racksFrom;
     public ArrayList<Rack> racksTo;
     public ArrayList<Ubicacion> spotsFrom;
+    public ArrayList<Pallet> palletsFrom;
     public int warehouseSelected;
     /**
      * Creates new form PalletMovementsView
@@ -95,11 +101,26 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
     }
     
     public void fillTableFrom(int rackId){
-        /*
         spotsFrom = spotApplication.querySpotsByRack(rackId);
-        System.out.println("Spots:");
-        System.out.println(spotsFrom.size());
+        palletsFrom = palletApplication.queryPalletsByRack(rackId);
+        System.out.println(palletsFrom.size());
+        /*
+        DefaultTableModel model = (DefaultTableModel) tblPalletFrom.getModel();
+        spotsFrom = spotApplication.querySpotsByRackWithContent(rackId);
+        for (Ubicacion spot : spotsFrom) {            
+            String profileName = user.getPerfil() != null ? user.getPerfil().getNombrePerfil() : "";
+            String state = user.getEstado() != null ? EntityState.getUsersState()[user.getEstado()] : "";
+            model.addRow(new Object[]{
+                user.getIdusuario(),
+                user.getNombre() + " " + user.getApellidoPaterno() + " " + user.getApellidoMaterno(),
+                user.getCorreo(),
+                state,
+                profileName
+            });
+        }
         */
+        //System.out.println(spotsFrom.size());
+        
     }
 
     /**
