@@ -106,6 +106,8 @@ public class MainView extends javax.swing.JFrame {
         jMenuItem15 = new javax.swing.JMenuItem();
         jMenuItem16 = new javax.swing.JMenuItem();
         UserMenu = new javax.swing.JMenu();
+        jMenuItem9 = new javax.swing.JMenuItem();
+        jMenuItem17 = new javax.swing.JMenuItem();
         jMenu6 = new javax.swing.JMenu();
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
@@ -253,12 +255,29 @@ public class MainView extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
-        UserMenu.setText("Usuarios");
-        UserMenu.addMouseListener(new java.awt.event.MouseAdapter() {
+        UserMenu.setText("Seguridad");
+
+        jMenuItem9.setText("Usuarios");
+        jMenuItem9.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                UserMenuMouseClicked(evt);
+                jMenuItem9MouseClicked(evt);
             }
         });
+        jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem9ActionPerformed(evt);
+            }
+        });
+        UserMenu.add(jMenuItem9);
+
+        jMenuItem17.setText("Perfil");
+        jMenuItem17.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem17ActionPerformed(evt);
+            }
+        });
+        UserMenu.add(jMenuItem17);
+
         jMenuBar1.add(UserMenu);
 
         jMenu6.setText("Interfaces");
@@ -324,20 +343,6 @@ public class MainView extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-    private void UserMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UserMenuMouseClicked
-        if (userView == null || !userView.isShowing()) {
-            userView = new UserView();
-            userView.setVisible(true);
-            mainPanel.add(userView);
-            try {
-                // TODO add your handling code here:
-                userView.setSelected(true);
-            } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }//GEN-LAST:event_UserMenuMouseClicked
-
     private void jMenu5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu5MouseClicked
     }//GEN-LAST:event_jMenu5MouseClicked
 
@@ -562,6 +567,51 @@ public class MainView extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem12ActionPerformed
 
+    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
+        // TODO add your handling code here:
+         if (userView == null || !userView.isShowing()) {
+            userView = new UserView();
+            userView.setVisible(true);
+            mainPanel.add(userView);
+            try {
+                // TODO add your handling code here:
+                userView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem9ActionPerformed
+
+    private void jMenuItem9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem9MouseClicked
+        // TODO add your handling code here:
+         if (userView == null || !userView.isShowing()) {
+            userView = new UserView();
+            userView.setVisible(true);
+            mainPanel.add(userView);
+            try {
+                // TODO add your handling code here:
+                userView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem9MouseClicked
+
+    private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
+        // TODO add your handling code here:
+         if (userView == null || !userView.isShowing()) {
+            userView = new UserView();
+            userView.setVisible(true);
+            mainPanel.add(userView);
+            try {
+                // TODO add your handling code here:
+                userView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem17ActionPerformed
+
     private void jMenuItem15MousePressed(java.awt.event.MouseEvent evt) {
         // TODO add your handling code here:
         if (availabilityReport == null || !availabilityReport.isShowing()) {
@@ -600,6 +650,7 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem14;
     private javax.swing.JMenuItem jMenuItem15;
     private javax.swing.JMenuItem jMenuItem16;
+    private javax.swing.JMenuItem jMenuItem17;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
@@ -607,6 +658,7 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
+    private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JDesktopPane mainPanel;
     // End of variables declaration//GEN-END:variables
 
