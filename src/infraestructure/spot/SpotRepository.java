@@ -8,6 +8,7 @@ package infraestructure.spot;
 import base.spot.ISpotRepository;
 import entity.Ubicacion;
 import java.util.ArrayList;
+import java.util.List;
 import javafx.scene.effect.Light.Spot;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -48,12 +49,11 @@ public class SpotRepository implements ISpotRepository{
         } 
         return spots; //To change body of generated methods, choose Tools | Templates.
     }
-    /*
+    
     @Override
     public List querySpotsByRackWithContent(int rackId) {
-        String hql="SELECT u.id as u_id, u.fila, u.columna, u.lado, p.id as p_id, p.ean128,p.fecha_registro "
-                + "FROM Ubicacion u,Pallet p "
-                + "WHERE u.id_rack=:rackId and p.id_ubicacion=u.id";
+        String hql="FROM Ubicacion u, Pallet p "
+                + "WHERE u.rack.id=:rackId and p.ubicacion.id=u.id";
         
         List spots=null;
         
@@ -66,7 +66,7 @@ public class SpotRepository implements ISpotRepository{
             //Criteria cr = session.createCriteria(Spot.class);
             //cr.add(Restrictions.eq("id_rack", rackId));
             q.setParameter("rackId", rackId);
-            spots = (ArrayList<Ubicacion>) q.list();      
+            spots = q.list();      
             //spots = cr.list(); 
             session.getTransaction().commit();
         } catch (RuntimeException e) {
@@ -77,26 +77,19 @@ public class SpotRepository implements ISpotRepository{
         }
         return spots; //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
-    public List querySpotsByRackWithContent(int rackId) {
-        String hql="SELECT u.id as u_id, u.fila, u.columna, u.lado, p.id as p_id, p.ean128,p.fecha_registro "
-                + "FROM Ubicacion u,Pallet p "
-                + "WHERE u.id_rack=:rackId and p.id_ubicacion=u.id";
-        
-        List spots=null;
+    public ArrayList<Ubicacion> queryEmptySpotsByRack(int rackId) {
+        String hql="FROM Ubicacion u WHERE u.rack.id=:rackId AND u.ocupado=0";
+        ArrayList<Ubicacion> spots=null;
         
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
             Query q = session.createQuery(hql);
-            
-            //Criteria cr = session.createCriteria(Spot.class);
-            //cr.add(Restrictions.eq("id_rack", rackId));
             q.setParameter("rackId", rackId);
-            spots = (ArrayList<Ubicacion>) q.list();      
-            //spots = cr.list(); 
+            spots = (ArrayList<Ubicacion>) q.list();          
             session.getTransaction().commit();
         } catch (RuntimeException e) {
             if (trns != null) {
@@ -106,8 +99,7 @@ public class SpotRepository implements ISpotRepository{
         }
         return spots; //To change body of generated methods, choose Tools | Templates.
     }
-
-    */
+    
     @Override
     public void insert(Ubicacion object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

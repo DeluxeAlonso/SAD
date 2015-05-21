@@ -8,6 +8,7 @@ package base.spot;
 import base.IRepository;
 import entity.Ubicacion;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -15,5 +16,6 @@ import java.util.ArrayList;
  */
 public interface ISpotRepository extends IRepository<Ubicacion>{
     ArrayList<Ubicacion> querySpotsByRack(int rackId);
-    //List querySpotsByRackWithContent(int rackId);
+    List querySpotsByRackWithContent(int rackId);
+    ArrayList<Ubicacion> queryEmptySpotsByRack(int rackId);
 }

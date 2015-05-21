@@ -35,6 +35,7 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
     public ArrayList<Rack> racksFrom;
     public ArrayList<Rack> racksTo;
     public ArrayList<Ubicacion> spotsFrom;
+    public ArrayList<Ubicacion> spotsTo;
     public ArrayList<Pallet> palletsFrom;
     public int warehouseSelected;
     /**
@@ -53,8 +54,13 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
             comboWarehouseFrom.setModel(new javax.swing.DefaultComboBoxModel(warehousesName));
             fillWarehousesTo(warehousesFrom.get(0).getCondicion().getId());
             fillRacksFrom(warehousesFrom.get(0).getId());
-            fillRacksTo(warehousesTo.get(0).getId());
-            fillTableFrom(racksFrom.get(0).getId());
+            if(racksFrom.size()>0)
+                fillTableFrom(racksFrom.get(0).getId());
+            if(warehousesTo.size()>0){
+                fillRacksTo(warehousesTo.get(0).getId());
+                if(racksTo.size()>0)
+                    fillTableTo(racksTo.get(0).getId());
+            }
         }
     }
     
@@ -62,6 +68,8 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
         comboWarehouseTo.removeAllItems();
         comboRackTo.removeAllItems();
         comboRackFrom.removeAllItems();
+        clearTableFrom();
+        clearTableTo();
     }
     
     public void fillWarehousesTo(int type){
@@ -100,26 +108,43 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
         }
     }
     
-    public void fillTableFrom(int rackId){
-        spotsFrom = spotApplication.querySpotsByRack(rackId);
-        palletsFrom = palletApplication.queryPalletsByRack(rackId);
-        System.out.println(palletsFrom.size());
-        /*
+    public void clearTableFrom(){
         DefaultTableModel model = (DefaultTableModel) tblPalletFrom.getModel();
-        spotsFrom = spotApplication.querySpotsByRackWithContent(rackId);
-        for (Ubicacion spot : spotsFrom) {            
-            String profileName = user.getPerfil() != null ? user.getPerfil().getNombrePerfil() : "";
-            String state = user.getEstado() != null ? EntityState.getUsersState()[user.getEstado()] : "";
+        model.setRowCount(0);
+    }
+    
+    public void clearTableTo(){
+        DefaultTableModel model = (DefaultTableModel) tblPalletTo.getModel();
+        model.setRowCount(0);
+    }
+    
+    public void fillTableFrom(int rackId){
+        clearTableFrom();
+        DefaultTableModel model = (DefaultTableModel) tblPalletFrom.getModel();
+        spotsFrom = (ArrayList<Ubicacion>) spotApplication.querySpotsByRack(rackId);
+        palletsFrom = palletApplication.queryPalletsByRack(rackId);
+        for(Pallet pallet : palletsFrom){
+            System.out.println(pallet.getEan128());
             model.addRow(new Object[]{
-                user.getIdusuario(),
-                user.getNombre() + " " + user.getApellidoPaterno() + " " + user.getApellidoMaterno(),
-                user.getCorreo(),
-                state,
-                profileName
+                pallet.getEan128(),
+                spotsFrom.get(pallet.getUbicacion().getId()).getLado(),
+                spotsFrom.get(pallet.getUbicacion().getId()).getFila(),
+                spotsFrom.get(pallet.getUbicacion().getId()).getColumna(),
             });
         }
-        */
-        //System.out.println(spotsFrom.size());
+    }
+    
+    public void fillTableTo(int rackId){
+        clearTableTo();
+        DefaultTableModel model = (DefaultTableModel) tblPalletTo.getModel();
+        spotsTo = (ArrayList<Ubicacion>) spotApplication.queryEmptySpotsByRack(rackId);
+        for(Ubicacion spot : spotsTo){
+            model.addRow(new Object[]{
+                spot.getLado(),
+                spot.getFila(),
+                spot.getColumna(),
+            });
+        }
         
     }
 
@@ -140,6 +165,11 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
         tblPalletFrom = new javax.swing.JTable();
         jScrollPaneTo = new javax.swing.JScrollPane();
         tblPalletTo = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Movimiento de Pallets");
@@ -150,52 +180,103 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
             }
         });
 
+        comboRackFrom.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                comboRackFromItemStateChanged(evt);
+            }
+        });
+
         comboWarehouseTo.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 comboWarehouseToItemStateChanged(evt);
             }
         });
 
+        comboRackTo.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                comboRackToItemStateChanged(evt);
+            }
+        });
+
         tblPalletFrom.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "EAN128", "Lado", "Fila", "Columna", "Seleccione"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         jScrollPaneFrom.setViewportView(tblPalletFrom);
 
         tblPalletTo.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Lado", "Fila", "Columna", "Seleccione"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         jScrollPaneTo.setViewportView(tblPalletTo);
+
+        jLabel1.setText("Seleccione almacén de origen");
+
+        jLabel2.setText("Seleccione rack origen");
+
+        jLabel3.setText("Seleccione almacén destino");
+
+        jLabel4.setText("Seleccione rack destino");
+
+        jButton1.setText("jButton1");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(comboWarehouseFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(comboRackFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPaneFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(19, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(comboWarehouseTo, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(comboRackTo, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(179, 179, 179))
+                            .addComponent(comboWarehouseFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(comboRackFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(133, 133, 133))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton1)
+                            .addComponent(jScrollPaneFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPaneTo, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(jScrollPaneTo, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(comboRackTo, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(comboWarehouseTo, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -203,16 +284,22 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
                 .addGap(42, 42, 42)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(comboWarehouseFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(comboWarehouseTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(comboWarehouseTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel3))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(comboRackFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(comboRackTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(comboRackTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel4))
                 .addGap(44, 44, 44)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPaneFrom, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
                     .addComponent(jScrollPaneTo, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(102, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jButton1)
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         pack();
@@ -223,14 +310,35 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
             clearComponents();
             fillWarehousesTo(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getCondicion().getId());
             fillRacksFrom(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId());
+            if(racksFrom.size()>0)
+                fillTableFrom(racksFrom.get(0).getId());
+            if(warehousesTo.size()>0){
+                fillRacksTo(warehousesTo.get(0).getId());
+                if(racksTo.size()>0)
+                    fillTableTo(racksTo.get(0).getId());
+            }
         }
     }//GEN-LAST:event_comboWarehouseFromItemStateChanged
 
     private void comboWarehouseToItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboWarehouseToItemStateChanged
         if(evt.getStateChange() == ItemEvent.SELECTED){
             fillRacksTo(warehousesTo.get(comboWarehouseTo.getSelectedIndex()).getId());
+            if(racksTo.size()>0)
+                fillTableTo(racksTo.get(0).getId());
         }
     }//GEN-LAST:event_comboWarehouseToItemStateChanged
+
+    private void comboRackFromItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboRackFromItemStateChanged
+        if(evt.getStateChange() == ItemEvent.SELECTED){
+            fillTableFrom(racksFrom.get(comboRackFrom.getSelectedIndex()).getId());
+        }
+    }//GEN-LAST:event_comboRackFromItemStateChanged
+
+    private void comboRackToItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboRackToItemStateChanged
+        if(evt.getStateChange() == ItemEvent.SELECTED){
+            fillTableTo(racksTo.get(comboRackTo.getSelectedIndex()).getId());
+        }
+    }//GEN-LAST:event_comboRackToItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -238,6 +346,11 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
     private javax.swing.JComboBox comboRackTo;
     private javax.swing.JComboBox comboWarehouseFrom;
     private javax.swing.JComboBox comboWarehouseTo;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPaneFrom;
     private javax.swing.JScrollPane jScrollPaneTo;
     private javax.swing.JTable tblPalletFrom;

@@ -9,6 +9,7 @@ import base.spot.ISpotRepository;
 import entity.Ubicacion;
 import infraestructure.spot.SpotRepository;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -29,7 +30,7 @@ public class SpotApplication {
         }
         return spots;
     }
-    /*
+    
     public List querySpotsByRackWithContent(int rackId){
         List<Ubicacion> spots = null;
         try {
@@ -39,5 +40,15 @@ public class SpotApplication {
         }
         return spots;
     }
-    */
+    
+    public ArrayList<Ubicacion> queryEmptySpotsByRack(int rackId){
+        ArrayList<Ubicacion> spots = null;
+        try {
+            spots = spotRepository.querySpotsByRack(rackId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return spots;
+    }
+    
 }
