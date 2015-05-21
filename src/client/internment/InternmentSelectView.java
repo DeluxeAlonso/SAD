@@ -5,7 +5,6 @@
  */
 package client.internment;
 
-import client.product.NewProductView;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
