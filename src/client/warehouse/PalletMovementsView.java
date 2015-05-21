@@ -11,8 +11,11 @@ import entity.Ubicacion;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import util.InstanceFactory;
+import util.Strings;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -169,7 +172,9 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
 
         setClosable(true);
         setTitle("Movimiento de Pallets");
@@ -242,7 +247,16 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
 
         jLabel4.setText("Seleccione rack destino");
 
-        jButton1.setText("Guardar");
+        btnSave.setText("Guardar");
+        btnSave.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnSaveMousePressed(evt);
+            }
+        });
+
+        jLabel5.setText("Pallets en rack de origen");
+
+        jLabel6.setText("Ubicaciones libres en rack de destino");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -263,19 +277,22 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1)
-                            .addComponent(jScrollPaneFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnSave)
+                            .addComponent(jScrollPaneFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPaneTo, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(comboRackTo, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(comboWarehouseTo, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jScrollPaneTo, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabel3)
+                                .addComponent(jLabel4))
+                            .addGap(18, 18, 18)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(comboRackTo, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(comboWarehouseTo, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jLabel6))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -293,12 +310,16 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
                     .addComponent(comboRackTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel4))
-                .addGap(44, 44, 44)
+                .addGap(24, 24, 24)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPaneFrom, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
                     .addComponent(jScrollPaneTo, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
+                .addComponent(btnSave)
                 .addContainerGap(23, Short.MAX_VALUE))
         );
 
@@ -340,17 +361,68 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_comboRackToItemStateChanged
 
+    private void btnSaveMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMousePressed
+        ArrayList<Integer> selectedPallets = new ArrayList<Integer>();                            
+        ArrayList<Integer> selectedSpots = new ArrayList<Integer>(); 
+        Boolean isChecked;
+        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+        
+        if(tblPalletFrom.getRowCount()>0){
+            for (int i = 0; i < tblPalletFrom.getRowCount(); i++) {
+                isChecked = (Boolean)tblPalletFrom.getValueAt(i, 4);
+                if (isChecked != null && isChecked) {
+                    selectedPallets.add(palletsFrom.get(i).getId());
+                    System.out.println("Pallet id: "+palletsFrom.get(i).getId()+" Ubicacion id: "+palletsFrom.get(i).getUbicacion().getId());
+                }
+            }
+        }
+        
+        if(tblPalletTo.getRowCount()>0){
+            for (int i = 0; i < tblPalletTo.getRowCount(); i++) {
+                isChecked = (Boolean)tblPalletTo.getValueAt(i, 3);
+                if (isChecked != null && isChecked) {
+                    selectedSpots.add(spotsTo.get(i).getId());
+                    System.out.println("Spot id: "+spotsTo.get(i).getId());
+                }
+            }
+        }
+        
+        System.out.println("Pallets seleccionados: "+selectedPallets.size());
+        System.out.println("Ubicaciones seleccionadas: "+selectedSpots.size());
+        
+        if(selectedPallets.size() == selectedSpots.size() && selectedPallets.size()>0){
+            for(int i=0;i<selectedPallets.size();i++){
+                
+            }
+            //Por cada pallet
+                //Pongo la actual ubicacion del pallet como libre
+                //Cambio la ubicacion del pallet
+                //Pongo la nueva ubicacion del pallet como ocupado        
+        }else{
+            String error_message = "Errores:\n\n";
+            if(selectedPallets.size()<1)
+                error_message += Strings.ERROR_NO_PALLETS_SELECTED+"\n";
+            if(selectedSpots.size()<1)
+                error_message += Strings.ERROR_NO_SPOTS_SELECTED+"\n";
+            if(selectedPallets.size() != selectedSpots.size())
+                error_message += Strings.ERROR_PALLETS_DONT_MATCH_SPOTS+"\n";
+            JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_PALLETS_MOVEMENT_TITLE,JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnSaveMousePressed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnSave;
     private javax.swing.JComboBox comboRackFrom;
     private javax.swing.JComboBox comboRackTo;
     private javax.swing.JComboBox comboWarehouseFrom;
     private javax.swing.JComboBox comboWarehouseTo;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPaneFrom;
     private javax.swing.JScrollPane jScrollPaneTo;
     private javax.swing.JTable tblPalletFrom;

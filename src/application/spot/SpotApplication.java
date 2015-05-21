@@ -44,7 +44,7 @@ public class SpotApplication {
     public ArrayList<Ubicacion> queryEmptySpotsByRack(int rackId){
         ArrayList<Ubicacion> spots = null;
         try {
-            spots = spotRepository.querySpotsByRack(rackId);
+            spots = spotRepository.queryEmptySpotsByRack(rackId);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -40,4 +40,11 @@ public class Strings {
     public static final String MESSAGE_CHANGE_PASSWORD="Se ha modificado su contraseña satisfactoriamente.";
     public static final String MESSAGE_NEW_USER_CREATED="El usuario se ha registrado con éxito.";
     /*END*/
+    
+    /*WAREHOUSE MODULE MESSAGES*/
+    public static final String ERROR_PALLETS_MOVEMENT_TITLE="Error al mover pallets";
+    public static final String ERROR_NO_PALLETS_SELECTED="Seleccione algún pallet.";
+    public static final String ERROR_NO_SPOTS_SELECTED="Seleccione alguna ubicación de destino.";
+    public static final String ERROR_PALLETS_DONT_MATCH_SPOTS="La cantidad de pallets y ubicaciones seleccionados deben ser iguales.";
+    /*END*/
 }

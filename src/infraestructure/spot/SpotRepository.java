@@ -80,7 +80,7 @@ public class SpotRepository implements ISpotRepository{
     
     @Override
     public ArrayList<Ubicacion> queryEmptySpotsByRack(int rackId) {
-        String hql="FROM Ubicacion u WHERE u.rack.id=:rackId AND u.ocupado=0";
+        String hql="FROM Ubicacion u WHERE u.rack.id=:rackId AND u.ocupado='0'";
         ArrayList<Ubicacion> spots=null;
         
         Transaction trns = null;
