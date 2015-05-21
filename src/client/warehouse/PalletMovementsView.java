@@ -242,7 +242,7 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
 
         jLabel4.setText("Seleccione rack destino");
 
-        jButton1.setText("jButton1");
+        jButton1.setText("Guardar");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
