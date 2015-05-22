@@ -53,6 +53,7 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
         deleteButton = new javax.swing.JButton();
 
         setClosable(true);
+        setTitle("Clientes");
 
         jLabel1.setText("Ingresar Clientes desde un archivo:");
 
