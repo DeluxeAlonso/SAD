@@ -37,7 +37,6 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
     public ArrayList<Almacen> warehousesTo;
     public ArrayList<Rack> racksFrom;
     public ArrayList<Rack> racksTo;
-    public ArrayList<Ubicacion> spotsFrom;
     public ArrayList<Ubicacion> spotsTo;
     public ArrayList<Pallet> palletsFrom;
     public int warehouseSelected;
@@ -124,15 +123,14 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
     public void fillTableFrom(int rackId){
         clearTableFrom();
         DefaultTableModel model = (DefaultTableModel) tblPalletFrom.getModel();
-        spotsFrom = (ArrayList<Ubicacion>) spotApplication.querySpotsByRack(rackId);
         palletsFrom = palletApplication.queryPalletsByRack(rackId);
         for(Pallet pallet : palletsFrom){
             System.out.println(pallet.getEan128());
             model.addRow(new Object[]{
                 pallet.getEan128(),
-                spotsFrom.get(pallet.getUbicacion().getId()).getLado(),
-                spotsFrom.get(pallet.getUbicacion().getId()).getFila(),
-                spotsFrom.get(pallet.getUbicacion().getId()).getColumna(),
+                pallet.getUbicacion().getLado(),
+                pallet.getUbicacion().getFila(),
+                pallet.getUbicacion().getColumna(),
             });
         }
     }
@@ -372,7 +370,7 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
                 isChecked = (Boolean)tblPalletFrom.getValueAt(i, 4);
                 if (isChecked != null && isChecked) {
                     selectedPallets.add(palletsFrom.get(i).getId());
-                    System.out.println("Pallet id: "+palletsFrom.get(i).getId()+" Ubicacion id: "+palletsFrom.get(i).getUbicacion().getId());
+                    //System.out.println("Pallet id: "+palletsFrom.get(i).getId()+" Ubicacion id: "+palletsFrom.get(i).getUbicacion().getId());
                 }
             }
         }
@@ -382,22 +380,26 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
                 isChecked = (Boolean)tblPalletTo.getValueAt(i, 3);
                 if (isChecked != null && isChecked) {
                     selectedSpots.add(spotsTo.get(i).getId());
-                    System.out.println("Spot id: "+spotsTo.get(i).getId());
+                    //System.out.println("Spot id: "+spotsTo.get(i).getId());
                 }
             }
         }
-        
+        /*
         System.out.println("Pallets seleccionados: "+selectedPallets.size());
         System.out.println("Ubicaciones seleccionadas: "+selectedSpots.size());
-        
+        */
         if(selectedPallets.size() == selectedSpots.size() && selectedPallets.size()>0){
             for(int i=0;i<selectedPallets.size();i++){
-                
+                System.out.println("1");
+                spotApplication.updateSpotOccupancy(palletsFrom.get(i).getUbicacion().getId(), 0);
+                System.out.println("2");
+                palletApplication.updatePalletSpot(palletsFrom.get(i).getId(), selectedSpots.get(i));
+                System.out.println("3");
+                spotApplication.updateSpotOccupancy(selectedSpots.get(i), 1);
+                System.out.println("4");
             }
-            //Por cada pallet
-                //Pongo la actual ubicacion del pallet como libre
-                //Cambio la ubicacion del pallet
-                //Pongo la nueva ubicacion del pallet como ocupado        
+            fillTableFrom(racksFrom.get(comboRackFrom.getSelectedIndex()).getId());
+            fillTableTo(racksTo.get(comboRackTo.getSelectedIndex()).getId());
         }else{
             String error_message = "Errores:\n\n";
             if(selectedPallets.size()<1)

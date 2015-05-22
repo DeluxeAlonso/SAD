@@ -51,36 +51,8 @@ public class SpotRepository implements ISpotRepository{
     }
     
     @Override
-    public List querySpotsByRackWithContent(int rackId) {
-        String hql="FROM Ubicacion u, Pallet p "
-                + "WHERE u.rack.id=:rackId and p.ubicacion.id=u.id";
-        
-        List spots=null;
-        
-        Transaction trns = null;
-        Session session = Tools.getSessionInstance();
-        try {            
-            trns=session.beginTransaction();
-            Query q = session.createQuery(hql);
-            
-            //Criteria cr = session.createCriteria(Spot.class);
-            //cr.add(Restrictions.eq("id_rack", rackId));
-            q.setParameter("rackId", rackId);
-            spots = q.list();      
-            //spots = cr.list(); 
-            session.getTransaction().commit();
-        } catch (RuntimeException e) {
-            if (trns != null) {
-                trns.rollback();
-            }
-            e.printStackTrace();
-        }
-        return spots; //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    @Override
     public ArrayList<Ubicacion> queryEmptySpotsByRack(int rackId) {
-        String hql="FROM Ubicacion u WHERE u.rack.id=:rackId AND u.ocupado='0'";
+        String hql="FROM Ubicacion u WHERE u.rack.id=:rackId AND u.ocupado='0' ORDER BY u.lado, u.fila";
         ArrayList<Ubicacion> spots=null;
         
         Transaction trns = null;
@@ -98,6 +70,29 @@ public class SpotRepository implements ISpotRepository{
             e.printStackTrace();
         }
         return spots; //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public Boolean updateSpotOccupancy(int spotId,int occupancyState) {
+        String hql="UPDATE Ubicacion u SET u.ocupado=:occupancyState WHERE u.id=:spotId";
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createSQLQuery(hql);
+            q.setParameter("occupancyState", occupancyState);
+            q.setParameter("spotId", spotId);  
+            q.executeUpdate();
+            session.getTransaction().commit();
+            return true;
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }
     }
     
     @Override

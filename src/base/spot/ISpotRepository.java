@@ -16,6 +16,6 @@ import java.util.List;
  */
 public interface ISpotRepository extends IRepository<Ubicacion>{
     ArrayList<Ubicacion> querySpotsByRack(int rackId);
-    List querySpotsByRackWithContent(int rackId);
     ArrayList<Ubicacion> queryEmptySpotsByRack(int rackId);
+    Boolean updateSpotOccupancy(int spotId,int occupancyState);
 }

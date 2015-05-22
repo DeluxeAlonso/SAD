@@ -31,16 +31,6 @@ public class SpotApplication {
         return spots;
     }
     
-    public List querySpotsByRackWithContent(int rackId){
-        List<Ubicacion> spots = null;
-        try {
-            spots = spotRepository.querySpotsByRackWithContent(rackId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return spots;
-    }
-    
     public ArrayList<Ubicacion> queryEmptySpotsByRack(int rackId){
         ArrayList<Ubicacion> spots = null;
         try {
@@ -49,6 +39,16 @@ public class SpotApplication {
             e.printStackTrace();
         }
         return spots;
+    }
+    
+    public Boolean updateSpotOccupancy(int spotId,int occupancyState){
+        Boolean response = false;
+        try {
+            response = spotRepository.updateSpotOccupancy(spotId,occupancyState);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
     }
     
 }

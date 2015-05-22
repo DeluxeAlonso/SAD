@@ -41,6 +41,29 @@ public class PalletRepository implements IPalletRepository{
         }
         return pallets; //To change body of generated methods, choose Tools | Templates.
     }
+    
+    @Override
+    public Boolean updatePalletSpot(int palletId, int spotId) {
+        String hql="UPDATE Pallet p SET p.id_ubicacion=:spotId WHERE p.id=:palletId";
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createSQLQuery(hql);
+            q.setParameter("spotId", spotId);
+            q.setParameter("palletId", palletId);   
+            q.executeUpdate();      
+            session.getTransaction().commit();
+            return true;
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     @Override
     public void insert(Pallet object) {
