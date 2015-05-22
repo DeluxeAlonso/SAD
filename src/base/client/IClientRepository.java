@@ -7,6 +7,7 @@ package base.client;
 
 import base.IRepository;
 import entity.Cliente;
+import java.util.ArrayList;
 
 /**
  *
@@ -14,4 +15,5 @@ import entity.Cliente;
  */
 public interface IClientRepository extends IRepository<Cliente>{
     public void insert(Cliente object);
+    public ArrayList<Cliente> queryAll();
 }

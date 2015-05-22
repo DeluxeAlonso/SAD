@@ -8,6 +8,7 @@ package infraestructure.client;
 import base.client.IClientRepository;
 import entity.Cliente;
 import java.util.ArrayList;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.Tools;
@@ -33,14 +34,30 @@ public class ClientRepository implements IClientRepository{
             e.printStackTrace();
         }
     }
-
+    
     @Override
-    public void delete(Cliente object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ArrayList<Cliente> queryAll() {
+        String hql="from Cliente";
+        ArrayList<Cliente> clients=null;
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);              
+            clients = (ArrayList<Cliente>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        } 
+        return clients;
     }
 
     @Override
-    public ArrayList<Cliente> queryAll() {
+    public void delete(Cliente object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

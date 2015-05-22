@@ -50,7 +50,7 @@ public class Strings {
     
     /*CLIENT MODULE MESSAGES*/
     public static final String MESSAGE_NEW_CLIENT_TITLE="Mensaje de inserción de cliente";
-    public static final String MESSAGE_NEW_CLIENT_CREATED="Se creó correctamente el nuevo cliente.";
+    public static final String MESSAGE_NEW_CLIENT_CREATED="Se registró correctamente el cliente.";
     public static final String ERROR_NEW_CLIENT_TITLE="Error al agregar nuevo cliente";
     public static final String ERROR_NAME_LESS_2="El campo nombre debe tener por lo menos 2 caracteres.";
     public static final String ERROR_NAME_MORE_60="El campo nombre no debe contener más de 60 caracteres.";

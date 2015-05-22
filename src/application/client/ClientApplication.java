@@ -8,6 +8,7 @@ package application.client;
 import base.client.IClientRepository;
 import entity.Cliente;
 import infraestructure.client.ClientRepository;
+import java.util.ArrayList;
 
 /**
  *
@@ -26,5 +27,15 @@ public class ClientApplication {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    public ArrayList<Cliente> queryAll(){
+        ArrayList<Cliente> clients = null;
+        try {
+            clients = clientRepository.queryAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return clients;
     }
 }
