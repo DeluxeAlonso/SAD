@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package infraestructure.transportunit;
+package infraestructure.transportunittype;
 
-import base.transportunit.ITransportUnitTypeRepository;
+import base.transportunittype.ITransportUnitTypeRepository;
 import entity.TipoUnidadTransporte;
 import java.util.ArrayList;
 import org.hibernate.Query;

@@ -48,7 +48,7 @@ public class PalletRepository implements IPalletRepository{
         
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
-        try {            
+        try {
             trns=session.beginTransaction();
             Query q = session.createSQLQuery(hql);
             q.setParameter("spotId", spotId);

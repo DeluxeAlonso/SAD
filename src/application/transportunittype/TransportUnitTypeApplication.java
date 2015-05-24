@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package application.transportunit;
+package application.transportunittype;
 
-import base.transportunit.ITransportUnitTypeRepository;
+import base.transportunittype.ITransportUnitTypeRepository;
 import entity.TipoUnidadTransporte;
-import infraestructure.transportunit.TransportUnitTypeRepository;
+import infraestructure.transportunittype.TransportUnitTypeRepository;
 import java.util.ArrayList;
 
 /**

@@ -6,18 +6,44 @@
 
 package client.transportunit;
 
+import application.transportunit.TransportUnitApplication;
+import application.transportunittype.TransportUnitTypeApplication;
+import entity.UnidadTransporte;
+import javax.swing.JOptionPane;
+import util.EntityType;
+import util.InstanceFactory;
+import util.Strings;
+
 /**
  *
  * @author LUIS
  */
 public class NewTransportUnitView extends javax.swing.JDialog {
-
+    TransportUnitApplication transportUnitApplication = InstanceFactory.Instance.getInstance("transportUnitApplication", TransportUnitApplication.class);
+    TransportUnitTypeApplication transportUnitTypeApplication = InstanceFactory.Instance.getInstance("transportUnitTypeApplication", TransportUnitTypeApplication.class);
     /**
      * Creates new form NewTU
      */
     public NewTransportUnitView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setupElements();
+    }
+    
+    public void setupElements(){
+        fillCombos();
+    }
+    
+    public void fillCombos(){
+        EntityType.TRANSPORT_TYPES = transportUnitTypeApplication.getAllTransportUnitTypes();
+        EntityType.fillUnitTransportTypesNames();
+        typeCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.TRANSPORT_TYPE_NAMES));
+    }
+    
+    public void clearFields(){
+        plateTxt.setText("");
+        capacityTxt.setText("");
+        transportistTxt.setText("");
     }
 
     /**
@@ -30,23 +56,36 @@ public class NewTransportUnitView extends javax.swing.JDialog {
     private void initComponents() {
 
         jLabel2 = new javax.swing.JLabel();
-        nameTxt = new javax.swing.JTextField();
-        firstNameTxt = new javax.swing.JTextField();
+        plateTxt = new javax.swing.JTextField();
+        capacityTxt = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        profileCombo = new javax.swing.JComboBox();
+        typeCombo = new javax.swing.JComboBox();
         saveTxt = new javax.swing.JButton();
         cancelBtn = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        transportistTxt = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel2.setText("Capacidad:");
 
+        capacityTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                capacityTxtActionPerformed(evt);
+            }
+        });
+
         jLabel1.setText("Placa:");
 
         jLabel3.setText("TIpo:");
 
-        profileCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        typeCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        typeCombo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                typeComboActionPerformed(evt);
+            }
+        });
 
         saveTxt.setText("Guardar");
         saveTxt.addActionListener(new java.awt.event.ActionListener() {
@@ -62,29 +101,46 @@ public class NewTransportUnitView extends javax.swing.JDialog {
             }
         });
 
+        jLabel4.setText("Transportista:");
+
+        transportistTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                transportistTxtActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel3))
-                .addGap(6, 6, 6)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(profileCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(firstNameTxt)
-                        .addComponent(nameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 76, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(112, Short.MAX_VALUE)
                 .addComponent(cancelBtn)
                 .addGap(18, 18, 18)
                 .addComponent(saveTxt)
                 .addGap(77, 77, 77))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(transportistTxt))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(plateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel2)
+                                .addComponent(jLabel1)
+                                .addComponent(jLabel3))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(25, 25, 25)
+                                    .addComponent(typeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(102, 102, 102))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(capacityTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -92,20 +148,24 @@ public class NewTransportUnitView extends javax.swing.JDialog {
                 .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(nameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(plateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(15, 15, 15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(firstNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(capacityTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(15, 15, 15)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(transportistTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(15, 15, 15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(profileCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(40, 40, 40)
+                    .addComponent(typeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(16, 16, 16)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveTxt)
                     .addComponent(cancelBtn))
-                .addContainerGap(38, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         pack();
@@ -113,6 +173,15 @@ public class NewTransportUnitView extends javax.swing.JDialog {
 
     private void saveTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveTxtActionPerformed
         // TODO add your handling code here:
+        UnidadTransporte transportUnit = new UnidadTransporte();
+        transportUnit.setPlaca(plateTxt.getText());
+        transportUnit.setCapacidad(Integer.parseInt(capacityTxt.getText()));
+        transportUnit.setTransportista(transportistTxt.getText());
+        transportUnit.setTipoUnidadTransporte(EntityType.TRANSPORT_TYPES.get(typeCombo.getSelectedIndex()));
+        System.out.println(EntityType.TRANSPORT_TYPES.get(typeCombo.getSelectedIndex()).getDescripcion());
+        transportUnitApplication.createTransportUnit(transportUnit);
+        JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_CLIENT_CREATED,Strings.MESSAGE_NEW_CLIENT_TITLE,JOptionPane.INFORMATION_MESSAGE);
+        clearFields();
     }//GEN-LAST:event_saveTxtActionPerformed
 
     private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
@@ -120,15 +189,29 @@ public class NewTransportUnitView extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_cancelBtnActionPerformed
 
+    private void typeComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeComboActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_typeComboActionPerformed
+
+    private void transportistTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transportistTxtActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_transportistTxtActionPerformed
+
+    private void capacityTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_capacityTxtActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_capacityTxtActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelBtn;
-    private javax.swing.JTextField firstNameTxt;
+    private javax.swing.JTextField capacityTxt;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JTextField nameTxt;
-    private javax.swing.JComboBox profileCombo;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JTextField plateTxt;
     private javax.swing.JButton saveTxt;
+    private javax.swing.JTextField transportistTxt;
+    private javax.swing.JComboBox typeCombo;
     // End of variables declaration//GEN-END:variables
 }

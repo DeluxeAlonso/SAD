@@ -57,4 +57,8 @@ public class Strings {
     public static final String ERROR_RUC_NOT_11="El campo RUC debe contener exactamente 11 caracteres.";
     public static final String ERROR_RUC_NOT_NUMERIC="El campo RUC debe contener caracteres numéricos solamente.";
     /*END*/
+    
+    /*TRANSPORT UNIT MESSAGES*/
+    public static final String MESSAGE_NEW_TRANSPORT_UNIT_CREATED = "Se registró correctamente la unidad de transporte.";
+    /*END*/
 }

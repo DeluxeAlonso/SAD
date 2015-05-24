@@ -6,12 +6,12 @@
 package base.transportunit;
 
 import base.IRepository;
-import entity.TipoUnidadTransporte;
+import entity.UnidadTransporte;
 
 /**
  *
  * @author Alonso
  */
-public interface ITransportUnitTypeRepository extends IRepository<TipoUnidadTransporte>{
-    
+public interface ITransportUnitRepository extends IRepository<UnidadTransporte>{
+    Boolean createTransportUnit(UnidadTransporte transportUnit);
 }

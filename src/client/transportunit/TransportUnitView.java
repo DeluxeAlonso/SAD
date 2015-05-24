@@ -6,7 +6,7 @@
 
 package client.transportunit;
 
-import application.transportunit.TransportUnitTypeApplication;
+import application.transportunittype.TransportUnitTypeApplication;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
