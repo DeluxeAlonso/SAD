@@ -14,4 +14,5 @@ import entity.UnidadTransporte;
  */
 public interface ITransportUnitRepository extends IRepository<UnidadTransporte>{
     Boolean createTransportUnit(UnidadTransporte transportUnit);
+    Boolean updateTransportUnit(UnidadTransporte transportUnit);
 }

@@ -36,7 +36,6 @@ public class TransportUnitView extends javax.swing.JInternalFrame {
     }
     
     public void setupElements(){
-        System.out.println("setupElements");
         fillCombos();
         refreshTable();
     }
@@ -48,12 +47,10 @@ public class TransportUnitView extends javax.swing.JInternalFrame {
     }
     
     public void refreshTable(){
-        System.out.println("RefreshTable");
         ArrayList<String> cols = new ArrayList<>();
         for (int i = 0; i<transportTable.getColumnCount(); i++)
             cols.add(transportTable.getColumnName(i));
         DefaultTableModel tableModel = new DefaultTableModel(cols.toArray(), 0);
-        System.out.println(EntityType.TRANSPORT_UNITS.size());
         transportTable.setModel(tableModel);
         EntityType.TRANSPORT_UNITS.stream().forEach((_transportUnit) -> {
             System.out.println("Transport query all");
@@ -62,8 +59,6 @@ public class TransportUnitView extends javax.swing.JInternalFrame {
                 _transportUnit.getTipoUnidadTransporte().getDescripcion(),""};
             tableModel.addRow(row);
         });
-        System.out.println(tableModel.getRowCount());
-        
     }
 
     /**
@@ -122,6 +117,11 @@ public class TransportUnitView extends javax.swing.JInternalFrame {
         });
 
         editBtn.setText("Editar");
+        editBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editBtnActionPerformed(evt);
+            }
+        });
 
         deleteBtn.setText("Eliminar");
 
@@ -189,6 +189,11 @@ public class TransportUnitView extends javax.swing.JInternalFrame {
         NewTransportUnitView newTU=new NewTransportUnitView((JFrame)SwingUtilities.getWindowAncestor(this),true);
         newTU.setVisible(true);
     }//GEN-LAST:event_newBtnActionPerformed
+
+    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
+        NewTransportUnitView newTU=new NewTransportUnitView((JFrame)SwingUtilities.getWindowAncestor(this),true);
+        newTU.setVisible(true);
+    }//GEN-LAST:event_editBtnActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

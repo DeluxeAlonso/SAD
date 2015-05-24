@@ -21,8 +21,13 @@ import util.Strings;
 public class NewTransportUnitView extends javax.swing.JDialog {
     TransportUnitApplication transportUnitApplication = InstanceFactory.Instance.getInstance("transportUnitApplication", TransportUnitApplication.class);
     TransportUnitTypeApplication transportUnitTypeApplication = InstanceFactory.Instance.getInstance("transportUnitTypeApplication", TransportUnitTypeApplication.class);
+    UnidadTransporte updatedTransportUnit;
+    String eventType = "Create";
+    
     /**
      * Creates new form NewTU
+     * @param parent
+     * @param modal
      */
     public NewTransportUnitView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -30,8 +35,21 @@ public class NewTransportUnitView extends javax.swing.JDialog {
         setupElements();
     }
     
+    public NewTransportUnitView(java.awt.Frame parent, boolean modal, UnidadTransporte transportUnit) {
+        super(parent, modal);
+        initComponents();
+        eventType = "Update";
+        this.updatedTransportUnit = transportUnit;
+        fillTransportUnitData(this.updatedTransportUnit);
+    }
+    
     public void setupElements(){
         fillCombos();
+    }
+    
+    public void fillTransportUnitData(UnidadTransporte transportUnit){
+        plateTxt.setText(transportUnit.getPlaca());
+        capacityTxt.setText(transportUnit.getCapacidad().toString());
     }
     
     public void fillCombos(){

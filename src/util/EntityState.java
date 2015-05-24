@@ -50,4 +50,10 @@ public class EntityState {
          return localsState;
     }
     
+    public static enum TransportUnits { INACTIVO, ACTIVO};
+    public static String[] getTransportUnitsState(){
+         String[] transportUnitsState={"Inactivo","Activo"};
+         return transportUnitsState;
+    }
+    
 }

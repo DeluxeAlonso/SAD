@@ -38,6 +38,8 @@ public class TransportUnitRepository implements ITransportUnitRepository{
         }
     }
     
+    
+    
     @Override
     public void insert(UnidadTransporte object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -67,6 +69,23 @@ public class TransportUnitRepository implements ITransportUnitRepository{
             e.printStackTrace();
         }
         return unitTransport;
+    }
+    
+    public Boolean updateTransportUnit(UnidadTransporte transportUnit){
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            session.update(transportUnit);                      
+            session.getTransaction().commit();
+            return true;
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }     
     }
 
     @Override
