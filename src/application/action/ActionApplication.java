@@ -34,7 +34,6 @@ public class ActionApplication {
     }
     
     public void refreshActions() {
-        
         EntityType.ACTIONS = getAllActions();
     }
 }

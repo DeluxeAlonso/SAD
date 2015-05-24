@@ -9,6 +9,7 @@ import entity.Accion;
 import entity.Condicion;
 import entity.Perfil;
 import entity.TipoUnidadTransporte;
+import entity.UnidadTransporte;
 import java.util.ArrayList;
 
 /**
@@ -23,6 +24,7 @@ public class EntityType {
     public static ArrayList<Condicion> CONDITIONS = new ArrayList<>();
     public static ArrayList<Perfil> PROFILES = new ArrayList<>();
     public static ArrayList<Accion> ACTIONS = new ArrayList<>();
+    public static ArrayList<UnidadTransporte> TRANSPORT_UNITS = new ArrayList<>();
     
     public static ArrayList<TipoUnidadTransporte> TRANSPORT_TYPES = new ArrayList<>();
 

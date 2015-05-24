@@ -7,10 +7,14 @@
 package client.transportunit;
 
 import application.transportunittype.TransportUnitTypeApplication;
+import entity.UnidadTransporte;
+import java.util.ArrayList;
+import java.util.Iterator;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
 import util.EntityState;
 import util.EntityType;
 import util.InstanceFactory;
@@ -32,13 +36,34 @@ public class TransportUnitView extends javax.swing.JInternalFrame {
     }
     
     public void setupElements(){
+        System.out.println("setupElements");
         fillCombos();
+        refreshTable();
     }
     
     public void fillCombos(){
         EntityType.TRANSPORT_TYPES = transportUnitTypeApplication.getAllTransportUnitTypes();
         EntityType.fillUnitTransportTypesNames();
         transportTypeCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.TRANSPORT_TYPE_NAMES));
+    }
+    
+    public void refreshTable(){
+        System.out.println("RefreshTable");
+        ArrayList<String> cols = new ArrayList<>();
+        for (int i = 0; i<transportTable.getColumnCount(); i++)
+            cols.add(transportTable.getColumnName(i));
+        DefaultTableModel tableModel = new DefaultTableModel(cols.toArray(), 0);
+        System.out.println(EntityType.TRANSPORT_UNITS.size());
+        transportTable.setModel(tableModel);
+        EntityType.TRANSPORT_UNITS.stream().forEach((_transportUnit) -> {
+            System.out.println("Transport query all");
+            Object[] row = {_transportUnit.getId(), _transportUnit.getPlaca(),
+                _transportUnit.getTransportista(), _transportUnit.getCapacidad(),
+                _transportUnit.getTipoUnidadTransporte().getDescripcion(),""};
+            tableModel.addRow(row);
+        });
+        System.out.println(tableModel.getRowCount());
+        
     }
 
     /**
@@ -66,10 +91,7 @@ public class TransportUnitView extends javax.swing.JInternalFrame {
 
         transportTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+
             },
             new String [] {
                 "ID", "Placa", "Conductor", "Capacidad", "Tipo", "Estado"

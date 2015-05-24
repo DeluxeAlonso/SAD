@@ -8,6 +8,8 @@ package application.transportunit;
 import base.transportunit.ITransportUnitRepository;
 import entity.UnidadTransporte;
 import infraestructure.transportunit.TransportUnitRepository;
+import java.util.ArrayList;
+import util.EntityType;
 
 /**
  *
@@ -21,6 +23,16 @@ public class TransportUnitApplication {
         this.transportUnitRepository = new TransportUnitRepository();
     }
     
+    public ArrayList<UnidadTransporte> getAllTransportUnits(){
+        ArrayList<UnidadTransporte> actions=null;
+        try{
+            actions=transportUnitRepository.queryAll();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return actions;
+    }
+    
     public Boolean createTransportUnit(UnidadTransporte transportUnit){
         Boolean response = false;
         try {
@@ -29,6 +41,10 @@ public class TransportUnitApplication {
             e.printStackTrace();
         }
         return response;
+    }
+    
+    public void refreshTransportUnits(){
+        EntityType.TRANSPORT_UNITS = getAllTransportUnits();
     }
     
 }

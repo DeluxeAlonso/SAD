@@ -51,13 +51,13 @@ public class TransportUnitRepository implements ITransportUnitRepository{
     @Override
     public ArrayList<UnidadTransporte> queryAll() {
         String hql = "from UnidadTransporte";
-        ArrayList<UnidadTransporte> unitTransportTypes = null;
+        ArrayList<UnidadTransporte> unitTransport = null;
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
         try{
             trns = session.beginTransaction();
             Query q = session.createQuery(hql);
-            unitTransportTypes = (ArrayList<UnidadTransporte>) q.list();
+            unitTransport = (ArrayList<UnidadTransporte>) q.list();
             session.getTransaction().commit();
         }
         catch (RuntimeException e){
@@ -66,7 +66,7 @@ public class TransportUnitRepository implements ITransportUnitRepository{
             }
             e.printStackTrace();
         }
-        return unitTransportTypes;
+        return unitTransport;
     }
 
     @Override
