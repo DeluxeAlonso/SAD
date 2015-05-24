@@ -24,7 +24,7 @@ public class EntityType {
     public static ArrayList<Accion> ACTIONS = new ArrayList<>();
 
     public static String[] PROFILES_NAMES;
-    
+    public static String[] CONDITIONS_NAMES;
 
     public static void fillProfileNames() {
         PROFILES_NAMES = new String[PROFILES.size() + 1];
@@ -36,6 +36,29 @@ public class EntityType {
             }
         }
     } 
+    
+    public static void fillConditionNames() {
+        CONDITIONS_NAMES = new String[CONDITIONS.size() + 1];
+        for (int i = 0; i < CONDITIONS.size()+1; i++) {
+            if (i == 0) {
+                CONDITIONS_NAMES[i] = "";
+            } else {
+                CONDITIONS_NAMES[i] = CONDITIONS.get(i-1).getNombre();
+            }
+        }
+    } 
+    
+    public static Condicion getCondition(int codigo) {
+        int n = CONDITIONS.size();
+        for (int i = 0; i < n; i++) {
+            if (codigo == CONDITIONS.get(i).getId())
+            {
+                return CONDITIONS.get(i);
+            }
+        }
+        return null;
+    }
+    
     
 
 }

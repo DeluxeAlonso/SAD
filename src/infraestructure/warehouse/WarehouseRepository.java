@@ -23,7 +23,18 @@ public class WarehouseRepository implements IWarehouseRepository{
 
     @Override
     public void insert(Almacen object) {
-        System.out.print("Hola");
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            session.save(object);                      
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        } 
     }
 
     @Override
