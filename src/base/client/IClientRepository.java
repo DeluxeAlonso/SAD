@@ -16,4 +16,5 @@ import java.util.ArrayList;
 public interface IClientRepository extends IRepository<Cliente>{
     public void insert(Cliente object);
     public ArrayList<Cliente> queryAll();
+    public Boolean delete(int clientId);
 }

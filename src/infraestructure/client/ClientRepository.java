@@ -39,7 +39,7 @@ public class ClientRepository implements IClientRepository{
     
     @Override
     public ArrayList<Cliente> queryAll() {
-        String hql="FROM Cliente WHERE estado=:state";
+        String hql="FROM Cliente c WHERE c.estado=:state";
         ArrayList<Cliente> clients=null;
         
         Transaction trns = null;
@@ -47,7 +47,7 @@ public class ClientRepository implements IClientRepository{
         try {            
             trns=session.beginTransaction();
             Query q = session.createQuery(hql);    
-            q.setParameter("state", Clients.ACTIVO);          
+            q.setParameter("state", Clients.ACTIVO.ordinal());          
             clients = (ArrayList<Cliente>) q.list();          
             session.getTransaction().commit();
         } catch (RuntimeException e) {
@@ -58,12 +58,35 @@ public class ClientRepository implements IClientRepository{
         } 
         return clients;
     }
-
+    
+    @Override
+    public Boolean delete(int clientId) {
+        String hql="UPDATE Cliente c SET c.estado=:state WHERE c.id=:clientId";
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createSQLQuery(hql);
+            q.setParameter("state", Clients.INACTIVO.ordinal());
+            q.setParameter("clientId", clientId); 
+            q.executeUpdate();      
+            session.getTransaction().commit();
+            return true;
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        } 
+    }
+    /*
     @Override
     public void delete(Cliente object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    */
     @Override
     public void update(Cliente object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -76,6 +99,11 @@ public class ClientRepository implements IClientRepository{
 
     @Override
     public Cliente queryById(String id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void delete(Cliente object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

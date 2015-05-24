@@ -44,4 +44,10 @@ public class EntityState {
          return clientsState;
     }
     
+    public static enum Locals { INACTIVO, ACTIVO};
+    public static String[] getLocalsState(){
+         String[] localsState={"Inactivo","Activo"};
+         return localsState;
+    }
+    
 }

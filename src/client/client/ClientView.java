@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Locale;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -19,6 +20,7 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import util.InstanceFactory;
+import util.Strings;
 
 /**
  *
@@ -135,6 +137,11 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
 
         btnLocal.setText("Ver locales");
         btnLocal.setEnabled(false);
+        btnLocal.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnLocalMousePressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -200,7 +207,22 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
 
     private void btnDeleteMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMousePressed
         System.out.println(tblClients.getSelectedRow());
+        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+        int response = JOptionPane.showConfirmDialog(this, Strings.MESSAGE_DELETE_CLIENT,Strings.MESSAGE_DELETE_CLIENT_TITLE,JOptionPane.WARNING_MESSAGE);
+        if(JOptionPane.OK_OPTION == response){
+            clientApplication.delete(clients.get(tblClients.getSelectedRow()).getId());
+            fillClientsTable();
+        }
+        
     }//GEN-LAST:event_btnDeleteMousePressed
+
+    private void btnLocalMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLocalMousePressed
+        //tblClients.getSelectedRow();
+        //System.out.println(clients.get(tblClients.getSelectedRow()));
+        Cliente client = clients.get(tblClients.getSelectedRow());
+        LocalsView localsView = new LocalsView((JFrame)SwingUtilities.getWindowAncestor(this),true, client);
+        localsView.setVisible(true);
+    }//GEN-LAST:event_btnLocalMousePressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
