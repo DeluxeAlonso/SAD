@@ -148,6 +148,9 @@
         <Property name="text" type="java.lang.String" value="Ver locales"/>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
+      <Events>
+        <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnLocalMousePressed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

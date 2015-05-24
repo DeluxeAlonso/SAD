@@ -1,0 +1,1 @@
+ALTER TABLE saddb.local ADD estado INT;
