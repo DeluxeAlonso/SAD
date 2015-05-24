@@ -30,9 +30,12 @@ public class NewUserView extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();       
         //initialize user states combo
+       
+    }  
+    public void fillCombos(){
         stateCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getUsersState()));
         profileCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.PROFILES_NAMES));
-    }  
+    }
     public void clearFields(){
         nameTxt.setText("");
         firstNameTxt.setText("");

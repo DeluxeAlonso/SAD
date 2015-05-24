@@ -88,7 +88,18 @@ public class UserRepository implements IUserRepository {
 
     @Override
     public void update(Usuario object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            session.update(object);                      
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        } 
     }
 
     @Override
@@ -98,7 +109,25 @@ public class UserRepository implements IUserRepository {
 
     @Override
     public Usuario queryById(String id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        Usuario user = null;
+        String hql
+                = "from Usuario where idusuario=:id";
+        try {
+            
+            session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("id", id);
+            user = (Usuario) q.uniqueResult();
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return user;
     }
 
 }

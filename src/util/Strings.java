@@ -39,6 +39,7 @@ public class Strings {
     public static final String MESSAGE_RESTABLISH_PASSWORD="Se ha enviado la nueva contraseña al correo del usuario.";
     public static final String MESSAGE_CHANGE_PASSWORD="Se ha modificado su contraseña satisfactoriamente.";
     public static final String MESSAGE_NEW_USER_CREATED="El usuario se ha registrado con éxito.";
+    public static final String MESSAGE_USER_UPDATED="El usuario ha sido actualizado con éxito.";
     /*END*/
     
     /*WAREHOUSE MODULE MESSAGES*/

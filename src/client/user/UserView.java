@@ -9,9 +9,11 @@ import application.action.ActionApplication;
 import application.profile.ProfileApplication;
 import application.user.UserApplication;
 import entity.Accion;
+import entity.Perfil;
 import entity.Usuario;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
+import java.util.Set;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -47,7 +49,7 @@ public class UserView extends javax.swing.JInternalFrame {
         actionApplication.refreshActions();
         fillCombos();
         refreshGrid();
-        fillOriginList();
+        
         
 
     }
@@ -66,14 +68,26 @@ public class UserView extends javax.swing.JInternalFrame {
         comboProfile2.setModel(new javax.swing.DefaultComboBoxModel(EntityType.PROFILES_NAMES));
     }
 
-    public void fillOriginList() {
-
-        DefaultListModel listModel = (DefaultListModel) actionOriginList.getModel();
-        for (Accion a : EntityType.ACTIONS) {
-            listModel.addElement(a.getNombre());
+        
+    public void fillLists(String profileName){
+        
+        Perfil profile=profileApplication.getProfileInstance(profileName);
+        ArrayList<String> acciones=new ArrayList<>();
+        DefaultListModel origModel= (DefaultListModel)actionOriginList.getModel();
+        DefaultListModel destModel= (DefaultListModel)actionDestList.getModel();
+        for(Accion a:EntityType.ACTIONS){
+            boolean found=false;
+            for(Accion b:(Set<Accion>)profile.getAccions()){
+                if(a.getNombre().equals(b.getNombre())){
+                    found=true;
+                    break;
+                }
+            }
+            if(!found)
+                origModel.addElement(a.getNombre());
+            else
+                destModel.addElement(a.getNombre());
         }
-        actionOriginList.setModel(listModel);
-
     }
 
     public void clearUserGrid() {
@@ -164,7 +178,7 @@ public class UserView extends javax.swing.JInternalFrame {
             }
         });
 
-        jButton7.setText("Restablercer Contraseña");
+        jButton7.setText("Restablecer Contraseña");
         jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton7ActionPerformed(evt);
@@ -414,6 +428,8 @@ public class UserView extends javax.swing.JInternalFrame {
 
         jLabel6.setText("Nombre Perfil:");
 
+        txtProfileName.setEnabled(false);
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -456,11 +472,11 @@ public class UserView extends javax.swing.JInternalFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(34, 34, 34)
+                .addGap(40, 40, 40)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -497,6 +513,7 @@ public class UserView extends javax.swing.JInternalFrame {
     private void btnAddProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProfileActionPerformed
         // TODO add your handling code here:
         txtProfileName.setEnabled(true);
+        txtProfileName.requestFocus();
         comboProfile2.setEnabled(false);
         btnDeleteProfile.setEnabled(false);
     }//GEN-LAST:event_btnAddProfileActionPerformed
@@ -525,18 +542,18 @@ public class UserView extends javax.swing.JInternalFrame {
 
     private void comboProfile2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboProfile2ItemStateChanged
         // TODO add your handling code here:
+        clearLists();
         if (evt.getStateChange() == ItemEvent.SELECTED) {
-            if (comboProfile2.getSelectedIndex() != 0) {
-                DefaultListModel model = (DefaultListModel) actionDestList.getModel();
+            if (comboProfile2.getSelectedIndex() != 0) {               
                 String profileName = comboProfile2.getSelectedItem().toString();
-
-                /*for (Acciion a : ) {
-
-                }*/
+                fillLists(profileName);               
             }
         }
     }//GEN-LAST:event_comboProfile2ItemStateChanged
-
+    private void clearLists(){
+        ((DefaultListModel)actionOriginList.getModel()).clear();
+        ((DefaultListModel)actionDestList.getModel()).clear();
+    }
     private void editProfileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editProfileBtnActionPerformed
         // TODO add your handling code here:
         saveProfileBtn.setEnabled(true);
@@ -576,13 +593,25 @@ public class UserView extends javax.swing.JInternalFrame {
 
     private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
         // TODO add your handling code here:
-        EditUserAdmin editUserAdmin = new EditUserAdmin((JFrame) SwingUtilities.getWindowAncestor(this), true);
-        editUserAdmin.setVisible(true);
+        DefaultTableModel model=(DefaultTableModel)usersGrid.getModel();
+        int selectedRow=-1;
+        selectedRow=usersGrid.getSelectedRow();
+        Usuario user=null;
+        if(selectedRow!=-1){
+            String userId=model.getValueAt(selectedRow, 0).toString();
+            user=userApplication.getUserById(userId);
+            if(user!=null){
+                EditUserAdmin editUserAdmin = new EditUserAdmin((JFrame) SwingUtilities.getWindowAncestor(this), true,user);
+                editUserAdmin.setVisible(true);
+            }
+        }  
+        
+        
+        
     }//GEN-LAST:event_editBtnActionPerformed
 
     private void newBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newBtnActionPerformed
         // TODO add your handling code here:
-
         NewUserView newUserView = new NewUserView((JFrame) SwingUtilities.getWindowAncestor(this), true);
         newUserView.setVisible(true);
     }//GEN-LAST:event_newBtnActionPerformed
