@@ -24,6 +24,7 @@ public class WarehouseRepository implements IWarehouseRepository{
     @Override
     public void insert(Almacen object) {
         System.out.print("Hola");
+        System.out.print("Hola2");
     }
 
     @Override

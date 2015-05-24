@@ -10,6 +10,8 @@ import entity.Cliente;
 import java.util.Locale;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import util.EntityState;
+import util.EntityState.Clients;
 import util.InstanceFactory;
 import util.Strings;
 
@@ -146,6 +148,7 @@ public class NewClientView extends javax.swing.JDialog {
             Cliente client = new Cliente();
             client.setNombre(txtNombre.getText());
             client.setRuc(txtRuc.getText());
+            client.setEstado(Clients.ACTIVO.ordinal());
             clientApplication.insert(client);
             JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_CLIENT_CREATED,Strings.MESSAGE_NEW_CLIENT_TITLE,JOptionPane.INFORMATION_MESSAGE);
             clearFields();
