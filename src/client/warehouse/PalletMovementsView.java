@@ -122,12 +122,14 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
     
     public void fillTableFrom(int rackId){
         clearTableFrom();
+        
         DefaultTableModel model = (DefaultTableModel) tblPalletFrom.getModel();
         palletsFrom = palletApplication.queryPalletsByRack(rackId);
-        System.out.println(palletsFrom.size());
+        System.out.println("SIZE: "+palletsFrom.size());
         if(palletsFrom.size()>0){
             for(Pallet pallet : palletsFrom){
-                System.out.println(pallet.getEan128());
+                System.out.println("EAN: "+pallet.getEan128());
+                System.out.println("Ubicacion: "+pallet.getUbicacion());
                 model.addRow(new Object[]{
                     pallet.getEan128(),
                     pallet.getUbicacion().getLado(),
@@ -136,6 +138,7 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
                 });
             }
         }
+        
     }
     
     public void fillTableTo(int rackId){
