@@ -8,6 +8,7 @@ package client.warehouse;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import util.EntityType;
 
 /**
  *
@@ -20,6 +21,7 @@ public class WarehouseView extends javax.swing.JInternalFrame {
      */
     public WarehouseView() {
         initComponents();
+        this.condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.CONDITIONS_NAMES));
     }
 
     /**
@@ -37,7 +39,7 @@ public class WarehouseView extends javax.swing.JInternalFrame {
         jLabel1 = new javax.swing.JLabel();
         emailTxt = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        profileCombo = new javax.swing.JComboBox();
+        condicionCombo = new javax.swing.JComboBox();
         searchBtn = new javax.swing.JButton();
         WarehouseGrid = new javax.swing.JScrollPane();
         usersGrid = new javax.swing.JTable();
@@ -67,7 +69,7 @@ public class WarehouseView extends javax.swing.JInternalFrame {
 
         jLabel2.setText("Tipo:");
 
-        profileCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         searchBtn.setText("Buscar");
 
@@ -132,7 +134,7 @@ public class WarehouseView extends javax.swing.JInternalFrame {
                                 .addGap(26, 26, 26)
                                 .addComponent(jLabel2)
                                 .addGap(18, 18, 18)
-                                .addComponent(profileCombo, 0, 193, Short.MAX_VALUE)
+                                .addComponent(condicionCombo, 0, 193, Short.MAX_VALUE)
                                 .addGap(18, 18, 18)))
                         .addComponent(searchBtn)))
                 .addGap(27, 27, 27))
@@ -147,7 +149,7 @@ public class WarehouseView extends javax.swing.JInternalFrame {
                             .addComponent(jLabel1)
                             .addComponent(emailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2)
-                            .addComponent(profileCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
@@ -184,6 +186,7 @@ public class WarehouseView extends javax.swing.JInternalFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane WarehouseGrid;
+    private javax.swing.JComboBox condicionCombo;
     private javax.swing.JButton deleteBtn;
     private javax.swing.JButton editBtn;
     private javax.swing.JTextField emailTxt;
@@ -191,7 +194,6 @@ public class WarehouseView extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JButton newBtn;
-    private javax.swing.JComboBox profileCombo;
     private javax.swing.JComboBox profileCombo1;
     private javax.swing.JButton searchBtn;
     private javax.swing.JTable usersGrid;

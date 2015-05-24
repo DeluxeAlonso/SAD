@@ -8,7 +8,10 @@ package client.client;
 import application.client.ClientApplication;
 import entity.Cliente;
 import java.util.Locale;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import util.EntityState;
+import util.EntityState.Clients;
 import util.InstanceFactory;
 import util.Strings;
 
@@ -48,6 +51,11 @@ public class NewClientView extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Agregar cliente");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
 
         jLabel1.setText("Nombre:");
 
@@ -140,6 +148,7 @@ public class NewClientView extends javax.swing.JDialog {
             Cliente client = new Cliente();
             client.setNombre(txtNombre.getText());
             client.setRuc(txtRuc.getText());
+            client.setEstado(Clients.ACTIVO.ordinal());
             clientApplication.insert(client);
             JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_CLIENT_CREATED,Strings.MESSAGE_NEW_CLIENT_TITLE,JOptionPane.INFORMATION_MESSAGE);
             clearFields();
@@ -148,6 +157,11 @@ public class NewClientView extends javax.swing.JDialog {
         
         
     }//GEN-LAST:event_jButton1MousePressed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        System.out.println("CERRADO");
+        ClientView.clientView.fillClientsTable();
+    }//GEN-LAST:event_formWindowClosed
 
     /**
      * @param args the command line arguments

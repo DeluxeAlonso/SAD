@@ -20,7 +20,7 @@ public class SpotApplication {
     public SpotApplication(){
         this.spotRepository = new SpotRepository();
     }
-    
+    /*
     public ArrayList<Ubicacion> querySpotsByRack(int rackId){
         ArrayList<Ubicacion> spots = null;
         try {
@@ -30,7 +30,7 @@ public class SpotApplication {
         }
         return spots;
     }
-    
+    */
     public ArrayList<Ubicacion> queryEmptySpotsByRack(int rackId){
         ArrayList<Ubicacion> spots = null;
         try {

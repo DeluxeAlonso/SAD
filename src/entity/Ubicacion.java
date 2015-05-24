@@ -1,5 +1,5 @@
 package entity;
-// Generated 21-May-2015 00:05:52 by Hibernate Tools 4.3.1
+// Generated 24-May-2015 16:40:14 by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -16,7 +16,7 @@ public class Ubicacion  implements java.io.Serializable {
      private Integer fila;
      private Integer columna;
      private String lado;
-     private Integer ocupado;
+     private Integer estado;
      private Set pallets = new HashSet(0);
 
     public Ubicacion() {
@@ -27,13 +27,13 @@ public class Ubicacion  implements java.io.Serializable {
         this.id = id;
         this.rack = rack;
     }
-    public Ubicacion(int id, Rack rack, Integer fila, Integer columna, String lado, Integer ocupado, Set pallets) {
+    public Ubicacion(int id, Rack rack, Integer fila, Integer columna, String lado, Integer estado, Set pallets) {
        this.id = id;
        this.rack = rack;
        this.fila = fila;
        this.columna = columna;
        this.lado = lado;
-       this.ocupado = ocupado;
+       this.estado = estado;
        this.pallets = pallets;
     }
    
@@ -72,12 +72,12 @@ public class Ubicacion  implements java.io.Serializable {
     public void setLado(String lado) {
         this.lado = lado;
     }
-    public Integer getOcupado() {
-        return this.ocupado;
+    public Integer getEstado() {
+        return this.estado;
     }
     
-    public void setOcupado(Integer ocupado) {
-        this.ocupado = ocupado;
+    public void setEstado(Integer estado) {
+        this.estado = estado;
     }
     public Set getPallets() {
         return this.pallets;

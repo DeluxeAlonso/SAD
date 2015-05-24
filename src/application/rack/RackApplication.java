@@ -20,7 +20,7 @@ public class RackApplication {
         this.rackRepository = new RackRepository();
     }
     
-    public ArrayList<Rack> queryWarehousesByType(int warehouse_id){
+    public ArrayList<Rack> queryRacksByWarehouse(int warehouse_id){
         ArrayList<Rack> racks = null;
         try {
             racks = rackRepository.queryRacksByWarehouse(warehouse_id);

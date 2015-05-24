@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import util.EntityState.Warehouses;
 import util.HibernateUtil;
 import util.Tools;
 /**
@@ -22,7 +23,18 @@ public class WarehouseRepository implements IWarehouseRepository{
 
     @Override
     public void insert(Almacen object) {
-        System.out.print("Hola");
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            session.save(object);                      
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        } 
     }
 
     @Override
@@ -32,14 +44,15 @@ public class WarehouseRepository implements IWarehouseRepository{
 
     @Override
     public ArrayList<Almacen> queryAll() {
-        String hql="from Almacen";
+        String hql="FROM Almacen WHERE estado=:state";
         ArrayList<Almacen> warehouses=null;
         
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
-            Query q = session.createQuery(hql);              
+            Query q = session.createQuery(hql);
+            q.setParameter("state", Warehouses.ACTIVO.ordinal());           
             warehouses = (ArrayList<Almacen>) q.list();          
             session.getTransaction().commit();
         } catch (RuntimeException e) {
@@ -53,7 +66,7 @@ public class WarehouseRepository implements IWarehouseRepository{
     
     @Override
     public ArrayList<Almacen> queryWarehousesByType(int type) {
-        String hql="from Almacen where id_tipo_almacen=:type";
+        String hql="FROM Almacen WHERE id_tipo_almacen=:type AND estado=:state";
         ArrayList<Almacen> warehouses=null;
         
         Transaction trns = null;
@@ -62,6 +75,7 @@ public class WarehouseRepository implements IWarehouseRepository{
             trns=session.beginTransaction();
             Query q = session.createQuery(hql);
             q.setParameter("type", type);
+            q.setParameter("state", Warehouses.ACTIVO.ordinal());
             warehouses = (ArrayList<Almacen>) q.list();          
             session.getTransaction().commit();
         } catch (RuntimeException e) {

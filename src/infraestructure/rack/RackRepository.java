@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import util.EntityState.Racks;
 import util.HibernateUtil;
 import util.Tools;
 
@@ -22,7 +23,7 @@ public class RackRepository implements IRackRepository{
     
     @Override
     public ArrayList<Rack> queryRacksByWarehouse(int warehouseId) {
-        String hql="from Rack where id_almacen=:warehouse_id";
+        String hql="FROM Rack WHERE id_almacen=:warehouse_id AND estado=:state";
         ArrayList<Rack> warehouses=null;
         
         Transaction trns = null;
@@ -31,6 +32,7 @@ public class RackRepository implements IRackRepository{
             trns=session.beginTransaction();
             Query q = session.createQuery(hql);
             q.setParameter("warehouse_id", warehouseId);
+            q.setParameter("state", Racks.ACTIVO.ordinal());
             warehouses = (ArrayList<Rack>) q.list();          
             session.getTransaction().commit();
         } catch (RuntimeException e) {
