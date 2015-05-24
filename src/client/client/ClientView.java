@@ -27,6 +27,7 @@ import util.InstanceFactory;
 public class ClientView extends javax.swing.JInternalFrame implements MouseListener {
     ClientApplication clientApplication=InstanceFactory.Instance.getInstance("clientApplication", ClientApplication.class);
     ArrayList<Cliente> clients;
+    public static ClientView clientView;
     /**
      * Creates new form ClientView
      */
@@ -34,6 +35,7 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
         initComponents();
         setupListeners();
         fillClientsTable();
+        clientView = this;
     }
     
     private void setupListeners() {
@@ -47,7 +49,7 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
         model.setRowCount(0);
     }
     
-    private void fillClientsTable(){
+    public void fillClientsTable(){
         clearClientsTable();
         DefaultTableModel model = (DefaultTableModel) tblClients.getModel();
         clients = (ArrayList<Cliente>)clientApplication.queryAll();
@@ -75,8 +77,8 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
         jButton2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblClients = new javax.swing.JTable();
-        deleteButton = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
+        btnLocal = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Clientes");
@@ -123,10 +125,16 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
             tblClients.getColumnModel().getColumn(2).setResizable(false);
         }
 
-        deleteButton.setText("Eliminar");
-        deleteButton.setEnabled(false);
+        btnDelete.setText("Eliminar");
+        btnDelete.setEnabled(false);
+        btnDelete.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnDeleteMousePressed(evt);
+            }
+        });
 
-        jButton3.setText("Asignar local");
+        btnLocal.setText("Ver locales");
+        btnLocal.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -142,12 +150,12 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButton2)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnLocal)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(deleteButton))
+                        .addComponent(btnDelete))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jButton3))
+                        .addComponent(jLabel1)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -163,12 +171,11 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
                 .addGap(13, 13, 13)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
-                    .addComponent(deleteButton))
+                    .addComponent(btnDelete)
+                    .addComponent(btnLocal))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton3)
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -191,13 +198,17 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
         newClientView.setVisible(true);   
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void btnDeleteMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMousePressed
+        System.out.println(tblClients.getSelectedRow());
+    }//GEN-LAST:event_btnDeleteMousePressed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton deleteButton;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnLocal;
     private javax.swing.JTextField fileTextField;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblClients;
@@ -205,7 +216,8 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        deleteButton.setEnabled(true);
+        btnDelete.setEnabled(true);
+        btnLocal.setEnabled(true);
         if (e.getClickCount() == 2) {
             JTable target = (JTable)e.getSource();
             int row = target.getSelectedRow();

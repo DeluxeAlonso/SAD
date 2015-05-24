@@ -38,4 +38,10 @@ public class EntityState {
          return racksState;
     }
     
+    public static enum Clients { INACTIVO, ACTIVO};
+    public static String[] getClientsState(){
+         String[] clientsState={"Inactivo","Activo"};
+         return clientsState;
+    }
+    
 }

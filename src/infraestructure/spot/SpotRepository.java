@@ -77,7 +77,7 @@ public class SpotRepository implements ISpotRepository{
     
     @Override
     public Boolean updateSpotOccupancy(int spotId,int occupancyState) {
-        String hql="UPDATE Ubicacion u SET u.ocupado=:occupancyState WHERE u.id=:spotId";
+        String hql="UPDATE Ubicacion u SET u.estado=:occupancyState WHERE u.id=:spotId";
         
         Transaction trns = null;
         Session session = Tools.getSessionInstance();

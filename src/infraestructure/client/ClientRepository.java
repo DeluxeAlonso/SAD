@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import util.EntityState;
+import util.EntityState.Clients;
 import util.Tools;
 
 /**
@@ -37,14 +39,15 @@ public class ClientRepository implements IClientRepository{
     
     @Override
     public ArrayList<Cliente> queryAll() {
-        String hql="from Cliente";
+        String hql="FROM Cliente WHERE estado=:state";
         ArrayList<Cliente> clients=null;
         
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
-            Query q = session.createQuery(hql);              
+            Query q = session.createQuery(hql);    
+            q.setParameter("state", Clients.ACTIVO);          
             clients = (ArrayList<Cliente>) q.list();          
             session.getTransaction().commit();
         } catch (RuntimeException e) {
