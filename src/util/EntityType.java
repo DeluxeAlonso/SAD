@@ -8,6 +8,7 @@ package util;
 import entity.Accion;
 import entity.Condicion;
 import entity.Perfil;
+import entity.TipoUnidadTransporte;
 import java.util.ArrayList;
 
 /**
@@ -22,9 +23,11 @@ public class EntityType {
     public static ArrayList<Condicion> CONDITIONS = new ArrayList<>();
     public static ArrayList<Perfil> PROFILES = new ArrayList<>();
     public static ArrayList<Accion> ACTIONS = new ArrayList<>();
+    
+    public static ArrayList<TipoUnidadTransporte> TRANSPORT_TYPES = new ArrayList<>();
 
     public static String[] PROFILES_NAMES;
-    
+    public static String[] TRANSPORT_TYPE_NAMES;
 
     public static void fillProfileNames() {
         PROFILES_NAMES = new String[PROFILES.size() + 1];
@@ -36,6 +39,18 @@ public class EntityType {
             }
         }
     } 
+    
+    public static void fillUnitTransportTypesNames(){
+        TRANSPORT_TYPE_NAMES =  new String[TRANSPORT_TYPES.size() + 1];
+        for (int i=0; i < TRANSPORT_TYPES.size() + 1; i++){
+            if (i == 0){
+                TRANSPORT_TYPE_NAMES[i] = "";
+            }
+            else{
+                TRANSPORT_TYPE_NAMES[i] = TRANSPORT_TYPES.get(i-1).getDescripcion();
+            }
+        }
+    }
     
 
 }

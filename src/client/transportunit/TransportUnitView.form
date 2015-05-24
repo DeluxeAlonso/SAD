@@ -29,15 +29,15 @@
                   <Group type="102" attributes="0">
                       <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="emailTxt" min="-2" pref="150" max="-2" attributes="0"/>
+                      <Component id="plateTextField" min="-2" pref="150" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                       <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="profileCombo" pref="138" max="32767" attributes="0"/>
+                      <Component id="transportTypeCombo" pref="138" max="32767" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="searchBtn" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="TUGrid" pref="486" max="32767" attributes="0"/>
+                  <Component id="transportScrollPanel" pref="486" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Component id="newBtn" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -57,10 +57,10 @@
               <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="emailTxt" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="plateTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="searchBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="profileCombo" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="transportTypeCombo" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="67" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -69,18 +69,18 @@
                   <Component id="deleteBtn" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-              <Component id="TUGrid" min="-2" pref="166" max="-2" attributes="0"/>
+              <Component id="transportScrollPanel" min="-2" pref="166" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JScrollPane" name="TUGrid">
+    <Container class="javax.swing.JScrollPane" name="transportScrollPanel">
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JTable" name="usersGrid">
+        <Component class="javax.swing.JTable" name="transportTable">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
               <Table columnCount="6" rowCount="4">
@@ -156,14 +156,14 @@
         <Property name="text" type="java.lang.String" value="Placa:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="emailTxt">
+    <Component class="javax.swing.JTextField" name="plateTextField">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
         <Property name="text" type="java.lang.String" value="Tipo:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JComboBox" name="profileCombo">
+    <Component class="javax.swing.JComboBox" name="transportTypeCombo">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="4">

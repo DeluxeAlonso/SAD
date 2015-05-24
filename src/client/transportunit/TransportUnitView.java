@@ -6,8 +6,15 @@
 
 package client.transportunit;
 
+import application.transportunit.TransportUnitTypeApplication;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import util.EntityState;
+import util.EntityType;
+import util.InstanceFactory;
+import util.Strings;
 
 /**
  *
@@ -15,11 +22,23 @@ import javax.swing.SwingUtilities;
  */
 public class TransportUnitView extends javax.swing.JInternalFrame {
 
+    TransportUnitTypeApplication transportUnitTypeApplication = InstanceFactory.Instance.getInstance("transportUnitTypeApplication", TransportUnitTypeApplication.class);
     /**
      * Creates new form TUForm
      */
     public TransportUnitView() {
         initComponents();
+        setupElements();
+    }
+    
+    public void setupElements(){
+        fillCombos();
+    }
+    
+    public void fillCombos(){
+        EntityType.TRANSPORT_TYPES = transportUnitTypeApplication.getAllTransportUnitTypes();
+        EntityType.fillUnitTransportTypesNames();
+        transportTypeCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.TRANSPORT_TYPE_NAMES));
     }
 
     /**
@@ -31,21 +50,21 @@ public class TransportUnitView extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        TUGrid = new javax.swing.JScrollPane();
-        usersGrid = new javax.swing.JTable();
+        transportScrollPanel = new javax.swing.JScrollPane();
+        transportTable = new javax.swing.JTable();
         newBtn = new javax.swing.JButton();
         editBtn = new javax.swing.JButton();
         deleteBtn = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        emailTxt = new javax.swing.JTextField();
+        plateTextField = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        profileCombo = new javax.swing.JComboBox();
+        transportTypeCombo = new javax.swing.JComboBox();
         searchBtn = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Unidad de Tranporte");
 
-        usersGrid.setModel(new javax.swing.table.DefaultTableModel(
+        transportTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
@@ -71,7 +90,7 @@ public class TransportUnitView extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        TUGrid.setViewportView(usersGrid);
+        transportScrollPanel.setViewportView(transportTable);
 
         newBtn.setText("Nuevo");
         newBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -88,7 +107,7 @@ public class TransportUnitView extends javax.swing.JInternalFrame {
 
         jLabel2.setText("Tipo:");
 
-        profileCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        transportTypeCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         searchBtn.setText("Buscar");
 
@@ -102,14 +121,14 @@ public class TransportUnitView extends javax.swing.JInternalFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
-                        .addComponent(emailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(plateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(26, 26, 26)
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
-                        .addComponent(profileCombo, 0, 138, Short.MAX_VALUE)
+                        .addComponent(transportTypeCombo, 0, 138, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(searchBtn))
-                    .addComponent(TUGrid, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE)
+                    .addComponent(transportScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(newBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -125,17 +144,17 @@ public class TransportUnitView extends javax.swing.JInternalFrame {
                 .addGap(56, 56, 56)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(emailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(plateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(searchBtn)
                     .addComponent(jLabel2)
-                    .addComponent(profileCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(transportTypeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(newBtn)
                     .addComponent(editBtn)
                     .addComponent(deleteBtn))
                 .addGap(27, 27, 27)
-                .addComponent(TUGrid, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(transportScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27))
         );
 
@@ -151,15 +170,15 @@ public class TransportUnitView extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane TUGrid;
     private javax.swing.JButton deleteBtn;
     private javax.swing.JButton editBtn;
-    private javax.swing.JTextField emailTxt;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JButton newBtn;
-    private javax.swing.JComboBox profileCombo;
+    private javax.swing.JTextField plateTextField;
     private javax.swing.JButton searchBtn;
-    private javax.swing.JTable usersGrid;
+    private javax.swing.JScrollPane transportScrollPanel;
+    private javax.swing.JTable transportTable;
+    private javax.swing.JComboBox transportTypeCombo;
     // End of variables declaration//GEN-END:variables
 }
