@@ -1,5 +1,5 @@
 package entity;
-// Generated 24-May-2015 11:46:56 by Hibernate Tools 4.3.1
+// Generated 24-May-2015 14:40:34 by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -14,14 +14,16 @@ public class Cliente  implements java.io.Serializable {
      private Integer id;
      private String nombre;
      private String ruc;
+     private Integer estado;
      private Set locals = new HashSet(0);
 
     public Cliente() {
     }
 
-    public Cliente(String nombre, String ruc, Set locals) {
+    public Cliente(String nombre, String ruc, Integer estado, Set locals) {
        this.nombre = nombre;
        this.ruc = ruc;
+       this.estado = estado;
        this.locals = locals;
     }
    
@@ -45,6 +47,13 @@ public class Cliente  implements java.io.Serializable {
     
     public void setRuc(String ruc) {
         this.ruc = ruc;
+    }
+    public Integer getEstado() {
+        return this.estado;
+    }
+    
+    public void setEstado(Integer estado) {
+        this.estado = estado;
     }
     public Set getLocals() {
         return this.locals;
