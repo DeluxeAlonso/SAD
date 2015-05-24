@@ -1,0 +1,1 @@
+alter table saddb.orden_internamiento add estado int;
