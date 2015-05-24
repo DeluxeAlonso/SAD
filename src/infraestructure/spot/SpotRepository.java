@@ -17,6 +17,8 @@ import org.hibernate.Transaction;
 
 
 import org.hibernate.criterion.Restrictions;
+import util.EntityState;
+import util.EntityState.Spots;
 
 import util.HibernateUtil;
 
@@ -27,7 +29,7 @@ import util.Tools;
  * @author prote_000
  */
 public class SpotRepository implements ISpotRepository{
-
+    /*
     @Override
     public ArrayList<Ubicacion> querySpotsByRack(int rackId) {
         String hql="from Ubicacion where id_rack=:rackId";
@@ -49,10 +51,10 @@ public class SpotRepository implements ISpotRepository{
         } 
         return spots; //To change body of generated methods, choose Tools | Templates.
     }
-    
+    */
     @Override
     public ArrayList<Ubicacion> queryEmptySpotsByRack(int rackId) {
-        String hql="FROM Ubicacion u WHERE u.rack.id=:rackId AND u.ocupado='0' ORDER BY u.lado, u.fila";
+        String hql="FROM Ubicacion u WHERE u.rack.id=:rackId AND u.estado=:state ORDER BY u.lado, u.fila";
         ArrayList<Ubicacion> spots=null;
         
         Transaction trns = null;
@@ -60,6 +62,7 @@ public class SpotRepository implements ISpotRepository{
         try {            
             trns=session.beginTransaction();
             Query q = session.createQuery(hql);
+            q.setParameter("state", Spots.LIBRE.ordinal());
             q.setParameter("rackId", rackId);
             spots = (ArrayList<Ubicacion>) q.list();          
             session.getTransaction().commit();

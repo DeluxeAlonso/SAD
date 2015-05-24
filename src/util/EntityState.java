@@ -9,7 +9,7 @@ package util;
  *
  * @author dabarca
  */
-public  class EntityState {
+public class EntityState {
     
     public EntityState(){}
     
@@ -20,8 +20,22 @@ public  class EntityState {
          return userState;
     }
     
+    public static enum Spots { INACTIVO, LIBRE, OCUPADO};
+    public static String[] getSpotsState(){
+         String[] spotState={"Inactivo","Libre","Ocupado"};
+         return spotState;
+    }
     
+    public static enum Warehouses { INACTIVO, ACTIVO, EN_REVISION};
+    public static String[] getWarehousesState(){
+         String[] warehousesState={"Inactivo","Activo","En_revision"};
+         return warehousesState;
+    }
     
-    
+    public static enum Racks { INACTIVO, ACTIVO, EN_REVISION, LLENO};
+    public static String[] getRacksState(){
+         String[] racksState={"Inactivo","Activo","En_revision","Lleno"};
+         return racksState;
+    }
     
 }

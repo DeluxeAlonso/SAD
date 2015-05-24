@@ -88,7 +88,7 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
     
     public void fillRacksFrom(int warehouseId){
         comboRackFrom.removeAllItems();
-        racksFrom = rackApplication.queryWarehousesByType(warehouseId);
+        racksFrom = rackApplication.queryRacksByWarehouse(warehouseId);
         if(racksFrom.size()>0){
             String[] rackIdentifier = new String[racksFrom.size()];
             for(int i=0; i<racksFrom.size(); i++){
@@ -100,7 +100,7 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
     
     public void fillRacksTo(int warehouseId){
         comboRackTo.removeAllItems();
-        racksTo = rackApplication.queryWarehousesByType(warehouseId);
+        racksTo = rackApplication.queryRacksByWarehouse(warehouseId);
         if(racksTo.size()>0){
             String[] rackIdentifier = new String[racksTo.size()];
             for(int i=0; i<racksTo.size(); i++){
@@ -124,14 +124,17 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
         clearTableFrom();
         DefaultTableModel model = (DefaultTableModel) tblPalletFrom.getModel();
         palletsFrom = palletApplication.queryPalletsByRack(rackId);
-        for(Pallet pallet : palletsFrom){
-            System.out.println(pallet.getEan128());
-            model.addRow(new Object[]{
-                pallet.getEan128(),
-                pallet.getUbicacion().getLado(),
-                pallet.getUbicacion().getFila(),
-                pallet.getUbicacion().getColumna(),
-            });
+        System.out.println(palletsFrom.size());
+        if(palletsFrom.size()>0){
+            for(Pallet pallet : palletsFrom){
+                System.out.println(pallet.getEan128());
+                model.addRow(new Object[]{
+                    pallet.getEan128(),
+                    pallet.getUbicacion().getLado(),
+                    pallet.getUbicacion().getFila(),
+                    pallet.getUbicacion().getColumna(),
+                });
+            }
         }
     }
     
@@ -139,14 +142,15 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
         clearTableTo();
         DefaultTableModel model = (DefaultTableModel) tblPalletTo.getModel();
         spotsTo = (ArrayList<Ubicacion>) spotApplication.queryEmptySpotsByRack(rackId);
-        for(Ubicacion spot : spotsTo){
-            model.addRow(new Object[]{
-                spot.getLado(),
-                spot.getFila(),
-                spot.getColumna(),
-            });
-        }
-        
+        if(spotsTo.size()>0){
+            for(Ubicacion spot : spotsTo){
+                model.addRow(new Object[]{
+                    spot.getLado(),
+                    spot.getFila(),
+                    spot.getColumna(),
+                });
+            }
+        }        
     }
 
     /**
