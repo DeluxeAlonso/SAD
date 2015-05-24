@@ -3,18 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package base.pallet;
+package base.client;
 
 import base.IRepository;
-import entity.Pallet;
+import entity.Cliente;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
  * @author prote_000
  */
-public interface IPalletRepository extends IRepository<Pallet>{
-    ArrayList<Pallet> queryPalletsByRack(int rackId);
-    Boolean updatePalletSpot(int palletId, int spotId);
+public interface IClientRepository extends IRepository<Cliente>{
+    public void insert(Cliente object);
+    public ArrayList<Cliente> queryAll();
 }

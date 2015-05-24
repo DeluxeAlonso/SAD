@@ -31,4 +31,14 @@ public class PalletApplication {
         }
         return pallets;
     }
+    
+    public Boolean updatePalletSpot(int palletId, int spotId){
+        Boolean response = false;
+        try {
+            response = palletRepository.updatePalletSpot(palletId, spotId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
 }
