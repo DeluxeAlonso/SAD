@@ -1,5 +1,5 @@
 package entity;
-// Generated 24-May-2015 14:40:34 by Hibernate Tools 4.3.1
+// Generated May 25, 2015 12:04:54 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -11,7 +11,7 @@ import java.util.Set;
 public class Perfil  implements java.io.Serializable {
 
 
-     private Integer idPerfil;
+     private Integer id;
      private String nombrePerfil;
      private String descripcion;
      private Set usuarios = new HashSet(0);
@@ -27,12 +27,12 @@ public class Perfil  implements java.io.Serializable {
        this.accions = accions;
     }
    
-    public Integer getIdPerfil() {
-        return this.idPerfil;
+    public Integer getId() {
+        return this.id;
     }
     
-    public void setIdPerfil(Integer idPerfil) {
-        this.idPerfil = idPerfil;
+    public void setId(Integer id) {
+        this.id = id;
     }
     public String getNombrePerfil() {
         return this.nombrePerfil;

@@ -1,33 +1,29 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 24-May-2015 14:40:36 by Hibernate Tools 4.3.1 -->
+<!-- Generated May 25, 2015 12:04:56 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entity.PedidoParcial" table="pedido_parcial" catalog="saddb" optimistic-lock="version">
         <id name="id" type="java.lang.Integer">
             <column name="id" />
             <generator class="identity" />
         </id>
-        <many-to-one name="despacho" class="entity.Despacho" fetch="select">
-            <column name="id_despacho" />
-        </many-to-one>
         <many-to-one name="guiaRemision" class="entity.GuiaRemision" fetch="select">
-            <column name="id_guia_remision" not-null="true" />
+            <column name="id_guia_remision" />
         </many-to-one>
         <many-to-one name="pedido" class="entity.Pedido" fetch="select">
             <column name="id_pedido" not-null="true" />
         </many-to-one>
-        <set name="guiaRemisions" table="guia_remision" inverse="true" lazy="true" fetch="select">
+        <property name="estado" type="java.lang.Integer">
+            <column name="estado" />
+        </property>
+        <set name="itemProductos" table="pedido_parcial_x_item_producto" inverse="false" lazy="true" fetch="select">
             <key>
                 <column name="id_pedido_parcial" not-null="true" />
             </key>
-            <one-to-many class="entity.GuiaRemision" />
-        </set>
-        <set name="pedidoParcialXProductos" table="pedido_parcial_x_producto" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_pedido_parcial" not-null="true" />
-            </key>
-            <one-to-many class="entity.PedidoParcialXProducto" />
+            <many-to-many entity-name="entity.ItemProducto">
+                <column name="id_item_producto" not-null="true" />
+            </many-to-many>
         </set>
     </class>
 </hibernate-mapping>

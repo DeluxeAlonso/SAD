@@ -258,11 +258,6 @@ public class MainView extends javax.swing.JFrame {
         UserMenu.setText("Seguridad");
 
         jMenuItem9.setText("Usuarios");
-        jMenuItem9.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jMenuItem9MouseClicked(evt);
-            }
-        });
         jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem9ActionPerformed(evt);
@@ -549,7 +544,7 @@ public class MainView extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         // TODO add your handling code here:
-        Tools.closeSession();
+        //Tools.closeSession();
     }//GEN-LAST:event_formWindowClosing
 
     private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
@@ -570,7 +565,7 @@ public class MainView extends javax.swing.JFrame {
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
         // TODO add your handling code here:
          if (userView == null || !userView.isShowing()) {
-            userView = new UserView();
+            userView = new UserView(0);
             userView.setVisible(true);
             mainPanel.add(userView);
             try {
@@ -582,25 +577,10 @@ public class MainView extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
-    private void jMenuItem9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem9MouseClicked
-        // TODO add your handling code here:
-         if (userView == null || !userView.isShowing()) {
-            userView = new UserView();
-            userView.setVisible(true);
-            mainPanel.add(userView);
-            try {
-                // TODO add your handling code here:
-                userView.setSelected(true);
-            } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }//GEN-LAST:event_jMenuItem9MouseClicked
-
     private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
         // TODO add your handling code here:
          if (userView == null || !userView.isShowing()) {
-            userView = new UserView();
+            userView = new UserView(1);
             userView.setVisible(true);
             mainPanel.add(userView);
             try {

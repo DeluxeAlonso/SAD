@@ -13,7 +13,6 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.EntityState.Warehouses;
-import util.HibernateUtil;
 import util.Tools;
 /**
  *

@@ -30,9 +30,13 @@ public class NewUserView extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();       
         //initialize user states combo
+        fillCombos();
+       
+    }  
+    public void fillCombos(){
         stateCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getUsersState()));
         profileCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.PROFILES_NAMES));
-    }  
+    }
     public void clearFields(){
         nameTxt.setText("");
         firstNameTxt.setText("");
@@ -225,14 +229,14 @@ public class NewUserView extends javax.swing.JDialog {
     private void saveTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveTxtActionPerformed
         // TODO add your handling code here:
         Usuario user=new Usuario();
-        user.setIdusuario(UUID.randomUUID().toString().replace("-", ""));
+        user.setId(UUID.randomUUID().toString().replace("-", ""));
         user.setNombre(nameTxt.getText());
         user.setApellidoPaterno(firstNameTxt.getText());
         user.setApellidoMaterno(secondNameTxt.getText());
         user.setCorreo(emailTxt.getText());      
         user.setEstado(stateCombo.getSelectedIndex());
         user.setPassword(passwordTxt.getText());
-        user.setPerfil(profileApplication.getProfileInstance(profileCombo.getSelectedItem().toString()));
+        user.setPerfil(profileApplication.getProfileByName(profileCombo.getSelectedItem().toString()));
         userApplication.createUser(user);
         JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_USER_CREATED);
         clearFields();

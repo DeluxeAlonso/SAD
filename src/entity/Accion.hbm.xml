@@ -1,22 +1,22 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 24-May-2015 14:40:36 by Hibernate Tools 4.3.1 -->
+<!-- Generated May 25, 2015 12:04:56 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entity.Accion" table="accion" catalog="saddb" optimistic-lock="version">
-        <id name="idAccion" type="int">
-            <column name="idAccion" />
+        <id name="id" type="int">
+            <column name="id" />
             <generator class="assigned" />
         </id>
         <property name="nombre" type="string">
             <column name="nombre" length="80" />
         </property>
-        <set name="perfils" table="perfil_x_accion" inverse="true" lazy="true" fetch="select">
+        <set name="perfils" table="perfil_x_accion" inverse="false" lazy="true" fetch="select">
             <key>
-                <column name="idAccion" not-null="true" />
+                <column name="id_accion" not-null="true" />
             </key>
             <many-to-many entity-name="entity.Perfil">
-                <column name="idPerfil" not-null="true" />
+                <column name="id_perfil" not-null="true" />
             </many-to-many>
         </set>
     </class>

@@ -138,4 +138,22 @@ public class UserApplication {
         }
         return dpw;
     }
+    public Usuario getUserById(String id){
+        Usuario user=null;
+        try{
+            user=userRepository.queryById(id);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return user;
+    }
+    public void updateUser(Usuario user){
+        
+        try{
+            userRepository.update(user);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+    }
 }

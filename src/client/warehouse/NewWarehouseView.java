@@ -208,7 +208,7 @@ public class NewWarehouseView extends javax.swing.JDialog {
         
         al.setCondicion(conditionApplication.getConditionInstance(condicionCombo.getSelectedItem().toString()));
         al.setDescripcion(this.descripcionTxt.getText());
-        al.setEstado("Activo");
+        al.setEstado(1);
         al.setFechaRegistro(cal.getTime());
         al.setKardexes(null);
         warehouseApplication.insert(al);

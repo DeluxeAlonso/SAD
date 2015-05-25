@@ -38,4 +38,14 @@ public class ClientApplication {
         }
         return clients;
     }
+    
+    public Boolean delete(int clientId){
+        Boolean response = false;
+        try {
+            response = clientRepository.delete(clientId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
 }

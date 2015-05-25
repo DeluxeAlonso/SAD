@@ -6,19 +6,31 @@
 package client.client;
 
 import application.client.ClientApplication;
+import application.local.LocalApplication;
 import client.personal.NewPersonalView;
 import entity.Cliente;
+import entity.Local;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
+import util.EntityState;
+import util.EntityState.Clients;
+import util.EntityState.Locals;
 import util.InstanceFactory;
+import util.Strings;
 
 /**
  *
@@ -26,6 +38,7 @@ import util.InstanceFactory;
  */
 public class ClientView extends javax.swing.JInternalFrame implements MouseListener {
     ClientApplication clientApplication=InstanceFactory.Instance.getInstance("clientApplication", ClientApplication.class);
+    LocalApplication localApplication=InstanceFactory.Instance.getInstance("localApplication", LocalApplication.class);
     ArrayList<Cliente> clients;
     public static ClientView clientView;
     /**
@@ -36,6 +49,12 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
         setupListeners();
         fillClientsTable();
         clientView = this;
+        tblClients.addMouseListener(new MouseAdapter(){
+            public void mouseClicked(MouseEvent e){
+                btnDelete.setEnabled(true);
+                btnLocal.setEnabled(true);
+            }
+        });
     }
     
     private void setupListeners() {
@@ -61,6 +80,68 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
             });
         }
     }
+    
+    private void loadFromFile(String csvFile){
+        BufferedReader br = null;
+	String line = "";
+	String cvsSplitBy = ",";
+        try {
+            Cliente client;
+            Local local;
+            br = new BufferedReader(new FileReader(csvFile));
+            // Leo la cantidad de clientes que hay en el archivo
+            line = br.readLine();
+            String[] line_split = line.split(cvsSplitBy);
+            int clientsNum = Integer.parseInt(line_split[0]);
+            int localsNum;
+            for(int i=0;i<clientsNum;i++){
+                //Leo un cliente y lo inserto
+                line = br.readLine();
+                line_split = line.split(cvsSplitBy);
+                
+                client = new Cliente();
+                client.setNombre(line_split[0]);
+                client.setRuc(line_split[1]);
+                client.setEstado(Clients.ACTIVO.ordinal());
+                clientApplication.insert(client);
+                
+                //System.out.println(line_split[0]+" - "+line_split[1]+" - "+line_split[2]);
+                //Leo sus locales y los inserto
+                localsNum = Integer.parseInt(line_split[2]);
+                for(int j=0;j<localsNum;j++){
+                    line = br.readLine();
+                    line_split = line.split(cvsSplitBy);
+                    
+                    local = new Local();
+                    local.setLatitud(Double.parseDouble(line_split[0]));
+                    local.setLongitud(Double.parseDouble(line_split[1]));
+                    local.setNombre(line_split[2]);
+                    local.setDescripcion(line_split[3]);
+                    local.setDireccion(line_split[4]);
+                    local.setCliente(client);
+                    local.setEstado(Locals.ACTIVO.ordinal());
+                    localApplication.insert(local);
+                    
+                    //System.out.println(line_split[0]+" - "+line_split[1]+" - "+line_split[2]+" - "+line_split[3]+" - "+line_split[4]);
+                    
+                }
+            }
+	} catch (FileNotFoundException e) {
+            e.printStackTrace();
+	} catch (IOException e) {
+            e.printStackTrace();
+	} finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally{
+                    fillClientsTable();
+                }
+            }
+	}
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -73,7 +154,7 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
 
         jLabel1 = new javax.swing.JLabel();
         fileTextField = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        btnFile = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblClients = new javax.swing.JTable();
@@ -85,10 +166,12 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
 
         jLabel1.setText("Ingresar Clientes desde un archivo:");
 
-        jButton1.setText("Seleccionar Archivo");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        fileTextField.setEditable(false);
+
+        btnFile.setText("Seleccionar Archivo");
+        btnFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnFileActionPerformed(evt);
             }
         });
 
@@ -135,6 +218,11 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
 
         btnLocal.setText("Ver locales");
         btnLocal.setEnabled(false);
+        btnLocal.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnLocalMousePressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -147,7 +235,7 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(fileTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, Short.MAX_VALUE))
+                        .addComponent(btnFile, javax.swing.GroupLayout.PREFERRED_SIZE, 115, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButton2)
                         .addGap(18, 18, 18)
@@ -167,7 +255,7 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(fileTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(btnFile))
                 .addGap(13, 13, 13)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
@@ -181,7 +269,7 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFileActionPerformed
         JFileChooser fc = new JFileChooser();
         fc.setDialogTitle("Seleccione un archivo");
         fc.showOpenDialog(this);
@@ -189,9 +277,11 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
         if (!fc.getSelectedFile().getName().endsWith(".csv")) {
           JOptionPane.showMessageDialog(this, "El archivo seleccionado no es un archivo CSV.");
         }
-        else
-            fileTextField.setText(file.getAbsolutePath());        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        else{
+            fileTextField.setText(file.getAbsolutePath());
+            loadFromFile(file.getAbsolutePath());
+        }
+    }//GEN-LAST:event_btnFileActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         NewClientView newClientView = new NewClientView((JFrame)SwingUtilities.getWindowAncestor(this),true);
@@ -200,14 +290,29 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
 
     private void btnDeleteMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMousePressed
         System.out.println(tblClients.getSelectedRow());
+        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+        int response = JOptionPane.showConfirmDialog(this, Strings.MESSAGE_DELETE_CLIENT,Strings.MESSAGE_DELETE_CLIENT_TITLE,JOptionPane.WARNING_MESSAGE);
+        if(JOptionPane.OK_OPTION == response){
+            clientApplication.delete(clients.get(tblClients.getSelectedRow()).getId());
+            fillClientsTable();
+        }
+        
     }//GEN-LAST:event_btnDeleteMousePressed
+
+    private void btnLocalMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLocalMousePressed
+        //tblClients.getSelectedRow();
+        //System.out.println(clients.get(tblClients.getSelectedRow()));
+        Cliente client = clients.get(tblClients.getSelectedRow());
+        LocalsView localsView = new LocalsView((JFrame)SwingUtilities.getWindowAncestor(this),true, client);
+        localsView.setVisible(true);
+    }//GEN-LAST:event_btnLocalMousePressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnFile;
     private javax.swing.JButton btnLocal;
     private javax.swing.JTextField fileTextField;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -216,14 +321,7 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        btnDelete.setEnabled(true);
-        btnLocal.setEnabled(true);
-        if (e.getClickCount() == 2) {
-            JTable target = (JTable)e.getSource();
-            int row = target.getSelectedRow();
-            NewClientView newClientView = new NewClientView((JFrame)SwingUtilities.getWindowAncestor(this),true);
-            newClientView.setVisible(true);
-        }
+        
     }
 
     @Override

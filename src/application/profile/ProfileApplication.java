@@ -32,7 +32,7 @@ public class ProfileApplication {
         return profiles;
     }
     
-    public void saveProfile(Perfil profile){        
+    public void updateProfile(Perfil profile){        
         try{
             profileRepository.update(profile);
         }catch(Exception e){
@@ -47,11 +47,14 @@ public class ProfileApplication {
         
     }
     
-    public Perfil getProfileInstance(String profileName){
-        for(Perfil p:EntityType.PROFILES){
-            if(p.getNombrePerfil().equals(profileName))
-                return p;
+    public Perfil getProfileByName(String profileName){
+        Perfil profile=null;
+        try{
+            profile=profileRepository.queryByName(profileName);
+        }catch(Exception e){
+            e.printStackTrace();
         }
-        return null;
+        return profile;
     }
+    
 }

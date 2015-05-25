@@ -39,7 +39,7 @@ public class AppStart {
             InstanceFactory.Instance.register("userApplication", UserApplication.class);
             InstanceFactory.Instance.register("warehouseApplication", WarehouseApplication.class);
             InstanceFactory.Instance.register("profileApplication", ProfileApplication.class);
-            InstanceFactory.Instance.register("accionApplication", ActionApplication.class);
+            InstanceFactory.Instance.register("actionApplication", ActionApplication.class);
             InstanceFactory.Instance.register("internmentApplication", InternmentApplication.class);
             InstanceFactory.Instance.register("conditionApplication", ConditionApplication.class);
             InstanceFactory.Instance.register("rackApplication", RackApplication.class);
@@ -54,7 +54,7 @@ public class AppStart {
     
     private void loadEntityType(){      
         ProfileApplication profileApplication = InstanceFactory.Instance.getInstance("profileApplication", ProfileApplication.class);
-        ActionApplication actionApplication = InstanceFactory.Instance.getInstance("accionApplication", ActionApplication.class);
+        ActionApplication actionApplication = InstanceFactory.Instance.getInstance("actionApplication", ActionApplication.class);
         WarehouseApplication warehouseApplication = InstanceFactory.Instance.getInstance("warehouseApplication", WarehouseApplication.class);
         ConditionApplication conditionApplication = InstanceFactory.Instance.getInstance("conditionApplication", ConditionApplication.class);        
         RackApplication rackApplication = InstanceFactory.Instance.getInstance("rackApplication", RackApplication.class);
