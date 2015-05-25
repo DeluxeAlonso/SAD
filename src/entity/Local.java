@@ -1,5 +1,5 @@
 package entity;
-// Generated 24-May-2015 16:40:14 by Hibernate Tools 4.3.1
+// Generated May 24, 2015 10:16:20 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -12,30 +12,28 @@ public class Local  implements java.io.Serializable {
 
 
      private Integer id;
-     private Cliente cliente;
      private Double latitud;
      private Double longitud;
      private String nombre;
      private String descripcion;
      private String direccion;
-     private Integer estado;
+     private int idCliente;
      private Set pedidos = new HashSet(0);
 
     public Local() {
     }
 
 	
-    public Local(Cliente cliente) {
-        this.cliente = cliente;
+    public Local(int idCliente) {
+        this.idCliente = idCliente;
     }
-    public Local(Cliente cliente, Double latitud, Double longitud, String nombre, String descripcion, String direccion, Integer estado, Set pedidos) {
-       this.cliente = cliente;
+    public Local(Double latitud, Double longitud, String nombre, String descripcion, String direccion, int idCliente, Set pedidos) {
        this.latitud = latitud;
        this.longitud = longitud;
        this.nombre = nombre;
        this.descripcion = descripcion;
        this.direccion = direccion;
-       this.estado = estado;
+       this.idCliente = idCliente;
        this.pedidos = pedidos;
     }
    
@@ -45,13 +43,6 @@ public class Local  implements java.io.Serializable {
     
     public void setId(Integer id) {
         this.id = id;
-    }
-    public Cliente getCliente() {
-        return this.cliente;
-    }
-    
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
     }
     public Double getLatitud() {
         return this.latitud;
@@ -88,12 +79,12 @@ public class Local  implements java.io.Serializable {
     public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
-    public Integer getEstado() {
-        return this.estado;
+    public int getIdCliente() {
+        return this.idCliente;
     }
     
-    public void setEstado(Integer estado) {
-        this.estado = estado;
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
     }
     public Set getPedidos() {
         return this.pedidos;

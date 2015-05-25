@@ -1,5 +1,5 @@
 package entity;
-// Generated 24-May-2015 16:40:14 by Hibernate Tools 4.3.1
+// Generated May 24, 2015 10:16:20 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -14,10 +14,11 @@ public class Pallet  implements java.io.Serializable {
 
      private Integer id;
      private Despacho despacho;
-     private TipoPallet tipoPallet;
      private Ubicacion ubicacion;
      private String ean128;
+     private int idTipoPallet;
      private Date fechaRegistro;
+     private Date fechaVencimiento;
      private Set historialMovimientoses = new HashSet(0);
      private Set itemProductos = new HashSet(0);
 
@@ -25,17 +26,18 @@ public class Pallet  implements java.io.Serializable {
     }
 
 	
-    public Pallet(Despacho despacho, TipoPallet tipoPallet, Ubicacion ubicacion) {
+    public Pallet(Despacho despacho, Ubicacion ubicacion, int idTipoPallet) {
         this.despacho = despacho;
-        this.tipoPallet = tipoPallet;
         this.ubicacion = ubicacion;
+        this.idTipoPallet = idTipoPallet;
     }
-    public Pallet(Despacho despacho, TipoPallet tipoPallet, Ubicacion ubicacion, String ean128, Date fechaRegistro, Set historialMovimientoses, Set itemProductos) {
+    public Pallet(Despacho despacho, Ubicacion ubicacion, String ean128, int idTipoPallet, Date fechaRegistro, Date fechaVencimiento, Set historialMovimientoses, Set itemProductos) {
        this.despacho = despacho;
-       this.tipoPallet = tipoPallet;
        this.ubicacion = ubicacion;
        this.ean128 = ean128;
+       this.idTipoPallet = idTipoPallet;
        this.fechaRegistro = fechaRegistro;
+       this.fechaVencimiento = fechaVencimiento;
        this.historialMovimientoses = historialMovimientoses;
        this.itemProductos = itemProductos;
     }
@@ -54,13 +56,6 @@ public class Pallet  implements java.io.Serializable {
     public void setDespacho(Despacho despacho) {
         this.despacho = despacho;
     }
-    public TipoPallet getTipoPallet() {
-        return this.tipoPallet;
-    }
-    
-    public void setTipoPallet(TipoPallet tipoPallet) {
-        this.tipoPallet = tipoPallet;
-    }
     public Ubicacion getUbicacion() {
         return this.ubicacion;
     }
@@ -75,12 +70,26 @@ public class Pallet  implements java.io.Serializable {
     public void setEan128(String ean128) {
         this.ean128 = ean128;
     }
+    public int getIdTipoPallet() {
+        return this.idTipoPallet;
+    }
+    
+    public void setIdTipoPallet(int idTipoPallet) {
+        this.idTipoPallet = idTipoPallet;
+    }
     public Date getFechaRegistro() {
         return this.fechaRegistro;
     }
     
     public void setFechaRegistro(Date fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
+    }
+    public Date getFechaVencimiento() {
+        return this.fechaVencimiento;
+    }
+    
+    public void setFechaVencimiento(Date fechaVencimiento) {
+        this.fechaVencimiento = fechaVencimiento;
     }
     public Set getHistorialMovimientoses() {
         return this.historialMovimientoses;

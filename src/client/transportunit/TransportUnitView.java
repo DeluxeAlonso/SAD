@@ -6,13 +6,17 @@
 
 package client.transportunit;
 
+import application.transportunit.TransportUnitApplication;
 import application.transportunittype.TransportUnitTypeApplication;
 import entity.UnidadTransporte;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import util.EntityState;
@@ -24,14 +28,17 @@ import util.Strings;
  *
  * @author LUIS
  */
-public class TransportUnitView extends javax.swing.JInternalFrame {
-
+public class TransportUnitView extends javax.swing.JInternalFrame implements MouseListener{
+    
+    TransportUnitApplication transportUnitApplication = InstanceFactory.Instance.getInstance("transportUnitApplication", TransportUnitApplication.class);
     TransportUnitTypeApplication transportUnitTypeApplication = InstanceFactory.Instance.getInstance("transportUnitTypeApplication", TransportUnitTypeApplication.class);
+    Integer selectedRowIndex = 0;
     /**
      * Creates new form TUForm
      */
     public TransportUnitView() {
         initComponents();
+        setupListeners();
         setupElements();
     }
     
@@ -47,18 +54,24 @@ public class TransportUnitView extends javax.swing.JInternalFrame {
     }
     
     public void refreshTable(){
+        transportUnitApplication.refreshTransportUnits();
         ArrayList<String> cols = new ArrayList<>();
         for (int i = 0; i<transportTable.getColumnCount(); i++)
             cols.add(transportTable.getColumnName(i));
         DefaultTableModel tableModel = new DefaultTableModel(cols.toArray(), 0);
         transportTable.setModel(tableModel);
         EntityType.TRANSPORT_UNITS.stream().forEach((_transportUnit) -> {
-            System.out.println("Transport query all");
             Object[] row = {_transportUnit.getId(), _transportUnit.getPlaca(),
-                _transportUnit.getTransportista(), _transportUnit.getCapacidad(),
+                _transportUnit.getTransportista(), EntityState.getTransportUnitsState()[_transportUnit.getEstado()],
                 _transportUnit.getTipoUnidadTransporte().getDescripcion(),""};
             tableModel.addRow(row);
         });
+    }
+    
+    public void setupListeners() {
+        addMouseListener(this);
+        transportScrollPanel.addMouseListener(this);
+        transportTable.addMouseListener(this);
     }
 
     /**
@@ -89,14 +102,14 @@ public class TransportUnitView extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Placa", "Conductor", "Capacidad", "Tipo", "Estado"
+                "ID", "Placa", "Conductor", "Tipo", "Estado"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, true, false, false
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -108,6 +121,13 @@ public class TransportUnitView extends javax.swing.JInternalFrame {
             }
         });
         transportScrollPanel.setViewportView(transportTable);
+        if (transportTable.getColumnModel().getColumnCount() > 0) {
+            transportTable.getColumnModel().getColumn(0).setResizable(false);
+            transportTable.getColumnModel().getColumn(1).setResizable(false);
+            transportTable.getColumnModel().getColumn(2).setResizable(false);
+            transportTable.getColumnModel().getColumn(3).setResizable(false);
+            transportTable.getColumnModel().getColumn(4).setResizable(false);
+        }
 
         newBtn.setText("Nuevo");
         newBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -117,6 +137,7 @@ public class TransportUnitView extends javax.swing.JInternalFrame {
         });
 
         editBtn.setText("Editar");
+        editBtn.setEnabled(false);
         editBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editBtnActionPerformed(evt);
@@ -124,6 +145,12 @@ public class TransportUnitView extends javax.swing.JInternalFrame {
         });
 
         deleteBtn.setText("Eliminar");
+        deleteBtn.setEnabled(false);
+        deleteBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBtnActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Placa:");
 
@@ -191,9 +218,15 @@ public class TransportUnitView extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_newBtnActionPerformed
 
     private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
-        NewTransportUnitView newTU=new NewTransportUnitView((JFrame)SwingUtilities.getWindowAncestor(this),true);
+        NewTransportUnitView newTU=new NewTransportUnitView((JFrame)SwingUtilities.getWindowAncestor(this),true,EntityType.TRANSPORT_UNITS.get(selectedRowIndex));
         newTU.setVisible(true);
     }//GEN-LAST:event_editBtnActionPerformed
+
+    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
+        // TODO add your handling code here:
+        EntityType.TRANSPORT_UNITS.get(selectedRowIndex).setEstado(0);
+        transportUnitApplication.updateTransportUnit(EntityType.TRANSPORT_UNITS.get(selectedRowIndex));
+    }//GEN-LAST:event_deleteBtnActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -208,4 +241,34 @@ public class TransportUnitView extends javax.swing.JInternalFrame {
     private javax.swing.JTable transportTable;
     private javax.swing.JComboBox transportTypeCombo;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        System.out.println("mouseClicked");
+        editBtn.setEnabled(true);
+        deleteBtn.setEnabled(true);
+        JTable target = (JTable)e.getSource();
+        selectedRowIndex = target.getSelectedRow();
+        if (e.getClickCount() == 2) {    
+            NewTransportUnitView newTransportUnitView = new NewTransportUnitView((JFrame)SwingUtilities.getWindowAncestor(this),true);
+            newTransportUnitView.setVisible(true);
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+    }
+    
 }

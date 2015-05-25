@@ -54,7 +54,7 @@ public class ProfileRepository implements IProfileRepository{
     @Override
     public void update(Perfil object) {
         Transaction trns = null;
-        Session session = Tools.getSessionInstance();;
+        Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
             session.update(object);

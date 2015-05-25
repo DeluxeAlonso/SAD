@@ -61,7 +61,11 @@ public class Strings {
     /*END*/
     
     /*TRANSPORT UNIT MESSAGES*/
-    public static final String MESSAGE_NEW_TRANSPORT_UNIT_CREATED = "Se registró correctamente la unidad de transporte.";
+    public static final String MESSAGE_TRANSPORT_UNIT_TITLE="Mensaje de inserción de unidad de transporte";
+    public static final String MESSAGE_NEW_TRANSPORT_UNIT_CREATED = "Se registró o modifico correctamente la unidad de transporte.";
+    public static final String ERROR_MESSAGE_TRANSPORT_UNIT="Error  al agregar o modificar una nueva unidad de transporte";
+    public static final String MESSAGE_DELETE_TRANSPORT_UNIT_TITLE="Mensaje de eliminacion de unidad de transporte";
+    public static final String MESSAGE_DELETE_TRANSPORT_UNIT="Se elimino correctamente el cliente";
     /*END*/
 
 }

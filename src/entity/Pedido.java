@@ -1,5 +1,5 @@
 package entity;
-// Generated 24-May-2015 16:40:14 by Hibernate Tools 4.3.1
+// Generated May 24, 2015 10:16:20 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -11,7 +11,7 @@ import java.util.Set;
 public class Pedido  implements java.io.Serializable {
 
 
-     private Integer idPedido;
+     private Integer id;
      private Local local;
      private Set pedidoParcials = new HashSet(0);
 
@@ -27,12 +27,12 @@ public class Pedido  implements java.io.Serializable {
        this.pedidoParcials = pedidoParcials;
     }
    
-    public Integer getIdPedido() {
-        return this.idPedido;
+    public Integer getId() {
+        return this.id;
     }
     
-    public void setIdPedido(Integer idPedido) {
-        this.idPedido = idPedido;
+    public void setId(Integer id) {
+        this.id = id;
     }
     public Local getLocal() {
         return this.local;

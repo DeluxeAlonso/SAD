@@ -43,6 +43,16 @@ public class TransportUnitApplication {
         return response;
     }
     
+    public Boolean updateTransportUnit(UnidadTransporte transportUnit){
+        Boolean response = false;
+        try {
+            response = transportUnitRepository.updateTransportUnit(transportUnit);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+    
     public void refreshTransportUnits(){
         EntityType.TRANSPORT_UNITS = getAllTransportUnits();
     }

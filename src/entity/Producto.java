@@ -1,5 +1,5 @@
 package entity;
-// Generated 24-May-2015 16:40:14 by Hibernate Tools 4.3.1
+// Generated May 24, 2015 10:16:20 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -18,8 +18,6 @@ public class Producto  implements java.io.Serializable {
      private Integer stockTotal;
      private Integer cantidadUnidades;
      private Set itemProductos = new HashSet(0);
-     private Set tipoPalletXProductos = new HashSet(0);
-     private Set ordenInternamientoXProductos = new HashSet(0);
      private Set pedidoParcialXProductos = new HashSet(0);
      private Set kardexes = new HashSet(0);
 
@@ -30,15 +28,13 @@ public class Producto  implements java.io.Serializable {
     public Producto(Condicion condicion) {
         this.condicion = condicion;
     }
-    public Producto(Condicion condicion, String nombre, String descripcion, Integer stockTotal, Integer cantidadUnidades, Set itemProductos, Set tipoPalletXProductos, Set ordenInternamientoXProductos, Set pedidoParcialXProductos, Set kardexes) {
+    public Producto(Condicion condicion, String nombre, String descripcion, Integer stockTotal, Integer cantidadUnidades, Set itemProductos, Set pedidoParcialXProductos, Set kardexes) {
        this.condicion = condicion;
        this.nombre = nombre;
        this.descripcion = descripcion;
        this.stockTotal = stockTotal;
        this.cantidadUnidades = cantidadUnidades;
        this.itemProductos = itemProductos;
-       this.tipoPalletXProductos = tipoPalletXProductos;
-       this.ordenInternamientoXProductos = ordenInternamientoXProductos;
        this.pedidoParcialXProductos = pedidoParcialXProductos;
        this.kardexes = kardexes;
     }
@@ -91,20 +87,6 @@ public class Producto  implements java.io.Serializable {
     
     public void setItemProductos(Set itemProductos) {
         this.itemProductos = itemProductos;
-    }
-    public Set getTipoPalletXProductos() {
-        return this.tipoPalletXProductos;
-    }
-    
-    public void setTipoPalletXProductos(Set tipoPalletXProductos) {
-        this.tipoPalletXProductos = tipoPalletXProductos;
-    }
-    public Set getOrdenInternamientoXProductos() {
-        return this.ordenInternamientoXProductos;
-    }
-    
-    public void setOrdenInternamientoXProductos(Set ordenInternamientoXProductos) {
-        this.ordenInternamientoXProductos = ordenInternamientoXProductos;
     }
     public Set getPedidoParcialXProductos() {
         return this.pedidoParcialXProductos;

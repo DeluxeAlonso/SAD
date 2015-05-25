@@ -19,11 +19,11 @@ import util.Tools;
  * @author Alonso
  */
 public class TransportUnitRepository implements ITransportUnitRepository{
-
+    Session session = Tools.getSessionInstance();
+    
     @Override
     public Boolean createTransportUnit(UnidadTransporte transportUnit){
-        Transaction trns = null;
-        Session session = Tools.getSessionInstance();
+        Transaction trns = null; 
         try {            
             trns=session.beginTransaction();
             session.save(transportUnit);                      
@@ -52,10 +52,9 @@ public class TransportUnitRepository implements ITransportUnitRepository{
 
     @Override
     public ArrayList<UnidadTransporte> queryAll() {
-        String hql = "from UnidadTransporte";
-        ArrayList<UnidadTransporte> unitTransport = null;
+        String hql = "from UnidadTransporte where estado=1";
+        ArrayList<UnidadTransporte> unitTransport = new ArrayList<>();
         Transaction trns = null;
-        Session session = Tools.getSessionInstance();
         try{
             trns = session.beginTransaction();
             Query q = session.createQuery(hql);
@@ -73,7 +72,6 @@ public class TransportUnitRepository implements ITransportUnitRepository{
     
     public Boolean updateTransportUnit(UnidadTransporte transportUnit){
         Transaction trns = null;
-        Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
             session.update(transportUnit);                      
@@ -102,5 +100,6 @@ public class TransportUnitRepository implements ITransportUnitRepository{
     public UnidadTransporte queryById(String id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
     
 }

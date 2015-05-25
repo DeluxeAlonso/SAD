@@ -19,10 +19,11 @@ import util.Strings;
  * @author LUIS
  */
 public class NewTransportUnitView extends javax.swing.JDialog {
+    
     TransportUnitApplication transportUnitApplication = InstanceFactory.Instance.getInstance("transportUnitApplication", TransportUnitApplication.class);
     TransportUnitTypeApplication transportUnitTypeApplication = InstanceFactory.Instance.getInstance("transportUnitTypeApplication", TransportUnitTypeApplication.class);
     UnidadTransporte updatedTransportUnit;
-    String eventType = "Create";
+    String eventType = "CREATE";
     
     /**
      * Creates new form NewTU
@@ -38,18 +39,20 @@ public class NewTransportUnitView extends javax.swing.JDialog {
     public NewTransportUnitView(java.awt.Frame parent, boolean modal, UnidadTransporte transportUnit) {
         super(parent, modal);
         initComponents();
-        eventType = "Update";
-        this.updatedTransportUnit = transportUnit;
-        fillTransportUnitData(this.updatedTransportUnit);
+        updatedTransportUnit = transportUnit;
+        eventType = "UPDATE";
+        setupElements();
+        fillTransportUnitData(updatedTransportUnit);
     }
     
-    public void setupElements(){
+    public final void setupElements(){
         fillCombos();
     }
     
     public void fillTransportUnitData(UnidadTransporte transportUnit){
         plateTxt.setText(transportUnit.getPlaca());
-        capacityTxt.setText(transportUnit.getCapacidad().toString());
+        transportistTxt.setText(transportUnit.getTransportista());
+        typeCombo.setSelectedItem(transportUnit.getTipoUnidadTransporte().getDescripcion());
     }
     
     public void fillCombos(){
@@ -60,10 +63,26 @@ public class NewTransportUnitView extends javax.swing.JDialog {
     
     public void clearFields(){
         plateTxt.setText("");
-        capacityTxt.setText("");
         transportistTxt.setText("");
     }
 
+    private Boolean createAndSaveTransportUnit() {
+        UnidadTransporte transportUnit = new UnidadTransporte();
+        transportUnit.setPlaca(plateTxt.getText());
+        transportUnit.setTransportista(transportistTxt.getText());
+        transportUnit.setEstado(1);
+        transportUnit.setTipoUnidadTransporte(EntityType.TRANSPORT_TYPES.get(typeCombo.getSelectedIndex()-1));
+        return transportUnitApplication.createTransportUnit(transportUnit);    
+    }
+
+    private Boolean saveTransportUnit() {
+        updatedTransportUnit.setPlaca(plateTxt.getText());
+        updatedTransportUnit.setTransportista(transportistTxt.getText());
+        updatedTransportUnit.setEstado(1);
+        updatedTransportUnit.setTipoUnidadTransporte(EntityType.TRANSPORT_TYPES.get(typeCombo.getSelectedIndex()-1));
+        return transportUnitApplication.updateTransportUnit(updatedTransportUnit);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -73,9 +92,7 @@ public class NewTransportUnitView extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel2 = new javax.swing.JLabel();
         plateTxt = new javax.swing.JTextField();
-        capacityTxt = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         typeCombo = new javax.swing.JComboBox();
@@ -85,14 +102,6 @@ public class NewTransportUnitView extends javax.swing.JDialog {
         transportistTxt = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
-        jLabel2.setText("Capacidad:");
-
-        capacityTxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                capacityTxtActionPerformed(evt);
-            }
-        });
 
         jLabel1.setText("Placa:");
 
@@ -132,33 +141,28 @@ public class NewTransportUnitView extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(112, Short.MAX_VALUE)
-                .addComponent(cancelBtn)
-                .addGap(18, 18, 18)
-                .addComponent(saveTxt)
-                .addGap(77, 77, 77))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel3))
+                                .addGap(58, 58, 58)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(typeCombo, 0, 235, Short.MAX_VALUE)
+                                    .addComponent(plateTxt)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(transportistTxt))))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel4)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cancelBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(transportistTxt))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(plateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel2)
-                                .addComponent(jLabel1)
-                                .addComponent(jLabel3))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGap(25, 25, 25)
-                                    .addComponent(typeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(102, 102, 102))
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(capacityTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                        .addComponent(saveTxt)))
+                .addGap(40, 40, 40))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -167,23 +171,19 @@ public class NewTransportUnitView extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(plateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(capacityTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15)
+                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(transportistTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15)
+                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(typeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(16, 16, 16)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(saveTxt)
-                    .addComponent(cancelBtn))
-                .addContainerGap(25, Short.MAX_VALUE))
+                    .addComponent(cancelBtn)
+                    .addComponent(saveTxt))
+                .addGap(19, 19, 19))
         );
 
         pack();
@@ -191,15 +191,15 @@ public class NewTransportUnitView extends javax.swing.JDialog {
 
     private void saveTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveTxtActionPerformed
         // TODO add your handling code here:
-        UnidadTransporte transportUnit = new UnidadTransporte();
-        transportUnit.setPlaca(plateTxt.getText());
-        transportUnit.setCapacidad(Integer.parseInt(capacityTxt.getText()));
-        transportUnit.setTransportista(transportistTxt.getText());
-        transportUnit.setTipoUnidadTransporte(EntityType.TRANSPORT_TYPES.get(typeCombo.getSelectedIndex()));
-        System.out.println(EntityType.TRANSPORT_TYPES.get(typeCombo.getSelectedIndex()).getDescripcion());
-        transportUnitApplication.createTransportUnit(transportUnit);
-        JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_CLIENT_CREATED,Strings.MESSAGE_NEW_CLIENT_TITLE,JOptionPane.INFORMATION_MESSAGE);
-        clearFields();
+        Boolean response = eventType.equals("CREATE") ? createAndSaveTransportUnit() : saveTransportUnit();
+        if (response){
+            JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_TRANSPORT_UNIT_CREATED,Strings.MESSAGE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
+            if(eventType.equals("CREATE")){
+                clearFields();               
+            }
+        }
+        else
+            JOptionPane.showMessageDialog(this, Strings.ERROR_MESSAGE_TRANSPORT_UNIT,Strings.MESSAGE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_saveTxtActionPerformed
 
     private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
@@ -215,16 +215,10 @@ public class NewTransportUnitView extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_transportistTxtActionPerformed
 
-    private void capacityTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_capacityTxtActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_capacityTxtActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelBtn;
-    private javax.swing.JTextField capacityTxt;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JTextField plateTxt;
@@ -232,4 +226,5 @@ public class NewTransportUnitView extends javax.swing.JDialog {
     private javax.swing.JTextField transportistTxt;
     private javax.swing.JComboBox typeCombo;
     // End of variables declaration//GEN-END:variables
+
 }

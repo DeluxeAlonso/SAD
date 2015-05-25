@@ -1,5 +1,5 @@
 package entity;
-// Generated 24-May-2015 16:40:14 by Hibernate Tools 4.3.1
+// Generated May 24, 2015 10:16:20 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -12,7 +12,7 @@ public class Despacho  implements java.io.Serializable {
 
 
      private Integer id;
-     private UnidadTransporte unidadTransporte;
+     private int idUnidadTransporte;
      private Set guiaRemisions = new HashSet(0);
      private Set pallets = new HashSet(0);
      private Set pedidoParcials = new HashSet(0);
@@ -21,11 +21,11 @@ public class Despacho  implements java.io.Serializable {
     }
 
 	
-    public Despacho(UnidadTransporte unidadTransporte) {
-        this.unidadTransporte = unidadTransporte;
+    public Despacho(int idUnidadTransporte) {
+        this.idUnidadTransporte = idUnidadTransporte;
     }
-    public Despacho(UnidadTransporte unidadTransporte, Set guiaRemisions, Set pallets, Set pedidoParcials) {
-       this.unidadTransporte = unidadTransporte;
+    public Despacho(int idUnidadTransporte, Set guiaRemisions, Set pallets, Set pedidoParcials) {
+       this.idUnidadTransporte = idUnidadTransporte;
        this.guiaRemisions = guiaRemisions;
        this.pallets = pallets;
        this.pedidoParcials = pedidoParcials;
@@ -38,12 +38,12 @@ public class Despacho  implements java.io.Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
-    public UnidadTransporte getUnidadTransporte() {
-        return this.unidadTransporte;
+    public int getIdUnidadTransporte() {
+        return this.idUnidadTransporte;
     }
     
-    public void setUnidadTransporte(UnidadTransporte unidadTransporte) {
-        this.unidadTransporte = unidadTransporte;
+    public void setIdUnidadTransporte(int idUnidadTransporte) {
+        this.idUnidadTransporte = idUnidadTransporte;
     }
     public Set getGuiaRemisions() {
         return this.guiaRemisions;

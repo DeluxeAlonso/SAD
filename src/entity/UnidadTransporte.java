@@ -15,7 +15,7 @@ public class UnidadTransporte  implements java.io.Serializable {
      private TipoUnidadTransporte tipoUnidadTransporte;
      private String transportista;
      private String placa;
-     private Integer capacidad;
+     private Integer estado;
      private Set despachos = new HashSet(0);
 
     public UnidadTransporte() {
@@ -29,7 +29,7 @@ public class UnidadTransporte  implements java.io.Serializable {
        this.tipoUnidadTransporte = tipoUnidadTransporte;
        this.transportista = transportista;
        this.placa = placa;
-       this.capacidad = capacidad;
+       this.estado = capacidad;
        this.despachos = despachos;
     }
    
@@ -61,12 +61,12 @@ public class UnidadTransporte  implements java.io.Serializable {
     public void setPlaca(String placa) {
         this.placa = placa;
     }
-    public Integer getCapacidad() {
-        return this.capacidad;
+    public Integer getEstado() {
+        return this.estado;
     }
     
-    public void setCapacidad(Integer capacidad) {
-        this.capacidad = capacidad;
+    public void setEstado(Integer estado) {
+        this.estado = estado;
     }
     public Set getDespachos() {
         return this.despachos;
