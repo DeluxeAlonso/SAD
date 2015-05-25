@@ -31,6 +31,19 @@ public class SpotApplication {
         return spots;
     }
     */
+    
+    public void insert(Ubicacion object) {
+        try{
+            SpotRepository w = new SpotRepository();
+            w.insert(object);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    
+    
     public ArrayList<Ubicacion> queryEmptySpotsByRack(int rackId){
         ArrayList<Ubicacion> spots = null;
         try {

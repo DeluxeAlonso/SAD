@@ -100,7 +100,18 @@ public class SpotRepository implements ISpotRepository{
     
     @Override
     public void insert(Ubicacion object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            session.save(object);                      
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }    
     }
 
     @Override
