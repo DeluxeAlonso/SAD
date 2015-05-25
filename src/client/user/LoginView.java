@@ -153,7 +153,7 @@ public class LoginView extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         // TODO add your handling code here:
-        Tools.closeSession();
+        //Tools.closeSession();
     }//GEN-LAST:event_formWindowClosing
     private void login() {
         if (userTxt.getText().equals("root") || userApplication.login(userTxt.getText(), new String(pwTxt.getPassword()))) {

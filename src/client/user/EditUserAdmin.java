@@ -237,7 +237,7 @@ public class EditUserAdmin extends javax.swing.JDialog {
         user.setApellidoMaterno(txtSecondName.getText());
         user.setCorreo(txtEmail.getText());      
         user.setEstado(comboState.getSelectedIndex());        
-        user.setPerfil(profileApplication.getProfileInstance(comboProfile.getSelectedItem().toString()));
+        user.setPerfil(profileApplication.getProfileByName(comboProfile.getSelectedItem().toString()));
         userApplication.updateUser(user);
         JOptionPane.showMessageDialog(this, Strings.MESSAGE_USER_UPDATED);        
         this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));

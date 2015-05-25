@@ -13,6 +13,7 @@ import entity.Perfil;
 import entity.Usuario;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
@@ -32,15 +33,16 @@ public class UserView extends javax.swing.JInternalFrame {
 
     UserApplication userApplication = InstanceFactory.Instance.getInstance("userApplicaiton", UserApplication.class);
     ProfileApplication profileApplication = InstanceFactory.Instance.getInstance("profileApplication", ProfileApplication.class);
-    ActionApplication actionApplication = InstanceFactory.Instance.getInstance("accionApplication", ActionApplication.class);
+    ActionApplication actionApplication = InstanceFactory.Instance.getInstance("actionApplication", ActionApplication.class);
     public static UserView userView;
     String newProfileName = "";
 
     /**
      * Creates new form UserForm
      */
-    public UserView() {
-        initComponents();        
+    public UserView(int tab) {
+        initComponents(); 
+        tabbedUP.setSelectedIndex(tab);
         actionOriginList.setModel(new DefaultListModel());
         actionDestList.setModel(new DefaultListModel());
         //Initialize profileComboBox
@@ -71,13 +73,12 @@ public class UserView extends javax.swing.JInternalFrame {
         
     public void fillLists(String profileName){
         
-        Perfil profile=profileApplication.getProfileInstance(profileName);
-        ArrayList<String> acciones=new ArrayList<>();
+        Perfil profile=profileApplication.getProfileByName(profileName);        
         DefaultListModel origModel= (DefaultListModel)actionOriginList.getModel();
         DefaultListModel destModel= (DefaultListModel)actionDestList.getModel();
         for(Accion a:EntityType.ACTIONS){
             boolean found=false;
-            for(Accion b:(Set<Accion>)profile.getAccions()){
+            for(Accion b:(Set<Accion>)profile.getAccions()){                
                 if(a.getNombre().equals(b.getNombre())){
                     found=true;
                     break;
@@ -98,7 +99,8 @@ public class UserView extends javax.swing.JInternalFrame {
     public void fillTableWithUsers() {
         DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();
         ArrayList<Usuario> users = userApplication.getAllUsers();
-        for (Usuario user : users) {            
+        for (Usuario u : users) {
+            Usuario user=userApplication.getUserById(u.getIdusuario());
             String profileName = user.getPerfil() != null ? user.getPerfil().getNombrePerfil() : "";
             String state = user.getEstado() != null ? EntityState.getUsersState()[user.getEstado()] : "";
             model.addRow(new Object[]{
@@ -126,7 +128,7 @@ public class UserView extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        tabbedUP = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
         newBtn = new javax.swing.JButton();
@@ -292,7 +294,7 @@ public class UserView extends javax.swing.JInternalFrame {
                 .addContainerGap(65, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Usuarios", jPanel1);
+        tabbedUP.addTab("Usuarios", jPanel1);
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Acciones"));
 
@@ -347,6 +349,7 @@ public class UserView extends javax.swing.JInternalFrame {
         });
 
         editProfileBtn.setText("Modificar");
+        editProfileBtn.setEnabled(false);
         editProfileBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editProfileBtnActionPerformed(evt);
@@ -488,7 +491,7 @@ public class UserView extends javax.swing.JInternalFrame {
                 .addContainerGap(29, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Perfiles", jPanel2);
+        tabbedUP.addTab("Perfiles", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -496,14 +499,14 @@ public class UserView extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 647, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(tabbedUP, javax.swing.GroupLayout.PREFERRED_SIZE, 647, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(21, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1)
+                .addComponent(tabbedUP)
                 .addContainerGap())
         );
 
@@ -512,10 +515,14 @@ public class UserView extends javax.swing.JInternalFrame {
 
     private void btnAddProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProfileActionPerformed
         // TODO add your handling code here:
+        clearLists();
         txtProfileName.setEnabled(true);
         txtProfileName.requestFocus();
         comboProfile2.setEnabled(false);
         btnDeleteProfile.setEnabled(false);
+        cancelEditBtn.setEnabled(true);
+        btnAddProfile.setEnabled(false);
+        comboProfile2.setSelectedIndex(0);
     }//GEN-LAST:event_btnAddProfileActionPerformed
 
     private void toRightBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toRightBtnActionPerformed
@@ -546,7 +553,10 @@ public class UserView extends javax.swing.JInternalFrame {
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             if (comboProfile2.getSelectedIndex() != 0) {               
                 String profileName = comboProfile2.getSelectedItem().toString();
-                fillLists(profileName);               
+                fillLists(profileName);
+                editProfileBtn.setEnabled(true);
+            }else{
+                editProfileBtn.setEnabled(false);
             }
         }
     }//GEN-LAST:event_comboProfile2ItemStateChanged
@@ -568,8 +578,15 @@ public class UserView extends javax.swing.JInternalFrame {
         saveProfileBtn.setEnabled(false);
         cancelEditBtn.setEnabled(false);
         toLeftBtn.setEnabled(false);
-        toRightBtn.setEnabled(false);
-        editProfileBtn.setEnabled(true);
+        toRightBtn.setEnabled(false);        
+        txtProfileName.setText("");
+        txtProfileName.setEnabled(false);
+        btnDeleteProfile.setEnabled(true);
+        comboProfile2.setEnabled(true);
+        if(btnAddProfile.isEnabled()){
+            editProfileBtn.setEnabled(true);           
+        }
+        btnAddProfile.setEnabled(true);
     }//GEN-LAST:event_cancelEditBtnActionPerformed
 
     private void saveProfileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveProfileBtnActionPerformed
@@ -581,6 +598,17 @@ public class UserView extends javax.swing.JInternalFrame {
         if (!newProfileName.equals("")) {
             JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_PROFILE_CREATED);
         } else {
+            Perfil profile=profileApplication.getProfileByName(comboProfile2.getSelectedItem().toString());
+            
+            DefaultListModel model=(DefaultListModel)actionDestList.getModel();            
+            Set actions=new HashSet();
+            for(int i=0;i<model.getSize();i++){
+                Accion a=actionApplication.getActionByName(model.getElementAt(i).toString());
+                if(a!=null)
+                    actions.add(a);                
+            }
+            profile.setAccions(actions);            
+            profileApplication.updateProfile(profile);
             JOptionPane.showMessageDialog(this, Strings.MESSAGE_PROFILE_EDITED);
         }
         editProfileBtn.setEnabled(true);
@@ -643,11 +671,11 @@ public class UserView extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JButton newBtn;
     private javax.swing.JComboBox profileCombo1;
     private javax.swing.JButton saveProfileBtn;
     private javax.swing.JButton searchBtn;
+    private javax.swing.JTabbedPane tabbedUP;
     private javax.swing.JButton toLeftBtn;
     private javax.swing.JButton toRightBtn;
     private javax.swing.JTextField txtProfileName;

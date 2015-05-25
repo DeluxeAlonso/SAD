@@ -30,6 +30,7 @@ public class NewUserView extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();       
         //initialize user states combo
+        fillCombos();
        
     }  
     public void fillCombos(){
@@ -235,7 +236,7 @@ public class NewUserView extends javax.swing.JDialog {
         user.setCorreo(emailTxt.getText());      
         user.setEstado(stateCombo.getSelectedIndex());
         user.setPassword(passwordTxt.getText());
-        user.setPerfil(profileApplication.getProfileInstance(profileCombo.getSelectedItem().toString()));
+        user.setPerfil(profileApplication.getProfileByName(profileCombo.getSelectedItem().toString()));
         userApplication.createUser(user);
         JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_USER_CREATED);
         clearFields();

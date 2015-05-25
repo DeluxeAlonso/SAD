@@ -8,19 +8,11 @@ package infraestructure.spot;
 import base.spot.ISpotRepository;
 import entity.Ubicacion;
 import java.util.ArrayList;
-import java.util.List;
-import javafx.scene.effect.Light.Spot;
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-
-import org.hibernate.criterion.Restrictions;
-import util.EntityState;
 import util.EntityState.Spots;
-
-import util.HibernateUtil;
 
 import util.Tools;
 
@@ -28,43 +20,44 @@ import util.Tools;
  *
  * @author prote_000
  */
-public class SpotRepository implements ISpotRepository{
+public class SpotRepository implements ISpotRepository {
     /*
-    @Override
-    public ArrayList<Ubicacion> querySpotsByRack(int rackId) {
-        String hql="from Ubicacion where id_rack=:rackId";
-        ArrayList<Ubicacion> spots=null;
+     @Override
+     public ArrayList<Ubicacion> querySpotsByRack(int rackId) {
+     String hql="from Ubicacion where id_rack=:rackId";
+     ArrayList<Ubicacion> spots=null;
         
-        Transaction trns = null;
-        Session session = Tools.getSessionInstance();
-        try {            
-            trns=session.beginTransaction();
-            Query q = session.createQuery(hql);
-            q.setParameter("rackId", rackId);
-            spots = (ArrayList<Ubicacion>) q.list();          
-            session.getTransaction().commit();
-        } catch (RuntimeException e) {
-            if (trns != null) {
-                trns.rollback();
-            }
-            e.printStackTrace();
-        } 
-        return spots; //To change body of generated methods, choose Tools | Templates.
-    }
-    */
+     Transaction trns = null;
+     Session session = Tools.getSessionInstance();
+     try {            
+     trns=session.beginTransaction();
+     Query q = session.createQuery(hql);
+     q.setParameter("rackId", rackId);
+     spots = (ArrayList<Ubicacion>) q.list();          
+     session.getTransaction().commit();
+     } catch (RuntimeException e) {
+     if (trns != null) {
+     trns.rollback();
+     }
+     e.printStackTrace();
+     } 
+     return spots; //To change body of generated methods, choose Tools | Templates.
+     }
+     */
+
     @Override
     public ArrayList<Ubicacion> queryEmptySpotsByRack(int rackId) {
-        String hql="FROM Ubicacion u WHERE u.rack.id=:rackId AND u.estado=:state ORDER BY u.lado, u.fila";
-        ArrayList<Ubicacion> spots=null;
-        
+        String hql = "FROM Ubicacion u WHERE u.rack.id=:rackId AND u.estado=:state ORDER BY u.lado, u.fila";
+        ArrayList<Ubicacion> spots = null;
+
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
-        try {            
-            trns=session.beginTransaction();
+        try {
+            trns = session.beginTransaction();
             Query q = session.createQuery(hql);
             q.setParameter("state", Spots.LIBRE.ordinal());
             q.setParameter("rackId", rackId);
-            spots = (ArrayList<Ubicacion>) q.list();          
+            spots = (ArrayList<Ubicacion>) q.list();
             session.getTransaction().commit();
         } catch (RuntimeException e) {
             if (trns != null) {
@@ -74,18 +67,18 @@ public class SpotRepository implements ISpotRepository{
         }
         return spots; //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
-    public Boolean updateSpotOccupancy(int spotId,int occupancyState) {
-        String hql="UPDATE Ubicacion u SET u.estado=:occupancyState WHERE u.id=:spotId";
-        
+    public Boolean updateSpotOccupancy(int spotId, int occupancyState) {
+        String hql = "UPDATE Ubicacion u SET u.estado=:occupancyState WHERE u.id=:spotId";
+
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
-        try {            
-            trns=session.beginTransaction();
+        try {
+            trns = session.beginTransaction();
             Query q = session.createSQLQuery(hql);
             q.setParameter("occupancyState", occupancyState);
-            q.setParameter("spotId", spotId);  
+            q.setParameter("spotId", spotId);
             q.executeUpdate();
             session.getTransaction().commit();
             return true;
@@ -97,7 +90,7 @@ public class SpotRepository implements ISpotRepository{
             return false;
         }
     }
-    
+
     @Override
     public void insert(Ubicacion object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -127,5 +120,5 @@ public class SpotRepository implements ISpotRepository{
     public Ubicacion queryById(String id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
 }

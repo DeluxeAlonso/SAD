@@ -8,10 +8,6 @@ package infraestructure.local;
 import base.local.ILocalRepository;
 import entity.Local;
 import java.util.ArrayList;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import util.Tools;
 
 /**
  *

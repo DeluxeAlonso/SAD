@@ -12,7 +12,6 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.EntityState.Racks;
-import util.HibernateUtil;
 import util.Tools;
 
 /**
@@ -40,10 +39,7 @@ public class RackRepository implements IRackRepository{
                 trns.rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.flush();
-            session.close();
-        }
+        } 
         return warehouses; //To change body of generated methods, choose Tools | Templates.
     }
 

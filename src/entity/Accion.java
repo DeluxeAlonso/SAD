@@ -50,9 +50,6 @@ public class Accion  implements java.io.Serializable {
         this.perfils = perfils;
     }
 
-
-
-
 }
 
 

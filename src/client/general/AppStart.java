@@ -36,7 +36,7 @@ public class AppStart {
             InstanceFactory.Instance.register("userApplication", UserApplication.class);
             InstanceFactory.Instance.register("warehouseApplication", WarehouseApplication.class);
             InstanceFactory.Instance.register("profileApplication", ProfileApplication.class);
-            InstanceFactory.Instance.register("accionApplication", ActionApplication.class);
+            InstanceFactory.Instance.register("actionApplication", ActionApplication.class);
             InstanceFactory.Instance.register("internmentApplication", InternmentApplication.class);
         } catch (Exception ex) {
             Logger.getLogger(AppStart.class.getName()).log(Level.SEVERE, null, ex);
@@ -48,7 +48,7 @@ public class AppStart {
     
     private void loadEntityType(){      
         ProfileApplication profileApplication = InstanceFactory.Instance.getInstance("profileApplication", ProfileApplication.class);
-        ActionApplication actionApplication = InstanceFactory.Instance.getInstance("accionApplication", ActionApplication.class);
+        ActionApplication actionApplication = InstanceFactory.Instance.getInstance("actionApplication", ActionApplication.class);
         WarehouseApplication warehouseApplication = InstanceFactory.Instance.getInstance("warehouseApplication", WarehouseApplication.class);
         
         

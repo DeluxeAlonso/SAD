@@ -8,11 +8,10 @@ package infraestructure.user;
 import base.user.IUserRepository;
 import entity.Usuario;
 import java.util.ArrayList;
-import org.hibernate.HibernateException;
+import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import util.HibernateUtil;
 import util.Tools;
 
 /**
@@ -34,6 +33,7 @@ public class UserRepository implements IUserRepository {
             Query q = session.createQuery(hql);
             q.setParameter("email", email);
             user = (Usuario) q.uniqueResult();
+            Hibernate.initialize(user.getPerfil());
             session.getTransaction().commit();
         } catch (RuntimeException e) {
             if (trns != null) {
@@ -75,7 +75,7 @@ public class UserRepository implements IUserRepository {
         try {            
             trns=session.beginTransaction();
             Query q = session.createQuery(hql);              
-            users = (ArrayList<Usuario>) q.list();          
+            users = (ArrayList<Usuario>) q.list();             
             session.getTransaction().commit();
         } catch (RuntimeException e) {
             if (trns != null) {
@@ -92,7 +92,7 @@ public class UserRepository implements IUserRepository {
         Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
-            session.update(object);                      
+            session.saveOrUpdate(object);                      
             session.getTransaction().commit();
         } catch (RuntimeException e) {
             if (trns != null) {
@@ -120,6 +120,7 @@ public class UserRepository implements IUserRepository {
             Query q = session.createQuery(hql);
             q.setParameter("id", id);
             user = (Usuario) q.uniqueResult();
+            Hibernate.initialize(user.getPerfil());
             session.getTransaction().commit();
         } catch (RuntimeException e) {
             if (trns != null) {
