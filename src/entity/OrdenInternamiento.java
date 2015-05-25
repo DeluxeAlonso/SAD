@@ -1,5 +1,5 @@
 package entity;
-// Generated 24-May-2015 16:40:14 by Hibernate Tools 4.3.1
+// Generated May 25, 2015 12:04:54 AM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -15,15 +15,15 @@ public class OrdenInternamiento  implements java.io.Serializable {
      private Integer id;
      private Date fecha;
      private Integer estado;
-     private Set ordenInternamientoXProductos = new HashSet(0);
+     private Set ordenInternamientoXItemProductos = new HashSet(0);
 
     public OrdenInternamiento() {
     }
 
-    public OrdenInternamiento(Date fecha, Integer estado, Set ordenInternamientoXProductos) {
+    public OrdenInternamiento(Date fecha, Integer estado, Set ordenInternamientoXItemProductos) {
        this.fecha = fecha;
        this.estado = estado;
-       this.ordenInternamientoXProductos = ordenInternamientoXProductos;
+       this.ordenInternamientoXItemProductos = ordenInternamientoXItemProductos;
     }
    
     public Integer getId() {
@@ -47,12 +47,12 @@ public class OrdenInternamiento  implements java.io.Serializable {
     public void setEstado(Integer estado) {
         this.estado = estado;
     }
-    public Set getOrdenInternamientoXProductos() {
-        return this.ordenInternamientoXProductos;
+    public Set getOrdenInternamientoXItemProductos() {
+        return this.ordenInternamientoXItemProductos;
     }
     
-    public void setOrdenInternamientoXProductos(Set ordenInternamientoXProductos) {
-        this.ordenInternamientoXProductos = ordenInternamientoXProductos;
+    public void setOrdenInternamientoXItemProductos(Set ordenInternamientoXItemProductos) {
+        this.ordenInternamientoXItemProductos = ordenInternamientoXItemProductos;
     }
 
 

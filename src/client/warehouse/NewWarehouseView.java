@@ -201,7 +201,7 @@ public class NewWarehouseView extends javax.swing.JDialog {
 
         al.setCondicion(EntityType.getCondition(1));
         al.setDescripcion(this.descripcionTxt.getText());
-        al.setEstado("Activo");
+        al.setEstado(1);
         al.setFechaRegistro(cal.getTime());
         al.setKardexes(null);
         al.setRacks(null);

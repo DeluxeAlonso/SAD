@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 24-May-2015 16:40:15 by Hibernate Tools 4.3.1 -->
+<!-- Generated May 25, 2015 12:04:56 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entity.Rack" table="rack" catalog="saddb" optimistic-lock="version">
         <id name="id" type="java.lang.Integer">
@@ -9,7 +9,7 @@
             <generator class="identity" />
         </id>
         <many-to-one name="almacen" class="entity.Almacen" fetch="select">
-            <column name="id_almacen" />
+            <column name="id_almacen" not-null="true" />
         </many-to-one>
         <property name="numFil" type="java.lang.Integer">
             <column name="num_fil" />
@@ -17,8 +17,8 @@
         <property name="numCol" type="java.lang.Integer">
             <column name="num_col" />
         </property>
-        <property name="estado" type="string">
-            <column name="estado" length="20" />
+        <property name="estado" type="java.lang.Integer">
+            <column name="estado" />
         </property>
         <property name="fechaRegistro" type="timestamp">
             <column name="fecha_registro" length="19" />

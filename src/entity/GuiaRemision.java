@@ -1,5 +1,5 @@
 package entity;
-// Generated 24-May-2015 16:40:14 by Hibernate Tools 4.3.1
+// Generated May 25, 2015 12:04:54 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -12,21 +12,23 @@ public class GuiaRemision  implements java.io.Serializable {
 
 
      private Integer id;
+     private Cliente cliente;
      private Despacho despacho;
-     private PedidoParcial pedidoParcial;
+     private Integer estado;
      private Set pedidoParcials = new HashSet(0);
 
     public GuiaRemision() {
     }
 
 	
-    public GuiaRemision(Despacho despacho, PedidoParcial pedidoParcial) {
+    public GuiaRemision(Cliente cliente, Despacho despacho) {
+        this.cliente = cliente;
         this.despacho = despacho;
-        this.pedidoParcial = pedidoParcial;
     }
-    public GuiaRemision(Despacho despacho, PedidoParcial pedidoParcial, Set pedidoParcials) {
+    public GuiaRemision(Cliente cliente, Despacho despacho, Integer estado, Set pedidoParcials) {
+       this.cliente = cliente;
        this.despacho = despacho;
-       this.pedidoParcial = pedidoParcial;
+       this.estado = estado;
        this.pedidoParcials = pedidoParcials;
     }
    
@@ -37,6 +39,13 @@ public class GuiaRemision  implements java.io.Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
+    public Cliente getCliente() {
+        return this.cliente;
+    }
+    
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
     public Despacho getDespacho() {
         return this.despacho;
     }
@@ -44,12 +53,12 @@ public class GuiaRemision  implements java.io.Serializable {
     public void setDespacho(Despacho despacho) {
         this.despacho = despacho;
     }
-    public PedidoParcial getPedidoParcial() {
-        return this.pedidoParcial;
+    public Integer getEstado() {
+        return this.estado;
     }
     
-    public void setPedidoParcial(PedidoParcial pedidoParcial) {
-        this.pedidoParcial = pedidoParcial;
+    public void setEstado(Integer estado) {
+        this.estado = estado;
     }
     public Set getPedidoParcials() {
         return this.pedidoParcials;

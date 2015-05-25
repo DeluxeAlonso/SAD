@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 24-May-2015 16:40:15 by Hibernate Tools 4.3.1 -->
+<!-- Generated May 25, 2015 12:04:56 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entity.Local" table="local" catalog="saddb" optimistic-lock="version">
         <id name="id" type="java.lang.Integer">
@@ -9,7 +9,7 @@
             <generator class="identity" />
         </id>
         <many-to-one name="cliente" class="entity.Cliente" fetch="select">
-            <column name="Cliente_id" not-null="true" />
+            <column name="id_cliente" not-null="true" />
         </many-to-one>
         <property name="latitud" type="java.lang.Double">
             <column name="latitud" precision="22" scale="0" />
@@ -31,7 +31,7 @@
         </property>
         <set name="pedidos" table="pedido" inverse="true" lazy="true" fetch="select">
             <key>
-                <column name="Local_id" not-null="true" />
+                <column name="id_local" not-null="true" />
             </key>
             <one-to-many class="entity.Pedido" />
         </set>

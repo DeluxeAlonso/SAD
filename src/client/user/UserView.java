@@ -102,7 +102,7 @@ public class UserView extends javax.swing.JInternalFrame {
             String profileName = user.getPerfil() != null ? user.getPerfil().getNombrePerfil() : "";
             String state = user.getEstado() != null ? EntityState.getUsersState()[user.getEstado()] : "";
             model.addRow(new Object[]{
-                user.getIdusuario(),
+                user.getId(),
                 user.getNombre() + " " + user.getApellidoPaterno() + " " + user.getApellidoMaterno(),
                 user.getCorreo(),
                 state,

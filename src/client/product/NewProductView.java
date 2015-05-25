@@ -164,7 +164,7 @@ public class NewProductView extends javax.swing.JDialog {
         product.setCondicion(EntityType.CONDITIONS.get(cmbCondition.getSelectedIndex()));
         product.setNombre(txtName.getText());
         product.setDescripcion(txtDescription.getText());
-        product.setCantidadUnidades((Integer) spnQuantity.getValue());
+        //product.setCantidadUnidades((Integer) spnQuantity.getValue());
         product.setStockTotal((Integer) spnQuantity.getValue());        
         productApplication.createProduct(product);
     }//GEN-LAST:event_btnOKActionPerformed
