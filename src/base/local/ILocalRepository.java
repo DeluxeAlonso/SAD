@@ -7,11 +7,14 @@ package base.local;
 
 import base.IRepository;
 import entity.Local;
+import java.util.ArrayList;
 
 /**
  *
  * @author prote_000
  */
 public interface ILocalRepository extends IRepository<Local>{
-    
+    public void insert(Local object);
+    public ArrayList<Local> queryLocalsByClient(int clientId);
+    public Boolean delete(int localId);
 }

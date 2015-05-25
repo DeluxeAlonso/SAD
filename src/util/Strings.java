@@ -53,12 +53,22 @@ public class Strings {
     public static final String MESSAGE_NEW_CLIENT_TITLE="Mensaje de inserción de cliente";
     public static final String MESSAGE_NEW_CLIENT_CREATED="Se registró correctamente el cliente.";
     public static final String MESSAGE_DELETE_CLIENT_TITLE="Mensaje de eliminación de cliente";
-    public static final String MESSAGE_DELETE_CLIENT="¿Está seguro de eliminar el usuario seleccionado?";
+    public static final String MESSAGE_DELETE_CLIENT="¿Está seguro de eliminar el cliente seleccionado?";
     public static final String ERROR_NEW_CLIENT_TITLE="Error al agregar nuevo cliente";
-    public static final String ERROR_NAME_LESS_2="El campo nombre debe tener por lo menos 2 caracteres.";
-    public static final String ERROR_NAME_MORE_60="El campo nombre no debe contener más de 60 caracteres.";
+    public static final String ERROR_NAME_LESS_2="El campo Nombre debe tener por lo menos 2 caracteres.";
+    public static final String ERROR_NAME_MORE_60="El campo Nombre no debe contener más de 60 caracteres.";
     public static final String ERROR_RUC_NOT_11="El campo RUC debe contener exactamente 11 caracteres.";
     public static final String ERROR_RUC_NOT_NUMERIC="El campo RUC debe contener caracteres numéricos solamente.";
+    public static final String ERROR_NEW_LOCAL_TITLE="Error al agregar nuevo local";
+    public static final String MESSAGE_NEW_LOCAL_TITLE="Mensaje de inserción de local.";
+    public static final String MESSAGE_NEW_LOCAL_CREATED="Se registró correctamente el local.";
+    public static final String MESSAGE_DELETE_LOCAL_TITLE="Mensaje de eliminación de local";
+    public static final String MESSAGE_DELETE_LOCAL="¿Está seguro de eliminar el local seleccionado?";
+    public static final String ERROR_ADDRESS_REQUIRED="El campo Dirección es requerido.";
+    public static final String ERROR_LATITUDE_REQUIRED="El campo Latitud es requerido.";
+    public static final String ERROR_LONGITUDE_REQUIRED="El campo Longitud es requerido.";
+    public static final String ERROR_LATITUDE_NOT_FLOAT="El campo Latitud debe ser un número de punto flotante.";
+    public static final String ERROR_LONGITUDE_NOT_FLOAT="El campo Longitud debe ser un número de punto flotante.";
     /*END*/
     
 }
