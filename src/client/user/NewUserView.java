@@ -229,7 +229,7 @@ public class NewUserView extends javax.swing.JDialog {
     private void saveTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveTxtActionPerformed
         // TODO add your handling code here:
         Usuario user=new Usuario();
-        user.setIdusuario(UUID.randomUUID().toString().replace("-", ""));
+        user.setId(UUID.randomUUID().toString().replace("-", ""));
         user.setNombre(nameTxt.getText());
         user.setApellidoPaterno(firstNameTxt.getText());
         user.setApellidoMaterno(secondNameTxt.getText());

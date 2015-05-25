@@ -41,7 +41,7 @@ public class EditUserAdmin extends javax.swing.JDialog {
     }
     
     public void fillUserFields(){
-        txtUserId.setText(user.getIdusuario());
+        txtUserId.setText(user.getId());
         txtName.setText(user.getNombre());
         txtFirstName.setText(user.getApellidoPaterno());
         txtSecondName.setText(user.getApellidoMaterno());

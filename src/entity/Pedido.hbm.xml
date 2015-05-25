@@ -1,16 +1,19 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 24-May-2015 16:40:15 by Hibernate Tools 4.3.1 -->
+<!-- Generated May 25, 2015 12:04:56 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entity.Pedido" table="pedido" catalog="saddb" optimistic-lock="version">
-        <id name="idPedido" type="java.lang.Integer">
-            <column name="idPedido" />
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
             <generator class="identity" />
         </id>
         <many-to-one name="local" class="entity.Local" fetch="select">
-            <column name="Local_id" not-null="true" />
+            <column name="id_local" not-null="true" />
         </many-to-one>
+        <property name="estado" type="java.lang.Integer">
+            <column name="estado" />
+        </property>
         <set name="pedidoParcials" table="pedido_parcial" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="id_pedido" not-null="true" />

@@ -5,33 +5,65 @@
  */
 package client.client;
 
+import application.local.LocalApplication;
 import entity.Cliente;
+import entity.Local;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Locale;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
+import util.InstanceFactory;
+import util.Strings;
 
 /**
  *
  * @author prote_000
  */
 public class LocalsView extends javax.swing.JDialog {
-
+    Cliente client = null;
+    public static LocalsView localsView; 
+    ArrayList<Local> locals;
+    LocalApplication localApplication=InstanceFactory.Instance.getInstance("localApplication", LocalApplication.class);
     /**
      * Creates new form ViewLocals
      */
-    public LocalsView(java.awt.Frame parent, boolean modal) {
+    public LocalsView(java.awt.Frame parent, boolean modal, Cliente client) {
         super(parent, modal);
+        this.client = client;
+        localsView = this;
         initComponents();
-    }
-
-    LocalsView(JFrame jFrame, boolean b, Cliente client) {
-        //super(parent, modal);
-        initComponents();
-        fillLocalsTable(client);
+        fillLocalsTable();
+        tblLocals.addMouseListener(new MouseAdapter(){
+            public void mouseClicked(MouseEvent e){
+                btnDelete.setEnabled(true);
+            }
+        });
     }
     
-    public void fillLocalsTable(Cliente client){
-        System.out.println(client.getNombre());
+    private void clearLocalsTable(){
         DefaultTableModel model = (DefaultTableModel) tblLocals.getModel();
+        model.setRowCount(0);
+    }
+    
+    public void fillLocalsTable(){
+        clearLocalsTable();
+        DefaultTableModel model = (DefaultTableModel) tblLocals.getModel();
+        locals = (ArrayList<Local>)localApplication.queryLocalsByClient(client.getId());
+        if(locals.size()>0){
+            for(Local local : locals){
+                model.addRow(new Object[]{
+                    local.getNombre(),
+                    local.getDireccion(),
+                    local.getLatitud(),
+                    local.getLongitud(),
+                });
+            }
+        }
+        
     }
 
     /**
@@ -45,28 +77,36 @@ public class LocalsView extends javax.swing.JDialog {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tblLocals = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnAdd = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Locales");
 
         tblLocals.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Nombre", "Dirección", "Latitud", "Longitud"
             }
         ));
         jScrollPane1.setViewportView(tblLocals);
 
-        jButton1.setText("Agregar");
+        btnAdd.setText("Agregar");
+        btnAdd.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnAddMousePressed(evt);
+            }
+        });
 
-        jButton2.setText("Eliminar");
+        btnDelete.setText("Eliminar");
+        btnDelete.setEnabled(false);
+        btnDelete.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnDeleteMousePressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -77,9 +117,9 @@ public class LocalsView extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(btnAdd)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2)))
+                        .addComponent(btnDelete)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -87,8 +127,8 @@ public class LocalsView extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(29, 29, 29)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(btnAdd)
+                    .addComponent(btnDelete))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
                 .addContainerGap())
@@ -97,52 +137,25 @@ public class LocalsView extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(LocalsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(LocalsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(LocalsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(LocalsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
+    private void btnAddMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddMousePressed
+        NewLocalView newLocalView = new NewLocalView((JFrame)SwingUtilities.getWindowAncestor(this),true,client);
+        newLocalView.setVisible(true);   
+    }//GEN-LAST:event_btnAddMousePressed
 
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                LocalsView dialog = new LocalsView(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
+    private void btnDeleteMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMousePressed
+        System.out.println(tblLocals.getSelectedRow());
+        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+        int response = JOptionPane.showConfirmDialog(this, Strings.MESSAGE_DELETE_LOCAL,Strings.MESSAGE_DELETE_LOCAL_TITLE,JOptionPane.WARNING_MESSAGE);
+        if(JOptionPane.OK_OPTION == response){
+            localApplication.delete(locals.get(tblLocals.getSelectedRow()).getId());
+            fillLocalsTable();
+        }
+    }//GEN-LAST:event_btnDeleteMousePressed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnDelete;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblLocals;
     // End of variables declaration//GEN-END:variables
