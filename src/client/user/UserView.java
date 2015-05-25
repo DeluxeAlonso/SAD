@@ -100,7 +100,7 @@ public class UserView extends javax.swing.JInternalFrame {
         DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();
         ArrayList<Usuario> users = userApplication.getAllUsers();
         for (Usuario u : users) {
-            Usuario user=userApplication.getUserById(u.getIdusuario());
+            Usuario user=userApplication.getUserById(u.getId());
             String profileName = user.getPerfil() != null ? user.getPerfil().getNombrePerfil() : "";
             String state = user.getEstado() != null ? EntityState.getUsersState()[user.getEstado()] : "";
             model.addRow(new Object[]{

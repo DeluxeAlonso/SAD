@@ -10,6 +10,6 @@ package util;
  * @author LUIS
  */
 public class Constans {
-    public static int FILAS_RACK = 3;
-    public static int COLUMNAS_RACK = 6;    
+    public static int FILAS_RACK = 2;
+    public static int COLUMNAS_RACK = 4;    
 }

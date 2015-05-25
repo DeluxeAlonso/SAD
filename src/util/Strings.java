@@ -47,6 +47,7 @@ public class Strings {
     public static final String ERROR_NO_PALLETS_SELECTED="Seleccione algún pallet.";
     public static final String ERROR_NO_SPOTS_SELECTED="Seleccione alguna ubicación de destino.";
     public static final String ERROR_PALLETS_DONT_MATCH_SPOTS="La cantidad de pallets y ubicaciones seleccionados deben ser iguales.";
+    public static final String MESSAGE_WAREHOUSE_CREATED="El almacen se ha registrado con éxito.";
     /*END*/
     
     /*CLIENT MODULE MESSAGES*/

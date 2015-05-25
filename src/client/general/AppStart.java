@@ -60,11 +60,11 @@ public class AppStart {
         RackApplication rackApplication = InstanceFactory.Instance.getInstance("rackApplication", RackApplication.class);
         SpotApplication spotApplication = InstanceFactory.Instance.getInstance("spotApplication", SpotApplication.class);
         //al final se tiene que cargar el arreglo desde la base de datos        
-        Condicion c1 = new Condicion(); c1.setId(1); c1.setNombre("Refrigerados");
-        c1.setDescripcion("Esta condicion sirve para productos que necesiten una refreigeracion");
+        Condicion c1 = new Condicion(); c1.setId(1); c1.setNombre("Normal");
+        c1.setDescripcion("Esta condicion sirve para productos que necesiten una temperatura entre 15 y 30 grados");
         
-        Condicion c2 = new Condicion(); c2.setId(2); c2.setNombre("Normal");
-        c2.setDescripcion("Esta condicion sirve para productos que necesiten una temperatura entre 15 y 30 grados");
+        Condicion c2 = new Condicion(); c2.setId(2); c2.setNombre("Refrigerados");
+        c2.setDescripcion("Esta condicion sirve para productos que necesiten una refreigeracion");
         
         EntityType.CONDITIONS.add(c1); 
         EntityType.CONDITIONS.add(c2);

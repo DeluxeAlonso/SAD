@@ -15,10 +15,12 @@ import entity.Almacen;
 import entity.Rack;
 import entity.Ubicacion;
 import java.util.Calendar;
+import javax.swing.JOptionPane;
 import util.Constans;
 import util.EntityState;
 import util.EntityType;
 import util.InstanceFactory;
+import util.Strings;
 
 /**
  *
@@ -190,6 +192,8 @@ public class NewWarehouseView extends javax.swing.JDialog {
 
     private void saveTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveTxtActionPerformed
         // TODO add your handling code here:
+        
+        
         Almacen al = new Almacen();
         Calendar cal = Calendar.getInstance();
         int capa = Integer.parseInt(this.capacityTxt.getText());
@@ -208,14 +212,14 @@ public class NewWarehouseView extends javax.swing.JDialog {
         
         al.setCondicion(conditionApplication.getConditionInstance(condicionCombo.getSelectedItem().toString()));
         al.setDescripcion(this.descripcionTxt.getText());
-        al.setEstado(1);
+        al.setEstado(EntityState.Warehouses.ACTIVO.ordinal());
         al.setFechaRegistro(cal.getTime());
         al.setKardexes(null);
         warehouseApplication.insert(al);
         
         for (int i=0;i<uLibres;i++){
             Rack r = new Rack();
-            r.setEstado("Activo");
+            r.setEstado(EntityState.Racks.ACTIVO.ordinal());
             r.setFechaRegistro(cal.getTime());
             r.setAlmacen(al);
             r.setNumCol(Constans.COLUMNAS_RACK);
@@ -236,10 +240,22 @@ public class NewWarehouseView extends javax.swing.JDialog {
                 }
             }
         }
-        
+        JOptionPane.showMessageDialog(this, Strings.MESSAGE_WAREHOUSE_CREATED);
+        clearFields();
 
     }//GEN-LAST:event_saveTxtActionPerformed
 
+    public void clearFields(){
+        AreaTxt.setText("");
+        capacityTxt.setText("");
+        descripcionTxt.setText("");
+        racksTxt.setText("");      
+        condicionCombo.setSelectedIndex(0);
+    }
+    
+    
+    
+    
     private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
         // TODO add your handling code here:
         this.dispose();
