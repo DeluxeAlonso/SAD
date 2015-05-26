@@ -27,9 +27,9 @@ public class Strings {
     /*END*/
     
     /*PROFILE MESSAGES*/
-    public static final String MESSAGE_NEW_PROFILE_CREATED="El perfil se ha registrado con éxito";
-    public static final String MESSAGE_PROFILE_EDITED="El perfil ha sido modificado con éxito";
-            
+    public static final String MESSAGE_NEW_PROFILE_CREATED="El perfil se ha registrado con éxito.";
+    public static final String MESSAGE_PROFILE_EDITED="El perfil ha sido modificado con éxito.";
+    public static final String MESSAGE_PROFILE_DELETED="El perfil se ha eliminado exitosamente.";        
     
     /*END*/
     

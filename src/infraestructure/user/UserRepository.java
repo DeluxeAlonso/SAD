@@ -113,7 +113,7 @@ public class UserRepository implements IUserRepository {
         Session session = Tools.getSessionInstance();
         Usuario user = null;
         String hql
-                = "from Usuario where idusuario=:id";
+                = "from Usuario where id=:id";
         try {
             
             session.beginTransaction();

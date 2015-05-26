@@ -8,8 +8,8 @@ package client.user;
 import application.user.UserApplication;
 import client.general.AppStart;
 import client.general.MainView;
+import entity.Usuario;
 import util.InstanceFactory;
-import util.Tools;
 
 /**
  *
@@ -156,10 +156,14 @@ public class LoginView extends javax.swing.JFrame {
         //Tools.closeSession();
     }//GEN-LAST:event_formWindowClosing
     private void login() {
-        if (userTxt.getText().equals("root") || userApplication.login(userTxt.getText(), new String(pwTxt.getPassword()))) {
+        
+        if (!userTxt.getText().equals("root")) {  
+            Usuario user=null;
+            user=userApplication.login(userTxt.getText(), new String(pwTxt.getPassword()));
+            new MainView(user).setVisible(true);            
+        }else
             new MainView().setVisible(true);
-            dispose();
-        }
+        dispose();
     }
 
     /**

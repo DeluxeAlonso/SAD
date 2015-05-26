@@ -57,4 +57,19 @@ public class ProfileApplication {
         return profile;
     }
     
+    public void insertProfile(Perfil profile){
+        try{
+            profileRepository.insert(profile);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    public void deleteProfile(Perfil profile){
+        try{
+            profileRepository.delete(profile);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
 }

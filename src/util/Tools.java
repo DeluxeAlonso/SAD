@@ -31,7 +31,7 @@ public class Tools {
         return session;        
     }
     
-    public static void closeSessione(){
+    public static void closeSession(){
         Session session=null;
         session=HibernateUtil.getSessionFactory().getCurrentSession();
         if(session!=null){            

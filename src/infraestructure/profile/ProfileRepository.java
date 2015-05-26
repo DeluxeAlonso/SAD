@@ -22,12 +22,36 @@ public class ProfileRepository implements IProfileRepository {
 
     @Override
     public void insert(Perfil object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Transaction trns = null;        
+        Session session = Tools.getSessionInstance();
+        
+        try {
+            trns = session.beginTransaction();                      
+            session.save(object);            
+            trns.commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void delete(Perfil object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Transaction trns = null;        
+        Session session = Tools.getSessionInstance();
+        
+        try {
+            trns = session.beginTransaction();                      
+            session.delete(object);            
+            trns.commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -57,13 +81,7 @@ public class ProfileRepository implements IProfileRepository {
         Session session = Tools.getSessionInstance();
         
         try {
-            trns = session.beginTransaction();
-            /*int id=object.getIdPerfil();
-            Perfil profile=(Perfil)session.get(Perfil.class,id);
-            //profile.setAccions(object.getAccions());            
-            profile.setDescripcion(object.getDescripcion());
-            profile.setNombrePerfil(object.getNombrePerfil());
-            profile.setUsuarios(object.getUsuarios()); */           
+            trns = session.beginTransaction();                      
             session.update(object);            
             trns.commit();
         } catch (RuntimeException e) {
@@ -71,8 +89,6 @@ public class ProfileRepository implements IProfileRepository {
                 trns.rollback();
             }
             e.printStackTrace();
-        }finally{
-            //session.close();
         }
     }
 
