@@ -6,6 +6,7 @@ import application.client.ClientApplication;
 import application.condition.ConditionApplication;
 import application.internment.InternmentApplication;
 import application.order.OrderApplication;
+import application.product.ProductApplication;
 import application.profile.ProfileApplication;
 import application.transportunit.TransportUnitApplication;
 import application.rack.RackApplication;
@@ -49,7 +50,8 @@ public class AppStart {
             InstanceFactory.Instance.register("rackApplication", RackApplication.class);
             InstanceFactory.Instance.register("spotApplication", SpotApplication.class);
             InstanceFactory.Instance.register("orderApplication", OrderApplication.class);
-            InstanceFactory.Instance.register("clientApplication", ClientApplication.class);         
+            InstanceFactory.Instance.register("clientApplication", ClientApplication.class);
+            InstanceFactory.Instance.register("productApplication", ProductApplication.class);  
         } catch (Exception ex) {
             Logger.getLogger(AppStart.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -68,6 +70,7 @@ public class AppStart {
         SpotApplication spotApplication = InstanceFactory.Instance.getInstance("spotApplication", SpotApplication.class);
         OrderApplication orderApplication = InstanceFactory.Instance.getInstance("orderApplication", OrderApplication.class);
         ClientApplication clientApplication = InstanceFactory.Instance.getInstance("clientApplication", ClientApplication.class);
+        ProductApplication productApplication = InstanceFactory.Instance.getInstance("productApplication", ProductApplication.class);
         //al final se tiene que cargar el arreglo desde la base de datos        
         Condicion c1 = new Condicion(); c1.setId(1); c1.setNombre("Normal");
         c1.setDescripcion("Esta condicion sirve para productos que necesiten una temperatura entre 15 y 30 grados");
@@ -84,6 +87,7 @@ public class AppStart {
         transportUnitApplication.refreshTransportUnits();
         orderApplication.refreshOrders();
         clientApplication.refreshClients();
+        productApplication.refreshProducts();
     }
 
 }

@@ -10,6 +10,7 @@ import entity.Cliente;
 import entity.Condicion;
 import entity.Pedido;
 import entity.Perfil;
+import entity.Producto;
 import entity.TipoUnidadTransporte;
 import entity.UnidadTransporte;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class EntityType {
     public static ArrayList<UnidadTransporte> TRANSPORT_UNITS = new ArrayList<>();
     public static ArrayList<Pedido> ORDERS = new ArrayList<>();
     public static ArrayList<Cliente> CLIENTS = new ArrayList<>();
+    public static ArrayList<Producto> PRODUCTS = new ArrayList<>();
     
     public static ArrayList<TipoUnidadTransporte> TRANSPORT_TYPES = new ArrayList<>();
 
@@ -91,7 +93,7 @@ public class EntityType {
         }
         return null;
     }
-    
-    
+
+
 
 }
