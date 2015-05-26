@@ -40,6 +40,8 @@ public class Strings {
     public static final String MESSAGE_CHANGE_PASSWORD="Se ha modificado su contraseña satisfactoriamente.";
     public static final String MESSAGE_NEW_USER_CREATED="El usuario se ha registrado con éxito.";
     public static final String MESSAGE_USER_UPDATED="El usuario ha sido actualizado con éxito.";
+    public static final String ALERT_USER_INACTIVE="No tienes acceso a la aplicación.";
+    public static final String ALERT_USER_DOES_NOT_EXIST="Correo o la contraseña incorrectos.";
     /*END*/
     
     /*WAREHOUSE MODULE MESSAGES*/

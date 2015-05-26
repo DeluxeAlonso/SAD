@@ -53,6 +53,17 @@ public class SpotApplication {
         }
         return spots;
     }
+
+    public ArrayList<Ubicacion> querySpotsByRack(int rackId){
+        ArrayList<Ubicacion> spots = null;
+        try {
+            spots = spotRepository.querySpotsByRack(rackId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return spots;
+    }    
+    
     
     public Boolean updateSpotOccupancy(int spotId,int occupancyState){
         Boolean response = false;
