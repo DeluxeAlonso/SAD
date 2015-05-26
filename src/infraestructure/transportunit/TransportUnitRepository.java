@@ -38,38 +38,7 @@ public class TransportUnitRepository implements ITransportUnitRepository{
         }
     }
     
-    
-    
     @Override
-    public void insert(UnidadTransporte object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void delete(UnidadTransporte object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public ArrayList<UnidadTransporte> queryAll() {
-        String hql = "from UnidadTransporte where estado=1";
-        ArrayList<UnidadTransporte> unitTransport = new ArrayList<>();
-        Transaction trns = null;
-        try{
-            trns = session.beginTransaction();
-            Query q = session.createQuery(hql);
-            unitTransport = (ArrayList<UnidadTransporte>) q.list();
-            session.getTransaction().commit();
-        }
-        catch (RuntimeException e){
-            if(trns != null){
-                trns.rollback();
-            }
-            e.printStackTrace();
-        }
-        return unitTransport;
-    }
-    
     public Boolean updateTransportUnit(UnidadTransporte transportUnit){
         Transaction trns = null;
         try {            
@@ -84,6 +53,69 @@ public class TransportUnitRepository implements ITransportUnitRepository{
             e.printStackTrace();
             return false;
         }     
+    }
+    
+    @Override
+    public ArrayList<UnidadTransporte> search(String plate, TipoUnidadTransporte type){
+        String hql = "from UnidadTransporte where estado=1";
+        if(type == null && !plate.equals("")){
+            hql = "from UnidadTransporte where estado=1 and placa like :plate";
+        }
+        else if(type != null && plate.equals("")){
+            hql = "from UnidadTransporte where estado=1 and id_tipo_unidad_transporte=:type";
+        }
+        else if(type != null && !plate.equals("")){
+            hql = "from UnidadTransporte where estado=1 and placa like :plate and id_tipo_unidad_transporte=:type";
+        }
+        ArrayList<UnidadTransporte> unitTransports = new ArrayList<>();
+        Transaction trns = null;
+        try{
+            trns = session.beginTransaction();
+            Query q = session.createQuery(hql);
+            if (!plate.equals(""))
+                q.setParameter("plate", "%" + plate + "%");
+            if (type != null)
+                q.setParameter("type", type.getId());
+            unitTransports = (ArrayList<UnidadTransporte>) q.list();
+            session.getTransaction().commit();
+        }
+        catch (RuntimeException e){
+            if(trns != null){
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return unitTransports;
+    }
+    
+    @Override
+    public void insert(UnidadTransporte object) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void delete(UnidadTransporte object) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ArrayList<UnidadTransporte> queryAll() {
+        String hql = "from UnidadTransporte where estado=1";
+        ArrayList<UnidadTransporte> unitTransports = new ArrayList<>();
+        Transaction trns = null;
+        try{
+            trns = session.beginTransaction();
+            Query q = session.createQuery(hql);
+            unitTransports = (ArrayList<UnidadTransporte>) q.list();
+            session.getTransaction().commit();
+        }
+        catch (RuntimeException e){
+            if(trns != null){
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return unitTransports;
     }
 
     @Override
@@ -101,5 +133,6 @@ public class TransportUnitRepository implements ITransportUnitRepository{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    
     
 }

@@ -6,7 +6,9 @@
 package base.transportunit;
 
 import base.IRepository;
+import entity.TipoUnidadTransporte;
 import entity.UnidadTransporte;
+import java.util.ArrayList;
 
 /**
  *
@@ -15,4 +17,5 @@ import entity.UnidadTransporte;
 public interface ITransportUnitRepository extends IRepository<UnidadTransporte>{
     Boolean createTransportUnit(UnidadTransporte transportUnit);
     Boolean updateTransportUnit(UnidadTransporte transportUnit);
+    ArrayList<UnidadTransporte> search(String plate, TipoUnidadTransporte type);
 }

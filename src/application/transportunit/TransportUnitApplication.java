@@ -6,6 +6,7 @@
 package application.transportunit;
 
 import base.transportunit.ITransportUnitRepository;
+import entity.TipoUnidadTransporte;
 import entity.UnidadTransporte;
 import infraestructure.transportunit.TransportUnitRepository;
 import java.util.ArrayList;
@@ -51,6 +52,16 @@ public class TransportUnitApplication {
             e.printStackTrace();
         }
         return response;
+    }
+    
+    public ArrayList<UnidadTransporte> searchTransportUnits(String plate, TipoUnidadTransporte type){
+        ArrayList<UnidadTransporte> actions=null;
+        try{
+            actions=transportUnitRepository.search(plate, type);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return actions;
     }
     
     public void refreshTransportUnits(){

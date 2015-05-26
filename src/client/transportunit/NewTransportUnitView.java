@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 import util.EntityType;
 import util.InstanceFactory;
 import util.Strings;
-
+import client.transportunit.TransportUnitView;
 /**
  *
  * @author LUIS
@@ -193,9 +193,15 @@ public class NewTransportUnitView extends javax.swing.JDialog {
         // TODO add your handling code here:
         Boolean response = eventType.equals("CREATE") ? createAndSaveTransportUnit() : saveTransportUnit();
         if (response){
+            transportUnitApplication.refreshTransportUnits();
             JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_TRANSPORT_UNIT_CREATED,Strings.MESSAGE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
+            TransportUnitView.transportUnitView.refreshTable();
             if(eventType.equals("CREATE")){
                 clearFields();               
+            }
+            else{
+                TransportUnitView.transportUnitView.disableButtons();
+                this.dispose();
             }
         }
         else
