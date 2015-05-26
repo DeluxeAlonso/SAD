@@ -131,6 +131,8 @@ public class EditUserAdmin extends javax.swing.JDialog {
 
         jLabel6.setText("Código:");
 
+        txtUserId.setEnabled(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
