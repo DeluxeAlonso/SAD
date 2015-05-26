@@ -8,6 +8,8 @@ package application.order;
 import base.order.IOrderRepository;
 import entity.Cliente;
 import entity.Pedido;
+import entity.PedidoParcial;
+import entity.PedidoParcialXProducto;
 import infraestructure.order.OrderRepository;
 import java.util.ArrayList;
 import util.EntityType;
@@ -42,6 +44,16 @@ public class OrderApplication {
             e.printStackTrace();
         }
         return client;
+    }
+    
+    public Boolean CreateOrder(Pedido order, PedidoParcial p, PedidoParcialXProducto pp){
+        Boolean response = false;
+        try {
+            response = orderRepository.createOrder(order, p, pp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
     }
     
     public Boolean updateOrder(Pedido order){

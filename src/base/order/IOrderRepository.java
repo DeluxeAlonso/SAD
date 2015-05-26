@@ -8,6 +8,8 @@ package base.order;
 import base.IRepository;
 import entity.Cliente;
 import entity.Pedido;
+import entity.PedidoParcial;
+import entity.PedidoParcialXProducto;
 
 /**
  *
@@ -16,4 +18,5 @@ import entity.Pedido;
 public interface IOrderRepository extends IRepository<Pedido> {
     Boolean updateOrder(Pedido order);
     Cliente queryOrderClientById(Integer clientId);
+    Boolean createOrder(Pedido order, PedidoParcial p, PedidoParcialXProducto pp);
 }

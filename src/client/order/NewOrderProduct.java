@@ -7,17 +7,22 @@ package client.order;
 
 import application.order.OrderApplication;
 import application.product.ProductApplication;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import util.EntityType;
+import client.order.OrderView;
 
 /**
  *
  * @author Alonso
  */
-public class NewOrderProduct extends javax.swing.JDialog {
+public class NewOrderProduct extends javax.swing.JDialog implements MouseListener{
     OrderApplication orderApplication = new OrderApplication();
     ProductApplication productApplication = new ProductApplication();
+    Integer selectedRowIndex = 0;
     /**
      * Creates new form NewOrderProduct
      */
@@ -29,6 +34,7 @@ public class NewOrderProduct extends javax.swing.JDialog {
 
     public void setupElements(){
         refreshTable();
+        setupListeners();
     }
     
     public void refreshTable(){
@@ -43,6 +49,10 @@ public class NewOrderProduct extends javax.swing.JDialog {
             Object[] row = {_product.getId(), _product.getNombre(), _product.getCondicion().getNombre(), _product.getStockTotal()};
             tableModel.addRow(row);
         });
+    }
+    
+    public void setupListeners(){
+        productTable.addMouseListener(this);
     }
     
     /**
@@ -62,9 +72,9 @@ public class NewOrderProduct extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         productTable = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        addBtn = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        qtyTxt = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -95,26 +105,28 @@ public class NewOrderProduct extends javax.swing.JDialog {
         });
         jScrollPane1.setViewportView(productTable);
 
-        jButton2.setText("Cancelar");
+        jButton2.setText("Finalizar");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Seleccionar");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        addBtn.setText("Seleccionar");
+        addBtn.setEnabled(false);
+        addBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                addBtnActionPerformed(evt);
             }
         });
 
         jLabel4.setText("Cantidad de Pallets:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        qtyTxt.setToolTipText("");
+        qtyTxt.setEnabled(false);
+        qtyTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                qtyTxtActionPerformed(evt);
             }
         });
 
@@ -129,9 +141,9 @@ public class NewOrderProduct extends javax.swing.JDialog {
                         .addGap(6, 6, 6)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton3)
+                        .addComponent(qtyTxt)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(addBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE)
@@ -163,10 +175,10 @@ public class NewOrderProduct extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
-                    .addComponent(jButton3)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
-                .addGap(0, 7, Short.MAX_VALUE))
+                    .addComponent(addBtn)
+                    .addComponent(jLabel4)
+                    .addComponent(qtyTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 6, Short.MAX_VALUE))
         );
 
         pack();
@@ -176,13 +188,13 @@ public class NewOrderProduct extends javax.swing.JDialog {
         this.dispose();        // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        this.dispose();        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
+        OrderView.orderView.addProduct(EntityType.PRODUCTS.get(selectedRowIndex), Integer.parseInt(qtyTxt.getText()));  // TODO add your handling code here:
+    }//GEN-LAST:event_addBtnActionPerformed
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+    private void qtyTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_qtyTxtActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    }//GEN-LAST:event_qtyTxtActionPerformed
 
     /**
      * @param args the command line arguments
@@ -227,10 +239,9 @@ public class NewOrderProduct extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addBtn;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
@@ -238,5 +249,35 @@ public class NewOrderProduct extends javax.swing.JDialog {
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTable productTable;
+    private javax.swing.JTextField qtyTxt;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        JTable target = (JTable)e.getSource();
+        selectedRowIndex = target.getSelectedRow();
+        System.out.println(selectedRowIndex);
+        qtyTxt.setEnabled(true);
+        addBtn.setEnabled(true);
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

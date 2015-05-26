@@ -8,6 +8,8 @@ package infraestructure.order;
 import base.order.IOrderRepository;
 import entity.Cliente;
 import entity.Pedido;
+import entity.PedidoParcial;
+import entity.PedidoParcialXProducto;
 import java.util.ArrayList;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -20,6 +22,29 @@ import util.Tools;
  */
 public class OrderRepository implements IOrderRepository{
 
+    @Override
+    public Boolean createOrder(Pedido order, PedidoParcial p, PedidoParcialXProducto pp){
+        Session session = Tools.getSessionInstance();
+        Transaction trns = null; 
+        try {            
+            trns=session.beginTransaction();
+            session.save(order);     
+            session.save(p);
+            session.getTransaction().commit();
+            //session.save(p);                      
+            //session.getTransaction().commit();
+            //session.save(pp);                      
+            //session.getTransaction().commit();
+            return true;
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
     
     @Override
     public Boolean updateOrder(Pedido order){
