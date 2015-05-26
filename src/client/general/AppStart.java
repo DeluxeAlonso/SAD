@@ -5,6 +5,7 @@ import application.action.ActionApplication;
 import application.condition.ConditionApplication;
 import application.internment.InternmentApplication;
 import application.profile.ProfileApplication;
+import application.transportunit.TransportUnitApplication;
 import application.rack.RackApplication;
 import application.spot.SpotApplication;
 import application.user.UserApplication;
@@ -41,6 +42,7 @@ public class AppStart {
             InstanceFactory.Instance.register("profileApplication", ProfileApplication.class);
             InstanceFactory.Instance.register("actionApplication", ActionApplication.class);
             InstanceFactory.Instance.register("internmentApplication", InternmentApplication.class);
+            InstanceFactory.Instance.register("transportUnitApplication",TransportUnitApplication.class);
             InstanceFactory.Instance.register("conditionApplication", ConditionApplication.class);
             InstanceFactory.Instance.register("rackApplication", RackApplication.class);
             InstanceFactory.Instance.register("spotApplication", SpotApplication.class);
@@ -54,6 +56,7 @@ public class AppStart {
     
     private void loadEntityType(){      
         ProfileApplication profileApplication = InstanceFactory.Instance.getInstance("profileApplication", ProfileApplication.class);
+        TransportUnitApplication transportUnitApplication = InstanceFactory.Instance.getInstance("transportUnitApplication",TransportUnitApplication.class);
         ActionApplication actionApplication = InstanceFactory.Instance.getInstance("actionApplication", ActionApplication.class);
         WarehouseApplication warehouseApplication = InstanceFactory.Instance.getInstance("warehouseApplication", WarehouseApplication.class);
         ConditionApplication conditionApplication = InstanceFactory.Instance.getInstance("conditionApplication", ConditionApplication.class);
@@ -72,7 +75,7 @@ public class AppStart {
         //Se llama un metodo para que actualice los perfiles en la variable global PROFILES y ACTIONS
         profileApplication.refreshProfiles();
         actionApplication.refreshActions();       
-
+        transportUnitApplication.refreshTransportUnits();
     }
 
 }

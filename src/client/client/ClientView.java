@@ -289,14 +289,12 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void btnDeleteMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMousePressed
-        System.out.println(tblClients.getSelectedRow());
         JOptionPane.setDefaultLocale(new Locale("es", "ES"));
         int response = JOptionPane.showConfirmDialog(this, Strings.MESSAGE_DELETE_CLIENT,Strings.MESSAGE_DELETE_CLIENT_TITLE,JOptionPane.WARNING_MESSAGE);
         if(JOptionPane.OK_OPTION == response){
             clientApplication.delete(clients.get(tblClients.getSelectedRow()).getId());
             fillClientsTable();
         }
-        
     }//GEN-LAST:event_btnDeleteMousePressed
 
     private void btnLocalMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLocalMousePressed

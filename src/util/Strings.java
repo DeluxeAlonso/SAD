@@ -74,4 +74,13 @@ public class Strings {
     public static final String ERROR_LONGITUDE_NOT_FLOAT="El campo Longitud debe ser un número de punto flotante.";
     /*END*/
     
+    /*TRANSPORT UNIT MESSAGES*/
+    public static final String MESSAGE_TRANSPORT_UNIT_TITLE="Mensaje de inserción de unidad de transporte";
+    public static final String MESSAGE_NEW_TRANSPORT_UNIT_CREATED = "Se registró o modifico correctamente la unidad de transporte.";
+    public static final String ERROR_MESSAGE_TRANSPORT_UNIT="Error  al agregar o modificar una nueva unidad de transporte";
+    public static final String MESSAGE_DELETE_TRANSPORT_UNIT_TITLE="Mensaje de eliminacion de unidad de transporte";
+    public static final String MESSAGE_DELETE_TRANSPORT_UNIT="Se elimino correctamente el cliente";
+    public static final String MESSAGE_CONFIRM_DELETE_TRANSPORT_UNIT="¿Está seguro de eliminar la unidad de transporte seleccionada?";
+    /*END*/
+
 }
