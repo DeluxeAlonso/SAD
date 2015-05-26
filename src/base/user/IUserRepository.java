@@ -7,6 +7,7 @@ package base.user;
 
 import base.IRepository;
 import entity.Usuario;
+import java.util.ArrayList;
 
 /**
  *
@@ -14,4 +15,5 @@ import entity.Usuario;
  */
 public interface IUserRepository extends IRepository<Usuario>{
    Usuario getUser(String email); 
+   ArrayList<Usuario> searchUser(Usuario user);
 }

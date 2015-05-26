@@ -155,4 +155,14 @@ public class UserApplication {
         }
         
     }
+    public ArrayList<Usuario> searchUser(Usuario user) {
+        ArrayList<Usuario> users = null;
+        try {
+            users = userRepository.searchUser(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+    
 }

@@ -121,8 +121,26 @@ public class UserView extends javax.swing.JInternalFrame {
     }
 
     public void fillTableWithUsers() {
+        clearUserGrid();
         DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();
         ArrayList<Usuario> users = userApplication.getAllUsers();
+        for (Usuario u : users) {
+            Usuario user = userApplication.getUserById(u.getId());
+            String profileName = user.getPerfil() != null ? user.getPerfil().getNombrePerfil() : "";
+            String state = user.getEstado() != null ? EntityState.getUsersState()[user.getEstado()] : "";
+            model.addRow(new Object[]{
+                user.getId(),
+                user.getNombre() + " " + user.getApellidoPaterno() + " " + user.getApellidoMaterno(),
+                user.getCorreo(),
+                state,
+                profileName
+            });
+        }
+
+    }
+    public void fillTableWithUsers(ArrayList<Usuario> users) {
+        clearUserGrid();
+        DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();        
         for (Usuario u : users) {
             Usuario user = userApplication.getUserById(u.getId());
             String profileName = user.getPerfil() != null ? user.getPerfil().getNombrePerfil() : "";
@@ -218,6 +236,11 @@ public class UserView extends javax.swing.JInternalFrame {
         profileCombo1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         searchBtn.setText("Buscar");
+        searchBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchBtnActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Perfil:");
 
@@ -308,14 +331,14 @@ public class UserView extends javax.swing.JInternalFrame {
                         .addGap(29, 29, 29)
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
+                        .addGap(27, 27, 27)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(newBtn)
                             .addComponent(editBtn)
                             .addComponent(jButton7))))
-                .addGap(48, 48, 48)
+                .addGap(27, 27, 27)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addContainerGap(90, Short.MAX_VALUE))
         );
 
         tabbedUP.addTab("Usuarios", jPanel1);
@@ -514,11 +537,11 @@ public class UserView extends javax.swing.JInternalFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(40, 40, 40)
+                .addGap(31, 31, 31)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -527,7 +550,7 @@ public class UserView extends javax.swing.JInternalFrame {
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(9, 9, 9)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
 
         tabbedUP.addTab("Perfiles", jPanel2);
@@ -710,10 +733,11 @@ public class UserView extends javax.swing.JInternalFrame {
             Perfil p = profileApplication.getProfileByName(comboProfile2.getSelectedItem().toString());
             if (p != null) {
                 profileApplication.deleteProfile(p);
-                JOptionPane.showMessageDialog(this, Strings.MESSAGE_RESTABLISH_PASSWORD);
+                JOptionPane.showMessageDialog(this, Strings.MESSAGE_PROFILE_DELETED);
                 clearLists();
                 fillCombos();
                 comboProfile2.setSelectedIndex(0);
+                editProfileBtn.setEnabled(false);
             }
         }
     }//GEN-LAST:event_btnDeleteProfileActionPerformed
@@ -752,6 +776,15 @@ public class UserView extends javax.swing.JInternalFrame {
             }
         }
     }//GEN-LAST:event_actionDestListMouseClicked
+
+    private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
+        // TODO add your handling code here:
+        Usuario user=new Usuario();
+        user.setCorreo(emailTxt.getText());
+        if(profileCombo1.getSelectedIndex()!=0)
+            user.setPerfil(profileApplication.getProfileByName(profileCombo1.getSelectedItem().toString()));        
+        fillTableWithUsers(userApplication.searchUser(user));
+    }//GEN-LAST:event_searchBtnActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
