@@ -59,6 +59,17 @@ public class EntityType {
         return null;
     }
     
+    public static Condicion getCondition(String nombre) {
+        int n = CONDITIONS.size();
+        for (int i = 0; i < n; i++) {
+            if (CONDITIONS.get(i).getNombre().equals(nombre))
+            {
+                return CONDITIONS.get(i);
+            }
+        }
+        return null;
+    }
+    
     
 
 }

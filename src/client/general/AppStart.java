@@ -56,7 +56,7 @@ public class AppStart {
         ProfileApplication profileApplication = InstanceFactory.Instance.getInstance("profileApplication", ProfileApplication.class);
         ActionApplication actionApplication = InstanceFactory.Instance.getInstance("actionApplication", ActionApplication.class);
         WarehouseApplication warehouseApplication = InstanceFactory.Instance.getInstance("warehouseApplication", WarehouseApplication.class);
-        ConditionApplication conditionApplication = InstanceFactory.Instance.getInstance("conditionApplication", ConditionApplication.class);        
+        ConditionApplication conditionApplication = InstanceFactory.Instance.getInstance("conditionApplication", ConditionApplication.class);
         RackApplication rackApplication = InstanceFactory.Instance.getInstance("rackApplication", RackApplication.class);
         SpotApplication spotApplication = InstanceFactory.Instance.getInstance("spotApplication", SpotApplication.class);
         //al final se tiene que cargar el arreglo desde la base de datos        

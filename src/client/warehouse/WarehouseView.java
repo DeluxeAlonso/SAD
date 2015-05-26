@@ -11,10 +11,12 @@ import application.rack.RackApplication;
 import application.spot.SpotApplication;
 import application.warehouse.WarehouseApplication;
 import entity.Almacen;
+import entity.Condicion;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
+import util.EntityState;
 import util.EntityType;
 import util.InstanceFactory;
 
@@ -33,7 +35,9 @@ public class WarehouseView extends javax.swing.JInternalFrame {
     public WarehouseView() {
         initComponents();
         this.condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.CONDITIONS_NAMES));
-        //fillTable();
+        this.EstadoCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getWarehousesState()));       
+        clearGrid();
+        fillTable();
     }
 
     /**
@@ -45,15 +49,40 @@ public class WarehouseView extends javax.swing.JInternalFrame {
         DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();
         ArrayList<Almacen> warehouses = warehouseApplication.queryAll();
         for (Almacen a : warehouses) {
+            
+            Condicion con = EntityType.getCondition(a.getCondicion().getId());
             model.addRow(new Object[]{
                 a.getId().toString(),
                 a.getDescripcion(),
                 a.getCapacidad().toString(),
-                a.getCondicion().toString(),
+                con.getNombre(),
                 a.getEstado().toString()
             });
         }
 
+    }
+    public void fillTable(int id,int condicion) {
+        DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();
+        ArrayList<Almacen> warehouses = warehouseApplication.queryAll();
+        for (Almacen a : warehouses) {
+            if ((a.getId() == id || id==0)&&(condicion==0||a.getCondicion().getId()==condicion)){
+            Condicion con = EntityType.getCondition(a.getCondicion().getId());
+            
+                model.addRow(new Object[]{
+                    a.getId().toString(),
+                    a.getDescripcion(),
+                    a.getCapacidad().toString(),
+                    con.getNombre(),
+                    a.getEstado().toString()
+                });
+            }
+        }
+
+    }
+    
+    public void clearGrid() {
+        DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();
+        model.setRowCount(0);
     }
     
     
@@ -69,14 +98,14 @@ public class WarehouseView extends javax.swing.JInternalFrame {
         editBtn = new javax.swing.JButton();
         deleteBtn = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        emailTxt = new javax.swing.JTextField();
+        idTxt = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         condicionCombo = new javax.swing.JComboBox();
         searchBtn = new javax.swing.JButton();
         WarehouseGrid = new javax.swing.JScrollPane();
         usersGrid = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
-        profileCombo1 = new javax.swing.JComboBox();
+        EstadoCombo = new javax.swing.JComboBox();
 
         setClosable(true);
         setTitle("Almacen");
@@ -96,6 +125,11 @@ public class WarehouseView extends javax.swing.JInternalFrame {
         });
 
         deleteBtn.setText("Eliminar");
+        deleteBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                deleteBtnMouseClicked(evt);
+            }
+        });
 
         jLabel1.setText("Id:");
 
@@ -104,6 +138,11 @@ public class WarehouseView extends javax.swing.JInternalFrame {
         condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         searchBtn.setText("Buscar");
+        searchBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                searchBtnMouseClicked(evt);
+            }
+        });
 
         usersGrid.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -120,7 +159,7 @@ public class WarehouseView extends javax.swing.JInternalFrame {
                 java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, true, false, false
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -132,10 +171,20 @@ public class WarehouseView extends javax.swing.JInternalFrame {
             }
         });
         WarehouseGrid.setViewportView(usersGrid);
+        if (usersGrid.getColumnModel().getColumnCount() > 0) {
+            usersGrid.getColumnModel().getColumn(0).setResizable(false);
+            usersGrid.getColumnModel().getColumn(0).setPreferredWidth(10);
+            usersGrid.getColumnModel().getColumn(1).setResizable(false);
+            usersGrid.getColumnModel().getColumn(1).setPreferredWidth(120);
+            usersGrid.getColumnModel().getColumn(2).setResizable(false);
+            usersGrid.getColumnModel().getColumn(3).setResizable(false);
+            usersGrid.getColumnModel().getColumn(4).setResizable(false);
+            usersGrid.getColumnModel().getColumn(4).setPreferredWidth(20);
+        }
 
         jLabel3.setText("Estado:");
 
-        profileCombo1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        EstadoCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -157,12 +206,12 @@ public class WarehouseView extends javax.swing.JInternalFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addGap(18, 18, 18)
-                                .addComponent(profileCombo1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(EstadoCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addGap(18, 18, 18)
-                                .addComponent(emailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(idTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(26, 26, 26)
                                 .addComponent(jLabel2)
                                 .addGap(18, 18, 18)
@@ -179,17 +228,17 @@ public class WarehouseView extends javax.swing.JInternalFrame {
                         .addGap(23, 23, 23)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
-                            .addComponent(emailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(idTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2)
                             .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(profileCombo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(EstadoCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(22, 22, 22)
                         .addComponent(searchBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(newBtn)
                     .addComponent(editBtn)
@@ -207,26 +256,61 @@ public class WarehouseView extends javax.swing.JInternalFrame {
 
         NewWarehouseView newWarehouse=new NewWarehouseView((JFrame)SwingUtilities.getWindowAncestor(this),true);
         newWarehouse.setVisible(true);
+        
+        
     }//GEN-LAST:event_newBtnActionPerformed
 
     private void editBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editBtnMouseClicked
         // TODO add your handling code here:
-        EditWarehouseView editWarehouse=new EditWarehouseView((JFrame)SwingUtilities.getWindowAncestor(this),true);
+        int sr = usersGrid.getSelectedRow();
+        String idString = usersGrid.getModel().getValueAt(sr, 0).toString();
+        Almacen a = warehouseApplication.queryById(Integer.parseInt(idString));
+        EditWarehouseView editWarehouse=new EditWarehouseView((JFrame)SwingUtilities.getWindowAncestor(this),true,a);
         editWarehouse.setVisible(true);
+        clearGrid();
+        fillTable();
     }//GEN-LAST:event_editBtnMouseClicked
+
+    private void deleteBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteBtnMouseClicked
+        // TODO add your handling code here:
+        int sr = usersGrid.getSelectedRow();
+        String idString = usersGrid.getModel().getValueAt(sr, 0).toString();
+        Almacen a = warehouseApplication.queryById(Integer.parseInt(idString));
+        a.setEstado(EntityState.Warehouses.INACTIVO.ordinal());
+        warehouseApplication.update(a);
+        clearGrid();
+        fillTable();
+    }//GEN-LAST:event_deleteBtnMouseClicked
+
+    private void searchBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchBtnMouseClicked
+        // TODO add your handling code here:
+        clearGrid();
+        int idS;
+        int condicionS;
+        if (idTxt.getText().equals(""))
+            idS=0;
+        else idS=Integer.parseInt(idTxt.getText());
+        
+        if (condicionCombo.getSelectedItem().toString().equals(""))
+            condicionS = 0;
+        else 
+            condicionS=conditionApplication.getConditionInstance(condicionCombo.getSelectedItem().toString()).getId();
+        if (idS==0 && condicionS ==0) fillTable();
+        else fillTable(idS,condicionS);
+    }//GEN-LAST:event_searchBtnMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox EstadoCombo;
     private javax.swing.JScrollPane WarehouseGrid;
     private javax.swing.JComboBox condicionCombo;
     private javax.swing.JButton deleteBtn;
     private javax.swing.JButton editBtn;
-    private javax.swing.JTextField emailTxt;
+    private javax.swing.JTextField idTxt;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JButton newBtn;
-    private javax.swing.JComboBox profileCombo1;
     private javax.swing.JButton searchBtn;
     private javax.swing.JTable usersGrid;
     // End of variables declaration//GEN-END:variables

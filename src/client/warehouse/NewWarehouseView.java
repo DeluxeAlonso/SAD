@@ -208,7 +208,7 @@ public class NewWarehouseView extends javax.swing.JDialog {
         }
         int uLibres = Integer.parseInt(this.racksTxt.getText());
         
-        al.setUbicLibres(uLibres);
+        al.setUbicLibres(capa-uLibres);
         
         al.setCondicion(conditionApplication.getConditionInstance(condicionCombo.getSelectedItem().toString()));
         al.setDescripcion(this.descripcionTxt.getText());
