@@ -79,6 +79,9 @@ public class Strings {
     public static final String MESSAGE_DELETE_TRANSPORT_UNIT_TITLE="Mensaje de eliminacion de unidad de transporte";
     public static final String MESSAGE_DELETE_TRANSPORT_UNIT="Se elimino correctamente el cliente";
     public static final String MESSAGE_CONFIRM_DELETE_TRANSPORT_UNIT="¿Está seguro de eliminar la unidad de transporte seleccionada?";
+    public static final String MESSAGE_FILE_TRANSPORT_UNIT_TITLE="Carga Masiva";
+    public static final String MESSAGE_FILE_TRANSPORT_UNIT="Se realizo la carga de forma correcta";
+    public static final String MESSAGE_FILE_ERROR_TRANSPORT_UNIT="No se puedo realizar la carga masiva";
     /*END*/
 
 }

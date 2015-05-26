@@ -68,4 +68,14 @@ public class TransportUnitApplication {
         EntityType.TRANSPORT_UNITS = getAllTransportUnits();
     }
     
+    public Boolean loadTransportUnit(String filename){
+        Boolean response = false;
+        try {
+            response = transportUnitRepository.loadTransportUnit(filename);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+    
 }

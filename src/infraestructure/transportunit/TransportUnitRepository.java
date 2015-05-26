@@ -58,6 +58,28 @@ public class TransportUnitRepository implements ITransportUnitRepository{
     }
     
     @Override
+    public Boolean loadTransportUnit(String filename){
+        System.out.println(filename);
+        Session session = Tools.getSessionInstance();
+        String hql = "LOAD DATA LOCAL INFILE :filename INTO TABLE Unidad_Transporte FIELDS TERMINATED BY ',';";
+        Transaction trns = null;
+        try {            
+            trns=session.beginTransaction(); 
+            Query q = session.createSQLQuery(hql);
+            q.setString("filename", filename);
+            q.executeUpdate();      
+            session.getTransaction().commit();
+            return true;
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }     
+    }
+    
+    @Override
     public ArrayList<UnidadTransporte> search(String plate, TipoUnidadTransporte type){
         Session session = Tools.getSessionInstance();
         String hql = "from UnidadTransporte where estado=1";
@@ -90,6 +112,8 @@ public class TransportUnitRepository implements ITransportUnitRepository{
         }
         return unitTransports;
     }
+    
+    
     
     @Override
     public void insert(UnidadTransporte object) {

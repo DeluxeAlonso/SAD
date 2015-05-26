@@ -18,4 +18,5 @@ public interface ITransportUnitRepository extends IRepository<UnidadTransporte>{
     Boolean createTransportUnit(UnidadTransporte transportUnit);
     Boolean updateTransportUnit(UnidadTransporte transportUnit);
     ArrayList<UnidadTransporte> search(String plate, TipoUnidadTransporte type);
+    Boolean loadTransportUnit(String filename);
 }

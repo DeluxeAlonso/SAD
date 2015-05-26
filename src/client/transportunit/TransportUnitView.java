@@ -82,16 +82,29 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
     public void deleteTransportUnit(){
         EntityType.TRANSPORT_UNITS.get(selectedRowIndex).setEstado(0);
         if(transportUnitApplication.updateTransportUnit(EntityType.TRANSPORT_UNITS.get(selectedRowIndex))){
-            JOptionPane.showMessageDialog(this, Strings.MESSAGE_DELETE_TRANSPORT_UNIT,
-                    Strings.MESSAGE_DELETE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
             transportUnitApplication.refreshTransportUnits();
             refreshTable();
+            JOptionPane.showMessageDialog(this, Strings.MESSAGE_DELETE_TRANSPORT_UNIT,
+                    Strings.MESSAGE_DELETE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
         }
     }
     
     public void disableButtons(){
         editBtn.setEnabled(false);
         deleteBtn.setEnabled(false);
+    }
+    
+    public void loadFile(String filename){
+        Boolean response = transportUnitApplication.loadTransportUnit(filename);
+        if(response){
+            JOptionPane.showMessageDialog(this, Strings.MESSAGE_FILE_TRANSPORT_UNIT,
+                    Strings.MESSAGE_FILE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
+            transportUnitApplication.refreshTransportUnits();
+            refreshTable();
+        }
+        else
+            JOptionPane.showMessageDialog(this, Strings.MESSAGE_FILE_ERROR_TRANSPORT_UNIT,
+                    Strings.MESSAGE_FILE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
     }
     
     /**
@@ -341,8 +354,12 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
         if (!fc.getSelectedFile().getName().endsWith(".csv")) {
           JOptionPane.showMessageDialog(this, "El archivo seleccionado no es un archivo CSV.");
         }
-        else
-            fileTxt.setText(file.getAbsolutePath());         // TODO add your handling code here:
+        else{
+            fileTxt.setText(file.getAbsolutePath());
+            loadFile(file.getAbsolutePath());
+        }
+        
+        // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
