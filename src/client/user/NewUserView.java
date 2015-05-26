@@ -5,6 +5,7 @@
  */
 package client.user;
 
+import application.profile.ProfileApplication;
 import application.user.UserApplication;
 import entity.Usuario;
 import java.util.UUID;
@@ -21,6 +22,7 @@ import util.Tools;
  */
 public class NewUserView extends javax.swing.JDialog {
     UserApplication userApplication=InstanceFactory.Instance.getInstance("userApplication", UserApplication.class);
+    ProfileApplication profileApplication=InstanceFactory.Instance.getInstance("profileApplication", ProfileApplication.class);
     /**
      * Creates new form NewUser
      */
@@ -28,9 +30,13 @@ public class NewUserView extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();       
         //initialize user states combo
+        fillCombos();
+       
+    }  
+    public void fillCombos(){
         stateCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getUsersState()));
         profileCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.PROFILES_NAMES));
-    }  
+    }
     public void clearFields(){
         nameTxt.setText("");
         firstNameTxt.setText("");
@@ -48,45 +54,31 @@ public class NewUserView extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        nameTxt = new javax.swing.JTextField();
-        firstNameTxt = new javax.swing.JTextField();
-        secondNameTxt = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        emailTxt = new javax.swing.JTextField();
-        stateCombo = new javax.swing.JComboBox();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        passwordTxt = new javax.swing.JTextField();
-        autoGeneratePassBtn = new javax.swing.JButton();
-        saveTxt = new javax.swing.JButton();
         cancelBtn = new javax.swing.JButton();
-        jLabel7 = new javax.swing.JLabel();
+        saveTxt = new javax.swing.JButton();
         profileCombo = new javax.swing.JComboBox();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        stateCombo = new javax.swing.JComboBox();
+        passwordTxt = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        autoGeneratePassBtn = new javax.swing.JButton();
+        emailTxt = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        secondNameTxt = new javax.swing.JTextField();
+        firstNameTxt = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        nameTxt = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Nuevo Usuario");
 
-        jLabel1.setText("Nombres:");
-
-        jLabel2.setText("Apellido Paterno:");
-
-        jLabel3.setText("Apellido Materno:");
-
-        jLabel4.setText("Correo:");
-
-        stateCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jLabel5.setText("Estado:");
-
-        jLabel6.setText("Contraseña:");
-
-        autoGeneratePassBtn.setText("Generar");
-        autoGeneratePassBtn.addActionListener(new java.awt.event.ActionListener() {
+        cancelBtn.setText("Cancelar");
+        cancelBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                autoGeneratePassBtnActionPerformed(evt);
+                cancelBtnActionPerformed(evt);
             }
         });
 
@@ -97,91 +89,132 @@ public class NewUserView extends javax.swing.JDialog {
             }
         });
 
-        cancelBtn.setText("Cancelar");
-        cancelBtn.addActionListener(new java.awt.event.ActionListener() {
+        profileCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel8.setText("Perfil:");
+
+        jLabel9.setText("Estado:");
+
+        stateCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel10.setText("Contraseña:");
+
+        autoGeneratePassBtn.setText("Generar");
+        autoGeneratePassBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelBtnActionPerformed(evt);
+                autoGeneratePassBtnActionPerformed(evt);
             }
         });
 
-        jLabel7.setText("Perfil:");
+        jLabel11.setText("Correo:");
 
-        profileCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jLabel12.setText("Apellido Materno:");
+
+        jLabel13.setText("Apellido Paterno:");
+
+        jLabel14.setText("Nombres:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(33, 33, 33)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(passwordTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
-                            .addComponent(emailTxt, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(secondNameTxt)
-                            .addComponent(firstNameTxt)
-                            .addComponent(stateCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(nameTxt))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
-                        .addComponent(autoGeneratePassBtn)
-                        .addGap(19, 19, 19))
+                        .addGap(39, 39, 39)
+                        .addComponent(jLabel14)
+                        .addGap(42, 42, 42)
+                        .addComponent(nameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(profileCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(130, 130, 130)
-                .addComponent(saveTxt)
-                .addGap(36, 36, 36)
-                .addComponent(cancelBtn)
-                .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(39, 39, 39)
+                        .addComponent(jLabel13)
+                        .addGap(6, 6, 6)
+                        .addComponent(firstNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(39, 39, 39)
+                        .addComponent(jLabel12)
+                        .addGap(4, 4, 4)
+                        .addComponent(secondNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(39, 39, 39)
+                        .addComponent(jLabel11)
+                        .addGap(51, 51, 51)
+                        .addComponent(emailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(39, 39, 39)
+                        .addComponent(jLabel10)
+                        .addGap(27, 27, 27)
+                        .addComponent(passwordTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(19, 19, 19)
+                        .addComponent(autoGeneratePassBtn))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(39, 39, 39)
+                        .addComponent(jLabel9)
+                        .addGap(51, 51, 51)
+                        .addComponent(stateCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(39, 39, 39)
+                        .addComponent(jLabel8)
+                        .addGap(60, 60, 60)
+                        .addComponent(profileCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(116, 116, 116)
+                        .addComponent(saveTxt)
+                        .addGap(29, 29, 29)
+                        .addComponent(cancelBtn)))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(40, 40, 40)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
+                .addGap(22, 22, 22)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(jLabel14))
                     .addComponent(nameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(jLabel13))
                     .addComponent(firstNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(jLabel12))
                     .addComponent(secondNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(jLabel11))
                     .addComponent(emailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
+                .addGap(17, 17, 17)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(jLabel10))
                     .addComponent(passwordTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(autoGeneratePassBtn))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(stateCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(1, 1, 1)
+                        .addComponent(autoGeneratePassBtn)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel7)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(jLabel9))
+                    .addComponent(stateCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel8)
                     .addComponent(profileCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGap(31, 31, 31)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(saveTxt)
                     .addComponent(cancelBtn))
-                .addGap(23, 23, 23))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         pack();
@@ -196,13 +229,14 @@ public class NewUserView extends javax.swing.JDialog {
     private void saveTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveTxtActionPerformed
         // TODO add your handling code here:
         Usuario user=new Usuario();
-        user.setIdusuario(UUID.randomUUID().toString().replace("-", ""));
+        user.setId(UUID.randomUUID().toString().replace("-", ""));
         user.setNombre(nameTxt.getText());
         user.setApellidoPaterno(firstNameTxt.getText());
         user.setApellidoMaterno(secondNameTxt.getText());
         user.setCorreo(emailTxt.getText());      
         user.setEstado(stateCombo.getSelectedIndex());
-        user.setPassword(passwordTxt.getText());        
+        user.setPassword(passwordTxt.getText());
+        user.setPerfil(profileApplication.getProfileByName(profileCombo.getSelectedItem().toString()));
         userApplication.createUser(user);
         JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_USER_CREATED);
         clearFields();
@@ -222,13 +256,13 @@ public class NewUserView extends javax.swing.JDialog {
     private javax.swing.JButton cancelBtn;
     private javax.swing.JTextField emailTxt;
     private javax.swing.JTextField firstNameTxt;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JTextField nameTxt;
     private javax.swing.JTextField passwordTxt;
     private javax.swing.JComboBox profileCombo;

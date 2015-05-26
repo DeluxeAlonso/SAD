@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 18/05/2015 11:45:08 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated May 26, 2015 4:12:25 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entity.Ubicacion" table="ubicacion" catalog="saddb" optimistic-lock="version">
         <id name="id" type="int">
@@ -20,9 +20,12 @@
         <property name="lado" type="string">
             <column name="lado" length="1" />
         </property>
+        <property name="estado" type="java.lang.Integer">
+            <column name="estado" />
+        </property>
         <set name="pallets" table="pallet" inverse="true" lazy="true" fetch="select">
             <key>
-                <column name="id_ubicacion" not-null="true" />
+                <column name="id_ubicacion" />
             </key>
             <one-to-many class="entity.Pallet" />
         </set>

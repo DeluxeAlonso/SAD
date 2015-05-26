@@ -1,5 +1,5 @@
 package entity;
-// Generated 18/05/2015 11:45:07 AM by Hibernate Tools 4.3.1
+// Generated May 26, 2015 4:12:25 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -14,7 +14,8 @@ public class TipoUnidadTransporte  implements java.io.Serializable {
      private Integer id;
      private Condicion condicion;
      private String descripcion;
-     private Set tipoPallets = new HashSet(0);
+     private Integer capacidadPallets;
+     private Double velocidadPromedio;
      private Set unidadTransportes = new HashSet(0);
 
     public TipoUnidadTransporte() {
@@ -24,10 +25,11 @@ public class TipoUnidadTransporte  implements java.io.Serializable {
     public TipoUnidadTransporte(Condicion condicion) {
         this.condicion = condicion;
     }
-    public TipoUnidadTransporte(Condicion condicion, String descripcion, Set tipoPallets, Set unidadTransportes) {
+    public TipoUnidadTransporte(Condicion condicion, String descripcion, Integer capacidadPallets, Double velocidadPromedio, Set unidadTransportes) {
        this.condicion = condicion;
        this.descripcion = descripcion;
-       this.tipoPallets = tipoPallets;
+       this.capacidadPallets = capacidadPallets;
+       this.velocidadPromedio = velocidadPromedio;
        this.unidadTransportes = unidadTransportes;
     }
    
@@ -52,12 +54,19 @@ public class TipoUnidadTransporte  implements java.io.Serializable {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
-    public Set getTipoPallets() {
-        return this.tipoPallets;
+    public Integer getCapacidadPallets() {
+        return this.capacidadPallets;
     }
     
-    public void setTipoPallets(Set tipoPallets) {
-        this.tipoPallets = tipoPallets;
+    public void setCapacidadPallets(Integer capacidadPallets) {
+        this.capacidadPallets = capacidadPallets;
+    }
+    public Double getVelocidadPromedio() {
+        return this.velocidadPromedio;
+    }
+    
+    public void setVelocidadPromedio(Double velocidadPromedio) {
+        this.velocidadPromedio = velocidadPromedio;
     }
     public Set getUnidadTransportes() {
         return this.unidadTransportes;

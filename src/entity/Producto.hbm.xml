@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 18/05/2015 11:45:08 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated May 26, 2015 4:12:25 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entity.Producto" table="producto" catalog="saddb" optimistic-lock="version">
         <id name="id" type="java.lang.Integer">
@@ -9,7 +9,7 @@
             <generator class="identity" />
         </id>
         <many-to-one name="condicion" class="entity.Condicion" fetch="select">
-            <column name="Condicion_id" not-null="true" />
+            <column name="id_condicion" not-null="true" />
         </many-to-one>
         <property name="nombre" type="string">
             <column name="nombre" length="60" />
@@ -20,32 +20,11 @@
         <property name="stockTotal" type="java.lang.Integer">
             <column name="stock_total" />
         </property>
-        <property name="cantidadUnidades" type="java.lang.Integer">
-            <column name="cantidad_unidades" />
-        </property>
         <set name="itemProductos" table="item_producto" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="id_producto" not-null="true" />
             </key>
             <one-to-many class="entity.ItemProducto" />
-        </set>
-        <set name="tipoPalletXProductos" table="tipo_pallet_x_producto" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_producto" not-null="true" />
-            </key>
-            <one-to-many class="entity.TipoPalletXProducto" />
-        </set>
-        <set name="ordenInternamientoXProductos" table="orden_internamiento_x_producto" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_producto" not-null="true" />
-            </key>
-            <one-to-many class="entity.OrdenInternamientoXProducto" />
-        </set>
-        <set name="pedidoParcialXProductos" table="pedido_parcial_x_producto" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_producto" not-null="true" />
-            </key>
-            <one-to-many class="entity.PedidoParcialXProducto" />
         </set>
         <set name="kardexes" table="kardex" inverse="true" lazy="true" fetch="select">
             <key>

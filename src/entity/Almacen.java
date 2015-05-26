@@ -1,5 +1,5 @@
 package entity;
-// Generated 18/05/2015 11:45:07 AM by Hibernate Tools 4.3.1
+// Generated May 26, 2015 4:12:25 AM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -18,7 +18,7 @@ public class Almacen  implements java.io.Serializable {
      private Integer capacidad;
      private Integer area;
      private Date fechaRegistro;
-     private String estado;
+     private Integer estado;
      private Integer ubicLibres;
      private Set racks = new HashSet(0);
      private Set historialMovimientosesForIdAlmacenOut = new HashSet(0);
@@ -32,7 +32,7 @@ public class Almacen  implements java.io.Serializable {
     public Almacen(Condicion condicion) {
         this.condicion = condicion;
     }
-    public Almacen(Condicion condicion, String descripcion, Integer capacidad, Integer area, Date fechaRegistro, String estado, Integer ubicLibres, Set racks, Set historialMovimientosesForIdAlmacenOut, Set historialMovimientosesForIdAlmacenIn, Set kardexes) {
+    public Almacen(Condicion condicion, String descripcion, Integer capacidad, Integer area, Date fechaRegistro, Integer estado, Integer ubicLibres, Set racks, Set historialMovimientosesForIdAlmacenOut, Set historialMovimientosesForIdAlmacenIn, Set kardexes) {
        this.condicion = condicion;
        this.descripcion = descripcion;
        this.capacidad = capacidad;
@@ -88,11 +88,11 @@ public class Almacen  implements java.io.Serializable {
     public void setFechaRegistro(Date fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
     }
-    public String getEstado() {
+    public Integer getEstado() {
         return this.estado;
     }
     
-    public void setEstado(String estado) {
+    public void setEstado(Integer estado) {
         this.estado = estado;
     }
     public Integer getUbicLibres() {

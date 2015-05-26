@@ -1,5 +1,5 @@
 package entity;
-// Generated 18/05/2015 11:45:07 AM by Hibernate Tools 4.3.1
+// Generated May 26, 2015 4:12:25 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -11,7 +11,7 @@ import java.util.Set;
 public class PreguntaSecreta  implements java.io.Serializable {
 
 
-     private Integer idPreguntaSecreta;
+     private Integer id;
      private String pregunta;
      private Set usuarios = new HashSet(0);
 
@@ -23,12 +23,12 @@ public class PreguntaSecreta  implements java.io.Serializable {
        this.usuarios = usuarios;
     }
    
-    public Integer getIdPreguntaSecreta() {
-        return this.idPreguntaSecreta;
+    public Integer getId() {
+        return this.id;
     }
     
-    public void setIdPreguntaSecreta(Integer idPreguntaSecreta) {
-        this.idPreguntaSecreta = idPreguntaSecreta;
+    public void setId(Integer id) {
+        this.id = id;
     }
     public String getPregunta() {
         return this.pregunta;

@@ -20,7 +20,7 @@ public class RackApplication {
         this.rackRepository = new RackRepository();
     }
     
-    public ArrayList<Rack> queryWarehousesByType(int warehouse_id){
+    public ArrayList<Rack> queryRacksByWarehouse(int warehouse_id){
         ArrayList<Rack> racks = null;
         try {
             racks = rackRepository.queryRacksByWarehouse(warehouse_id);
@@ -29,4 +29,26 @@ public class RackApplication {
         }
         return racks;
     }
+    
+    public Rack queryById(int id){
+        Rack rack = null;
+        try {
+            rack = rackRepository.queryById(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rack;
+    }
+    
+    public void insert(Rack object) {
+        try{
+            RackRepository w = new RackRepository();
+            w.insert(object);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    
 }

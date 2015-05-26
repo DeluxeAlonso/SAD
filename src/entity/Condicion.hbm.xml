@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 18/05/2015 11:45:08 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated May 26, 2015 4:12:25 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entity.Condicion" table="condicion" catalog="saddb" optimistic-lock="version">
         <id name="id" type="java.lang.Integer">
@@ -16,19 +16,19 @@
         </property>
         <set name="almacens" table="almacen" inverse="true" lazy="true" fetch="select">
             <key>
-                <column name="id_tipo_almacen" not-null="true" />
+                <column name="id_condicion" not-null="true" />
             </key>
             <one-to-many class="entity.Almacen" />
         </set>
         <set name="productos" table="producto" inverse="true" lazy="true" fetch="select">
             <key>
-                <column name="Condicion_id" not-null="true" />
+                <column name="id_condicion" not-null="true" />
             </key>
             <one-to-many class="entity.Producto" />
         </set>
         <set name="tipoUnidadTransportes" table="tipo_unidad_transporte" inverse="true" lazy="true" fetch="select">
             <key>
-                <column name="Condicion_id" not-null="true" />
+                <column name="id_condicion" not-null="true" />
             </key>
             <one-to-many class="entity.TipoUnidadTransporte" />
         </set>

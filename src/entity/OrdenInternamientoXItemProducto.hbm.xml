@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated May 26, 2015 4:12:25 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="entity.OrdenInternamientoXItemProducto" table="orden_internamiento_x_item_producto" catalog="saddb" optimistic-lock="version">
+        <composite-id name="id" class="entity.OrdenInternamientoXItemProductoId">
+            <key-property name="ordenInternamientoId" type="int">
+                <column name="orden_internamiento_id" />
+            </key-property>
+            <key-property name="itemProductoId" type="int">
+                <column name="item_producto_id" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="itemProducto" class="entity.ItemProducto" update="false" insert="false" fetch="select">
+            <column name="item_producto_id" not-null="true" />
+        </many-to-one>
+        <many-to-one name="ordenInternamiento" class="entity.OrdenInternamiento" update="false" insert="false" fetch="select">
+            <column name="orden_internamiento_id" not-null="true" />
+        </many-to-one>
+        <property name="cantidad" type="java.lang.Integer">
+            <column name="cantidad" />
+        </property>
+        <property name="cantidadIngresada" type="java.lang.Integer">
+            <column name="cantidad_ingresada" />
+        </property>
+    </class>
+</hibernate-mapping>

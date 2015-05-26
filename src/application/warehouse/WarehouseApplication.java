@@ -9,6 +9,10 @@ import base.warehouse.IWarehouseRepository;
 import entity.Almacen;
 import infraestructure.warehouse.WarehouseRepository;
 import java.util.ArrayList;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import util.Tools;
 /**
  *
  * @author KEVIN BROWN
@@ -29,6 +33,31 @@ public class WarehouseApplication {
             
         }
     }
+    
+    public void update(Almacen object) {
+        try{
+            WarehouseRepository w = new WarehouseRepository();
+            w.update(object);
+        }
+        catch (Exception e){
+            
+        }
+    }
+    
+    
+    
+    public Almacen queryById(int id) {
+        Almacen a =null;
+        try {            
+            WarehouseRepository w = new WarehouseRepository();
+            a=w.queryById(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return a;
+    }
+    
+    
     
     public ArrayList<Almacen> queryAll(){
         ArrayList<Almacen> warehouses = null;

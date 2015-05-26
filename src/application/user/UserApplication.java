@@ -55,17 +55,16 @@ public class UserApplication {
         
     }
 
-    public boolean login(String correo, String password) {
+    public Usuario login(String correo, String password) {
+        Usuario user=null;
         try {
-            Usuario user = userRepository.getUser(correo);
-            if (user != null) {
-                return password.equals(decrypt(user.getPassword()));
-            }
+            user= userRepository.getUser(correo);            
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return false;
+        return user;
     }
+    
 
     public void createUser(Usuario user) {
         user.setPassword(encrypt(user.getPassword()));
@@ -138,4 +137,32 @@ public class UserApplication {
         }
         return dpw;
     }
+    public Usuario getUserById(String id){
+        Usuario user=null;
+        try{
+            user=userRepository.queryById(id);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return user;
+    }
+    public void updateUser(Usuario user){
+        
+        try{
+            userRepository.update(user);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+    }
+    public ArrayList<Usuario> searchUser(Usuario user) {
+        ArrayList<Usuario> users = null;
+        try {
+            users = userRepository.searchUser(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+    
 }

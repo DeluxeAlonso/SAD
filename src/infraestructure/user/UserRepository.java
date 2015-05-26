@@ -8,11 +8,11 @@ package infraestructure.user;
 import base.user.IUserRepository;
 import entity.Usuario;
 import java.util.ArrayList;
-import org.hibernate.HibernateException;
+import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import util.HibernateUtil;
+import util.Tools;
 
 /**
  *
@@ -22,18 +22,25 @@ public class UserRepository implements IUserRepository {
 
     @Override
     public Usuario getUser(String email) {
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
         Usuario user = null;
         String hql
                 = "from Usuario where correo=:email";
         try {
-            Session session = HibernateUtil.getSessionFactory().openSession();
+            
             session.beginTransaction();
             Query q = session.createQuery(hql);
             q.setParameter("email", email);
             user = (Usuario) q.uniqueResult();
+            if(user!=null)
+                Hibernate.initialize(user.getPerfil());
             session.getTransaction().commit();
-        } catch (HibernateException he) {
-            he.printStackTrace();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
         }
         return user;
     }
@@ -41,7 +48,7 @@ public class UserRepository implements IUserRepository {
     @Override
     public void insert(Usuario object) {
         Transaction trns = null;
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
             session.save(object);                      
@@ -51,10 +58,7 @@ public class UserRepository implements IUserRepository {
                 trns.rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.flush();
-            session.close();
-        }
+        } 
     }
 
     @Override
@@ -68,27 +72,35 @@ public class UserRepository implements IUserRepository {
         ArrayList<Usuario> users=null;
         
         Transaction trns = null;
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
             Query q = session.createQuery(hql);              
-            users = (ArrayList<Usuario>) q.list();          
+            users = (ArrayList<Usuario>) q.list();             
             session.getTransaction().commit();
         } catch (RuntimeException e) {
             if (trns != null) {
                 trns.rollback();
             }
             e.printStackTrace();
-        } finally {
-            session.flush();
-            session.close();
-        }
+        } 
         return users;
     }
 
     @Override
     public void update(Usuario object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            session.saveOrUpdate(object);                      
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        } 
     }
 
     @Override
@@ -98,7 +110,52 @@ public class UserRepository implements IUserRepository {
 
     @Override
     public Usuario queryById(String id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        Usuario user = null;
+        String hql
+                = "from Usuario where id=:id";
+        try {
+            
+            session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("id", id);
+            user = (Usuario) q.uniqueResult();
+            if(user!=null)
+                Hibernate.initialize(user.getPerfil());
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return user;
+    }
+    public ArrayList<Usuario> searchUser(Usuario user){
+        String hql="from Usuario "
+                + "where (:idPerfil is null or id_perfil=:idPerfil) and (correo like :correo)";
+        ArrayList<Usuario> users=null;
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("correo", "%"+user.getCorreo()+"%");
+            if(user.getPerfil()!=null)
+                q.setParameter("idPerfil", user.getPerfil().getId());
+            else
+                q.setParameter("idPerfil", null);
+            users = (ArrayList<Usuario>) q.list();             
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        } 
+        return users;
     }
 
 }

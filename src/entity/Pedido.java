@@ -1,5 +1,5 @@
 package entity;
-// Generated 18/05/2015 11:45:07 AM by Hibernate Tools 4.3.1
+// Generated May 26, 2015 4:12:25 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -11,8 +11,10 @@ import java.util.Set;
 public class Pedido  implements java.io.Serializable {
 
 
-     private Integer idPedido;
+     private Integer id;
      private Local local;
+     private Integer estado;
+     private Integer idCliente;
      private Set pedidoParcials = new HashSet(0);
 
     public Pedido() {
@@ -22,17 +24,19 @@ public class Pedido  implements java.io.Serializable {
     public Pedido(Local local) {
         this.local = local;
     }
-    public Pedido(Local local, Set pedidoParcials) {
+    public Pedido(Local local, Integer estado, Integer idCliente, Set pedidoParcials) {
        this.local = local;
+       this.estado = estado;
+       this.idCliente = idCliente;
        this.pedidoParcials = pedidoParcials;
     }
    
-    public Integer getIdPedido() {
-        return this.idPedido;
+    public Integer getId() {
+        return this.id;
     }
     
-    public void setIdPedido(Integer idPedido) {
-        this.idPedido = idPedido;
+    public void setId(Integer id) {
+        this.id = id;
     }
     public Local getLocal() {
         return this.local;
@@ -40,6 +44,20 @@ public class Pedido  implements java.io.Serializable {
     
     public void setLocal(Local local) {
         this.local = local;
+    }
+    public Integer getEstado() {
+        return this.estado;
+    }
+    
+    public void setEstado(Integer estado) {
+        this.estado = estado;
+    }
+    public Integer getIdCliente() {
+        return this.idCliente;
+    }
+    
+    public void setIdCliente(Integer idCliente) {
+        this.idCliente = idCliente;
     }
     public Set getPedidoParcials() {
         return this.pedidoParcials;

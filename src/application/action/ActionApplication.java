@@ -9,6 +9,8 @@ import base.action.IActionRepository;
 import entity.Accion;
 import infraestructure.action.ActionRepository;
 import java.util.ArrayList;
+import util.EntityState;
+import util.EntityType;
 
 /**
  *
@@ -29,5 +31,20 @@ public class ActionApplication {
             e.printStackTrace();
         }
         return actions;
+    }
+    
+    public void refreshActions() {
+        
+        EntityType.ACTIONS = getAllActions();
+        
+    }
+    public Accion getActionByName(String nombAccion){
+        Accion action=null;
+        try{
+            action=actionRepository.queryByName(nombAccion);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return action;
     }
 }

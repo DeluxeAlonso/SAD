@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import util.EntityState.Racks;
 import util.HibernateUtil;
+import util.Tools;
 
 /**
  *
@@ -21,15 +23,16 @@ public class RackRepository implements IRackRepository{
     
     @Override
     public ArrayList<Rack> queryRacksByWarehouse(int warehouseId) {
-        String hql="from Rack where id_almacen=:warehouse_id";
+        String hql="FROM Rack WHERE id_almacen=:warehouse_id AND estado=:state";
         ArrayList<Rack> warehouses=null;
         
         Transaction trns = null;
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
             Query q = session.createQuery(hql);
             q.setParameter("warehouse_id", warehouseId);
+            q.setParameter("state", Racks.ACTIVO.ordinal());
             warehouses = (ArrayList<Rack>) q.list();          
             session.getTransaction().commit();
         } catch (RuntimeException e) {
@@ -46,7 +49,18 @@ public class RackRepository implements IRackRepository{
 
     @Override
     public void insert(Rack object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            session.save(object);                      
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }    
     }
 
     @Override
@@ -61,12 +75,43 @@ public class RackRepository implements IRackRepository{
 
     @Override
     public void update(Rack object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            session.saveOrUpdate(object);                      
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        } 
     }
 
     @Override
     public Rack queryById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String hql="FROM Rack WHERE id=:id";
+        ArrayList<Rack> racks=null;
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("id", id);
+            racks = (ArrayList<Rack>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        if (racks.size()==0)
+            return null;
+        else
+            return racks.get(0); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

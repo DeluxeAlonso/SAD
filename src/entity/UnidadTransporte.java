@@ -1,5 +1,5 @@
 package entity;
-// Generated 18/05/2015 11:45:07 AM by Hibernate Tools 4.3.1
+// Generated May 26, 2015 4:12:25 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -15,7 +15,7 @@ public class UnidadTransporte  implements java.io.Serializable {
      private TipoUnidadTransporte tipoUnidadTransporte;
      private String transportista;
      private String placa;
-     private Integer capacidad;
+     private Integer estado;
      private Set despachos = new HashSet(0);
 
     public UnidadTransporte() {
@@ -25,11 +25,11 @@ public class UnidadTransporte  implements java.io.Serializable {
     public UnidadTransporte(TipoUnidadTransporte tipoUnidadTransporte) {
         this.tipoUnidadTransporte = tipoUnidadTransporte;
     }
-    public UnidadTransporte(TipoUnidadTransporte tipoUnidadTransporte, String transportista, String placa, Integer capacidad, Set despachos) {
+    public UnidadTransporte(TipoUnidadTransporte tipoUnidadTransporte, String transportista, String placa, Integer estado, Set despachos) {
        this.tipoUnidadTransporte = tipoUnidadTransporte;
        this.transportista = transportista;
        this.placa = placa;
-       this.capacidad = capacidad;
+       this.estado = estado;
        this.despachos = despachos;
     }
    
@@ -61,12 +61,12 @@ public class UnidadTransporte  implements java.io.Serializable {
     public void setPlaca(String placa) {
         this.placa = placa;
     }
-    public Integer getCapacidad() {
-        return this.capacidad;
+    public Integer getEstado() {
+        return this.estado;
     }
     
-    public void setCapacidad(Integer capacidad) {
-        this.capacidad = capacidad;
+    public void setEstado(Integer estado) {
+        this.estado = estado;
     }
     public Set getDespachos() {
         return this.despachos;

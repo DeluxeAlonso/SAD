@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 18/05/2015 11:45:08 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated May 26, 2015 4:12:25 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entity.TipoUnidadTransporte" table="tipo_unidad_transporte" catalog="saddb" optimistic-lock="version">
         <id name="id" type="java.lang.Integer">
@@ -9,19 +9,17 @@
             <generator class="identity" />
         </id>
         <many-to-one name="condicion" class="entity.Condicion" fetch="select">
-            <column name="Condicion_id" not-null="true" />
+            <column name="id_condicion" not-null="true" />
         </many-to-one>
         <property name="descripcion" type="string">
             <column name="descripcion" length="200" />
         </property>
-        <set name="tipoPallets" table="tipo_unidad_transporte_x_tipo_pallet" inverse="false" lazy="true" fetch="select">
-            <key>
-                <column name="id_tipo_unidad_transporte" not-null="true" />
-            </key>
-            <many-to-many entity-name="entity.TipoPallet">
-                <column name="id_tipo_pallet" not-null="true" />
-            </many-to-many>
-        </set>
+        <property name="capacidadPallets" type="java.lang.Integer">
+            <column name="capacidad_pallets" />
+        </property>
+        <property name="velocidadPromedio" type="java.lang.Double">
+            <column name="velocidad_promedio" precision="22" scale="0" />
+        </property>
         <set name="unidadTransportes" table="unidad_transporte" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="id_tipo_unidad_transporte" not-null="true" />

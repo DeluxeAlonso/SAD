@@ -5,22 +5,43 @@
  */
 package client.general;
 
+import application.action.ActionApplication;
+import application.profile.ProfileApplication;
+import client.internment.InternmentSelectView;
+
+import client.devolution.DevolutionView;
+import client.reports.AvailabilityReport;
+
 import client.product.ProductView;
 import client.personal.PersonalView;
 import client.client.ClientView;
 import client.order.OrderView;
+import client.rack.RackView;
+import client.reports.KardexReport;
 import client.reports.RemissionGuideReport;
 import client.reports.StockReport;
-import client.report.ProductCaducityReport;
+import client.reports.ProductCaducityReport;
+
 import client.transportunit.*;
 import client.user.EditUserView;
+import client.user.LoginView;
 import client.user.UserView;
 import client.warehouse.PalletMovementsView;
 import client.warehouse.WarehouseView;
+import client.warehouseControlCheck.WarehouseControlCheckView;
+import entity.Accion;
+import entity.Usuario;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyVetoException;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.MenuElement;
+import util.InstanceFactory;
 
 /**
  *
@@ -28,25 +49,61 @@ import javax.swing.JFrame;
  */
 public class MainView extends javax.swing.JFrame {
 
+    ProfileApplication profileApplication = InstanceFactory.Instance.getInstance("profileApplication", ProfileApplication.class);
+    ActionApplication actionApplication = InstanceFactory.Instance.getInstance("actionApplication", ActionApplication.class);
+
     private UserView userView = null;
     private TransportUnitView transportUnitView = null;
     private WarehouseView warehouseView = null;
+    private DevolutionView devolutionView = null;
     private ProductView productView = null;
     private PersonalView personalView = null;
     private ClientView clientView = null;
     private OrderView orderView = null;
     private EditUserView editUserView = null;
     private PalletMovementsView palletMovementsView = null;
-    private ProductCaducityReport productCaducity=null;
-    private RemissionGuideReport remissionGuide=null;
+    private ProductCaducityReport productCaducity = null;
+    private RemissionGuideReport remissionGuide = null;
     private StockReport stockReport = null;
+    private WarehouseControlCheckView warehouseControlCheckView = null;
+    private InternmentSelectView internmentSelectView = null;
+    private AvailabilityReport availabilityReport = null;
+    private RackView rackView = null;
+    private KardexReport kardexReport = null;
+    public static Usuario user = null;
+    private BufferedImage img = null;
 
     /**
      * Creates new form MainForm
      */
-    public MainView() {
+    public MainView(Usuario user) {
+        loadImageToDesktopPane();
         initComponents();
-        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        this.user = user;
+        renderUserMenu();
+    }
+
+    public MainView() {
+        loadImageToDesktopPane();
+        initComponents();
+    }
+
+    private void renderUserMenu() {
+        Set actions = profileApplication.getProfileByName(user.getPerfil().getNombrePerfil()).getAccions();
+        int numActions=actionApplication.getAllActions().size();
+        MenuElement[] topLevelElements = menuBar.getSubElements();
+        for (int i=0;i<numActions;i++) {
+            boolean found=false;            
+            for (Accion a : (Set<Accion>) actions) {
+                if(((JMenu)topLevelElements[i]).getText().equals(a.getNombre())){
+                    found=true;                    
+                    break;
+                }
+            }
+            
+            if(!found)
+                menuBar.remove(((JMenu)topLevelElements[i]));
+        }        
     }
 
     /**
@@ -58,35 +115,52 @@ public class MainView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        mainPanel = new javax.swing.JDesktopPane();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu2 = new javax.swing.JMenu();
+        mainPanel = new javax.swing.JDesktopPane(){
+            @Override
+            protected void paintComponent(Graphics g){
+                super.paintComponent(g);
+                g.drawImage(img, 0, 0,  getWidth(),getHeight(), null);
+            }
+
+        };
+        menuBar = new javax.swing.JMenuBar();
+        menuMov = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem17 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem6 = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
+        menuOp = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem11 = new javax.swing.JMenuItem();
-        jMenu5 = new javax.swing.JMenu();
+        menuMaint = new javax.swing.JMenu();
         WarehouseMenu = new javax.swing.JMenuItem();
         TUFrame = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
+        RackItem = new javax.swing.JMenuItem();
+        menuReport = new javax.swing.JMenu();
         jMenuItem12 = new javax.swing.JMenuItem();
         jMenuItem13 = new javax.swing.JMenuItem();
         jMenuItem14 = new javax.swing.JMenuItem();
         jMenuItem15 = new javax.swing.JMenuItem();
         jMenuItem16 = new javax.swing.JMenuItem();
-        UserMenu = new javax.swing.JMenu();
-        jMenu6 = new javax.swing.JMenu();
+        menuSec = new javax.swing.JMenu();
+        jMenuItem9 = new javax.swing.JMenuItem();
+        jMenuItem19 = new javax.swing.JMenuItem();
+        menuInter = new javax.swing.JMenu();
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenuItem10 = new javax.swing.JMenuItem();
-        jMenu4 = new javax.swing.JMenu();
+        menuSession = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
+        jMenuItem18 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sistema de Almacenes y Despacho");
+        setExtendedState(this.getExtendedState()| JFrame.MAXIMIZED_BOTH);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         mainPanel.setDragMode(javax.swing.JDesktopPane.OUTLINE_DRAG_MODE);
 
@@ -94,25 +168,30 @@ public class MainView extends javax.swing.JFrame {
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 416, Short.MAX_VALUE)
+            .addGap(0, 459, Short.MAX_VALUE)
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 281, Short.MAX_VALUE)
         );
 
-        jMenu2.setText("Movimientos");
+        menuMov.setText("Movimientos");
 
         jMenuItem2.setText("Internamiento");
-        jMenu2.add(jMenuItem2);
-
-        jMenuItem17.setText("Pedidos");
-        jMenuItem17.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem17ActionPerformed(evt);
+        jMenuItem2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMenuItem2MousePressed(evt);
             }
         });
-        jMenu2.add(jMenuItem17);
+        menuMov.add(jMenuItem2);
+
+        jMenuItem3.setText("Pedidos");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        menuMov.add(jMenuItem3);
 
         jMenuItem6.setText("Movimientos Pallets");
         jMenuItem6.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -120,27 +199,37 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem6MousePressed(evt);
             }
         });
-        jMenu2.add(jMenuItem6);
+        menuMov.add(jMenuItem6);
 
-        jMenuBar1.add(jMenu2);
+        menuBar.add(menuMov);
 
-        jMenu3.setText("Operaciones");
+        menuOp.setText("Operaciones");
 
-        jMenuItem1.setText("Ajuste De Inventario");
-        jMenu3.add(jMenuItem1);
+        jMenuItem1.setText("Toma y Ajuste de Inventario");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        menuOp.add(jMenuItem1);
 
         jMenuItem4.setText("Despacho");
-        jMenu3.add(jMenuItem4);
+        menuOp.add(jMenuItem4);
 
         jMenuItem11.setText("Devoluciones");
-        jMenu3.add(jMenuItem11);
+        jMenuItem11.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMenuItem11MousePressed(evt);
+            }
+        });
+        menuOp.add(jMenuItem11);
 
-        jMenuBar1.add(jMenu3);
+        menuBar.add(menuOp);
 
-        jMenu5.setText("Mantenimientos");
-        jMenu5.addMouseListener(new java.awt.event.MouseAdapter() {
+        menuMaint.setText("Mantenimientos");
+        menuMaint.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jMenu5MouseClicked(evt);
+                menuMaintMouseClicked(evt);
             }
         });
 
@@ -150,7 +239,7 @@ public class MainView extends javax.swing.JFrame {
                 WarehouseMenuMousePressed(evt);
             }
         });
-        jMenu5.add(WarehouseMenu);
+        menuMaint.add(WarehouseMenu);
 
         TUFrame.setText("Unidad de Transporte");
         TUFrame.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -161,14 +250,27 @@ public class MainView extends javax.swing.JFrame {
                 TUFrameMousePressed(evt);
             }
         });
-        jMenu5.add(TUFrame);
+        menuMaint.add(TUFrame);
 
-        jMenuBar1.add(jMenu5);
+        RackItem.setText("Rack");
+        RackItem.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                RackItemMousePressed(evt);
+            }
+        });
+        menuMaint.add(RackItem);
 
-        jMenu1.setText("Reportes");
+        menuBar.add(menuMaint);
+
+        menuReport.setText("Reportes");
 
         jMenuItem12.setText("Kardex");
-        jMenu1.add(jMenuItem12);
+        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem12ActionPerformed(evt);
+            }
+        });
+        menuReport.add(jMenuItem12);
 
         jMenuItem13.setText("Stock");
         jMenuItem13.addActionListener(new java.awt.event.ActionListener() {
@@ -176,7 +278,7 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem13ActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem13);
+        menuReport.add(jMenuItem13);
 
         jMenuItem14.setText("Guías De Remisión");
         jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
@@ -184,10 +286,15 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem14ActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem14);
+        menuReport.add(jMenuItem14);
 
         jMenuItem15.setText("Disponibilidad de Almacén");
-        jMenu1.add(jMenuItem15);
+        jMenuItem15.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMenuItem15MousePressed(evt);
+            }
+        });
+        menuReport.add(jMenuItem15);
 
         jMenuItem16.setText("Caducidad de Productos");
         jMenuItem16.addActionListener(new java.awt.event.ActionListener() {
@@ -195,19 +302,31 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem16ActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem16);
+        menuReport.add(jMenuItem16);
 
-        jMenuBar1.add(jMenu1);
+        menuBar.add(menuReport);
 
-        UserMenu.setText("Usuarios");
-        UserMenu.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                UserMenuMouseClicked(evt);
+        menuSec.setText("Seguridad");
+
+        jMenuItem9.setText("Usuarios");
+        jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem9ActionPerformed(evt);
             }
         });
-        jMenuBar1.add(UserMenu);
+        menuSec.add(jMenuItem9);
 
-        jMenu6.setText("Interfaces");
+        jMenuItem19.setText("Perfil");
+        jMenuItem19.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        menuSec.add(jMenuItem19);
+
+        menuBar.add(menuSec);
+
+        menuInter.setText("Interfaces");
 
         jMenuItem7.setText("Personal");
         jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
@@ -215,7 +334,7 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem7ActionPerformed(evt);
             }
         });
-        jMenu6.add(jMenuItem7);
+        menuInter.add(jMenuItem7);
 
         jMenuItem8.setText("Clientes");
         jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
@@ -223,7 +342,7 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem8ActionPerformed(evt);
             }
         });
-        jMenu6.add(jMenuItem8);
+        menuInter.add(jMenuItem8);
 
         jMenuItem10.setText("Productos");
         jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
@@ -231,11 +350,11 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem10ActionPerformed(evt);
             }
         });
-        jMenu6.add(jMenuItem10);
+        menuInter.add(jMenuItem10);
 
-        jMenuBar1.add(jMenu6);
+        menuBar.add(menuInter);
 
-        jMenu4.setText("Sesión");
+        menuSession.setText("Sesión");
 
         jMenuItem5.setText("Actualizar datos");
         jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
@@ -243,11 +362,19 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem5ActionPerformed(evt);
             }
         });
-        jMenu4.add(jMenuItem5);
+        menuSession.add(jMenuItem5);
 
-        jMenuBar1.add(jMenu4);
+        jMenuItem18.setText("Cerrar Sesión");
+        jMenuItem18.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem18ActionPerformed(evt);
+            }
+        });
+        menuSession.add(jMenuItem18);
 
-        setJMenuBar(jMenuBar1);
+        menuBar.add(menuSession);
+
+        setJMenuBar(menuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -263,22 +390,15 @@ public class MainView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void UserMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UserMenuMouseClicked
-        if (userView == null || !userView.isShowing()) {
-            userView = new UserView();
-            userView.setVisible(true);
-            mainPanel.add(userView);
-            try {
-                // TODO add your handling code here:
-                userView.setSelected(true);
-            } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
-            }
+    private void loadImageToDesktopPane() {
+        try {
+            img = ImageIO.read(getClass().getResource("/images/desktop_background.jpg"));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    }//GEN-LAST:event_UserMenuMouseClicked
-
-    private void jMenu5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu5MouseClicked
-    }//GEN-LAST:event_jMenu5MouseClicked
+    }
+    private void menuMaintMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuMaintMouseClicked
+    }//GEN-LAST:event_menuMaintMouseClicked
 
     private void TUFrameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TUFrameMouseClicked
         // TODO add your handling code here:
@@ -348,7 +468,7 @@ public class MainView extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem10ActionPerformed
 
     private void jMenuItem6MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem6MousePressed
-                // TODO add your handling code here:
+        // TODO add your handling code here:
         if (palletMovementsView == null || !palletMovementsView.isShowing()) {
             palletMovementsView = new PalletMovementsView();
             palletMovementsView.setVisible(true);
@@ -394,7 +514,7 @@ public class MainView extends javax.swing.JFrame {
 
     private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
         // TODO add your handling code here:
-           if (stockReport == null || !stockReport.isShowing()) {
+        if (stockReport == null || !stockReport.isShowing()) {
             stockReport = new StockReport();
             stockReport.setVisible(true);
             mainPanel.add(stockReport);
@@ -427,6 +547,7 @@ public class MainView extends javax.swing.JFrame {
             clientView.setVisible(true);
             mainPanel.add(clientView);
             try {
+
                 // TODO add your handling code here:
                 clientView.setSelected(true);
             } catch (PropertyVetoException ex) {
@@ -435,9 +556,89 @@ public class MainView extends javax.swing.JFrame {
         }           // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
-    private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        if (warehouseControlCheckView == null || !warehouseControlCheckView.isShowing()) {
+            warehouseControlCheckView = new WarehouseControlCheckView(mainPanel);
+            warehouseControlCheckView.setVisible(true);
+            mainPanel.add(warehouseControlCheckView);
+            try {
+                // TODO add your handling code here:
+                warehouseControlCheckView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem2MousePressed
         // TODO add your handling code here:
-        if (orderView == null || !orderView.isShowing()) {
+        if (internmentSelectView == null || !internmentSelectView.isShowing()) {
+            internmentSelectView = new InternmentSelectView();
+            internmentSelectView.setVisible(true);
+            mainPanel.add(internmentSelectView);
+            try {
+                // TODO add your handling code here:
+                internmentSelectView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+    }//GEN-LAST:event_jMenuItem2MousePressed
+
+    private void jMenuItem11MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem11MousePressed
+        // TODO add your handling code here:
+        if (devolutionView == null || !devolutionView.isShowing()) {
+            devolutionView = new DevolutionView();
+            devolutionView.setVisible(true);
+            mainPanel.add(devolutionView);
+            try {
+                // TODO add your handling code here:
+                devolutionView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem11MousePressed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        //Tools.closeSession();
+    }//GEN-LAST:event_formWindowClosing
+
+    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+        // TODO add your handling code here:
+        if (kardexReport == null || !kardexReport.isShowing()) {
+            kardexReport = new KardexReport();
+            kardexReport.setVisible(true);
+            mainPanel.add(kardexReport);
+            try {
+                // TODO add your handling code here:
+                kardexReport.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem12ActionPerformed
+
+    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
+        // TODO add your handling code here:
+        if (userView == null || !userView.isShowing()) {
+            userView = new UserView(0);
+            userView.setVisible(true);
+            mainPanel.add(userView);
+            try {
+                // TODO add your handling code here:
+                userView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem9ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        // TODO add your handling code here:
+                if (orderView == null || !orderView.isShowing()) {
             orderView = new OrderView();
             orderView.setVisible(true);
             mainPanel.add(orderView);
@@ -447,24 +648,53 @@ public class MainView extends javax.swing.JFrame {
             } catch (PropertyVetoException ex) {
                 Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }  
-    }//GEN-LAST:event_jMenuItem17ActionPerformed
+        }
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
+        // TODO add your handling code here:
+        new LoginView().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jMenuItem18ActionPerformed
+
+    private void RackItemMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RackItemMousePressed
+        // TODO add your handling code here:
+        if (rackView == null || !rackView.isShowing()) {
+            rackView = new RackView();
+            rackView.setVisible(true);
+            mainPanel.add(rackView);
+            try {
+                // TODO add your handling code here:
+                rackView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_RackItemMousePressed
+
+    private void jMenuItem15MousePressed(java.awt.event.MouseEvent evt) {
+        // TODO add your handling code here:
+        if (availabilityReport == null || !availabilityReport.isShowing()) {
+            availabilityReport = new AvailabilityReport();
+            availabilityReport.setVisible(true);
+            mainPanel.add(availabilityReport);
+            try {
+                // TODO add your handling code here:
+                availabilityReport.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem RackItem;
     private javax.swing.JMenuItem TUFrame;
-    private javax.swing.JMenu UserMenu;
     private javax.swing.JMenuItem WarehouseMenu;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenu jMenu5;
-    private javax.swing.JMenu jMenu6;
-    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem11;
@@ -473,13 +703,25 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem14;
     private javax.swing.JMenuItem jMenuItem15;
     private javax.swing.JMenuItem jMenuItem16;
-    private javax.swing.JMenuItem jMenuItem17;
+    private javax.swing.JMenuItem jMenuItem18;
+    private javax.swing.JMenuItem jMenuItem19;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
+    private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JDesktopPane mainPanel;
+    private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenu menuInter;
+    private javax.swing.JMenu menuMaint;
+    private javax.swing.JMenu menuMov;
+    private javax.swing.JMenu menuOp;
+    private javax.swing.JMenu menuReport;
+    private javax.swing.JMenu menuSec;
+    private javax.swing.JMenu menuSession;
     // End of variables declaration//GEN-END:variables
+
 }

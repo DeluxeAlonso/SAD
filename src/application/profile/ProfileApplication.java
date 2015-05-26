@@ -9,6 +9,7 @@ import base.profile.IProfileRepository;
 import entity.Perfil;
 import infraestructure.profile.ProfileRepository;
 import java.util.ArrayList;
+import util.EntityType;
 
 /**
  *
@@ -31,11 +32,44 @@ public class ProfileApplication {
         return profiles;
     }
     
-    public void saveProfile(Perfil profile){        
+    public void updateProfile(Perfil profile){        
         try{
             profileRepository.update(profile);
         }catch(Exception e){
             e.printStackTrace();
         }       
     }
+    
+    public void refreshProfiles() {
+        
+        EntityType.PROFILES = getAllProfiles();
+        EntityType.fillProfileNames();
+        
+    }
+    
+    public Perfil getProfileByName(String profileName){
+        Perfil profile=null;
+        try{
+            profile=profileRepository.queryByName(profileName);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return profile;
+    }
+    
+    public void insertProfile(Perfil profile){
+        try{
+            profileRepository.insert(profile);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    public void deleteProfile(Perfil profile){
+        try{
+            profileRepository.delete(profile);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
 }

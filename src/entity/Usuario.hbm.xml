@@ -1,24 +1,24 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 18/05/2015 11:45:08 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated May 26, 2015 4:12:25 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entity.Usuario" table="usuario" catalog="saddb" optimistic-lock="version">
-        <id name="idusuario" type="string">
-            <column name="idusuario" length="40" />
+        <id name="id" type="string">
+            <column name="id" length="40" />
             <generator class="assigned" />
         </id>
         <many-to-one name="perfil" class="entity.Perfil" fetch="select">
-            <column name="idPerfil" />
+            <column name="id_perfil" />
         </many-to-one>
         <many-to-one name="preguntaSecreta" class="entity.PreguntaSecreta" fetch="select">
-            <column name="idPregunta_Secreta" />
+            <column name="id_pregunta_secreta" />
         </many-to-one>
         <property name="correo" type="string">
             <column name="correo" length="100" not-null="true" />
         </property>
         <property name="password" type="string">
-            <column name="password" length="50" />
+            <column name="password" length="50" not-null="true" />
         </property>
         <property name="nombre" type="string">
             <column name="nombre" length="50" />

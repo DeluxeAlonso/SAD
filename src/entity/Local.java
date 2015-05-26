@@ -1,5 +1,5 @@
 package entity;
-// Generated 18/05/2015 11:45:07 AM by Hibernate Tools 4.3.1
+// Generated May 26, 2015 4:12:25 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -18,6 +18,7 @@ public class Local  implements java.io.Serializable {
      private String nombre;
      private String descripcion;
      private String direccion;
+     private Integer estado;
      private Set pedidos = new HashSet(0);
 
     public Local() {
@@ -27,13 +28,14 @@ public class Local  implements java.io.Serializable {
     public Local(Cliente cliente) {
         this.cliente = cliente;
     }
-    public Local(Cliente cliente, Double latitud, Double longitud, String nombre, String descripcion, String direccion, Set pedidos) {
+    public Local(Cliente cliente, Double latitud, Double longitud, String nombre, String descripcion, String direccion, Integer estado, Set pedidos) {
        this.cliente = cliente;
        this.latitud = latitud;
        this.longitud = longitud;
        this.nombre = nombre;
        this.descripcion = descripcion;
        this.direccion = direccion;
+       this.estado = estado;
        this.pedidos = pedidos;
     }
    
@@ -85,6 +87,13 @@ public class Local  implements java.io.Serializable {
     
     public void setDireccion(String direccion) {
         this.direccion = direccion;
+    }
+    public Integer getEstado() {
+        return this.estado;
+    }
+    
+    public void setEstado(Integer estado) {
+        this.estado = estado;
     }
     public Set getPedidos() {
         return this.pedidos;

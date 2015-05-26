@@ -9,7 +9,7 @@ package util;
  *
  * @author dabarca
  */
-public  class EntityState {
+public class EntityState {
     
     public EntityState(){}
     
@@ -20,8 +20,46 @@ public  class EntityState {
          return userState;
     }
     
+    public static enum Spots { INACTIVO, LIBRE, OCUPADO};
+    public static String[] getSpotsState(){
+         String[] spotState={"Inactivo","Libre","Ocupado"};
+         return spotState;
+    }
     
+    public static enum Warehouses { INACTIVO, ACTIVO, EN_REVISION};
+    public static String[] getWarehousesState(){
+         String[] warehousesState={"Inactivo","Activo","En_revision"};
+         return warehousesState;
+    }
     
+    public static enum Racks { INACTIVO, ACTIVO, EN_REVISION, LLENO};
+    public static String[] getRacksState(){
+         String[] racksState={"Inactivo","Activo","En_revision","Lleno"};
+         return racksState;
+    }
     
+    public static enum Clients { INACTIVO, ACTIVO};
+    public static String[] getClientsState(){
+         String[] clientsState={"Inactivo","Activo"};
+         return clientsState;
+    }
+    
+    public static enum Locals { INACTIVO, ACTIVO};
+    public static String[] getLocalsState(){
+         String[] localsState={"Inactivo","Activo"};
+         return localsState;
+    }
+    
+    public static enum TransportUnits { INACTIVO, ACTIVO};
+    public static String[] getTransportUnitsState(){
+         String[] transportUnitsState={"Inactivo","Activo"};
+         return transportUnitsState;
+    }
+    
+    public static enum Orders { ANULADO, REGISTRADO, EN_CURSO, FINALIZADO};
+    public static String[] getOrdersState(){
+         String[] ordersState={"Anulado","Registrado", "En Curso", "Finalizado"};
+         return ordersState;
+    }
     
 }
