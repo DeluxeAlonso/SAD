@@ -9,7 +9,10 @@ import application.user.UserApplication;
 import client.general.AppStart;
 import client.general.MainView;
 import entity.Usuario;
+import javax.swing.JOptionPane;
+import util.EntityState;
 import util.InstanceFactory;
+import util.Strings;
 
 /**
  *
@@ -27,8 +30,7 @@ public class LoginView extends javax.swing.JFrame {
         initComponents();
         AppStart.initConfig.start();
         getRootPane().setDefaultButton(loginBtn);
-        
-        
+
     }
 
     /**
@@ -90,7 +92,7 @@ public class LoginView extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(143, 143, 143)
+                        .addGap(131, 131, 131)
                         .addComponent(loginBtn))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(73, 73, 73)
@@ -142,7 +144,7 @@ public class LoginView extends javax.swing.JFrame {
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
         // TODO add your handling code here:
         login();
-        
+
     }//GEN-LAST:event_loginBtnActionPerformed
 
     private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
@@ -156,14 +158,28 @@ public class LoginView extends javax.swing.JFrame {
         //Tools.closeSession();
     }//GEN-LAST:event_formWindowClosing
     private void login() {
-        
-        if (!userTxt.getText().equals("root")) {  
-            Usuario user=null;
-            user=userApplication.login(userTxt.getText(), new String(pwTxt.getPassword()));
-            new MainView(user).setVisible(true);            
-        }else
+        Usuario user = null;
+        if (!userTxt.getText().equals("root")) {
+            user = userApplication.login(userTxt.getText(), new String(pwTxt.getPassword()));
+            if (user != null) {
+                if (user.getEstado() == EntityState.Users.ACTIVO.ordinal()) {
+                    new MainView(user).setVisible(true);
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, Strings.ALERT_USER_INACTIVE, "Alerta", JOptionPane.WARNING_MESSAGE);
+                    userTxt.setText("");
+                    pwTxt.setText("");
+                }
+            } else {
+                    JOptionPane.showMessageDialog(this, Strings.ALERT_USER_DOES_NOT_EXIST, "Error", JOptionPane.WARNING_MESSAGE);
+                    userTxt.setText("");
+                    pwTxt.setText("");
+            }
+        } else {
             new MainView().setVisible(true);
-        dispose();
+            dispose();
+        }
+
     }
 
     /**
