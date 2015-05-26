@@ -47,8 +47,8 @@ public class EntityType {
                 PROFILES_NAMES[i] = PROFILES.get(i-1).getNombrePerfil();
             }
         }
-    } 
-    
+    }
+
     public static void fillUnitTransportTypesNames(){
         TRANSPORT_TYPE_NAMES =  new String[TRANSPORT_TYPES.size() + 1];
         for (int i=0; i < TRANSPORT_TYPES.size() + 1; i++){
@@ -60,7 +60,7 @@ public class EntityType {
             }
         }
     }
-    
+
     public static void fillConditionNames() {
         CONDITIONS_NAMES = new String[CONDITIONS.size() + 1];
         for (int i = 0; i < CONDITIONS.size()+1; i++) {
@@ -71,7 +71,7 @@ public class EntityType {
             }
         }
     } 
-    
+
     public static Condicion getCondition(int codigo) {
         int n = CONDITIONS.size();
         for (int i = 0; i < n; i++) {

@@ -72,14 +72,7 @@ public class AppStart {
         ClientApplication clientApplication = InstanceFactory.Instance.getInstance("clientApplication", ClientApplication.class);
         ProductApplication productApplication = InstanceFactory.Instance.getInstance("productApplication", ProductApplication.class);
         //al final se tiene que cargar el arreglo desde la base de datos        
-        Condicion c1 = new Condicion(); c1.setId(1); c1.setNombre("Normal");
-        c1.setDescripcion("Esta condicion sirve para productos que necesiten una temperatura entre 15 y 30 grados");
-        
-        Condicion c2 = new Condicion(); c2.setId(2); c2.setNombre("Refrigerados");
-        c2.setDescripcion("Esta condicion sirve para productos que necesiten una refreigeracion");
-        
-        EntityType.CONDITIONS.add(c1); 
-        EntityType.CONDITIONS.add(c2);
+        EntityType.CONDITIONS = conditionApplication.queryAll();
         EntityType.fillConditionNames();
         //Se llama un metodo para que actualice los perfiles en la variable global PROFILES y ACTIONS
         profileApplication.refreshProfiles();

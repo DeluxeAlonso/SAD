@@ -8,6 +8,7 @@ package infraestructure.product;
 import base.product.IProductRepository;
 import entity.Producto;
 import java.util.ArrayList;
+import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -21,12 +22,36 @@ public class ProductRepository implements IProductRepository {
 
     @Override
     public void insert(Producto object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Transaction trns = null;        
+        Session session = Tools.getSessionInstance();
+        
+        try {
+            trns = session.beginTransaction();                      
+            session.save(object);            
+            trns.commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void delete(Producto object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+
+        try {
+            trns = session.beginTransaction();
+            session.delete(object);
+            trns.commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -39,6 +64,10 @@ public class ProductRepository implements IProductRepository {
             trns = session.beginTransaction();
             Query q = session.createQuery(hql);
             products = (ArrayList<Producto>) q.list();
+            for (int i = 0; i < products.size(); i++) {
+                if(products.get(i)!=null)
+                    Hibernate.initialize(products.get(i).getCondicion());                
+            }
             session.getTransaction().commit();
         }
         catch (RuntimeException e){

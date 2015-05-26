@@ -5,36 +5,73 @@
  */
 package client.product;
 
+import application.product.ProductApplication;
 import client.client.NewClientView;
+import entity.Producto;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Locale;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
+import util.InstanceFactory;
+import util.Strings;
 
 /**
  *
  * @author A20112449
  */
 public class ProductView extends javax.swing.JInternalFrame implements MouseListener{
-
+    ProductApplication productApplication=InstanceFactory.Instance.getInstance("productApplication", ProductApplication.class);
+    ArrayList<Producto> products;
+    public static ProductView productView;
     /**
      * Creates new form ProductView
      */
     public ProductView() {
         initComponents();
         setupListeners();
+        productView = this;
+        fillProductsTable();
+        tblProducts.addMouseListener(new MouseAdapter(){
+            public void mouseClicked(MouseEvent e){
+                btnDelete.setEnabled(true);
+            }
+        });
     }
     
     private void setupListeners() {
         addMouseListener(this);
         jScrollPane1.addMouseListener(this);
-        productTable.addMouseListener(this);
+        tblProducts.addMouseListener(this);
     }
 
+    private void clearProductsTable(){
+        DefaultTableModel model = (DefaultTableModel) tblProducts.getModel();
+        model.setRowCount(0);
+    }
+    
+    public void fillProductsTable(){
+        clearProductsTable();
+        DefaultTableModel model = (DefaultTableModel) tblProducts.getModel();
+        products = (ArrayList<Producto>)productApplication.getAllProducts();
+        for(Producto product : products){
+            model.addRow(new Object[]{
+                product.getId(),
+                product.getNombre(),
+                product.getDescripcion(),
+                product.getStockTotal(),
+                product.getCondicion().getNombre()
+            });
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -48,11 +85,12 @@ public class ProductView extends javax.swing.JInternalFrame implements MouseList
         btnFileChooser = new javax.swing.JButton();
         txtFileChooser = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        productTable = new javax.swing.JTable();
+        tblProducts = new javax.swing.JTable();
         btnNewProduct = new javax.swing.JButton();
-        deleteButton = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
 
         setClosable(true);
+        setTitle("Productos");
 
         lblFileChooser.setText("Ingresar productos desde un archivo:");
 
@@ -63,31 +101,36 @@ public class ProductView extends javax.swing.JInternalFrame implements MouseList
             }
         });
 
-        productTable.setModel(new javax.swing.table.DefaultTableModel(
+        tblProducts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Código", "Nombre", "Descripción", "Stock Total", "Condición"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(productTable);
-        if (productTable.getColumnModel().getColumnCount() > 0) {
-            productTable.getColumnModel().getColumn(0).setResizable(false);
-            productTable.getColumnModel().getColumn(1).setResizable(false);
-            productTable.getColumnModel().getColumn(2).setResizable(false);
-            productTable.getColumnModel().getColumn(3).setResizable(false);
+        jScrollPane1.setViewportView(tblProducts);
+        if (tblProducts.getColumnModel().getColumnCount() > 0) {
+            tblProducts.getColumnModel().getColumn(0).setResizable(false);
+            tblProducts.getColumnModel().getColumn(1).setResizable(false);
+            tblProducts.getColumnModel().getColumn(2).setResizable(false);
+            tblProducts.getColumnModel().getColumn(3).setResizable(false);
+            tblProducts.getColumnModel().getColumn(4).setResizable(false);
         }
 
         btnNewProduct.setText("Nuevo");
@@ -97,8 +140,13 @@ public class ProductView extends javax.swing.JInternalFrame implements MouseList
             }
         });
 
-        deleteButton.setText("Eliminar");
-        deleteButton.setEnabled(false);
+        btnDelete.setText("Eliminar");
+        btnDelete.setEnabled(false);
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -107,18 +155,17 @@ public class ProductView extends javax.swing.JInternalFrame implements MouseList
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(txtFileChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnFileChooser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblFileChooser)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnNewProduct)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(deleteButton)))
+                        .addComponent(btnDelete))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(txtFileChooser)
+                            .addComponent(lblFileChooser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnFileChooser)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -133,10 +180,10 @@ public class ProductView extends javax.swing.JInternalFrame implements MouseList
                 .addGap(13, 13, 13)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNewProduct)
-                    .addComponent(deleteButton))
+                    .addComponent(btnDelete))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -159,20 +206,29 @@ public class ProductView extends javax.swing.JInternalFrame implements MouseList
         newProductView.setVisible(true);
     }//GEN-LAST:event_btnNewProductActionPerformed
 
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+        int response = JOptionPane.showConfirmDialog(this, Strings.MESSAGE_DELETE_CLIENT,Strings.MESSAGE_DELETE_CLIENT_TITLE,JOptionPane.WARNING_MESSAGE);
+        if(JOptionPane.OK_OPTION == response){
+            productApplication.delete(products.get(tblProducts.getSelectedRow()));
+            fillProductsTable();
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnFileChooser;
     private javax.swing.JButton btnNewProduct;
-    private javax.swing.JButton deleteButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblFileChooser;
-    private javax.swing.JTable productTable;
+    private javax.swing.JTable tblProducts;
     private javax.swing.JTextField txtFileChooser;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        deleteButton.setEnabled(true);
+        btnDelete.setEnabled(true);
         if (e.getClickCount() == 2) {
             JTable target = (JTable)e.getSource();
             int row = target.getSelectedRow();

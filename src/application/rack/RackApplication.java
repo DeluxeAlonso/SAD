@@ -49,6 +49,17 @@ public class RackApplication {
             e.printStackTrace();
         }
     }
+
+    public void update(Rack object) {
+        try{
+            RackRepository w = new RackRepository();
+            w.update(object);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }    
+    
     
     
 }

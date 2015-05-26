@@ -25,7 +25,11 @@ public class ProductApplication {
     }
     
     public void createProduct(Producto product) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try{
+            productRepository.insert(product);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
     
     public ArrayList<Producto> getAllProducts(){
@@ -36,6 +40,14 @@ public class ProductApplication {
             e.printStackTrace();
         }
         return actions;
+    }
+    
+    public void delete(Producto product){
+        try{
+            productRepository.delete(product);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
     
     public void refreshProducts(){
