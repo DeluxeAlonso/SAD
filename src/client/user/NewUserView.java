@@ -244,6 +244,7 @@ public class NewUserView extends javax.swing.JDialog {
     
     private void autoGeneratePassBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoGeneratePassBtnActionPerformed
         // TODO add your handling code here:
+        passwordTxt.setText(Tools.generatePassword(10));
     }//GEN-LAST:event_autoGeneratePassBtnActionPerformed
 
     /**
