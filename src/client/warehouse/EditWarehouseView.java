@@ -12,7 +12,12 @@ import application.spot.SpotApplication;
 import application.warehouse.WarehouseApplication;
 import entity.Almacen;
 import entity.Condicion;
+import entity.Rack;
+import entity.Ubicacion;
+import java.util.ArrayList;
 import java.util.Calendar;
+import javax.swing.table.DefaultTableModel;
+import util.Constans;
 import util.EntityState;
 import util.EntityType;
 import util.InstanceFactory;
@@ -44,9 +49,29 @@ public class EditWarehouseView extends javax.swing.JDialog {
         this.condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.CONDITIONS_NAMES));
         this.a = a;
         fillFields();
+        clearGrid();
+        fillTable(a.getId());
     }
     
+    public void fillTable(int id) {
+        DefaultTableModel model = (DefaultTableModel) rackTable.getModel();
+        ArrayList<Rack> racks = rackApplication.queryRacksByWarehouse(id);
 
+        for (Rack r : racks) {
+            String estado = "Desconocido";
+            String[] estados=EntityState.getRacksState();
+            estado =estados[r.getEstado()];
+
+            model.addRow(new Object[]{
+                Integer.toString(r.getId()),
+                r.getFechaRegistro().toString(),
+                Integer.toString(r.getNumCol()*r.getNumFil()),
+                estado
+            });
+            
+        }
+
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -61,7 +86,10 @@ public class EditWarehouseView extends javax.swing.JDialog {
         capacityTxt.setText(a.getCapacidad().toString());
         descTxt.setText(a.getDescripcion());
     }
-    
+    public void clearGrid() {
+        DefaultTableModel model = (DefaultTableModel) rackTable.getModel();
+        model.setRowCount(0);
+    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -81,6 +109,8 @@ public class EditWarehouseView extends javax.swing.JDialog {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         idTxt = new javax.swing.JTextField();
+        deleteBtn = new javax.swing.JButton();
+        addBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Nuevo Almacen");
@@ -123,16 +153,44 @@ public class EditWarehouseView extends javax.swing.JDialog {
                 {null, null, null, null}
             },
             new String [] {
-                "ID", "Posicion", "Capacidad", "Estado"
+                "ID", "Fecha Registro", "Capacidad", "Estado"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(rackTable);
+        if (rackTable.getColumnModel().getColumnCount() > 0) {
+            rackTable.getColumnModel().getColumn(0).setResizable(false);
+            rackTable.getColumnModel().getColumn(1).setResizable(false);
+            rackTable.getColumnModel().getColumn(2).setResizable(false);
+            rackTable.getColumnModel().getColumn(3).setResizable(false);
+        }
 
         jLabel5.setText("Racks:");
 
         jLabel6.setText("ID Almacen:");
 
         idTxt.setEnabled(false);
+
+        deleteBtn.setText("Eliminar");
+        deleteBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBtnActionPerformed(evt);
+            }
+        });
+
+        addBtn.setText("Agregar");
+        addBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -150,12 +208,9 @@ public class EditWarehouseView extends javax.swing.JDialog {
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel5))
+                                .addComponent(jLabel3)
                                 .addGap(28, 28, 28)
-                                .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
+                                .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -172,11 +227,18 @@ public class EditWarehouseView extends javax.swing.JDialog {
                                         .addComponent(capacityTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(jLabel4))
-                                    .addComponent(idTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(55, 55, 55))))
+                                    .addComponent(idTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(181, 181, 181)
+                                .addComponent(addBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(deleteBtn)))
+                        .addGap(0, 6, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -199,9 +261,12 @@ public class EditWarehouseView extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(deleteBtn)
+                    .addComponent(addBtn)
+                    .addComponent(jLabel5))
+                .addGap(3, 3, 3)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -254,15 +319,56 @@ public class EditWarehouseView extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_capacityTxtActionPerformed
 
+    private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
+        // TODO add your handling code here:
+        Calendar cal = Calendar.getInstance();
+        Rack r = new Rack();
+        r.setEstado(EntityState.Racks.ACTIVO.ordinal());
+        r.setFechaRegistro(cal.getTime());
+        r.setAlmacen(a);
+        r.setNumCol(Constans.COLUMNAS_RACK);
+        r.setNumFil(Constans.FILAS_RACK);
+        a.getRacks().add(r);
+        rackApplication.insert(r);
+        for (int j=0;j<Constans.COLUMNAS_RACK;j++){
+            for (int k=0;k<Constans.FILAS_RACK;k++){
+                Ubicacion u = new Ubicacion();
+                u.setRack(r);
+                u.setEstado(EntityState.Spots.LIBRE.ordinal());
+                u.setColumna(j+1);
+                u.setFila(k+1);
+                u.setLado("A");
+                spotApplication.insert(u);
+                u.setLado("B");
+                spotApplication.insert(u);
+            }
+        }
+        clearGrid();
+        fillTable(a.getId());
+    }//GEN-LAST:event_addBtnActionPerformed
+
+    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
+        // TODO add your handling code here:
+        int sr = rackTable.getSelectedRow();
+        String idString = rackTable.getModel().getValueAt(sr, 0).toString();
+        Rack r = rackApplication.queryById(Integer.parseInt(idString));
+        r.setEstado(EntityState.Racks.INACTIVO.ordinal());
+        rackApplication.update(r);
+        clearGrid();
+        fillTable(a.getId());
+    }//GEN-LAST:event_deleteBtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addBtn;
     private javax.swing.JButton cancelBtn;
     private javax.swing.JTextField capacityTxt;
     private javax.swing.JComboBox condicionCombo;
+    private javax.swing.JButton deleteBtn;
     private javax.swing.JTextField descTxt;
     private javax.swing.JTextField idTxt;
     private javax.swing.JLabel jLabel1;
