@@ -5,6 +5,8 @@
  */
 package client.general;
 
+import application.action.ActionApplication;
+import application.profile.ProfileApplication;
 import client.internment.InternmentSelectView;
 
 import client.devolution.DevolutionView;
@@ -20,25 +22,33 @@ import client.reports.ProductCaducityReport;
 
 import client.transportunit.*;
 import client.user.EditUserView;
+import client.user.LoginView;
 import client.user.UserView;
 import client.warehouse.PalletMovementsView;
 import client.warehouse.WarehouseView;
 import client.warehouseControlCheck.WarehouseControlCheckView;
+import entity.Accion;
+import entity.Usuario;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyVetoException;
-import java.io.File;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-import util.Tools;
+import javax.swing.JMenu;
+import javax.swing.MenuElement;
+import util.InstanceFactory;
 
 /**
  *
  * @author Nevermade
  */
 public class MainView extends javax.swing.JFrame {
+
+    ProfileApplication profileApplication = InstanceFactory.Instance.getInstance("profileApplication", ProfileApplication.class);
+    ActionApplication actionApplication = InstanceFactory.Instance.getInstance("actionApplication", ActionApplication.class);
 
     private UserView userView = null;
     private TransportUnitView transportUnitView = null;
@@ -55,19 +65,41 @@ public class MainView extends javax.swing.JFrame {
     private WarehouseControlCheckView warehouseControlCheckView = null;
     private InternmentSelectView internmentSelectView = null;
     private AvailabilityReport availabilityReport = null;
-    private KardexReport kardexReport=null;
+    private KardexReport kardexReport = null;
+    public static Usuario user = null;
+    private BufferedImage img = null;
 
-    private BufferedImage img=null;
     /**
      * Creates new form MainForm
      */
+    public MainView(Usuario user) {
+        loadImageToDesktopPane();
+        initComponents();
+        this.user = user;
+        renderUserMenu();
+    }
+
     public MainView() {
         loadImageToDesktopPane();
         initComponents();
-        
-        
-        
-        
+    }
+
+    private void renderUserMenu() {
+        Set actions = profileApplication.getProfileByName(user.getPerfil().getNombrePerfil()).getAccions();
+        int numActions=actionApplication.getAllActions().size();
+        MenuElement[] topLevelElements = menuBar.getSubElements();
+        for (int i=0;i<numActions;i++) {
+            boolean found=false;            
+            for (Accion a : (Set<Accion>) actions) {
+                if(((JMenu)topLevelElements[i]).getText().equals(a.getNombre())){
+                    found=true;                    
+                    break;
+                }
+            }
+            
+            if(!found)
+                menuBar.remove(((JMenu)topLevelElements[i]));
+        }        
     }
 
     /**
@@ -87,33 +119,34 @@ public class MainView extends javax.swing.JFrame {
             }
 
         };
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu2 = new javax.swing.JMenu();
+        menuBar = new javax.swing.JMenuBar();
+        menuMov = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem6 = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
+        menuOp = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem11 = new javax.swing.JMenuItem();
-        jMenu5 = new javax.swing.JMenu();
+        menuMaint = new javax.swing.JMenu();
         WarehouseMenu = new javax.swing.JMenuItem();
         TUFrame = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
+        menuReport = new javax.swing.JMenu();
         jMenuItem12 = new javax.swing.JMenuItem();
         jMenuItem13 = new javax.swing.JMenuItem();
         jMenuItem14 = new javax.swing.JMenuItem();
         jMenuItem15 = new javax.swing.JMenuItem();
         jMenuItem16 = new javax.swing.JMenuItem();
-        UserMenu = new javax.swing.JMenu();
+        menuSec = new javax.swing.JMenu();
         jMenuItem9 = new javax.swing.JMenuItem();
         jMenuItem17 = new javax.swing.JMenuItem();
-        jMenu6 = new javax.swing.JMenu();
+        menuInter = new javax.swing.JMenu();
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenuItem10 = new javax.swing.JMenuItem();
-        jMenu4 = new javax.swing.JMenu();
+        menuSession = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
+        jMenuItem18 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sistema de Almacenes y Despacho");
@@ -137,7 +170,7 @@ public class MainView extends javax.swing.JFrame {
             .addGap(0, 281, Short.MAX_VALUE)
         );
 
-        jMenu2.setText("Movimientos");
+        menuMov.setText("Movimientos");
 
         jMenuItem2.setText("Internamiento");
         jMenuItem2.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -145,10 +178,10 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem2MousePressed(evt);
             }
         });
-        jMenu2.add(jMenuItem2);
+        menuMov.add(jMenuItem2);
 
         jMenuItem3.setText("Pedido");
-        jMenu2.add(jMenuItem3);
+        menuMov.add(jMenuItem3);
 
         jMenuItem6.setText("Movimientos Pallets");
         jMenuItem6.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -156,11 +189,11 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem6MousePressed(evt);
             }
         });
-        jMenu2.add(jMenuItem6);
+        menuMov.add(jMenuItem6);
 
-        jMenuBar1.add(jMenu2);
+        menuBar.add(menuMov);
 
-        jMenu3.setText("Operaciones");
+        menuOp.setText("Operaciones");
 
         jMenuItem1.setText("Toma y Ajuste de Inventario");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -168,10 +201,10 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem1ActionPerformed(evt);
             }
         });
-        jMenu3.add(jMenuItem1);
+        menuOp.add(jMenuItem1);
 
         jMenuItem4.setText("Despacho");
-        jMenu3.add(jMenuItem4);
+        menuOp.add(jMenuItem4);
 
         jMenuItem11.setText("Devoluciones");
         jMenuItem11.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -179,14 +212,14 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem11MousePressed(evt);
             }
         });
-        jMenu3.add(jMenuItem11);
+        menuOp.add(jMenuItem11);
 
-        jMenuBar1.add(jMenu3);
+        menuBar.add(menuOp);
 
-        jMenu5.setText("Mantenimientos");
-        jMenu5.addMouseListener(new java.awt.event.MouseAdapter() {
+        menuMaint.setText("Mantenimientos");
+        menuMaint.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jMenu5MouseClicked(evt);
+                menuMaintMouseClicked(evt);
             }
         });
 
@@ -196,7 +229,7 @@ public class MainView extends javax.swing.JFrame {
                 WarehouseMenuMousePressed(evt);
             }
         });
-        jMenu5.add(WarehouseMenu);
+        menuMaint.add(WarehouseMenu);
 
         TUFrame.setText("Unidad de Transporte");
         TUFrame.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -207,11 +240,11 @@ public class MainView extends javax.swing.JFrame {
                 TUFrameMousePressed(evt);
             }
         });
-        jMenu5.add(TUFrame);
+        menuMaint.add(TUFrame);
 
-        jMenuBar1.add(jMenu5);
+        menuBar.add(menuMaint);
 
-        jMenu1.setText("Reportes");
+        menuReport.setText("Reportes");
 
         jMenuItem12.setText("Kardex");
         jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
@@ -219,7 +252,7 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem12ActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem12);
+        menuReport.add(jMenuItem12);
 
         jMenuItem13.setText("Stock");
         jMenuItem13.addActionListener(new java.awt.event.ActionListener() {
@@ -227,7 +260,7 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem13ActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem13);
+        menuReport.add(jMenuItem13);
 
         jMenuItem14.setText("Guías De Remisión");
         jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
@@ -235,7 +268,7 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem14ActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem14);
+        menuReport.add(jMenuItem14);
 
         jMenuItem15.setText("Disponibilidad de Almacén");
         jMenuItem15.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -243,7 +276,7 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem15MousePressed(evt);
             }
         });
-        jMenu1.add(jMenuItem15);
+        menuReport.add(jMenuItem15);
 
         jMenuItem16.setText("Caducidad de Productos");
         jMenuItem16.addActionListener(new java.awt.event.ActionListener() {
@@ -251,24 +284,19 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem16ActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem16);
+        menuReport.add(jMenuItem16);
 
-        jMenuBar1.add(jMenu1);
+        menuBar.add(menuReport);
 
-        UserMenu.setText("Seguridad");
+        menuSec.setText("Seguridad");
 
         jMenuItem9.setText("Usuarios");
-        jMenuItem9.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jMenuItem9MouseClicked(evt);
-            }
-        });
         jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem9ActionPerformed(evt);
             }
         });
-        UserMenu.add(jMenuItem9);
+        menuSec.add(jMenuItem9);
 
         jMenuItem17.setText("Perfil");
         jMenuItem17.addActionListener(new java.awt.event.ActionListener() {
@@ -276,11 +304,11 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem17ActionPerformed(evt);
             }
         });
-        UserMenu.add(jMenuItem17);
+        menuSec.add(jMenuItem17);
 
-        jMenuBar1.add(UserMenu);
+        menuBar.add(menuSec);
 
-        jMenu6.setText("Interfaces");
+        menuInter.setText("Interfaces");
 
         jMenuItem7.setText("Personal");
         jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
@@ -288,7 +316,7 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem7ActionPerformed(evt);
             }
         });
-        jMenu6.add(jMenuItem7);
+        menuInter.add(jMenuItem7);
 
         jMenuItem8.setText("Clientes");
         jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
@@ -296,7 +324,7 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem8ActionPerformed(evt);
             }
         });
-        jMenu6.add(jMenuItem8);
+        menuInter.add(jMenuItem8);
 
         jMenuItem10.setText("Productos");
         jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
@@ -304,11 +332,11 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem10ActionPerformed(evt);
             }
         });
-        jMenu6.add(jMenuItem10);
+        menuInter.add(jMenuItem10);
 
-        jMenuBar1.add(jMenu6);
+        menuBar.add(menuInter);
 
-        jMenu4.setText("Sesión");
+        menuSession.setText("Sesión");
 
         jMenuItem5.setText("Actualizar datos");
         jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
@@ -316,11 +344,19 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem5ActionPerformed(evt);
             }
         });
-        jMenu4.add(jMenuItem5);
+        menuSession.add(jMenuItem5);
 
-        jMenuBar1.add(jMenu4);
+        jMenuItem18.setText("Cerrar Sesión");
+        jMenuItem18.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem18ActionPerformed(evt);
+            }
+        });
+        menuSession.add(jMenuItem18);
 
-        setJMenuBar(jMenuBar1);
+        menuBar.add(menuSession);
+
+        setJMenuBar(menuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -336,15 +372,15 @@ public class MainView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void loadImageToDesktopPane(){        
-        try{
-            img=ImageIO.read(getClass().getResource("/images/desktop_background.jpg"));
-        }catch(Exception e){
+    private void loadImageToDesktopPane() {
+        try {
+            img = ImageIO.read(getClass().getResource("/images/desktop_background.jpg"));
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    private void jMenu5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu5MouseClicked
-    }//GEN-LAST:event_jMenu5MouseClicked
+    private void menuMaintMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuMaintMouseClicked
+    }//GEN-LAST:event_menuMaintMouseClicked
 
     private void TUFrameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TUFrameMouseClicked
         // TODO add your handling code here:
@@ -549,7 +585,7 @@ public class MainView extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         // TODO add your handling code here:
-        Tools.closeSession();
+        //Tools.closeSession();
     }//GEN-LAST:event_formWindowClosing
 
     private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
@@ -569,8 +605,8 @@ public class MainView extends javax.swing.JFrame {
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
         // TODO add your handling code here:
-         if (userView == null || !userView.isShowing()) {
-            userView = new UserView();
+        if (userView == null || !userView.isShowing()) {
+            userView = new UserView(0);
             userView.setVisible(true);
             mainPanel.add(userView);
             try {
@@ -582,25 +618,10 @@ public class MainView extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
-    private void jMenuItem9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem9MouseClicked
-        // TODO add your handling code here:
-         if (userView == null || !userView.isShowing()) {
-            userView = new UserView();
-            userView.setVisible(true);
-            mainPanel.add(userView);
-            try {
-                // TODO add your handling code here:
-                userView.setSelected(true);
-            } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }//GEN-LAST:event_jMenuItem9MouseClicked
-
     private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
         // TODO add your handling code here:
-         if (userView == null || !userView.isShowing()) {
-            userView = new UserView();
+        if (userView == null || !userView.isShowing()) {
+            userView = new UserView(1);
             userView.setVisible(true);
             mainPanel.add(userView);
             try {
@@ -611,6 +632,12 @@ public class MainView extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jMenuItem17ActionPerformed
+
+    private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
+        // TODO add your handling code here:
+        new LoginView().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jMenuItem18ActionPerformed
 
     private void jMenuItem15MousePressed(java.awt.event.MouseEvent evt) {
         // TODO add your handling code here:
@@ -633,15 +660,7 @@ public class MainView extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem TUFrame;
-    private javax.swing.JMenu UserMenu;
     private javax.swing.JMenuItem WarehouseMenu;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenu jMenu5;
-    private javax.swing.JMenu jMenu6;
-    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem11;
@@ -651,6 +670,7 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem15;
     private javax.swing.JMenuItem jMenuItem16;
     private javax.swing.JMenuItem jMenuItem17;
+    private javax.swing.JMenuItem jMenuItem18;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
@@ -660,6 +680,14 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JDesktopPane mainPanel;
+    private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenu menuInter;
+    private javax.swing.JMenu menuMaint;
+    private javax.swing.JMenu menuMov;
+    private javax.swing.JMenu menuOp;
+    private javax.swing.JMenu menuReport;
+    private javax.swing.JMenu menuSec;
+    private javax.swing.JMenu menuSession;
     // End of variables declaration//GEN-END:variables
 
 }

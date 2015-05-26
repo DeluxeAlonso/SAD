@@ -19,10 +19,11 @@ import util.Tools;
  * @author Alonso
  */
 public class TransportUnitRepository implements ITransportUnitRepository{
-    Session session = Tools.getSessionInstance();
+    //Session session = Tools.getSessionInstance();
     
     @Override
     public Boolean createTransportUnit(UnidadTransporte transportUnit){
+        Session session = Tools.getSessionInstance();
         Transaction trns = null; 
         try {            
             trns=session.beginTransaction();
@@ -40,6 +41,7 @@ public class TransportUnitRepository implements ITransportUnitRepository{
     
     @Override
     public Boolean updateTransportUnit(UnidadTransporte transportUnit){
+        Session session = Tools.getSessionInstance();
         Transaction trns = null;
         try {            
             trns=session.beginTransaction();
@@ -57,6 +59,7 @@ public class TransportUnitRepository implements ITransportUnitRepository{
     
     @Override
     public ArrayList<UnidadTransporte> search(String plate, TipoUnidadTransporte type){
+        Session session = Tools.getSessionInstance();
         String hql = "from UnidadTransporte where estado=1";
         if(type == null && !plate.equals("")){
             hql = "from UnidadTransporte where estado=1 and placa like :plate";
@@ -100,6 +103,7 @@ public class TransportUnitRepository implements ITransportUnitRepository{
 
     @Override
     public ArrayList<UnidadTransporte> queryAll() {
+        Session session = Tools.getSessionInstance();
         String hql = "from UnidadTransporte where estado=1";
         ArrayList<UnidadTransporte> unitTransports = new ArrayList<>();
         Transaction trns = null;

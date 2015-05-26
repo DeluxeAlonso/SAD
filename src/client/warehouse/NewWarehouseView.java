@@ -7,13 +7,20 @@
 package client.warehouse;
 
 
+import application.condition.ConditionApplication;
+import application.rack.RackApplication;
+import application.spot.SpotApplication;
 import application.warehouse.WarehouseApplication;
 import entity.Almacen;
-import entity.Condicion;
+import entity.Rack;
+import entity.Ubicacion;
 import java.util.Calendar;
+import javax.swing.JOptionPane;
+import util.Constans;
+import util.EntityState;
 import util.EntityType;
-import static util.EntityType.CONDITIONS;
 import util.InstanceFactory;
+import util.Strings;
 
 /**
  *
@@ -21,6 +28,9 @@ import util.InstanceFactory;
  */
 public class NewWarehouseView extends javax.swing.JDialog {
     WarehouseApplication warehouseApplication=InstanceFactory.Instance.getInstance("warehouseApplication", WarehouseApplication.class);
+    ConditionApplication conditionApplication=InstanceFactory.Instance.getInstance("conditionApplication", ConditionApplication.class);
+    RackApplication rackApplication=InstanceFactory.Instance.getInstance("rackApplication", RackApplication.class);
+    SpotApplication spotApplication=InstanceFactory.Instance.getInstance("spotApplication", SpotApplication.class);
     /**
      * Creates new form NewWarehouse
      */
@@ -182,6 +192,8 @@ public class NewWarehouseView extends javax.swing.JDialog {
 
     private void saveTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveTxtActionPerformed
         // TODO add your handling code here:
+        
+        
         Almacen al = new Almacen();
         Calendar cal = Calendar.getInstance();
         int capa = Integer.parseInt(this.capacityTxt.getText());
@@ -196,20 +208,54 @@ public class NewWarehouseView extends javax.swing.JDialog {
         }
         int uLibres = Integer.parseInt(this.racksTxt.getText());
         
-        al.setUbicLibres(uLibres);
+        al.setUbicLibres(capa-uLibres);
         
-
-        al.setCondicion(EntityType.getCondition(1));
+        al.setCondicion(conditionApplication.getConditionInstance(condicionCombo.getSelectedItem().toString()));
         al.setDescripcion(this.descripcionTxt.getText());
-        al.setEstado("Activo");
+        al.setEstado(EntityState.Warehouses.ACTIVO.ordinal());
         al.setFechaRegistro(cal.getTime());
         al.setKardexes(null);
-        al.setRacks(null);
-        
-        
         warehouseApplication.insert(al);
+        
+        for (int i=0;i<uLibres;i++){
+            Rack r = new Rack();
+            r.setEstado(EntityState.Racks.ACTIVO.ordinal());
+            r.setFechaRegistro(cal.getTime());
+            r.setAlmacen(al);
+            r.setNumCol(Constans.COLUMNAS_RACK);
+            r.setNumFil(Constans.FILAS_RACK);
+            al.getRacks().add(r);
+            rackApplication.insert(r);
+            for (int j=0;j<Constans.COLUMNAS_RACK;j++){
+                for (int k=0;k<Constans.FILAS_RACK;k++){
+                    Ubicacion u = new Ubicacion();
+                    u.setRack(r);
+                    u.setEstado(EntityState.Spots.LIBRE.ordinal());
+                    u.setColumna(j+1);
+                    u.setFila(k+1);
+                    u.setLado("A");
+                    spotApplication.insert(u);
+                    u.setLado("B");
+                    spotApplication.insert(u);
+                }
+            }
+        }
+        JOptionPane.showMessageDialog(this, Strings.MESSAGE_WAREHOUSE_CREATED);
+        clearFields();
+
     }//GEN-LAST:event_saveTxtActionPerformed
 
+    public void clearFields(){
+        AreaTxt.setText("");
+        capacityTxt.setText("");
+        descripcionTxt.setText("");
+        racksTxt.setText("");      
+        condicionCombo.setSelectedIndex(0);
+    }
+    
+    
+    
+    
     private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
         // TODO add your handling code here:
         this.dispose();

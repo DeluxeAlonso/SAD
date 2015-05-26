@@ -1,5 +1,5 @@
 package entity;
-// Generated 24-May-2015 16:40:14 by Hibernate Tools 4.3.1
+// Generated May 26, 2015 12:45:04 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -25,11 +25,11 @@ public class UnidadTransporte  implements java.io.Serializable {
     public UnidadTransporte(TipoUnidadTransporte tipoUnidadTransporte) {
         this.tipoUnidadTransporte = tipoUnidadTransporte;
     }
-    public UnidadTransporte(TipoUnidadTransporte tipoUnidadTransporte, String transportista, String placa, Integer capacidad, Set despachos) {
+    public UnidadTransporte(TipoUnidadTransporte tipoUnidadTransporte, String transportista, String placa, Integer estado, Set despachos) {
        this.tipoUnidadTransporte = tipoUnidadTransporte;
        this.transportista = transportista;
        this.placa = placa;
-       this.estado = capacidad;
+       this.estado = estado;
        this.despachos = despachos;
     }
    

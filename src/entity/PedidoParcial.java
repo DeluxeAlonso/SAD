@@ -1,5 +1,5 @@
 package entity;
-// Generated May 24, 2015 10:16:20 PM by Hibernate Tools 4.3.1
+// Generated May 26, 2015 12:45:04 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -12,26 +12,23 @@ public class PedidoParcial  implements java.io.Serializable {
 
 
      private Integer id;
-     private Despacho despacho;
      private GuiaRemision guiaRemision;
      private Pedido pedido;
-     private Set guiaRemisions = new HashSet(0);
-     private Set pedidoParcialXProductos = new HashSet(0);
+     private Integer estado;
+     private Set itemProductos = new HashSet(0);
 
     public PedidoParcial() {
     }
 
 	
-    public PedidoParcial(GuiaRemision guiaRemision, Pedido pedido) {
-        this.guiaRemision = guiaRemision;
+    public PedidoParcial(Pedido pedido) {
         this.pedido = pedido;
     }
-    public PedidoParcial(Despacho despacho, GuiaRemision guiaRemision, Pedido pedido, Set guiaRemisions, Set pedidoParcialXProductos) {
-       this.despacho = despacho;
+    public PedidoParcial(GuiaRemision guiaRemision, Pedido pedido, Integer estado, Set itemProductos) {
        this.guiaRemision = guiaRemision;
        this.pedido = pedido;
-       this.guiaRemisions = guiaRemisions;
-       this.pedidoParcialXProductos = pedidoParcialXProductos;
+       this.estado = estado;
+       this.itemProductos = itemProductos;
     }
    
     public Integer getId() {
@@ -40,13 +37,6 @@ public class PedidoParcial  implements java.io.Serializable {
     
     public void setId(Integer id) {
         this.id = id;
-    }
-    public Despacho getDespacho() {
-        return this.despacho;
-    }
-    
-    public void setDespacho(Despacho despacho) {
-        this.despacho = despacho;
     }
     public GuiaRemision getGuiaRemision() {
         return this.guiaRemision;
@@ -62,19 +52,19 @@ public class PedidoParcial  implements java.io.Serializable {
     public void setPedido(Pedido pedido) {
         this.pedido = pedido;
     }
-    public Set getGuiaRemisions() {
-        return this.guiaRemisions;
+    public Integer getEstado() {
+        return this.estado;
     }
     
-    public void setGuiaRemisions(Set guiaRemisions) {
-        this.guiaRemisions = guiaRemisions;
+    public void setEstado(Integer estado) {
+        this.estado = estado;
     }
-    public Set getPedidoParcialXProductos() {
-        return this.pedidoParcialXProductos;
+    public Set getItemProductos() {
+        return this.itemProductos;
     }
     
-    public void setPedidoParcialXProductos(Set pedidoParcialXProductos) {
-        this.pedidoParcialXProductos = pedidoParcialXProductos;
+    public void setItemProductos(Set itemProductos) {
+        this.itemProductos = itemProductos;
     }
 
 

@@ -21,17 +21,23 @@ public class Tools {
     }
     
     public static Session getSessionInstance(){
-        Session session=HibernateUtil.getSessionFactory().getCurrentSession();
-        if(session.isOpen()){            
-            session.close();            
-        }
-        return HibernateUtil.getSessionFactory().openSession();        
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        /*if(session!=null||session.isOpen() || session.isConnected()){            
+            session.close();           
+        }*/
+        /*if(session==null)
+            session=HibernateUtil.getSessionFactory().openSession();*/
+        return session;        
     }
     
     public static void closeSession(){
-        Session session=HibernateUtil.getSessionFactory().getCurrentSession();
-        if(session.isOpen()){            
-            session.close();            
+        Session session=null;
+        session=HibernateUtil.getSessionFactory().getCurrentSession();
+        if(session!=null){            
+            session.close();
+            
         }
     }
+    
 }

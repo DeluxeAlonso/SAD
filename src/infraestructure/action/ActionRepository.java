@@ -8,6 +8,7 @@ package infraestructure.action;
 import base.action.IActionRepository;
 import entity.Accion;
 import java.util.ArrayList;
+import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -39,7 +40,7 @@ public class ActionRepository implements IActionRepository{
         try {            
             trns=session.beginTransaction();
             Query q = session.createQuery(hql);              
-            actions = (ArrayList<Accion>) q.list();          
+            actions = (ArrayList<Accion>) q.list();            
             session.getTransaction().commit();
         } catch (RuntimeException e) {
             if (trns != null) {
@@ -64,5 +65,25 @@ public class ActionRepository implements IActionRepository{
     public Accion queryById(String id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+    public Accion queryByName(String name){
+        String hql="from Accion where nombre=:name";
+        Accion action=null;
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("name", name);            
+            action =(Accion) q.uniqueResult();
+            //Hibernate.initialize(action.getPerfils());
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return action;
+    }
 }

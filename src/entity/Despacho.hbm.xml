@@ -1,15 +1,21 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated May 24, 2015 10:16:21 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated May 26, 2015 12:45:06 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entity.Despacho" table="despacho" catalog="saddb" optimistic-lock="version">
         <id name="id" type="java.lang.Integer">
             <column name="id" />
             <generator class="identity" />
         </id>
-        <property name="idUnidadTransporte" type="int">
+        <many-to-one name="unidadTransporte" class="entity.UnidadTransporte" fetch="select">
             <column name="id_unidad_transporte" not-null="true" />
+        </many-to-one>
+        <property name="fechaDespacho" type="timestamp">
+            <column name="fecha_despacho" length="19" />
+        </property>
+        <property name="estado" type="java.lang.Integer">
+            <column name="estado" />
         </property>
         <set name="guiaRemisions" table="guia_remision" inverse="true" lazy="true" fetch="select">
             <key>
@@ -19,15 +25,9 @@
         </set>
         <set name="pallets" table="pallet" inverse="true" lazy="true" fetch="select">
             <key>
-                <column name="id_despacho" not-null="true" />
-            </key>
-            <one-to-many class="entity.Pallet" />
-        </set>
-        <set name="pedidoParcials" table="pedido_parcial" inverse="true" lazy="true" fetch="select">
-            <key>
                 <column name="id_despacho" />
             </key>
-            <one-to-many class="entity.PedidoParcial" />
+            <one-to-many class="entity.Pallet" />
         </set>
     </class>
 </hibernate-mapping>

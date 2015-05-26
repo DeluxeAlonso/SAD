@@ -13,5 +13,5 @@ import entity.Accion;
  * @author dabarca
  */
 public interface IActionRepository extends IRepository<Accion>{
-    
+    Accion queryByName(String name);
 }

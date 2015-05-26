@@ -1,7 +1,8 @@
 package entity;
-// Generated May 24, 2015 10:16:20 PM by Hibernate Tools 4.3.1
+// Generated May 26, 2015 12:45:04 AM by Hibernate Tools 4.3.1
 
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,23 +13,25 @@ public class Despacho  implements java.io.Serializable {
 
 
      private Integer id;
-     private int idUnidadTransporte;
+     private UnidadTransporte unidadTransporte;
+     private Date fechaDespacho;
+     private Integer estado;
      private Set guiaRemisions = new HashSet(0);
      private Set pallets = new HashSet(0);
-     private Set pedidoParcials = new HashSet(0);
 
     public Despacho() {
     }
 
 	
-    public Despacho(int idUnidadTransporte) {
-        this.idUnidadTransporte = idUnidadTransporte;
+    public Despacho(UnidadTransporte unidadTransporte) {
+        this.unidadTransporte = unidadTransporte;
     }
-    public Despacho(int idUnidadTransporte, Set guiaRemisions, Set pallets, Set pedidoParcials) {
-       this.idUnidadTransporte = idUnidadTransporte;
+    public Despacho(UnidadTransporte unidadTransporte, Date fechaDespacho, Integer estado, Set guiaRemisions, Set pallets) {
+       this.unidadTransporte = unidadTransporte;
+       this.fechaDespacho = fechaDespacho;
+       this.estado = estado;
        this.guiaRemisions = guiaRemisions;
        this.pallets = pallets;
-       this.pedidoParcials = pedidoParcials;
     }
    
     public Integer getId() {
@@ -38,12 +41,26 @@ public class Despacho  implements java.io.Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
-    public int getIdUnidadTransporte() {
-        return this.idUnidadTransporte;
+    public UnidadTransporte getUnidadTransporte() {
+        return this.unidadTransporte;
     }
     
-    public void setIdUnidadTransporte(int idUnidadTransporte) {
-        this.idUnidadTransporte = idUnidadTransporte;
+    public void setUnidadTransporte(UnidadTransporte unidadTransporte) {
+        this.unidadTransporte = unidadTransporte;
+    }
+    public Date getFechaDespacho() {
+        return this.fechaDespacho;
+    }
+    
+    public void setFechaDespacho(Date fechaDespacho) {
+        this.fechaDespacho = fechaDespacho;
+    }
+    public Integer getEstado() {
+        return this.estado;
+    }
+    
+    public void setEstado(Integer estado) {
+        this.estado = estado;
     }
     public Set getGuiaRemisions() {
         return this.guiaRemisions;
@@ -58,13 +75,6 @@ public class Despacho  implements java.io.Serializable {
     
     public void setPallets(Set pallets) {
         this.pallets = pallets;
-    }
-    public Set getPedidoParcials() {
-        return this.pedidoParcials;
-    }
-    
-    public void setPedidoParcials(Set pedidoParcials) {
-        this.pedidoParcials = pedidoParcials;
     }
 
 

@@ -15,5 +15,5 @@ import java.util.ArrayList;
  * @author dabarca
  */
 public interface IProfileRepository extends IRepository<Perfil>{
-    
+    Perfil queryByName(String name);
 }

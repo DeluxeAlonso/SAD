@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import util.EntityState;
 import util.EntityState.Clients;
 import util.Tools;
 
@@ -79,7 +78,7 @@ public class ClientRepository implements IClientRepository{
             }
             e.printStackTrace();
             return false;
-        }
+        } 
     }
     /*
     @Override

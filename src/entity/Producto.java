@@ -1,5 +1,5 @@
 package entity;
-// Generated May 24, 2015 10:16:20 PM by Hibernate Tools 4.3.1
+// Generated May 26, 2015 12:45:04 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -16,9 +16,7 @@ public class Producto  implements java.io.Serializable {
      private String nombre;
      private String descripcion;
      private Integer stockTotal;
-     private Integer cantidadUnidades;
      private Set itemProductos = new HashSet(0);
-     private Set pedidoParcialXProductos = new HashSet(0);
      private Set kardexes = new HashSet(0);
 
     public Producto() {
@@ -28,14 +26,12 @@ public class Producto  implements java.io.Serializable {
     public Producto(Condicion condicion) {
         this.condicion = condicion;
     }
-    public Producto(Condicion condicion, String nombre, String descripcion, Integer stockTotal, Integer cantidadUnidades, Set itemProductos, Set pedidoParcialXProductos, Set kardexes) {
+    public Producto(Condicion condicion, String nombre, String descripcion, Integer stockTotal, Set itemProductos, Set kardexes) {
        this.condicion = condicion;
        this.nombre = nombre;
        this.descripcion = descripcion;
        this.stockTotal = stockTotal;
-       this.cantidadUnidades = cantidadUnidades;
        this.itemProductos = itemProductos;
-       this.pedidoParcialXProductos = pedidoParcialXProductos;
        this.kardexes = kardexes;
     }
    
@@ -74,26 +70,12 @@ public class Producto  implements java.io.Serializable {
     public void setStockTotal(Integer stockTotal) {
         this.stockTotal = stockTotal;
     }
-    public Integer getCantidadUnidades() {
-        return this.cantidadUnidades;
-    }
-    
-    public void setCantidadUnidades(Integer cantidadUnidades) {
-        this.cantidadUnidades = cantidadUnidades;
-    }
     public Set getItemProductos() {
         return this.itemProductos;
     }
     
     public void setItemProductos(Set itemProductos) {
         this.itemProductos = itemProductos;
-    }
-    public Set getPedidoParcialXProductos() {
-        return this.pedidoParcialXProductos;
-    }
-    
-    public void setPedidoParcialXProductos(Set pedidoParcialXProductos) {
-        this.pedidoParcialXProductos = pedidoParcialXProductos;
     }
     public Set getKardexes() {
         return this.kardexes;

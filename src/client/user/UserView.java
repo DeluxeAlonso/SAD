@@ -9,14 +9,19 @@ import application.action.ActionApplication;
 import application.profile.ProfileApplication;
 import application.user.UserApplication;
 import entity.Accion;
+import entity.Perfil;
 import entity.Usuario;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import org.w3c.dom.events.DocumentEvent;
 import util.EntityState;
 import util.EntityType;
 import util.InstanceFactory;
@@ -30,15 +35,16 @@ public class UserView extends javax.swing.JInternalFrame {
 
     UserApplication userApplication = InstanceFactory.Instance.getInstance("userApplicaiton", UserApplication.class);
     ProfileApplication profileApplication = InstanceFactory.Instance.getInstance("profileApplication", ProfileApplication.class);
-    ActionApplication actionApplication = InstanceFactory.Instance.getInstance("accionApplication", ActionApplication.class);
+    ActionApplication actionApplication = InstanceFactory.Instance.getInstance("actionApplication", ActionApplication.class);
     public static UserView userView;
     String newProfileName = "";
 
     /**
      * Creates new form UserForm
      */
-    public UserView() {
-        initComponents();        
+    public UserView(int tab) {
+        initComponents();
+        tabbedUP.setSelectedIndex(tab);
         actionOriginList.setModel(new DefaultListModel());
         actionDestList.setModel(new DefaultListModel());
         //Initialize profileComboBox
@@ -47,33 +53,66 @@ public class UserView extends javax.swing.JInternalFrame {
         actionApplication.refreshActions();
         fillCombos();
         refreshGrid();
-        fillOriginList();
-        
+        addListenerToProfileName();
 
+    }
+
+    public void addListenerToProfileName() {
+        txtProfileName.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                if (!txtProfileName.getText().equals("")) {
+                    saveProfileBtn.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                if (txtProfileName.getText().equals("")) {
+                    saveProfileBtn.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+            }
+        });
     }
 
     public void fillCombos() {
-        
-     
-        EntityType.PROFILES=profileApplication.getAllProfiles();
-        EntityType.fillProfileNames();
-        
-        
-        EntityType.ACTIONS=actionApplication.getAllActions();
-        
-        profileCombo1.setModel(new javax.swing.DefaultComboBoxModel(EntityType.PROFILES_NAMES));
 
+        profileApplication.refreshProfiles();
+        profileCombo1.setModel(new javax.swing.DefaultComboBoxModel(EntityType.PROFILES_NAMES));
         comboProfile2.setModel(new javax.swing.DefaultComboBoxModel(EntityType.PROFILES_NAMES));
     }
 
-    public void fillOriginList() {
+    public void fillLists(String profileName) {
 
-        DefaultListModel listModel = (DefaultListModel) actionOriginList.getModel();
-        for (Accion a : EntityType.ACTIONS) {
-            listModel.addElement(a.getNombre());
+        if (profileName != null) {
+            Perfil profile = profileApplication.getProfileByName(profileName);
+            DefaultListModel origModel = (DefaultListModel) actionOriginList.getModel();
+            DefaultListModel destModel = (DefaultListModel) actionDestList.getModel();
+            for (Accion a : EntityType.ACTIONS) {
+                boolean found = false;
+                for (Accion b : (Set<Accion>) profile.getAccions()) {
+                    if (a.getNombre().equals(b.getNombre())) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    origModel.addElement(a.getNombre());
+                } else {
+                    destModel.addElement(a.getNombre());
+                }
+            }
+        } else {
+            DefaultListModel origModel = (DefaultListModel) actionOriginList.getModel();
+            for (Accion a : EntityType.ACTIONS) {
+                origModel.addElement(a.getNombre());
+
+            }
         }
-        actionOriginList.setModel(listModel);
-
     }
 
     public void clearUserGrid() {
@@ -84,11 +123,12 @@ public class UserView extends javax.swing.JInternalFrame {
     public void fillTableWithUsers() {
         DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();
         ArrayList<Usuario> users = userApplication.getAllUsers();
-        for (Usuario user : users) {            
+        for (Usuario u : users) {
+            Usuario user = userApplication.getUserById(u.getId());
             String profileName = user.getPerfil() != null ? user.getPerfil().getNombrePerfil() : "";
             String state = user.getEstado() != null ? EntityState.getUsersState()[user.getEstado()] : "";
             model.addRow(new Object[]{
-                user.getIdusuario(),
+                user.getId(),
                 user.getNombre() + " " + user.getApellidoPaterno() + " " + user.getApellidoMaterno(),
                 user.getCorreo(),
                 state,
@@ -112,7 +152,7 @@ public class UserView extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        tabbedUP = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
         newBtn = new javax.swing.JButton();
@@ -164,7 +204,7 @@ public class UserView extends javax.swing.JInternalFrame {
             }
         });
 
-        jButton7.setText("Restablercer Contraseña");
+        jButton7.setText("Restablecer Contraseña");
         jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton7ActionPerformed(evt);
@@ -278,7 +318,7 @@ public class UserView extends javax.swing.JInternalFrame {
                 .addContainerGap(65, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Usuarios", jPanel1);
+        tabbedUP.addTab("Usuarios", jPanel1);
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Acciones"));
 
@@ -286,6 +326,11 @@ public class UserView extends javax.swing.JInternalFrame {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
+        });
+        actionOriginList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                actionOriginListMouseClicked(evt);
+            }
         });
         jScrollPane2.setViewportView(actionOriginList);
 
@@ -310,6 +355,11 @@ public class UserView extends javax.swing.JInternalFrame {
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
+        actionDestList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                actionDestListMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(actionDestList);
 
         jLabel4.setText("Acciones disponibles:");
@@ -333,6 +383,7 @@ public class UserView extends javax.swing.JInternalFrame {
         });
 
         editProfileBtn.setText("Modificar");
+        editProfileBtn.setEnabled(false);
         editProfileBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editProfileBtnActionPerformed(evt);
@@ -404,6 +455,11 @@ public class UserView extends javax.swing.JInternalFrame {
         });
 
         btnDeleteProfile.setText("Eliminar");
+        btnDeleteProfile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteProfileActionPerformed(evt);
+            }
+        });
 
         btnAddProfile.setText("Añadir Perfil");
         btnAddProfile.addActionListener(new java.awt.event.ActionListener() {
@@ -413,6 +469,8 @@ public class UserView extends javax.swing.JInternalFrame {
         });
 
         jLabel6.setText("Nombre Perfil:");
+
+        txtProfileName.setEnabled(false);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -456,11 +514,11 @@ public class UserView extends javax.swing.JInternalFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(34, 34, 34)
+                .addGap(40, 40, 40)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -472,7 +530,7 @@ public class UserView extends javax.swing.JInternalFrame {
                 .addContainerGap(29, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Perfiles", jPanel2);
+        tabbedUP.addTab("Perfiles", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -480,14 +538,14 @@ public class UserView extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 647, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(tabbedUP, javax.swing.GroupLayout.PREFERRED_SIZE, 647, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(21, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1)
+                .addComponent(tabbedUP)
                 .addContainerGap())
         );
 
@@ -496,9 +554,18 @@ public class UserView extends javax.swing.JInternalFrame {
 
     private void btnAddProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProfileActionPerformed
         // TODO add your handling code here:
+        clearLists();
         txtProfileName.setEnabled(true);
+        txtProfileName.requestFocus();
         comboProfile2.setEnabled(false);
         btnDeleteProfile.setEnabled(false);
+        cancelEditBtn.setEnabled(true);
+        btnAddProfile.setEnabled(false);
+        comboProfile2.setSelectedIndex(0);
+        saveProfileBtn.setEnabled(false);
+        toLeftBtn.setEnabled(true);
+        toRightBtn.setEnabled(true);
+        fillLists(null);
     }//GEN-LAST:event_btnAddProfileActionPerformed
 
     private void toRightBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toRightBtnActionPerformed
@@ -525,18 +592,21 @@ public class UserView extends javax.swing.JInternalFrame {
 
     private void comboProfile2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboProfile2ItemStateChanged
         // TODO add your handling code here:
+        clearLists();
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             if (comboProfile2.getSelectedIndex() != 0) {
-                DefaultListModel model = (DefaultListModel) actionDestList.getModel();
                 String profileName = comboProfile2.getSelectedItem().toString();
-
-                /*for (Acciion a : ) {
-
-                }*/
+                fillLists(profileName);
+                editProfileBtn.setEnabled(true);
+            } else {
+                editProfileBtn.setEnabled(false);
             }
         }
     }//GEN-LAST:event_comboProfile2ItemStateChanged
-
+    private void clearLists() {
+        ((DefaultListModel) actionOriginList.getModel()).clear();
+        ((DefaultListModel) actionDestList.getModel()).clear();
+    }
     private void editProfileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editProfileBtnActionPerformed
         // TODO add your handling code here:
         saveProfileBtn.setEnabled(true);
@@ -548,11 +618,23 @@ public class UserView extends javax.swing.JInternalFrame {
 
     private void cancelEditBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelEditBtnActionPerformed
         // TODO add your handling code here:
+
         saveProfileBtn.setEnabled(false);
         cancelEditBtn.setEnabled(false);
         toLeftBtn.setEnabled(false);
         toRightBtn.setEnabled(false);
-        editProfileBtn.setEnabled(true);
+        txtProfileName.setText("");
+        txtProfileName.setEnabled(false);
+        btnDeleteProfile.setEnabled(true);
+        comboProfile2.setEnabled(true);
+        if (btnAddProfile.isEnabled()) {
+            editProfileBtn.setEnabled(true);
+        } else {
+            clearLists();
+            comboProfile2.setSelectedIndex(0);
+        }
+        btnAddProfile.setEnabled(true);
+
     }//GEN-LAST:event_cancelEditBtnActionPerformed
 
     private void saveProfileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveProfileBtnActionPerformed
@@ -561,14 +643,38 @@ public class UserView extends javax.swing.JInternalFrame {
         cancelEditBtn.setEnabled(false);
         toLeftBtn.setEnabled(false);
         toRightBtn.setEnabled(false);
-        if (!newProfileName.equals("")) {
+        if (!txtProfileName.getText().equals("")) {
+            Perfil profile = new Perfil();
+            profile.setNombrePerfil(txtProfileName.getText());
+            profile.setAccions(getActionsFromDestList());
+            profileApplication.insertProfile(profile);
             JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_PROFILE_CREATED);
+            fillCombos();
+            comboProfile2.setSelectedIndex(comboProfile2.getItemCount() - 1);
+            txtProfileName.setText("");
+            txtProfileName.setEnabled(false);
+            btnAddProfile.setEnabled(true);
+            comboProfile2.setEnabled(true);
+            btnDeleteProfile.setEnabled(true);
         } else {
+            Perfil profile = profileApplication.getProfileByName(comboProfile2.getSelectedItem().toString());
+            profile.setAccions(getActionsFromDestList());
+            profileApplication.updateProfile(profile);
             JOptionPane.showMessageDialog(this, Strings.MESSAGE_PROFILE_EDITED);
         }
         editProfileBtn.setEnabled(true);
     }//GEN-LAST:event_saveProfileBtnActionPerformed
-
+    private Set getActionsFromDestList() {
+        DefaultListModel model = (DefaultListModel) actionDestList.getModel();
+        Set actions = new HashSet();
+        for (int i = 0; i < model.getSize(); i++) {
+            Accion a = actionApplication.getActionByName(model.getElementAt(i).toString());
+            if (a != null) {
+                actions.add(a);
+            }
+        }
+        return actions;
+    }
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         // TODO add your handling code here:
         JOptionPane.showMessageDialog(this, Strings.MESSAGE_RESTABLISH_PASSWORD);
@@ -576,16 +682,76 @@ public class UserView extends javax.swing.JInternalFrame {
 
     private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
         // TODO add your handling code here:
-        EditUserAdmin editUserAdmin = new EditUserAdmin((JFrame) SwingUtilities.getWindowAncestor(this), true);
-        editUserAdmin.setVisible(true);
+        DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();
+        int selectedRow = -1;
+        selectedRow = usersGrid.getSelectedRow();
+        Usuario user = null;
+        if (selectedRow != -1) {
+            String userId = model.getValueAt(selectedRow, 0).toString();
+            user = userApplication.getUserById(userId);
+            if (user != null) {
+                EditUserAdmin editUserAdmin = new EditUserAdmin((JFrame) SwingUtilities.getWindowAncestor(this), true, user);
+                editUserAdmin.setVisible(true);
+            }
+        }
+
+
     }//GEN-LAST:event_editBtnActionPerformed
 
     private void newBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newBtnActionPerformed
         // TODO add your handling code here:
-
         NewUserView newUserView = new NewUserView((JFrame) SwingUtilities.getWindowAncestor(this), true);
         newUserView.setVisible(true);
     }//GEN-LAST:event_newBtnActionPerformed
+
+    private void btnDeleteProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteProfileActionPerformed
+        // TODO add your handling code here:
+        if (comboProfile2.getSelectedIndex() != 0) {
+            Perfil p = profileApplication.getProfileByName(comboProfile2.getSelectedItem().toString());
+            if (p != null) {
+                profileApplication.deleteProfile(p);
+                JOptionPane.showMessageDialog(this, Strings.MESSAGE_RESTABLISH_PASSWORD);
+                clearLists();
+                fillCombos();
+                comboProfile2.setSelectedIndex(0);
+            }
+        }
+    }//GEN-LAST:event_btnDeleteProfileActionPerformed
+
+    private void actionOriginListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_actionOriginListMouseClicked
+        // TODO add your handling code here:
+        if (toRightBtn.isEnabled()) {
+            javax.swing.JList list = (javax.swing.JList) evt.getSource();
+            if (evt.getClickCount() == 2) {
+                // Double-click detected
+                int index = list.locationToIndex(evt.getPoint());
+                DefaultListModel origModel = (DefaultListModel) actionOriginList.getModel();
+                String selAction = actionOriginList.getSelectedValue().toString();
+                origModel.remove(index);
+                DefaultListModel destModel = (DefaultListModel) actionDestList.getModel();
+                destModel.addElement(selAction);
+
+            }
+        }
+    }//GEN-LAST:event_actionOriginListMouseClicked
+
+    private void actionDestListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_actionDestListMouseClicked
+        // TODO add your handling code here:
+        if (toLeftBtn.isEnabled()) {
+            javax.swing.JList list = (javax.swing.JList) evt.getSource();
+            
+            if (evt.getClickCount() == 2) {
+                // Double-click detected
+                int index = list.locationToIndex(evt.getPoint());
+                DefaultListModel origModel = (DefaultListModel) actionDestList.getModel();
+                String selAction = actionDestList.getSelectedValue().toString();
+                origModel.remove(index);
+                DefaultListModel destModel = (DefaultListModel) actionOriginList.getModel();
+                destModel.addElement(selAction);
+
+            }
+        }
+    }//GEN-LAST:event_actionDestListMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -614,11 +780,11 @@ public class UserView extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JButton newBtn;
     private javax.swing.JComboBox profileCombo1;
     private javax.swing.JButton saveProfileBtn;
     private javax.swing.JButton searchBtn;
+    private javax.swing.JTabbedPane tabbedUP;
     private javax.swing.JButton toLeftBtn;
     private javax.swing.JButton toRightBtn;
     private javax.swing.JTextField txtProfileName;

@@ -2,9 +2,12 @@ package client.general;
 
 
 import application.action.ActionApplication;
+import application.condition.ConditionApplication;
 import application.internment.InternmentApplication;
 import application.profile.ProfileApplication;
 import application.transportunit.TransportUnitApplication;
+import application.rack.RackApplication;
+import application.spot.SpotApplication;
 import application.user.UserApplication;
 import application.warehouse.WarehouseApplication;
 import entity.Condicion;
@@ -37,9 +40,12 @@ public class AppStart {
             InstanceFactory.Instance.register("userApplication", UserApplication.class);
             InstanceFactory.Instance.register("warehouseApplication", WarehouseApplication.class);
             InstanceFactory.Instance.register("profileApplication", ProfileApplication.class);
-            InstanceFactory.Instance.register("accionApplication", ActionApplication.class);
+            InstanceFactory.Instance.register("actionApplication", ActionApplication.class);
             InstanceFactory.Instance.register("internmentApplication", InternmentApplication.class);
             InstanceFactory.Instance.register("transportUnitApplication",TransportUnitApplication.class);
+            InstanceFactory.Instance.register("conditionApplication", ConditionApplication.class);
+            InstanceFactory.Instance.register("rackApplication", RackApplication.class);
+            InstanceFactory.Instance.register("spotApplication", SpotApplication.class);
         } catch (Exception ex) {
             Logger.getLogger(AppStart.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -50,15 +56,19 @@ public class AppStart {
     
     private void loadEntityType(){      
         ProfileApplication profileApplication = InstanceFactory.Instance.getInstance("profileApplication", ProfileApplication.class);
-        ActionApplication actionApplication = InstanceFactory.Instance.getInstance("accionApplication", ActionApplication.class);
         TransportUnitApplication transportUnitApplication = InstanceFactory.Instance.getInstance("transportUnitApplication",TransportUnitApplication.class);
+        ActionApplication actionApplication = InstanceFactory.Instance.getInstance("actionApplication", ActionApplication.class);
         WarehouseApplication warehouseApplication = InstanceFactory.Instance.getInstance("warehouseApplication", WarehouseApplication.class);
-
+        ConditionApplication conditionApplication = InstanceFactory.Instance.getInstance("conditionApplication", ConditionApplication.class);
+        RackApplication rackApplication = InstanceFactory.Instance.getInstance("rackApplication", RackApplication.class);
+        SpotApplication spotApplication = InstanceFactory.Instance.getInstance("spotApplication", SpotApplication.class);
         //al final se tiene que cargar el arreglo desde la base de datos        
-        Condicion c1 = new Condicion(); c1.setId(1); c1.setNombre("Refrigerados");
-        c1.setDescripcion("Esta condicion sirve para productos que necesiten una refreigeracion");
+        Condicion c1 = new Condicion(); c1.setId(1); c1.setNombre("Normal");
+        c1.setDescripcion("Esta condicion sirve para productos que necesiten una temperatura entre 15 y 30 grados");
         
-        Condicion c2 = new Condicion(); c2.setId(2); c2.setNombre("Refrigerado");
+        Condicion c2 = new Condicion(); c2.setId(2); c2.setNombre("Refrigerados");
+        c2.setDescripcion("Esta condicion sirve para productos que necesiten una refreigeracion");
+        
         EntityType.CONDITIONS.add(c1); 
         EntityType.CONDITIONS.add(c2);
         EntityType.fillConditionNames();

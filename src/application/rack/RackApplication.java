@@ -29,4 +29,16 @@ public class RackApplication {
         }
         return racks;
     }
+    
+    public void insert(Rack object) {
+        try{
+            RackRepository w = new RackRepository();
+            w.insert(object);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    
 }

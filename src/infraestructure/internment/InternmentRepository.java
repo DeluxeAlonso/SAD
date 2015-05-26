@@ -7,10 +7,6 @@ package infraestructure.internment;
 import base.internment.IInternmentRepository;
 import entity.Almacen;
 import java.util.ArrayList;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import util.HibernateUtil;
 
 
 /**
