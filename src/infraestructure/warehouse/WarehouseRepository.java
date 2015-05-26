@@ -65,7 +65,7 @@ public class WarehouseRepository implements IWarehouseRepository{
     
     @Override
     public ArrayList<Almacen> queryWarehousesByType(int type) {
-        String hql="FROM Almacen WHERE id_tipo_almacen=:type AND estado=:state";
+        String hql="FROM Almacen WHERE id_condicion=:type AND estado=:state";
         ArrayList<Almacen> warehouses=null;
         
         Transaction trns = null;
