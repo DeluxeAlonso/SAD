@@ -91,7 +91,27 @@ public class RackRepository implements IRackRepository{
 
     @Override
     public Rack queryById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String hql="FROM Rack WHERE id=:id";
+        ArrayList<Rack> racks=null;
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("id", id);
+            racks = (ArrayList<Rack>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        if (racks.size()==0)
+            return null;
+        else
+            return racks.get(0); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

@@ -138,5 +138,27 @@ public class SpotRepository implements ISpotRepository{
     public Ubicacion queryById(String id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public ArrayList<Ubicacion> querySpotsByRack(int rackId) {
+        String hql="FROM Ubicacion u WHERE u.rack.id=:rackId ORDER BY u.fila, u.columna";
+        ArrayList<Ubicacion> spots=null;
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("rackId", rackId);
+            spots = (ArrayList<Ubicacion>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return spots; //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

@@ -18,4 +18,5 @@ public interface ISpotRepository extends IRepository<Ubicacion>{
     //ArrayList<Ubicacion> querySpotsByRack(int rackId);
     ArrayList<Ubicacion> queryEmptySpotsByRack(int rackId);
     Boolean updateSpotOccupancy(int spotId,int occupancyState);
+    ArrayList<Ubicacion> querySpotsByRack(int rackId);
 }

@@ -30,6 +30,16 @@ public class RackApplication {
         return racks;
     }
     
+    public Rack queryById(int id){
+        Rack rack = null;
+        try {
+            rack = rackRepository.queryById(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rack;
+    }
+    
     public void insert(Rack object) {
         try{
             RackRepository w = new RackRepository();

@@ -15,6 +15,7 @@ import client.reports.AvailabilityReport;
 import client.product.ProductView;
 import client.personal.PersonalView;
 import client.client.ClientView;
+import client.rack.RackView;
 import client.reports.KardexReport;
 import client.reports.RemissionGuideReport;
 import client.reports.StockReport;
@@ -65,6 +66,7 @@ public class MainView extends javax.swing.JFrame {
     private WarehouseControlCheckView warehouseControlCheckView = null;
     private InternmentSelectView internmentSelectView = null;
     private AvailabilityReport availabilityReport = null;
+    private RackView rackView = null;
     private KardexReport kardexReport = null;
     public static Usuario user = null;
     private BufferedImage img = null;
@@ -131,6 +133,7 @@ public class MainView extends javax.swing.JFrame {
         menuMaint = new javax.swing.JMenu();
         WarehouseMenu = new javax.swing.JMenuItem();
         TUFrame = new javax.swing.JMenuItem();
+        RackItem = new javax.swing.JMenuItem();
         menuReport = new javax.swing.JMenu();
         jMenuItem12 = new javax.swing.JMenuItem();
         jMenuItem13 = new javax.swing.JMenuItem();
@@ -241,6 +244,14 @@ public class MainView extends javax.swing.JFrame {
             }
         });
         menuMaint.add(TUFrame);
+
+        RackItem.setText("Rack");
+        RackItem.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                RackItemMousePressed(evt);
+            }
+        });
+        menuMaint.add(RackItem);
 
         menuBar.add(menuMaint);
 
@@ -639,6 +650,21 @@ public class MainView extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_jMenuItem18ActionPerformed
 
+    private void RackItemMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RackItemMousePressed
+        // TODO add your handling code here:
+        if (rackView == null || !rackView.isShowing()) {
+            rackView = new RackView();
+            rackView.setVisible(true);
+            mainPanel.add(rackView);
+            try {
+                // TODO add your handling code here:
+                rackView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_RackItemMousePressed
+
     private void jMenuItem15MousePressed(java.awt.event.MouseEvent evt) {
         // TODO add your handling code here:
         if (availabilityReport == null || !availabilityReport.isShowing()) {
@@ -659,6 +685,7 @@ public class MainView extends javax.swing.JFrame {
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem RackItem;
     private javax.swing.JMenuItem TUFrame;
     private javax.swing.JMenuItem WarehouseMenu;
     private javax.swing.JMenuItem jMenuItem1;
