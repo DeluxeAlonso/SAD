@@ -24,7 +24,7 @@ public class ClientRepository implements IClientRepository{
     public int insert(Cliente object) {
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
-        try {            
+        try {
             trns=session.beginTransaction();
             session.save(object);                      
             session.getTransaction().commit();

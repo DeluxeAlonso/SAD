@@ -63,6 +63,8 @@ public class Strings {
     public static final String ERROR_RUC_NOT_11="El campo RUC debe contener exactamente 11 caracteres.";
     public static final String ERROR_RUC_NOT_NUMERIC="El campo RUC debe contener caracteres numéricos solamente.";
     public static final String ERROR_NEW_LOCAL_TITLE="Error al agregar nuevo local";
+    public static final String ERROR_NOT_CSV="El archivo seleccionado no es un archivo CSV.";
+    public static final String ERROR_FILE_UPLOAD_TITLE="Error al cargar el archivo";
     public static final String MESSAGE_NEW_LOCAL_TITLE="Mensaje de inserción de local.";
     public static final String MESSAGE_NEW_LOCAL_CREATED="Se registró correctamente el local.";
     public static final String MESSAGE_DELETE_LOCAL_TITLE="Mensaje de eliminación de local";

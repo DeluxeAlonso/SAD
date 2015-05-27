@@ -22,11 +22,13 @@ public class ClientApplication {
         this.clientRepository = new ClientRepository();
     }
     
-    public void insert(Cliente object){
+    public int insert(Cliente object){
         try {
             clientRepository.insert(object);
+            return object.getId();
         } catch (Exception e) {
             e.printStackTrace();
+            return -1;
         }
     }
     
