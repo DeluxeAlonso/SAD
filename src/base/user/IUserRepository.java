@@ -15,5 +15,5 @@ import java.util.ArrayList;
  */
 public interface IUserRepository extends IRepository<Usuario>{
    Usuario getUser(String email); 
-   ArrayList<Usuario> searchUser(Usuario user);
+   ArrayList<Usuario> searchUser(Usuario user);    
 }

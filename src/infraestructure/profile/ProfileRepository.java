@@ -21,7 +21,7 @@ import util.Tools;
 public class ProfileRepository implements IProfileRepository {
 
     @Override
-    public void insert(Perfil object) {
+    public int insert(Perfil object) {
         Transaction trns = null;        
         Session session = Tools.getSessionInstance();
         
@@ -34,11 +34,13 @@ public class ProfileRepository implements IProfileRepository {
                 trns.rollback();
             }
             e.printStackTrace();
+            return -1;
         }
+        return object.getId();
     }
 
     @Override
-    public void delete(Perfil object) {
+    public int delete(Perfil object) {
         Transaction trns = null;        
         Session session = Tools.getSessionInstance();
         
@@ -51,7 +53,9 @@ public class ProfileRepository implements IProfileRepository {
                 trns.rollback();
             }
             e.printStackTrace();
+            return -1;
         }
+        return object.getId();
     }
 
     @Override
@@ -76,7 +80,7 @@ public class ProfileRepository implements IProfileRepository {
     }
 
     @Override
-    public void update(Perfil object) {
+    public int update(Perfil object) {
         Transaction trns = null;        
         Session session = Tools.getSessionInstance();
         
@@ -89,7 +93,9 @@ public class ProfileRepository implements IProfileRepository {
                 trns.rollback();
             }
             e.printStackTrace();
+            return -1;
         }
+        return object.getId();
     }
 
     @Override

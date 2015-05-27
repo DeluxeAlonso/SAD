@@ -46,7 +46,7 @@ public class UserRepository implements IUserRepository {
     }
 
     @Override
-    public void insert(Usuario object) {
+    public int insert(Usuario object) {
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
         try {            
@@ -58,11 +58,13 @@ public class UserRepository implements IUserRepository {
                 trns.rollback();
             }
             e.printStackTrace();
+            return -1;
         } 
+        return 1;
     }
 
     @Override
-    public void delete(Usuario object) {
+    public int delete(Usuario object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -88,7 +90,7 @@ public class UserRepository implements IUserRepository {
     }
 
     @Override
-    public void update(Usuario object) {
+    public int update(Usuario object) {
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
         try {            
@@ -100,7 +102,9 @@ public class UserRepository implements IUserRepository {
                 trns.rollback();
             }
             e.printStackTrace();
+            return -1;
         } 
+        return 1;
     }
 
     @Override

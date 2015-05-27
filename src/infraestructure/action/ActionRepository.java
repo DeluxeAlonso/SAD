@@ -21,12 +21,12 @@ import util.Tools;
 public class ActionRepository implements IActionRepository{
 
     @Override
-    public void insert(Accion object) {
+    public int insert(Accion object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void delete(Accion object) {
+    public int delete(Accion object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -52,7 +52,7 @@ public class ActionRepository implements IActionRepository{
     }
 
     @Override
-    public void update(Accion object) {
+    public int update(Accion object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
