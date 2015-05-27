@@ -638,13 +638,13 @@ public class MainView extends javax.swing.JFrame {
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         // TODO add your handling code here:
-                if (orderView == null || !orderView.isShowing()) {
-            orderView = new OrderView();
-            orderView.setVisible(true);
-            mainPanel.add(orderView);
+        if (userView == null || !userView.isShowing()) {
+            userView = new UserView(1);
+            userView.setVisible(true);
+            mainPanel.add(userView);
             try {
                 // TODO add your handling code here:
-                orderView.setSelected(true);
+                userView.setSelected(true);
             } catch (PropertyVetoException ex) {
                 Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
             }
