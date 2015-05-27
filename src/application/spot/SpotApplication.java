@@ -32,13 +32,15 @@ public class SpotApplication {
     }
     */
     
-    public void insert(Ubicacion object) {
+    public int insert(Ubicacion object) {
         try{
             SpotRepository w = new SpotRepository();
             w.insert(object);
+            return object.getId();
         }
         catch (Exception e){
             e.printStackTrace();
+            return -1;
         }
     }
     

@@ -40,23 +40,27 @@ public class RackApplication {
         return rack;
     }
     
-    public void insert(Rack object) {
+    public int insert(Rack object) {
         try{
             RackRepository w = new RackRepository();
             w.insert(object);
+            return object.getId();
         }
         catch (Exception e){
             e.printStackTrace();
+            return -1;
         }
     }
 
-    public void update(Rack object) {
+    public int update(Rack object) {
         try{
             RackRepository w = new RackRepository();
             w.update(object);
+            return object.getId();
         }
         catch (Exception e){
             e.printStackTrace();
+            return -1;
         }
     }    
     
