@@ -9,6 +9,7 @@ import base.client.IClientRepository;
 import entity.Cliente;
 import infraestructure.client.ClientRepository;
 import java.util.ArrayList;
+import util.EntityType;
 
 /**
  *
@@ -47,5 +48,9 @@ public class ClientApplication {
             e.printStackTrace();
         }
         return response;
+    }
+    
+    public void refreshClients(){
+        EntityType.CLIENTS = queryAll();
     }
 }

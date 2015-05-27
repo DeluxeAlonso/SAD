@@ -67,4 +67,12 @@ public class EntityState {
         String[] palletsState={"Creado","Ubicado","Despachado","Eliminado"};
         return palletsState;
     }
+    
+    public static enum Orders { ANULADO, REGISTRADO, EN_CURSO, FINALIZADO};
+    public static String[] getOrdersState(){
+         String[] ordersState={"Anulado","Registrado", "En Curso", "Finalizado"};
+         return ordersState;
+    }
+    
+
 }

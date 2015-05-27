@@ -15,6 +15,7 @@ import client.reports.AvailabilityReport;
 import client.product.ProductView;
 import client.personal.PersonalView;
 import client.client.ClientView;
+import client.order.OrderView;
 import client.rack.RackView;
 import client.reports.KardexReport;
 import client.reports.RemissionGuideReport;
@@ -58,6 +59,7 @@ public class MainView extends javax.swing.JFrame {
     private ProductView productView = null;
     private PersonalView personalView = null;
     private ClientView clientView = null;
+    private OrderView orderView = null;
     private EditUserView editUserView = null;
     private PalletMovementsView palletMovementsView = null;
     private ProductCaducityReport productCaducity = null;
@@ -142,7 +144,7 @@ public class MainView extends javax.swing.JFrame {
         jMenuItem16 = new javax.swing.JMenuItem();
         menuSec = new javax.swing.JMenu();
         jMenuItem9 = new javax.swing.JMenuItem();
-        jMenuItem17 = new javax.swing.JMenuItem();
+        jMenuItem19 = new javax.swing.JMenuItem();
         menuInter = new javax.swing.JMenu();
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
@@ -183,7 +185,12 @@ public class MainView extends javax.swing.JFrame {
         });
         menuMov.add(jMenuItem2);
 
-        jMenuItem3.setText("Pedido");
+        jMenuItem3.setText("Pedidos");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
         menuMov.add(jMenuItem3);
 
         jMenuItem6.setText("Movimientos Pallets");
@@ -309,13 +316,13 @@ public class MainView extends javax.swing.JFrame {
         });
         menuSec.add(jMenuItem9);
 
-        jMenuItem17.setText("Perfil");
-        jMenuItem17.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItem19.setText("Perfil");
+        jMenuItem19.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem17ActionPerformed(evt);
+                jMenuItem3ActionPerformed(evt);
             }
         });
-        menuSec.add(jMenuItem17);
+        menuSec.add(jMenuItem19);
 
         menuBar.add(menuSec);
 
@@ -629,20 +636,20 @@ public class MainView extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
-    private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         // TODO add your handling code here:
-        if (userView == null || !userView.isShowing()) {
-            userView = new UserView(1);
-            userView.setVisible(true);
-            mainPanel.add(userView);
+                if (orderView == null || !orderView.isShowing()) {
+            orderView = new OrderView();
+            orderView.setVisible(true);
+            mainPanel.add(orderView);
             try {
                 // TODO add your handling code here:
-                userView.setSelected(true);
+                orderView.setSelected(true);
             } catch (PropertyVetoException ex) {
                 Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }//GEN-LAST:event_jMenuItem17ActionPerformed
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
         // TODO add your handling code here:
@@ -696,8 +703,8 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem14;
     private javax.swing.JMenuItem jMenuItem15;
     private javax.swing.JMenuItem jMenuItem16;
-    private javax.swing.JMenuItem jMenuItem17;
     private javax.swing.JMenuItem jMenuItem18;
+    private javax.swing.JMenuItem jMenuItem19;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;

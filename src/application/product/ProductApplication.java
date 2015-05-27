@@ -6,7 +6,11 @@
 
 package application.product;
 
+import base.product.IProductRepository;
 import entity.Producto;
+import infraestructure.product.ProductRepository;
+import java.util.ArrayList;
+import util.EntityType;
 
 /**
  *
@@ -14,8 +18,40 @@ import entity.Producto;
  */
 public class ProductApplication {
 
+    IProductRepository productRepository;
+    
+    public ProductApplication(){
+        this.productRepository = new ProductRepository();
+    }
+    
     public void createProduct(Producto product) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try{
+            productRepository.insert(product);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public ArrayList<Producto> getAllProducts(){
+        ArrayList<Producto> actions=null;
+        try{
+            actions=productRepository.queryAll();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return actions;
+    }
+    
+    public void delete(Producto product){
+        try{
+            productRepository.delete(product);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public void refreshProducts(){
+        EntityType.PRODUCTS = getAllProducts();
     }
     
 }

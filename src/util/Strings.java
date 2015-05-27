@@ -85,5 +85,13 @@ public class Strings {
     public static final String MESSAGE_FILE_TRANSPORT_UNIT="Se realizo la carga de forma correcta";
     public static final String MESSAGE_FILE_ERROR_TRANSPORT_UNIT="No se puedo realizar la carga masiva";
     /*END*/
+    
+    /*ORDERS MESSAGES*/
+    public static final String MESSAGE_CONFIRM_DELETE_ORDER="¿Está seguro de eliminar el pedido seleccionado?";
+    public static final String MESSAGE_DELETE_ORDER_TITLE="Mensaje de anulacion de Pedido";
+    public static final String MESSAGE_DELETE_ORDER="El pedido ha sido anulado";
+    public static final String MESSAGE_CREATE_ORDER="El pedido ha sido creado";
+    public static final String MESSAGE_CREATE_ORDER_TITLE="Creacion de Pedido";
+    /*END*/
 
 }

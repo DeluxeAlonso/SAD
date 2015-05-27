@@ -6,8 +6,11 @@
 package util;
 
 import entity.Accion;
+import entity.Cliente;
 import entity.Condicion;
+import entity.Pedido;
 import entity.Perfil;
+import entity.Producto;
 import entity.TipoUnidadTransporte;
 import entity.UnidadTransporte;
 import java.util.ArrayList;
@@ -25,6 +28,9 @@ public class EntityType {
     public static ArrayList<Perfil> PROFILES = new ArrayList<>();
     public static ArrayList<Accion> ACTIONS = new ArrayList<>();
     public static ArrayList<UnidadTransporte> TRANSPORT_UNITS = new ArrayList<>();
+    public static ArrayList<Pedido> ORDERS = new ArrayList<>();
+    public static ArrayList<Cliente> CLIENTS = new ArrayList<>();
+    public static ArrayList<Producto> PRODUCTS = new ArrayList<>();
     
     public static ArrayList<TipoUnidadTransporte> TRANSPORT_TYPES = new ArrayList<>();
 
@@ -41,8 +47,8 @@ public class EntityType {
                 PROFILES_NAMES[i] = PROFILES.get(i-1).getNombrePerfil();
             }
         }
-    } 
-    
+    }
+
     public static void fillUnitTransportTypesNames(){
         TRANSPORT_TYPE_NAMES =  new String[TRANSPORT_TYPES.size() + 1];
         for (int i=0; i < TRANSPORT_TYPES.size() + 1; i++){
@@ -54,7 +60,7 @@ public class EntityType {
             }
         }
     }
-    
+
     public static void fillConditionNames() {
         CONDITIONS_NAMES = new String[CONDITIONS.size() + 1];
         for (int i = 0; i < CONDITIONS.size()+1; i++) {
@@ -65,7 +71,7 @@ public class EntityType {
             }
         }
     } 
-    
+
     public static Condicion getCondition(int codigo) {
         int n = CONDITIONS.size();
         for (int i = 0; i < n; i++) {
@@ -87,7 +93,7 @@ public class EntityType {
         }
         return null;
     }
-    
-    
+
+
 
 }

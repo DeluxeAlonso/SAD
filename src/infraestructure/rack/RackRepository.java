@@ -41,8 +41,8 @@ public class RackRepository implements IRackRepository{
             }
             e.printStackTrace();
         } finally {
-            session.flush();
-            session.close();
+//            session.flush();
+//            session.close();
         }
         return warehouses; //To change body of generated methods, choose Tools | Templates.
     }

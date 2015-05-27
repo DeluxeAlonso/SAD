@@ -34,6 +34,8 @@ public class RackView extends javax.swing.JInternalFrame {
     /**
      * Creates new form WarehouseForm
      */
+    
+    int idRack;
     public RackView() {
         initComponents();
         clearGrid();
@@ -66,12 +68,18 @@ public class RackView extends javax.swing.JInternalFrame {
         ArrayList<Ubicacion> ubicaciones = spotApplication.querySpotsByRack(id);
 
         for (Ubicacion u : ubicaciones) {
+            String estado = "Desconocido";
+            if (u.getEstado()==0) estado= "Inactivo";
+            else
+                if (u.getEstado()==1) estado= "Libre";
+            else
+                    if (u.getEstado()==2) estado= "Ocupado";
             model.addRow(new Object[]{
-                Integer.toString(id),
+                Integer.toString(u.getId()),
                 u.getFila().toString(),
                 u.getColumna().toString(),
                 u.getLado(),
-                u.getEstado().toString()
+                estado
             });
             
         }
@@ -92,9 +100,8 @@ public class RackView extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        newBtn = new javax.swing.JButton();
-        editBtn = new javax.swing.JButton();
-        deleteBtn = new javax.swing.JButton();
+        activoBtn = new javax.swing.JButton();
+        inactivoBtn = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         idTxt = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
@@ -107,24 +114,22 @@ public class RackView extends javax.swing.JInternalFrame {
         setClosable(true);
         setTitle("Rack");
 
-        newBtn.setText("Nuevo");
-        newBtn.addActionListener(new java.awt.event.ActionListener() {
+        activoBtn.setText("Activo");
+        activoBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newBtnActionPerformed(evt);
+                activoBtnActionPerformed(evt);
             }
         });
 
-        editBtn.setText("Editar");
-        editBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+        inactivoBtn.setText("Inactivo");
+        inactivoBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                editBtnMouseClicked(evt);
+                inactivoBtnMouseClicked(evt);
             }
         });
-
-        deleteBtn.setText("Eliminar");
-        deleteBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                deleteBtnMouseClicked(evt);
+        inactivoBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inactivoBtnActionPerformed(evt);
             }
         });
 
@@ -147,7 +152,7 @@ public class RackView extends javax.swing.JInternalFrame {
                 {null, null, null, null, null}
             },
             new String [] {
-                "Rack", "Fila", "Columna", "Lado", "Estado"
+                "ID", "Fila", "Columna", "Lado", "Estado"
             }
         ) {
             Class[] types = new Class [] {
@@ -187,11 +192,8 @@ public class RackView extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(WarehouseGrid, javax.swing.GroupLayout.PREFERRED_SIZE, 403, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(editBtn))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addGap(18, 18, 18)
@@ -202,11 +204,11 @@ public class RackView extends javax.swing.JInternalFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(almacenTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(newBtn)
+                                .addComponent(activoBtn)
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(searchBtn)
-                                    .addComponent(deleteBtn))))))
+                                    .addComponent(inactivoBtn))))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -220,12 +222,11 @@ public class RackView extends javax.swing.JInternalFrame {
                     .addComponent(almacenTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(searchBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(newBtn)
-                        .addComponent(editBtn)
-                        .addComponent(deleteBtn))
+                        .addComponent(activoBtn)
+                        .addComponent(inactivoBtn))
                     .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(WarehouseGrid, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -235,37 +236,28 @@ public class RackView extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void newBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newBtnActionPerformed
+    private void activoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activoBtnActionPerformed
         // TODO add your handling code here:
-
-        NewWarehouseView newWarehouse=new NewWarehouseView((JFrame)SwingUtilities.getWindowAncestor(this),true);
-        newWarehouse.setVisible(true);
+        int sr = usersGrid.getSelectedRow();
+        String idString = usersGrid.getModel().getValueAt(sr, 0).toString();
+        int idSpot = Integer.parseInt(idString);
+        spotApplication.updateSpotOccupancy(idSpot,EntityState.Spots.LIBRE.ordinal());
+       
         clearGrid();
-        fillTable();        
+        fillTable(idRack);        
         
-    }//GEN-LAST:event_newBtnActionPerformed
+    }//GEN-LAST:event_activoBtnActionPerformed
 
-    private void editBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editBtnMouseClicked
+    private void inactivoBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inactivoBtnMouseClicked
         // TODO add your handling code here:
         int sr = usersGrid.getSelectedRow();
         String idString = usersGrid.getModel().getValueAt(sr, 0).toString();
-        Almacen a = warehouseApplication.queryById(Integer.parseInt(idString));
-        EditWarehouseView editWarehouse=new EditWarehouseView((JFrame)SwingUtilities.getWindowAncestor(this),true,a);
-        editWarehouse.setVisible(true);
+        int idSpot = Integer.parseInt(idString);
+        spotApplication.updateSpotOccupancy(idSpot,EntityState.Spots.INACTIVO.ordinal());
+       
         clearGrid();
-        fillTable();
-    }//GEN-LAST:event_editBtnMouseClicked
-
-    private void deleteBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteBtnMouseClicked
-        // TODO add your handling code here:
-        int sr = usersGrid.getSelectedRow();
-        String idString = usersGrid.getModel().getValueAt(sr, 0).toString();
-        Almacen a = warehouseApplication.queryById(Integer.parseInt(idString));
-        a.setEstado(EntityState.Warehouses.INACTIVO.ordinal());
-        warehouseApplication.update(a);
-        clearGrid();
-        fillTable();
-    }//GEN-LAST:event_deleteBtnMouseClicked
+        fillTable(idRack);    
+    }//GEN-LAST:event_inactivoBtnMouseClicked
 
     private void searchBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchBtnMouseClicked
         // TODO add your handling code here:
@@ -274,22 +266,25 @@ public class RackView extends javax.swing.JInternalFrame {
         if (idTxt.getText().equals(""))
             idS=0;
         else idS=Integer.parseInt(idTxt.getText());
-        
+        idRack=idS;
         fillTable(idS);
         almacenTxt.setText(rackApplication.queryById(idS).getAlmacen().getId().toString());
     }//GEN-LAST:event_searchBtnMouseClicked
 
+    private void inactivoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inactivoBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_inactivoBtnActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane WarehouseGrid;
+    private javax.swing.JButton activoBtn;
     private javax.swing.JTextField almacenTxt;
-    private javax.swing.JButton deleteBtn;
-    private javax.swing.JButton editBtn;
     private javax.swing.JTextField idTxt;
+    private javax.swing.JButton inactivoBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JButton newBtn;
     private javax.swing.JButton searchBtn;
     private javax.swing.JTable usersGrid;
     // End of variables declaration//GEN-END:variables
