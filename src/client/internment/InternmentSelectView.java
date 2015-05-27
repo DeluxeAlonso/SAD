@@ -188,9 +188,9 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
         
          int sr = jTable1.getSelectedRow();
         String idString = jTable1.getModel().getValueAt(sr, 0).toString();
-        OrdenInternamiento a = internmentApplication.queryById(Integer.parseInt(idString));
-        InternmentDetailView internmentDetailView = new InternmentDetailView((JFrame)SwingUtilities.getWindowAncestor(this),true,a);
-        internmentDetailView.setVisible(true);
+        //OrdenInternamiento a = internmentApplication.queryById(Integer.parseInt(idString));
+        //InternmentDetailView internmentDetailView = new InternmentDetailView((JFrame)SwingUtilities.getWindowAncestor(this),true,a);
+        //internmentDetailView.setVisible(true);
         clearGrid();
         fillTable();
         
