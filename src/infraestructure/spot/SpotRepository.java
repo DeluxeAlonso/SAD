@@ -99,23 +99,25 @@ public class SpotRepository implements ISpotRepository{
     }
     
     @Override
-    public void insert(Ubicacion object) {
+    public int insert(Ubicacion object) {
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
             session.save(object);                      
             session.getTransaction().commit();
+            return object.getId();
         } catch (RuntimeException e) {
             if (trns != null) {
                 trns.rollback();
             }
             e.printStackTrace();
+            return -1;
         }    
     }
 
     @Override
-    public void delete(Ubicacion object) {
+    public int delete(Ubicacion object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -125,7 +127,7 @@ public class SpotRepository implements ISpotRepository{
     }
 
     @Override
-    public void update(Ubicacion object) {
+    public int update(Ubicacion object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
