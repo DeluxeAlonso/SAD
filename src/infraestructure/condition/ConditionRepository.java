@@ -21,12 +21,12 @@ import util.Tools;
 public class ConditionRepository implements IConditionRepository {
 
     @Override
-    public void insert(Condicion object) {
+    public int insert(Condicion object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void delete(Condicion object) {
+    public int delete(Condicion object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -52,7 +52,7 @@ public class ConditionRepository implements IConditionRepository {
     }
 
     @Override
-    public void update(Condicion object) {
+    public int update(Condicion object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
