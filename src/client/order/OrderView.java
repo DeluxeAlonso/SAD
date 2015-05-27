@@ -7,7 +7,12 @@ package client.order;
 
 import application.local.LocalApplication;
 import application.order.OrderApplication;
+import entity.GuiaRemision;
 import entity.Local;
+import entity.Pedido;
+import entity.PedidoParcial;
+import entity.PedidoParcialXProducto;
+import entity.Producto;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
@@ -31,15 +36,20 @@ import util.Strings;
 public class OrderView extends javax.swing.JInternalFrame implements MouseListener,ItemListener {
     OrderApplication orderApplication = new OrderApplication();
     LocalApplication localApplication = new LocalApplication();
-    ArrayList<Local> locals = new ArrayList<Local>();
+    public static OrderView orderView;
+    ArrayList<Local> locals = new ArrayList<>();
+    ArrayList<Producto> orderProducts = new ArrayList<>();
+    ArrayList<Integer> productQuantities = new ArrayList<>();
     String[] clientNames;
     String[] localNames;
     Integer selectedRowIndex = 0;
+    Integer selectedProductRowIndex = 0;
     /**
      * Creates new form OrderView
      */
     public OrderView() {
         initComponents();
+        orderView = this;
         setupElements();
         setupListeners();
     }
@@ -93,9 +103,8 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
     }
     
     public void setupListeners() {
-        addMouseListener(this);
-        jScrollPane2.addMouseListener(this);
         orderTable.addMouseListener(this);
+        productTable.addMouseListener(this);
         clientCombo.addItemListener(this);
     }
     
@@ -108,6 +117,43 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
                     Strings.MESSAGE_DELETE_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
             deleteBtn.setEnabled(false);
         }
+    }
+    
+    public void addProduct(Producto p, Integer q){
+        System.out.println("CANTIDAD " + q);
+        System.out.println("PRODUCTO " + p.getNombre());
+        if(orderProducts.contains(p)){
+            int index = orderProducts.indexOf(p);
+            System.out.println("INDEX " + index);
+            productQuantities.set(index, q + productQuantities.get(index));
+            if (productQuantities.get(index) > p.getStockTotal())
+                productQuantities.set(index, p.getStockTotal());
+        }
+        else{
+            orderProducts.add(p);
+            if (q > p.getStockTotal()){
+                productQuantities.add(p.getStockTotal()); 
+            }else{
+                productQuantities.add(q); 
+            }
+             
+            System.out.println(productQuantities.get(0));
+        }
+        refreshProductTable();
+    }
+    
+    public void refreshProductTable(){
+        ArrayList<String> cols = new ArrayList<>();
+        for (int i = 0; i<productTable.getColumnCount(); i++)
+            cols.add(productTable.getColumnName(i));
+        DefaultTableModel tableModel = new DefaultTableModel(cols.toArray(), 0);
+        productTable.setModel(tableModel);
+        orderProducts.stream().forEach((_product) -> {
+            System.out.println(productQuantities.get(0));
+            System.out.println("index" + orderProducts.indexOf(_product));
+            Object[] row = {_product.getId(), _product.getNombre(), _product.getCondicion().getNombre(), productQuantities.get(orderProducts.indexOf(_product))};
+            tableModel.addRow(row);
+        });
     }
     
     /**
@@ -132,14 +178,16 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         localCombo = new javax.swing.JComboBox();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jScrollPanel = new javax.swing.JScrollPane();
+        productTable = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        removeBtn = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         clientCombo = new javax.swing.JComboBox();
 
         setClosable(true);
+
+        jScrollPane2.setEnabled(false);
 
         orderTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -246,23 +294,23 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
 
         localCombo.setEnabled(false);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        productTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Cod. Producto", "Nombre", "Tipo", "Condición", "Cantidad"
+                "Cod. Producto", "Nombre", "Condición", "Cantidad"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPanel.setViewportView(productTable);
 
         jButton2.setText("<<Agregar");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -271,9 +319,20 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
             }
         });
 
-        jButton3.setText("Quitar>>");
+        removeBtn.setText("Quitar>>");
+        removeBtn.setEnabled(false);
+        removeBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeBtnActionPerformed(evt);
+            }
+        });
 
         jButton5.setText("Guardar");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         clientCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -292,10 +351,10 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(localCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 446, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 446, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(removeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jButton2)
                         .addGap(0, 3, Short.MAX_VALUE))
@@ -315,11 +374,11 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 148, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(removeBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 142, Short.MAX_VALUE)
                         .addComponent(jButton5))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -371,6 +430,34 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         }
     }//GEN-LAST:event_deleteBtnActionPerformed
 
+    private void removeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBtnActionPerformed
+        System.out.println("indexdelete " + selectedProductRowIndex);
+        System.out.println(orderProducts.get(selectedProductRowIndex).getNombre());
+        orderProducts.remove(orderProducts.get(selectedProductRowIndex));
+        productQuantities.remove(selectedProductRowIndex);
+        refreshProductTable();
+    }//GEN-LAST:event_removeBtnActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        Pedido p = new Pedido();
+        p.setEstado(1);
+        p.setIdCliente(EntityType.CLIENTS.get(clientCombo.getSelectedIndex() - 1).getId());
+        p.setLocal(locals.get(localCombo.getSelectedIndex()));
+        
+        PedidoParcial pp = new PedidoParcial();
+        pp.setEstado(1);
+        pp.setPedido(p);
+        
+        orderApplication.CreateOrder(p, pp, null);
+        orderApplication.refreshOrders();
+        refreshTable();
+        
+        JOptionPane.showMessageDialog(this, Strings.MESSAGE_CREATE_ORDER,
+                    Strings.MESSAGE_CREATE_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
+        //PedidoParcialXProducto pxp = new PedidoParcialXProducto();
+
+    }//GEN-LAST:event_jButton5ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox clientCombo;
@@ -378,7 +465,6 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
     private javax.swing.JTextField fileTextField;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -386,20 +472,31 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPanel;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JComboBox localCombo;
     private javax.swing.JTable orderTable;
+    private javax.swing.JTable productTable;
+    private javax.swing.JButton removeBtn;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void mouseClicked(MouseEvent e) {
         JTable target = (JTable)e.getSource();
-        selectedRowIndex = target.getSelectedRow();
-        if(EntityType.ORDERS.get(selectedRowIndex).getEstado() != 0){
-            deleteBtn.setEnabled(true);
+        if(target != null){
+            if(target.getColumnName(3).equals("Cantidad")){
+                selectedProductRowIndex = target.getSelectedRow();
+                System.out.println(selectedProductRowIndex);
+                removeBtn.setEnabled(true);
+            }
+            else{
+                selectedRowIndex = target.getSelectedRow();
+                if(EntityType.ORDERS.get(selectedRowIndex).getEstado() != 0){
+                    deleteBtn.setEnabled(true);
+                }else
+                    deleteBtn.setEnabled(false);
+            }
         }
     }
 
