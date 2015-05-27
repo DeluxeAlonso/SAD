@@ -78,7 +78,7 @@ public class AppStart {
         profileApplication.refreshProfiles();
         actionApplication.refreshActions();       
         transportUnitApplication.refreshTransportUnits();
-        orderApplication.refreshOrders();
+        //orderApplication.refreshOrders();
         clientApplication.refreshClients();
         productApplication.refreshProducts();
     }

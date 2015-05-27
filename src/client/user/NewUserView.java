@@ -74,6 +74,11 @@ public class NewUserView extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Nuevo Usuario");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         cancelBtn.setText("Cancelar");
         cancelBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -246,6 +251,11 @@ public class NewUserView extends javax.swing.JDialog {
         // TODO add your handling code here:
         passwordTxt.setText(Tools.generatePassword(10));
     }//GEN-LAST:event_autoGeneratePassBtnActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        UserView.userView.fillTableWithUsers();
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments
