@@ -116,12 +116,12 @@ public class TransportUnitRepository implements ITransportUnitRepository{
     
     
     @Override
-    public void insert(UnidadTransporte object) {
+    public int insert(UnidadTransporte object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void delete(UnidadTransporte object) {
+    public int delete(UnidadTransporte object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -147,7 +147,7 @@ public class TransportUnitRepository implements ITransportUnitRepository{
     }
 
     @Override
-    public void update(UnidadTransporte object) {
+    public int update(UnidadTransporte object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

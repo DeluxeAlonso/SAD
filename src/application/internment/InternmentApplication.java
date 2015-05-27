@@ -7,6 +7,9 @@ package application.internment;
 
 import base.internment.IInternmentRepository;
 import entity.Almacen;
+import entity.OrdenInternamiento;
+import entity.OrdenInternamientoXItemProductoId;
+import entity.OrdenInternamientoXItemProducto;
 import infraestructure.internment.InternmentRepository;
 import java.util.ArrayList;
 
@@ -16,12 +19,13 @@ import java.util.ArrayList;
  */
 public class InternmentApplication {
     
+    
      private IInternmentRepository internmentRepository;
     public InternmentApplication(){
         this.internmentRepository = new InternmentRepository();
     }
     
-    public void insert(Almacen object) {
+    public void insert(OrdenInternamiento object) {
         try{
             InternmentRepository w = new InternmentRepository();
             w.insert(object);
@@ -29,6 +33,16 @@ public class InternmentApplication {
         catch (Exception e){
             
         }
+    }
+    
+    public ArrayList<OrdenInternamiento> queryAll(){
+        ArrayList<OrdenInternamiento> internmentOrder = null;
+        try {
+            internmentOrder = internmentRepository.queryAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return internmentOrder;
     }
     
     
