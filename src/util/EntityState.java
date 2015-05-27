@@ -56,10 +56,23 @@ public class EntityState {
          return transportUnitsState;
     }
     
+    public static enum InternmentOrders { REGISTRADA, INTERNADA};
+    public static String[] getInternmentOrdersState(){
+        String[] internmentOrdersState={"Registrada","Internada"};
+        return internmentOrdersState;
+    }
+    
+    public static enum Pallets {CREADO, UBICADO, DESPACHADO, ELIMINADO}
+    public static String[] getPalletsState(){
+        String[] palletsState={"Creado","Ubicado","Despachado","Eliminado"};
+        return palletsState;
+    }
+    
     public static enum Orders { ANULADO, REGISTRADO, EN_CURSO, FINALIZADO};
     public static String[] getOrdersState(){
          String[] ordersState={"Anulado","Registrado", "En Curso", "Finalizado"};
          return ordersState;
     }
     
+
 }

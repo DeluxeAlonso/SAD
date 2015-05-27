@@ -21,23 +21,25 @@ import util.Tools;
 public class WarehouseRepository implements IWarehouseRepository{
 
     @Override
-    public void insert(Almacen object) {
+    public int insert(Almacen object) {
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
             session.save(object);                      
             session.getTransaction().commit();
+            return object.getId();
         } catch (RuntimeException e) {
             if (trns != null) {
                 trns.rollback();
             }
             e.printStackTrace();
+            return -1;
         } 
     }
 
     @Override
-    public void delete(Almacen object) {
+    public int delete(Almacen object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -87,18 +89,20 @@ public class WarehouseRepository implements IWarehouseRepository{
     }
 
     @Override
-    public void update(Almacen object) {
+    public int update(Almacen object) {
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
             session.saveOrUpdate(object);                      
             session.getTransaction().commit();
+            return object.getId();
         } catch (RuntimeException e) {
             if (trns != null) {
                 trns.rollback();
             }
             e.printStackTrace();
+            return -1;
         }     
     }
 

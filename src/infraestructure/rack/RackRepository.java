@@ -48,23 +48,25 @@ public class RackRepository implements IRackRepository{
     }
 
     @Override
-    public void insert(Rack object) {
+    public int insert(Rack object) {
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
             session.save(object);                      
             session.getTransaction().commit();
+            return object.getId();
         } catch (RuntimeException e) {
             if (trns != null) {
                 trns.rollback();
             }
             e.printStackTrace();
+            return -1;
         }    
     }
 
     @Override
-    public void delete(Rack object) {
+    public int delete(Rack object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -74,18 +76,20 @@ public class RackRepository implements IRackRepository{
     }
 
     @Override
-    public void update(Rack object) {
+    public int update(Rack object) {
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
             session.saveOrUpdate(object);                      
             session.getTransaction().commit();
+            return object.getId();
         } catch (RuntimeException e) {
             if (trns != null) {
                 trns.rollback();
             }
             e.printStackTrace();
+            return -1;
         } 
     }
 
