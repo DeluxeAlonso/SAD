@@ -5,12 +5,16 @@
  */
 package client.internment;
 
+import entity.OrdenInternamiento;
+
 /**
  *
  * @author dabarca
  */
 public class InternmentDetailView extends javax.swing.JDialog {
 
+    
+    OrdenInternamiento i = null;
     /**
      * Creates new form InternmentDetailView2
      */
@@ -19,6 +23,13 @@ public class InternmentDetailView extends javax.swing.JDialog {
         initComponents();
     }
 
+        public InternmentDetailView(java.awt.Frame parent, boolean modal, OrdenInternamiento i) {
+        super(parent, modal);
+        initComponents();
+        this.i = i;
+    }
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

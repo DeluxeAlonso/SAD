@@ -5,23 +5,35 @@
  */
 package client.internment;
 
+import application.internment.InternmentApplication;
+import application.warehouse.WarehouseApplication;
+import client.warehouse.EditWarehouseView;
+import entity.Almacen;
+import entity.Condicion;
+import entity.OrdenInternamiento;
 import java.io.File;
+import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
+import util.EntityType;
+import util.InstanceFactory;
 
 /**
  *
  * @author KEVIN BROWN
  */
 public class InternmentSelectView extends javax.swing.JInternalFrame {
-
+    WarehouseApplication warehouseApplication=InstanceFactory.Instance.getInstance("warehouseApplication", WarehouseApplication.class);
+    InternmentApplication internmentApplication=InstanceFactory.Instance.getInstance("internmentApplication", InternmentApplication.class);
     /**
      * Creates new form InternmentSelectView
      */
     public InternmentSelectView() {
         initComponents();
+        fillTable();
     }
 
     /**
@@ -45,6 +57,7 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
 
         lblFileChooser.setText(" Ingrese la orden de internamiento desde un archivo:");
 
+        jTextField1.setEditable(false);
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
@@ -60,24 +73,30 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                { new Integer(33), "01/01/2015", null},
-                { new Integer(40), "15/01/2015", null},
-                { new Integer(55), "31/01/2015", null}
+
             },
             new String [] {
-                "Número", "Fecha de carga", "Seleccionar"
+                "Número", "Fecha de carga"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Object.class, java.lang.Boolean.class
+                java.lang.Integer.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
         });
         jScrollPane1.setViewportView(jTable1);
         if (jTable1.getColumnModel().getColumnCount() > 0) {
+            jTable1.getColumnModel().getColumn(0).setResizable(false);
             jTable1.getColumnModel().getColumn(1).setResizable(false);
         }
 
@@ -135,6 +154,24 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
+    public void fillTable(){
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        ArrayList<OrdenInternamiento> internmentOrder = internmentApplication.queryAll();
+        
+       for (OrdenInternamiento a : internmentOrder) { 
+            model.addRow(new Object[]{
+                a.getId(),
+                a.getFecha().toString()
+            });
+        }
+        
+    }
+    
+        public void clearGrid() {
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+    }
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
                 JFileChooser fc = new JFileChooser();
         fc.setDialogTitle("Seleccione un archivo");
@@ -148,8 +185,18 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-            InternmentDetailView internmentDetailView = new InternmentDetailView((JFrame)SwingUtilities.getWindowAncestor(this),true);
-            internmentDetailView.setVisible(true);
+        
+         int sr = jTable1.getSelectedRow();
+        String idString = jTable1.getModel().getValueAt(sr, 0).toString();
+        OrdenInternamiento a = internmentApplication.queryById(Integer.parseInt(idString));
+        InternmentDetailView internmentDetailView = new InternmentDetailView((JFrame)SwingUtilities.getWindowAncestor(this),true,a);
+        internmentDetailView.setVisible(true);
+        clearGrid();
+        fillTable();
+        
+        
+        
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
 
