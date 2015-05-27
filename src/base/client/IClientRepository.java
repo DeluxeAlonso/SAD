@@ -14,7 +14,6 @@ import java.util.ArrayList;
  * @author prote_000
  */
 public interface IClientRepository extends IRepository<Cliente>{
-    public void insert(Cliente object);
     public ArrayList<Cliente> queryAll();
     public Boolean delete(int clientId);
 }

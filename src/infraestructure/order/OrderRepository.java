@@ -87,12 +87,12 @@ public class OrderRepository implements IOrderRepository{
     }
     
     @Override
-    public void insert(Pedido object) {
+    public int insert(Pedido object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void delete(Pedido object) {
+    public int delete(Pedido object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -118,7 +118,7 @@ public class OrderRepository implements IOrderRepository{
     }
 
     @Override
-    public void update(Pedido object) {
+    public int update(Pedido object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

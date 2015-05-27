@@ -5,8 +5,14 @@
  */
 package infraestructure.internment;
 import base.internment.IInternmentRepository;
-import entity.Almacen;
+import entity.Cliente;
+import entity.OrdenInternamiento;
 import java.util.ArrayList;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import util.EntityState;
+import util.Tools;
 
 
 /**
@@ -16,40 +22,73 @@ import java.util.ArrayList;
 public class InternmentRepository implements IInternmentRepository {
 
     @Override
-    public ArrayList<Almacen> queryWarehousesByType(int type) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public int insert(OrdenInternamiento object) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return -1;
     }
 
     @Override
-    public void insert(Almacen object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public int delete(OrdenInternamiento object) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return -1;
     }
 
     @Override
-    public void delete(Almacen object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public ArrayList<Almacen> queryAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void update(Almacen object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Almacen queryById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Almacen queryById(String id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ArrayList<OrdenInternamiento> queryAll() {
+         String hql="FROM OrdenInternamiento c WHERE c.estado=:state";
+        ArrayList<OrdenInternamiento> internmentOrders=null;
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);    
+            q.setParameter("state", EntityState.InternmentOrders.REGISTRADA.ordinal());          
+            internmentOrders = (ArrayList<OrdenInternamiento>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        } 
+        return internmentOrders;
     }
     
-    
-    
+    public ArrayList<OrdenInternamiento> queryAllItem() {
+         String hql="FROM OrdenInternamientoXItemProducto c WHERE c.estado=:state";
+        ArrayList<OrdenInternamiento> internmentOrders=null;
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);    
+            q.setParameter("state", EntityState.InternmentOrders.REGISTRADA.ordinal());          
+            internmentOrders = (ArrayList<OrdenInternamiento>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        } 
+        return internmentOrders;
+    }
+
+    @Override
+    public int update(OrdenInternamiento object) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return -1;
+    }
+
+    @Override
+    public OrdenInternamiento queryById(int id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public OrdenInternamiento queryById(String id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

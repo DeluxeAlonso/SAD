@@ -21,7 +21,7 @@ import util.Tools;
 public class ProductRepository implements IProductRepository {
 
     @Override
-    public void insert(Producto object) {
+    public int insert(Producto object) {
         Transaction trns = null;        
         Session session = Tools.getSessionInstance();
         
@@ -34,24 +34,28 @@ public class ProductRepository implements IProductRepository {
                 trns.rollback();
             }
             e.printStackTrace();
+            return -1;
         }
+        return object.getId();
     }
 
     @Override
-    public void delete(Producto object) {
+    public int delete(Producto object) {
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
 
         try {
             trns = session.beginTransaction();
             session.delete(object);
-            trns.commit();
+            trns.commit();            
         } catch (RuntimeException e) {
             if (trns != null) {
                 trns.rollback();
             }
             e.printStackTrace();
+            return -1;
         }
+        return object.getId();
     }
 
     @Override
@@ -80,7 +84,7 @@ public class ProductRepository implements IProductRepository {
     }
 
     @Override
-    public void update(Producto object) {
+    public int update(Producto object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

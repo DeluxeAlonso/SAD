@@ -20,12 +20,12 @@ import util.Tools;
 public class TransportUnitTypeRepository implements ITransportUnitTypeRepository{
 
     @Override
-    public void insert(TipoUnidadTransporte object) {
+    public int insert(TipoUnidadTransporte object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void delete(TipoUnidadTransporte object) {
+    public int delete(TipoUnidadTransporte object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -51,7 +51,7 @@ public class TransportUnitTypeRepository implements ITransportUnitTypeRepository
     }
 
     @Override
-    public void update(TipoUnidadTransporte object) {
+    public int update(TipoUnidadTransporte object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

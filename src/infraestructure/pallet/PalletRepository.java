@@ -65,12 +65,25 @@ public class PalletRepository implements IPalletRepository{
     }
 
     @Override
-    public void insert(Pallet object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public int insert(Pallet object) {
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            session.save(object);                      
+            session.getTransaction().commit();            
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return -1;
+        } 
+        return object.getId();
     }
 
     @Override
-    public void delete(Pallet object) {
+    public int delete(Pallet object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -80,7 +93,7 @@ public class PalletRepository implements IPalletRepository{
     }
 
     @Override
-    public void update(Pallet object) {
+    public int update(Pallet object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

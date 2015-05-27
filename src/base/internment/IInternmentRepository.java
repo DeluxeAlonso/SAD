@@ -8,12 +8,13 @@ package base.internment;
 import base.IRepository;
 import entity.Usuario;
 import entity.Almacen;
+import entity.OrdenInternamiento;
 import java.util.ArrayList;
 
 /**
  *
  * @author KEVIN BROWN
  */
-public interface IInternmentRepository extends IRepository<Almacen>{
-    ArrayList<Almacen> queryWarehousesByType(int type);
+public interface IInternmentRepository extends IRepository<OrdenInternamiento>{
+    
 }
