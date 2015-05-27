@@ -24,24 +24,26 @@ public class WarehouseApplication {
         this.warehouseRepository = new WarehouseRepository();
     }
     
-    public void insert(Almacen object) {
+    public int insert(Almacen object) {
         try{
             WarehouseRepository w = new WarehouseRepository();
-            w.insert(object);
+            return w.insert(object);
         }
         catch (Exception e){
             
         }
+        return -1;
     }
     
-    public void update(Almacen object) {
+    public int update(Almacen object) {
         try{
             WarehouseRepository w = new WarehouseRepository();
-            w.update(object);
+            return w.update(object);
         }
         catch (Exception e){
-            
+            return -1;
         }
+        
     }
     
     
