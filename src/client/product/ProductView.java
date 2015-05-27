@@ -6,7 +6,6 @@
 package client.product;
 
 import application.product.ProductApplication;
-import client.client.NewClientView;
 import entity.Producto;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
