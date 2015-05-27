@@ -21,7 +21,7 @@ import util.Tools;
 public class ClientRepository implements IClientRepository{
 
     @Override
-    public void insert(Cliente object) {
+    public int insert(Cliente object) {
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
         try {            
@@ -33,7 +33,9 @@ public class ClientRepository implements IClientRepository{
                 trns.rollback();
             }
             e.printStackTrace();
+            return -1;
         }
+        return object.getId();
     }
     
     @Override
@@ -87,7 +89,7 @@ public class ClientRepository implements IClientRepository{
     }
     */
     @Override
-    public void update(Cliente object) {
+    public int update(Cliente object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -102,7 +104,7 @@ public class ClientRepository implements IClientRepository{
     }
 
     @Override
-    public void delete(Cliente object) {
+    public int delete(Cliente object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

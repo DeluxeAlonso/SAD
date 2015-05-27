@@ -44,7 +44,7 @@ public class LocalRepository implements ILocalRepository{
     }
     
     @Override
-    public void insert(Local object) {
+    public int insert(Local object) {
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
         try {            
@@ -56,7 +56,9 @@ public class LocalRepository implements ILocalRepository{
                 trns.rollback();
             }
             e.printStackTrace();
+            return -1;
         }
+        return object.getId();
     }
     
     @Override
@@ -83,7 +85,7 @@ public class LocalRepository implements ILocalRepository{
     }
 
     @Override
-    public void delete(Local object) {
+    public int delete(Local object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -93,7 +95,7 @@ public class LocalRepository implements ILocalRepository{
     }
 
     @Override
-    public void update(Local object) {
+    public int update(Local object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
