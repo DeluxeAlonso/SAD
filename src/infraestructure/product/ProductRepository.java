@@ -82,6 +82,30 @@ public class ProductRepository implements IProductRepository {
         }
         return products;
     }
+    
+    
+
+    @Override
+    public ArrayList<Producto> queryByType(int idType) {
+        Session session = Tools.getSessionInstance();
+        String hql = "FROM Producto p WHERE p.condicion.id=:idType";
+        ArrayList<Producto> products = new ArrayList<>();
+        Transaction trns = null;
+        try{
+            trns = session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("idType", idType);
+            products = (ArrayList<Producto>) q.list();
+            session.getTransaction().commit();
+        }
+        catch (RuntimeException e){
+            if(trns != null){
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return products;
+    }
 
     @Override
     public int update(Producto object) {

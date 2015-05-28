@@ -1,5 +1,5 @@
 package entity;
-// Generated May 26, 2015 4:12:25 AM by Hibernate Tools 4.3.1
+// Generated 27-May-2015 21:42:55 by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -16,6 +16,8 @@ public class Kardex  implements java.io.Serializable {
      private Integer cantidad;
      private Date fecha;
      private String tipoMovimiento;
+     private Integer stockInicial;
+     private Integer stockFinal;
 
     public Kardex() {
     }
@@ -26,13 +28,15 @@ public class Kardex  implements java.io.Serializable {
         this.almacen = almacen;
         this.producto = producto;
     }
-    public Kardex(KardexId id, Almacen almacen, Producto producto, Integer cantidad, Date fecha, String tipoMovimiento) {
+    public Kardex(KardexId id, Almacen almacen, Producto producto, Integer cantidad, Date fecha, String tipoMovimiento, Integer stockInicial, Integer stockFinal) {
        this.id = id;
        this.almacen = almacen;
        this.producto = producto;
        this.cantidad = cantidad;
        this.fecha = fecha;
        this.tipoMovimiento = tipoMovimiento;
+       this.stockInicial = stockInicial;
+       this.stockFinal = stockFinal;
     }
    
     public KardexId getId() {
@@ -76,6 +80,20 @@ public class Kardex  implements java.io.Serializable {
     
     public void setTipoMovimiento(String tipoMovimiento) {
         this.tipoMovimiento = tipoMovimiento;
+    }
+    public Integer getStockInicial() {
+        return this.stockInicial;
+    }
+    
+    public void setStockInicial(Integer stockInicial) {
+        this.stockInicial = stockInicial;
+    }
+    public Integer getStockFinal() {
+        return this.stockFinal;
+    }
+    
+    public void setStockFinal(Integer stockFinal) {
+        this.stockFinal = stockFinal;
     }
 
 
