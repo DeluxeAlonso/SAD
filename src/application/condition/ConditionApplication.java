@@ -43,4 +43,8 @@ public class ConditionApplication {
         return condiciones;
     }
     
+    public void refreshConditions(){
+        EntityType.CONDITIONS = queryAll();
+    }
+    
 }
