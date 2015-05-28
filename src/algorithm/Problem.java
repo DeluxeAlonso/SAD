@@ -6,6 +6,7 @@
 package algorithm;
 
 import application.order.OrderApplication;
+import application.transportunit.TransportUnitApplication;
 import entity.PedidoParcial;
 import entity.UnidadTransporte;
 import java.util.ArrayList;
@@ -21,7 +22,9 @@ class Problem {
     
     public Problem(){        
         OrderApplication orderApplication = new OrderApplication();
+        TransportUnitApplication transportUnitApplication = new TransportUnitApplication();
         orders = orderApplication.getPendingPartialOrders();
+        vehicles = transportUnitApplication.getAvailableTransportUnits();
     }
     
     public double[][] getCostMatrix() {
