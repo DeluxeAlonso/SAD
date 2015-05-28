@@ -96,7 +96,7 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         DefaultTableModel tableModel = new DefaultTableModel(cols.toArray(), 0);
         orderTable.setModel(tableModel);
         EntityType.ORDERS.stream().forEach((_order) -> {
-            Object[] row = {_order.getId(), orderApplication.getOrderClient(_order.getIdCliente()).getNombre()
+            Object[] row = {_order.getId(), orderApplication.getOrderClient(_order.getId()).getNombre()
                     , _order.getLocal().getNombre(),EntityState.getOrdersState()[_order.getEstado()]};
             tableModel.addRow(row);
         });
@@ -441,7 +441,7 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         Pedido p = new Pedido();
         p.setEstado(1);
-        p.setIdCliente(EntityType.CLIENTS.get(clientCombo.getSelectedIndex() - 1).getId());
+        p.setId(EntityType.CLIENTS.get(clientCombo.getSelectedIndex() - 1).getId());
         p.setLocal(locals.get(localCombo.getSelectedIndex()));
         
         PedidoParcial pp = new PedidoParcial();

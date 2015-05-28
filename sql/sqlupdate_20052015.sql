@@ -1,1 +1,0 @@
-alter table saddb.ubicacion add ocupado int;

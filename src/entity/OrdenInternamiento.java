@@ -1,5 +1,5 @@
 package entity;
-// Generated May 26, 2015 4:12:25 AM by Hibernate Tools 4.3.1
+// Generated May 27, 2015 11:57:07 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -15,15 +15,17 @@ public class OrdenInternamiento  implements java.io.Serializable {
      private Integer id;
      private Date fecha;
      private Integer estado;
-     private Set ordenInternamientoXItemProductos = new HashSet(0);
+     private Set ordenInternamientoXProductos = new HashSet(0);
+     private Set pallets = new HashSet(0);
 
     public OrdenInternamiento() {
     }
 
-    public OrdenInternamiento(Date fecha, Integer estado, Set ordenInternamientoXItemProductos) {
+    public OrdenInternamiento(Date fecha, Integer estado, Set ordenInternamientoXProductos, Set pallets) {
        this.fecha = fecha;
        this.estado = estado;
-       this.ordenInternamientoXItemProductos = ordenInternamientoXItemProductos;
+       this.ordenInternamientoXProductos = ordenInternamientoXProductos;
+       this.pallets = pallets;
     }
    
     public Integer getId() {
@@ -47,12 +49,19 @@ public class OrdenInternamiento  implements java.io.Serializable {
     public void setEstado(Integer estado) {
         this.estado = estado;
     }
-    public Set getOrdenInternamientoXItemProductos() {
-        return this.ordenInternamientoXItemProductos;
+    public Set getOrdenInternamientoXProductos() {
+        return this.ordenInternamientoXProductos;
     }
     
-    public void setOrdenInternamientoXItemProductos(Set ordenInternamientoXItemProductos) {
-        this.ordenInternamientoXItemProductos = ordenInternamientoXItemProductos;
+    public void setOrdenInternamientoXProductos(Set ordenInternamientoXProductos) {
+        this.ordenInternamientoXProductos = ordenInternamientoXProductos;
+    }
+    public Set getPallets() {
+        return this.pallets;
+    }
+    
+    public void setPallets(Set pallets) {
+        this.pallets = pallets;
     }
 
 

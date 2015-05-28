@@ -3,35 +3,34 @@
 <hibernate-configuration>
   <session-factory>
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
-    <property name="hibernate.enable_lazy_load_no_trans">true</property>
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
     <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/saddb?zeroDateTimeBehavior=convertToNull</property>
     <property name="hibernate.connection.username">root</property>
     <property name="hibernate.connection.password">root</property>
     <property name="hibernate.current_session_context_class">thread</property>
-    <mapping resource="entity/PedidoParcial.hbm.xml"/>
-    <mapping resource="entity/Usuario.hbm.xml"/>
-    <mapping resource="entity/Accion.hbm.xml"/>
-    <mapping resource="entity/Pedido.hbm.xml"/>
-    <mapping resource="entity/Local.hbm.xml"/>
-    <mapping resource="entity/Kardex.hbm.xml"/>
-    <mapping resource="entity/Pallet.hbm.xml"/>
-    <mapping resource="entity/OrdenInternamiento.hbm.xml"/>
-    <mapping resource="entity/Perfil.hbm.xml"/>
-    <mapping resource="entity/PedidoParcialXProducto.hbm.xml"/>
-    <mapping resource="entity/Condicion.hbm.xml"/>
-    <mapping resource="entity/HistorialMovimientos.hbm.xml"/>
-    <mapping resource="entity/Producto.hbm.xml"/>
-    <mapping resource="entity/Cliente.hbm.xml"/>
-    <mapping resource="entity/Despacho.hbm.xml"/>
-    <mapping resource="entity/ItemProducto.hbm.xml"/>
-    <mapping resource="entity/UnidadTransporte.hbm.xml"/>
+    <mapping resource="entity/OrdenInternamientoXProducto.hbm.xml"/>
     <mapping resource="entity/Rack.hbm.xml"/>
-    <mapping resource="entity/TipoUnidadTransporte.hbm.xml"/>
-    <mapping resource="entity/Almacen.hbm.xml"/>
+    <mapping resource="entity/Despacho.hbm.xml"/>
+    <mapping resource="entity/Pallet.hbm.xml"/>
     <mapping resource="entity/GuiaRemision.hbm.xml"/>
-    <mapping resource="entity/Ubicacion.hbm.xml"/>
-    <mapping resource="entity/OrdenInternamientoXItemProducto.hbm.xml"/>
+    <mapping resource="entity/Usuario.hbm.xml"/>
+    <mapping resource="entity/Local.hbm.xml"/>
+    <mapping resource="entity/Producto.hbm.xml"/>
+    <mapping resource="entity/Almacen.hbm.xml"/>
+    <mapping resource="entity/Accion.hbm.xml"/>
+    <mapping resource="entity/PedidoParcialXProducto.hbm.xml"/>
     <mapping resource="entity/PreguntaSecreta.hbm.xml"/>
+    <mapping resource="entity/Perfil.hbm.xml"/>
+    <mapping resource="entity/UnidadTransporte.hbm.xml"/>
+    <mapping resource="entity/OrdenInternamiento.hbm.xml"/>
+    <mapping resource="entity/Kardex.hbm.xml"/>
+    <mapping resource="entity/TipoUnidadTransporte.hbm.xml"/>
+    <mapping resource="entity/TipoProducto.hbm.xml"/>
+    <mapping resource="entity/PedidoParcial.hbm.xml"/>
+    <mapping resource="entity/HistorialMovimientos.hbm.xml"/>
+    <mapping resource="entity/Pedido.hbm.xml"/>
+    <mapping resource="entity/Condicion.hbm.xml"/>
+    <mapping resource="entity/Ubicacion.hbm.xml"/>
+    <mapping resource="entity/Cliente.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

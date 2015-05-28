@@ -1,5 +1,5 @@
 package entity;
-// Generated May 24, 2015 10:16:20 PM by Hibernate Tools 4.3.1
+// Generated May 27, 2015 11:57:07 PM by Hibernate Tools 4.3.1
 
 
 
@@ -12,7 +12,7 @@ public class PedidoParcialXProducto  implements java.io.Serializable {
      private PedidoParcialXProductoId id;
      private PedidoParcial pedidoParcial;
      private Producto producto;
-     private Integer cantidadPallets;
+     private Integer cantidad;
 
     public PedidoParcialXProducto() {
     }
@@ -23,11 +23,11 @@ public class PedidoParcialXProducto  implements java.io.Serializable {
         this.pedidoParcial = pedidoParcial;
         this.producto = producto;
     }
-    public PedidoParcialXProducto(PedidoParcialXProductoId id, PedidoParcial pedidoParcial, Producto producto, Integer cantidadPallets) {
+    public PedidoParcialXProducto(PedidoParcialXProductoId id, PedidoParcial pedidoParcial, Producto producto, Integer cantidad) {
        this.id = id;
        this.pedidoParcial = pedidoParcial;
        this.producto = producto;
-       this.cantidadPallets = cantidadPallets;
+       this.cantidad = cantidad;
     }
    
     public PedidoParcialXProductoId getId() {
@@ -51,12 +51,12 @@ public class PedidoParcialXProducto  implements java.io.Serializable {
     public void setProducto(Producto producto) {
         this.producto = producto;
     }
-    public Integer getCantidadPallets() {
-        return this.cantidadPallets;
+    public Integer getCantidad() {
+        return this.cantidad;
     }
     
-    public void setCantidadPallets(Integer cantidadPallets) {
-        this.cantidadPallets = cantidadPallets;
+    public void setCantidad(Integer cantidad) {
+        this.cantidad = cantidad;
     }
 
 
