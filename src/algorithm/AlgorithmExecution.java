@@ -5,6 +5,8 @@
  */
 package algorithm;
 
+import java.util.Arrays;
+
 /**
  *
  * @author robert
@@ -23,6 +25,22 @@ public class AlgorithmExecution {
         algorithm.setBasePriority(1.2);
         
         Problem problem = new Problem();
+        
+        Population population = new Population(algorithm, problem);
+        
+        for (int i = 0; i < algorithm.getNumberOfGenerations(); i++) {
+            Solution[] parents = new Solution[2];
+            parents[0] = Selection.tournamentSelection(
+                        algorithm.getTournamentSelectionKValue(), population, 
+                        Selection.options.BEST.ordinal());
+            parents[1] = Selection.tournamentSelection(
+                        algorithm.getTournamentSelectionKValue(), population, 
+                        Selection.options.BEST.ordinal());
+            Arrays.sort(parents);
+            
+            Solution child = Crossover.uniformCrossover(parents, algorithm, problem);
+            
+        }
     }
     
 }

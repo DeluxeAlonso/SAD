@@ -15,8 +15,7 @@ import java.util.ArrayList;
  *
  * @author robert
  */
-class Problem {
-    private double[][] costMatrix;
+class Problem {    
     private ArrayList<PedidoParcial> orders;
     private ArrayList<UnidadTransporte> vehicles;
     
@@ -24,16 +23,8 @@ class Problem {
         OrderApplication orderApplication = new OrderApplication();
         TransportUnitApplication transportUnitApplication = new TransportUnitApplication();
         orders = orderApplication.getPendingPartialOrders();
-        vehicles = transportUnitApplication.getAvailableTransportUnits();
-    }
-    
-    public double[][] getCostMatrix() {
-        return costMatrix;
-    }
-
-    public void setCostMatrix(double[][] costMatrix) {
-        this.costMatrix = costMatrix;
-    }
+        vehicles = transportUnitApplication.getAvailableTransportUnits();        
+    }    
 
     public ArrayList<PedidoParcial> getOrders() {
         return orders;
