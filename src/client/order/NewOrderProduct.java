@@ -33,13 +33,13 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
     }
 
     public void setupElements(){
+        productApplication.refreshProducts();
         qtySpinner.setValue(1);
         refreshTable();
         setupListeners();
     }
     
     public void refreshTable(){
-        productApplication.refreshProducts();
         ArrayList<String> cols = new ArrayList<>();
         for (int i = 0; i<productTable.getColumnCount(); i++)
             cols.add(productTable.getColumnName(i));

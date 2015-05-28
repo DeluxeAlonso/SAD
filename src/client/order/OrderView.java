@@ -12,6 +12,7 @@ import entity.Local;
 import entity.Pedido;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
+import entity.PedidoParcialXProductoId;
 import entity.Producto;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -130,6 +131,11 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         ArrayList<PedidoParcialXProducto> partialProducts = new ArrayList<>(); 
         for(int i=0;i<orderProducts.size();i++){
             PedidoParcialXProducto partialProduct = new PedidoParcialXProducto();
+            PedidoParcialXProductoId id = new PedidoParcialXProductoId();
+            
+            id.setIdProducto(orderProducts.get(i).getId());
+            
+            partialProduct.setId(id);
             partialProduct.setCantidad(productQuantities.get(i));
             partialProduct.setPedidoParcial(pp);
             partialProduct.setProducto(orderProducts.get(i));

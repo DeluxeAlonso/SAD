@@ -29,10 +29,11 @@ public class OrderRepository implements IOrderRepository{
         try {            
             trns=session.beginTransaction();
             session.save(order);     
-            session.save(partialOrder);
-            //for(int i=0;i<products.size();i++){
-            //    session.save(products.get(i));
-            //}
+            int partialId = (int)session.save(partialOrder);
+            for(int i=0;i<products.size();i++){
+                products.get(i).getId().setIdPedidoParcial(partialId);
+                session.save(products.get(i));
+            }
             session.getTransaction().commit();
             return true;
         } catch (RuntimeException e) {
