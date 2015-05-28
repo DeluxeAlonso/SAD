@@ -69,5 +69,9 @@ public class OrderApplication {
     public void refreshOrders(){
         EntityType.ORDERS = getAllOrders();
     }
+
+    public ArrayList<PedidoParcial> getPendingPartialOrders() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
         
 }
