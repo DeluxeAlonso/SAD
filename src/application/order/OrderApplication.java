@@ -71,7 +71,23 @@ public class OrderApplication {
     }
 
     public ArrayList<PedidoParcial> getPendingPartialOrders() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<PedidoParcial> partialOrders = new ArrayList<>();
+        try{
+            partialOrders = orderRepository.queryAllPendingPartialOrders();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return partialOrders;
+    }
+    
+    public ArrayList<PedidoParcialXProducto> queryAllPartialOrderProducts(Integer partialOrderId){
+        ArrayList<PedidoParcialXProducto> partialProducts = new ArrayList<>();
+        try{
+            partialProducts = orderRepository.queryAllPartialOrderProducts(partialOrderId);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return partialProducts;
     }
         
 }

@@ -10,6 +10,7 @@ import entity.Cliente;
 import entity.Pedido;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
+import entity.Producto;
 import java.util.ArrayList;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -84,6 +85,49 @@ public class OrderRepository implements IOrderRepository{
             e.printStackTrace();
         }
         return client;
+    }
+    
+    @Override
+    public ArrayList<PedidoParcial> queryAllPendingPartialOrders(){
+                Session session = Tools.getSessionInstance();
+        String hql = "from PedidoParcial where estado=1";
+        ArrayList<PedidoParcial> partialOrders = new ArrayList<>();
+        Transaction trns = null;
+        try{
+            trns = session.beginTransaction();
+            Query q = session.createQuery(hql);
+            partialOrders = (ArrayList<PedidoParcial>) q.list();
+            session.getTransaction().commit();
+        }
+        catch (RuntimeException e){
+            if(trns != null){
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return partialOrders;
+    }
+    
+    @Override
+    public ArrayList<PedidoParcialXProducto> queryAllPartialOrderProducts(Integer partialOrderId){
+                Session session = Tools.getSessionInstance();
+        String hql = "from PedidoParcialXProducto where id_pedido_parcial=:partialId";
+        ArrayList<PedidoParcialXProducto> partialProducts = new ArrayList<>();
+        Transaction trns = null;
+        try{
+            trns = session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("partialId", partialOrderId);
+            partialProducts = (ArrayList<PedidoParcialXProducto>) q.list();
+            session.getTransaction().commit();
+        }
+        catch (RuntimeException e){
+            if(trns != null){
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return partialProducts;
     }
     
     @Override
