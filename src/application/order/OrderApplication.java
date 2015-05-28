@@ -46,7 +46,7 @@ public class OrderApplication {
         return client;
     }
     
-    public Boolean CreateOrder(Pedido order, PedidoParcial p, PedidoParcialXProducto pp){
+    public Boolean CreateOrder(Pedido order, PedidoParcial p, ArrayList<PedidoParcialXProducto> pp){
         Boolean response = false;
         try {
             response = orderRepository.createOrder(order, p, pp);

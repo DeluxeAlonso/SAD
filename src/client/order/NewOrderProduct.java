@@ -33,12 +33,13 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
     }
 
     public void setupElements(){
+        qtySpinner.setValue(1);
         refreshTable();
         setupListeners();
     }
     
     public void refreshTable(){
-        System.out.println("REFRESH TABLE");
+        productApplication.refreshProducts();
         ArrayList<String> cols = new ArrayList<>();
         for (int i = 0; i<productTable.getColumnCount(); i++)
             cols.add(productTable.getColumnName(i));
@@ -53,6 +54,10 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
     
     public void setupListeners(){
         productTable.addMouseListener(this);
+    }
+    
+    public int currentProductIndex(){
+        return productTable.getSelectedRow();
     }
     
     /**
@@ -74,7 +79,7 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
         jButton2 = new javax.swing.JButton();
         addBtn = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        qtyTxt = new javax.swing.JTextField();
+        qtySpinner = new javax.swing.JSpinner();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -103,6 +108,11 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
                 return canEdit [columnIndex];
             }
         });
+        productTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                productTableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(productTable);
 
         jButton2.setText("Finalizar");
@@ -122,13 +132,7 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
 
         jLabel4.setText("Cantidad de Pallets:");
 
-        qtyTxt.setToolTipText("");
-        qtyTxt.setEnabled(false);
-        qtyTxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                qtyTxtActionPerformed(evt);
-            }
-        });
+        qtySpinner.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -141,7 +145,7 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
                         .addGap(6, 6, 6)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(qtyTxt)
+                        .addComponent(qtySpinner)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(addBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -177,7 +181,7 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
                     .addComponent(jButton2)
                     .addComponent(addBtn)
                     .addComponent(jLabel4)
-                    .addComponent(qtyTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(qtySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 6, Short.MAX_VALUE))
         );
 
@@ -189,12 +193,12 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        OrderView.orderView.addProduct(EntityType.PRODUCTS.get(selectedRowIndex), Integer.parseInt(qtyTxt.getText()));  // TODO add your handling code here:
+        OrderView.orderView.addProduct(EntityType.PRODUCTS.get(currentProductIndex()), (Integer)qtySpinner.getValue());  // TODO add your handling code here:
     }//GEN-LAST:event_addBtnActionPerformed
 
-    private void qtyTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_qtyTxtActionPerformed
+    private void productTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productTableMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_qtyTxtActionPerformed
+    }//GEN-LAST:event_productTableMouseClicked
 
     /**
      * @param args the command line arguments
@@ -249,15 +253,13 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTable productTable;
-    private javax.swing.JTextField qtyTxt;
+    private javax.swing.JSpinner qtySpinner;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void mouseClicked(MouseEvent e) {
         JTable target = (JTable)e.getSource();
-        selectedRowIndex = target.getSelectedRow();
-        System.out.println(selectedRowIndex);
-        qtyTxt.setEnabled(true);
+        qtySpinner.setEnabled(true);
         addBtn.setEnabled(true);
     }
 
