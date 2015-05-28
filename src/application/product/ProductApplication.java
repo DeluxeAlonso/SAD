@@ -26,7 +26,7 @@ public class ProductApplication {
     
     public void createProduct(Producto product) {
         try{
-            productRepository.insert(product);
+            int i = productRepository.insert(product);
         }catch(Exception e){
             e.printStackTrace();
         }

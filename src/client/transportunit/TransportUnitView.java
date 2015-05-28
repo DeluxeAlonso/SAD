@@ -49,6 +49,7 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
     }
     
     public void setupElements(){
+        transportUnitApplication.refreshTransportUnits();
         fillCombos();
         refreshTable();
     }

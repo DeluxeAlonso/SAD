@@ -10,6 +10,7 @@ import entity.Cliente;
 import entity.Pedido;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
+import java.util.ArrayList;
 
 /**
  *
@@ -18,5 +19,5 @@ import entity.PedidoParcialXProducto;
 public interface IOrderRepository extends IRepository<Pedido> {
     Boolean updateOrder(Pedido order);
     Cliente queryOrderClientById(Integer clientId);
-    Boolean createOrder(Pedido order, PedidoParcial p, PedidoParcialXProducto pp);
+    Boolean createOrder(Pedido order, PedidoParcial partialOrder, ArrayList<PedidoParcialXProducto> products);
 }

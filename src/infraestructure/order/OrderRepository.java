@@ -23,18 +23,18 @@ import util.Tools;
 public class OrderRepository implements IOrderRepository{
 
     @Override
-    public Boolean createOrder(Pedido order, PedidoParcial p, PedidoParcialXProducto pp){
+    public Boolean createOrder(Pedido order, PedidoParcial partialOrder, ArrayList<PedidoParcialXProducto> products){
         Session session = Tools.getSessionInstance();
         Transaction trns = null; 
         try {            
             trns=session.beginTransaction();
             session.save(order);     
-            session.save(p);
+            int partialId = (int)session.save(partialOrder);
+            for(int i=0;i<products.size();i++){
+                products.get(i).getId().setIdPedidoParcial(partialId);
+                session.save(products.get(i));
+            }
             session.getTransaction().commit();
-            //session.save(p);                      
-            //session.getTransaction().commit();
-            //session.save(pp);                      
-            //session.getTransaction().commit();
             return true;
         } catch (RuntimeException e) {
             if (trns != null) {
