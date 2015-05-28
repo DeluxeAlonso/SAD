@@ -1,5 +1,5 @@
 package entity;
-// Generated 27-May-2015 21:42:55 by Hibernate Tools 4.3.1
+// Generated May 27, 2015 11:57:07 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -13,25 +13,38 @@ public class Producto  implements java.io.Serializable {
 
      private Integer id;
      private Condicion condicion;
+     private TipoProducto tipoProducto;
      private String nombre;
      private String descripcion;
      private Integer stockTotal;
-     private Set itemProductos = new HashSet(0);
+     private String ean13;
+     private Integer cantidadProductosEnPallet;
+     private Double peso;
+     private Set pedidoParcialXProductos = new HashSet(0);
+     private Set pallets = new HashSet(0);
+     private Set ordenInternamientoXProductos = new HashSet(0);
      private Set kardexes = new HashSet(0);
 
     public Producto() {
     }
 
 	
-    public Producto(Condicion condicion) {
+    public Producto(Condicion condicion, TipoProducto tipoProducto) {
         this.condicion = condicion;
+        this.tipoProducto = tipoProducto;
     }
-    public Producto(Condicion condicion, String nombre, String descripcion, Integer stockTotal, Set itemProductos, Set kardexes) {
+    public Producto(Condicion condicion, TipoProducto tipoProducto, String nombre, String descripcion, Integer stockTotal, String ean13, Integer cantidadProductosEnPallet, Double peso, Set pedidoParcialXProductos, Set pallets, Set ordenInternamientoXProductos, Set kardexes) {
        this.condicion = condicion;
+       this.tipoProducto = tipoProducto;
        this.nombre = nombre;
        this.descripcion = descripcion;
        this.stockTotal = stockTotal;
-       this.itemProductos = itemProductos;
+       this.ean13 = ean13;
+       this.cantidadProductosEnPallet = cantidadProductosEnPallet;
+       this.peso = peso;
+       this.pedidoParcialXProductos = pedidoParcialXProductos;
+       this.pallets = pallets;
+       this.ordenInternamientoXProductos = ordenInternamientoXProductos;
        this.kardexes = kardexes;
     }
    
@@ -48,6 +61,13 @@ public class Producto  implements java.io.Serializable {
     
     public void setCondicion(Condicion condicion) {
         this.condicion = condicion;
+    }
+    public TipoProducto getTipoProducto() {
+        return this.tipoProducto;
+    }
+    
+    public void setTipoProducto(TipoProducto tipoProducto) {
+        this.tipoProducto = tipoProducto;
     }
     public String getNombre() {
         return this.nombre;
@@ -70,12 +90,47 @@ public class Producto  implements java.io.Serializable {
     public void setStockTotal(Integer stockTotal) {
         this.stockTotal = stockTotal;
     }
-    public Set getItemProductos() {
-        return this.itemProductos;
+    public String getEan13() {
+        return this.ean13;
     }
     
-    public void setItemProductos(Set itemProductos) {
-        this.itemProductos = itemProductos;
+    public void setEan13(String ean13) {
+        this.ean13 = ean13;
+    }
+    public Integer getCantidadProductosEnPallet() {
+        return this.cantidadProductosEnPallet;
+    }
+    
+    public void setCantidadProductosEnPallet(Integer cantidadProductosEnPallet) {
+        this.cantidadProductosEnPallet = cantidadProductosEnPallet;
+    }
+    public Double getPeso() {
+        return this.peso;
+    }
+    
+    public void setPeso(Double peso) {
+        this.peso = peso;
+    }
+    public Set getPedidoParcialXProductos() {
+        return this.pedidoParcialXProductos;
+    }
+    
+    public void setPedidoParcialXProductos(Set pedidoParcialXProductos) {
+        this.pedidoParcialXProductos = pedidoParcialXProductos;
+    }
+    public Set getPallets() {
+        return this.pallets;
+    }
+    
+    public void setPallets(Set pallets) {
+        this.pallets = pallets;
+    }
+    public Set getOrdenInternamientoXProductos() {
+        return this.ordenInternamientoXProductos;
+    }
+    
+    public void setOrdenInternamientoXProductos(Set ordenInternamientoXProductos) {
+        this.ordenInternamientoXProductos = ordenInternamientoXProductos;
     }
     public Set getKardexes() {
         return this.kardexes;

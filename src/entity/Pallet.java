@@ -1,5 +1,5 @@
 package entity;
-// Generated 27-May-2015 21:42:55 by Hibernate Tools 4.3.1
+// Generated May 27, 2015 11:57:07 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -13,8 +13,9 @@ public class Pallet  implements java.io.Serializable {
 
 
      private Integer id;
-     private Despacho despacho;
-     private ItemProducto itemProducto;
+     private GuiaRemision guiaRemision;
+     private OrdenInternamiento ordenInternamiento;
+     private Producto producto;
      private Ubicacion ubicacion;
      private String ean128;
      private Date fechaRegistro;
@@ -26,12 +27,13 @@ public class Pallet  implements java.io.Serializable {
     }
 
 	
-    public Pallet(ItemProducto itemProducto) {
-        this.itemProducto = itemProducto;
+    public Pallet(Producto producto) {
+        this.producto = producto;
     }
-    public Pallet(Despacho despacho, ItemProducto itemProducto, Ubicacion ubicacion, String ean128, Date fechaRegistro, Date fechaVencimiento, Integer estado, Set historialMovimientoses) {
-       this.despacho = despacho;
-       this.itemProducto = itemProducto;
+    public Pallet(GuiaRemision guiaRemision, OrdenInternamiento ordenInternamiento, Producto producto, Ubicacion ubicacion, String ean128, Date fechaRegistro, Date fechaVencimiento, Integer estado, Set historialMovimientoses) {
+       this.guiaRemision = guiaRemision;
+       this.ordenInternamiento = ordenInternamiento;
+       this.producto = producto;
        this.ubicacion = ubicacion;
        this.ean128 = ean128;
        this.fechaRegistro = fechaRegistro;
@@ -47,19 +49,26 @@ public class Pallet  implements java.io.Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Despacho getDespacho() {
-        return this.despacho;
+    public GuiaRemision getGuiaRemision() {
+        return this.guiaRemision;
     }
     
-    public void setDespacho(Despacho despacho) {
-        this.despacho = despacho;
+    public void setGuiaRemision(GuiaRemision guiaRemision) {
+        this.guiaRemision = guiaRemision;
     }
-    public ItemProducto getItemProducto() {
-        return this.itemProducto;
+    public OrdenInternamiento getOrdenInternamiento() {
+        return this.ordenInternamiento;
     }
     
-    public void setItemProducto(ItemProducto itemProducto) {
-        this.itemProducto = itemProducto;
+    public void setOrdenInternamiento(OrdenInternamiento ordenInternamiento) {
+        this.ordenInternamiento = ordenInternamiento;
+    }
+    public Producto getProducto() {
+        return this.producto;
+    }
+    
+    public void setProducto(Producto producto) {
+        this.producto = producto;
     }
     public Ubicacion getUbicacion() {
         return this.ubicacion;

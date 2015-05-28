@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 27-May-2015 21:42:58 by Hibernate Tools 4.3.1 -->
+<!-- Generated May 27, 2015 11:57:10 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entity.OrdenInternamiento" table="orden_internamiento" catalog="saddb" optimistic-lock="version">
         <id name="id" type="java.lang.Integer">
@@ -14,11 +14,17 @@
         <property name="estado" type="java.lang.Integer">
             <column name="estado" />
         </property>
-        <set name="ordenInternamientoXItemProductos" table="orden_internamiento_x_item_producto" inverse="true" lazy="true" fetch="select">
+        <set name="ordenInternamientoXProductos" table="orden_internamiento_x_producto" inverse="true" lazy="true" fetch="select">
             <key>
-                <column name="orden_internamiento_id" not-null="true" />
+                <column name="id_orden_internamiento" not-null="true" />
             </key>
-            <one-to-many class="entity.OrdenInternamientoXItemProducto" />
+            <one-to-many class="entity.OrdenInternamientoXProducto" />
+        </set>
+        <set name="pallets" table="pallet" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_orden_internamiento" />
+            </key>
+            <one-to-many class="entity.Pallet" />
         </set>
     </class>
 </hibernate-mapping>

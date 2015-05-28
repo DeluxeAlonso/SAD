@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 27-May-2015 21:42:58 by Hibernate Tools 4.3.1 -->
+<!-- Generated May 27, 2015 11:57:10 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entity.Pedido" table="pedido" catalog="saddb" optimistic-lock="version">
         <id name="id" type="java.lang.Integer">
@@ -9,13 +9,16 @@
             <generator class="identity" />
         </id>
         <many-to-one name="cliente" class="entity.Cliente" fetch="select">
-            <column name="id_cliente" />
+            <column name="id_cliente" not-null="true" />
         </many-to-one>
         <many-to-one name="local" class="entity.Local" fetch="select">
             <column name="id_local" not-null="true" />
         </many-to-one>
         <property name="estado" type="java.lang.Integer">
             <column name="estado" />
+        </property>
+        <property name="fecha" type="timestamp">
+            <column name="fecha" length="19" />
         </property>
         <set name="pedidoParcials" table="pedido_parcial" inverse="true" lazy="true" fetch="select">
             <key>

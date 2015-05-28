@@ -1,7 +1,8 @@
 package entity;
-// Generated 27-May-2015 21:42:55 by Hibernate Tools 4.3.1
+// Generated May 27, 2015 11:57:07 PM by Hibernate Tools 4.3.1
 
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,19 +16,22 @@ public class Pedido  implements java.io.Serializable {
      private Cliente cliente;
      private Local local;
      private Integer estado;
+     private Date fecha;
      private Set pedidoParcials = new HashSet(0);
 
     public Pedido() {
     }
 
 	
-    public Pedido(Local local) {
+    public Pedido(Cliente cliente, Local local) {
+        this.cliente = cliente;
         this.local = local;
     }
-    public Pedido(Cliente cliente, Local local, Integer estado, Set pedidoParcials) {
+    public Pedido(Cliente cliente, Local local, Integer estado, Date fecha, Set pedidoParcials) {
        this.cliente = cliente;
        this.local = local;
        this.estado = estado;
+       this.fecha = fecha;
        this.pedidoParcials = pedidoParcials;
     }
    
@@ -58,6 +62,13 @@ public class Pedido  implements java.io.Serializable {
     
     public void setEstado(Integer estado) {
         this.estado = estado;
+    }
+    public Date getFecha() {
+        return this.fecha;
+    }
+    
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
     }
     public Set getPedidoParcials() {
         return this.pedidoParcials;

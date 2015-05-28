@@ -3,23 +3,26 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated May 27, 2015 11:57:10 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="entity.PedidoParcialXProducto" table="pedido_parcial_x_producto" catalog="saddb" optimistic-lock="version">
-        <composite-id name="id" class="entity.PedidoParcialXProductoId">
-            <key-property name="idPedidoParcial" type="int">
-                <column name="id_pedido_parcial" />
+    <class name="entity.OrdenInternamientoXProducto" table="orden_internamiento_x_producto" catalog="saddb" optimistic-lock="version">
+        <composite-id name="id" class="entity.OrdenInternamientoXProductoId">
+            <key-property name="idOrdenInternamiento" type="int">
+                <column name="id_orden_internamiento" />
             </key-property>
             <key-property name="idProducto" type="int">
                 <column name="id_producto" />
             </key-property>
         </composite-id>
-        <many-to-one name="pedidoParcial" class="entity.PedidoParcial" update="false" insert="false" fetch="select">
-            <column name="id_pedido_parcial" not-null="true" />
+        <many-to-one name="ordenInternamiento" class="entity.OrdenInternamiento" update="false" insert="false" fetch="select">
+            <column name="id_orden_internamiento" not-null="true" />
         </many-to-one>
         <many-to-one name="producto" class="entity.Producto" update="false" insert="false" fetch="select">
             <column name="id_producto" not-null="true" />
         </many-to-one>
         <property name="cantidad" type="java.lang.Integer">
             <column name="cantidad" />
+        </property>
+        <property name="cantidadIngresada" type="java.lang.Integer">
+            <column name="cantidad_ingresada" />
         </property>
     </class>
 </hibernate-mapping>

@@ -3,7 +3,7 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated May 27, 2015 11:57:10 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="entity.Condicion" table="condicion" catalog="saddb" optimistic-lock="version">
+    <class name="entity.TipoProducto" table="tipo_producto" catalog="saddb" optimistic-lock="version">
         <id name="id" type="java.lang.Integer">
             <column name="id" />
             <generator class="identity" />
@@ -14,23 +14,11 @@
         <property name="descripcion" type="string">
             <column name="descripcion" length="200" />
         </property>
-        <set name="almacens" table="almacen" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_condicion" not-null="true" />
-            </key>
-            <one-to-many class="entity.Almacen" />
-        </set>
         <set name="productos" table="producto" inverse="true" lazy="true" fetch="select">
             <key>
-                <column name="id_condicion" not-null="true" />
+                <column name="id_tipo_producto" not-null="true" />
             </key>
             <one-to-many class="entity.Producto" />
-        </set>
-        <set name="tipoUnidadTransportes" table="tipo_unidad_transporte" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_condicion" not-null="true" />
-            </key>
-            <one-to-many class="entity.TipoUnidadTransporte" />
         </set>
     </class>
 </hibernate-mapping>
