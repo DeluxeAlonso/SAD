@@ -7,11 +7,12 @@ package base.product;
 
 import base.IRepository;
 import entity.Producto;
+import java.util.ArrayList;
 
 /**
  *
  * @author Alonso
  */
 public interface IProductRepository extends IRepository<Producto>{
-    
+    public ArrayList<Producto> queryByType(int idType);
 }

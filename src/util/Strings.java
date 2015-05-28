@@ -95,5 +95,12 @@ public class Strings {
     public static final String MESSAGE_CREATE_ORDER="El pedido ha sido creado";
     public static final String MESSAGE_CREATE_ORDER_TITLE="Creacion de Pedido";
     /*END*/
+    
+    /*KARDEX MESSAGES*/
+    public static final String ERROR_KARDEX_TITLE="Error en reporte de Kardex";
+    public static final String ERROR_DATE_INI="Seleccione fecha inicial";
+    public static final String ERROR_DATE_END="Seleccione fecha final";
+    public static final String ERROR_DATE="La fecha inicial debe ser anterior a la final";
+    /*END*/
 
 }

@@ -1,5 +1,5 @@
 package entity;
-// Generated May 26, 2015 4:12:25 AM by Hibernate Tools 4.3.1
+// Generated May 27, 2015 11:57:07 PM by Hibernate Tools 4.3.1
 
 
 
@@ -9,17 +9,26 @@ package entity;
 public class KardexId  implements java.io.Serializable {
 
 
+     private int id;
      private int idProducto;
      private int idAlmacen;
 
     public KardexId() {
     }
 
-    public KardexId(int idProducto, int idAlmacen) {
+    public KardexId(int id, int idProducto, int idAlmacen) {
+       this.id = id;
        this.idProducto = idProducto;
        this.idAlmacen = idAlmacen;
     }
    
+    public int getId() {
+        return this.id;
+    }
+    
+    public void setId(int id) {
+        this.id = id;
+    }
     public int getIdProducto() {
         return this.idProducto;
     }
@@ -42,13 +51,15 @@ public class KardexId  implements java.io.Serializable {
 		 if ( !(other instanceof KardexId) ) return false;
 		 KardexId castOther = ( KardexId ) other; 
          
-		 return (this.getIdProducto()==castOther.getIdProducto())
+		 return (this.getId()==castOther.getId())
+ && (this.getIdProducto()==castOther.getIdProducto())
  && (this.getIdAlmacen()==castOther.getIdAlmacen());
    }
    
    public int hashCode() {
          int result = 17;
          
+         result = 37 * result + this.getId();
          result = 37 * result + this.getIdProducto();
          result = 37 * result + this.getIdAlmacen();
          return result;

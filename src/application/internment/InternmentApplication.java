@@ -8,8 +8,8 @@ package application.internment;
 import base.internment.IInternmentRepository;
 import entity.Almacen;
 import entity.OrdenInternamiento;
-import entity.OrdenInternamientoXItemProductoId;
-import entity.OrdenInternamientoXItemProducto;
+import entity.OrdenInternamientoXProductoId;
+import entity.OrdenInternamientoXProducto;
 import infraestructure.internment.InternmentRepository;
 import java.util.ArrayList;
 
