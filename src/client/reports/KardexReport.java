@@ -96,47 +96,16 @@ public class KardexReport extends javax.swing.JInternalFrame {
                         sdf.format(kardex.get(0).getFecha()),
                         "Inventario Inicial",
                         "-",
-                        "-",
-                        "-",
-                        "-",
-                        "-",
-                        "-",
                         kardex.get(0).getStockInicial(),
-                        precio_unit,
-                        kardex.get(0).getStockInicial()*precio_unit,
                     };
             model.addRow(row);
             for(Kardex kardexItem : kardex){
-                if(kardexItem.getTipoMovimiento().equals("Ingreso")){
-                    row = new Object[]{
-                        sdf.format(kardexItem.getFecha()),
-                        kardexItem.getTipoMovimiento(),
-                        kardexItem.getCantidad(),
-                        precio_unit,
-                        kardexItem.getCantidad()*precio_unit,
-                        "-",
-                        "-",
-                        "-",
-                        kardexItem.getStockFinal(),
-                        precio_unit,
-                        kardexItem.getStockFinal()*precio_unit,
-                    };
-                }
-                else{
-                    row = new Object[]{
-                        sdf.format(kardexItem.getFecha()),
-                        kardexItem.getTipoMovimiento(),
-                        "-",
-                        "-",
-                        "-",
-                        kardexItem.getCantidad(),
-                        precio_unit,
-                        kardexItem.getCantidad()*precio_unit,
-                        kardexItem.getStockFinal(),
-                        precio_unit,
-                        kardexItem.getStockFinal()*precio_unit,
-                    };
-                }
+                row = new Object[]{
+                    sdf.format(kardexItem.getFecha()),
+                    kardexItem.getTipoMovimiento(),
+                    kardexItem.getCantidad(),
+                    kardexItem.getStockFinal(),
+                };
                 model.addRow(row);
             }
             // Inventario final
@@ -144,14 +113,7 @@ public class KardexReport extends javax.swing.JInternalFrame {
                         sdf.format(kardex.get(kardex.size()-1).getFecha()),
                         "Inventario Final",
                         "-",
-                        "-",
-                        "-",
-                        "-",
-                        "-",
-                        "-",
                         kardex.get(kardex.size()-1).getStockFinal(),
-                        precio_unit,
-                        kardex.get(kardex.size()-1).getStockFinal()*precio_unit,
                     };
             model.addRow(row);
         }
@@ -179,10 +141,7 @@ public class KardexReport extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblKardex = new javax.swing.JTable();
         jSeparator1 = new javax.swing.JSeparator();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnExport = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Kardex");
@@ -210,28 +169,23 @@ public class KardexReport extends javax.swing.JInternalFrame {
 
         tblKardex.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Fecha", "Detalle", "Unidades", "V. Unit.", "V. Total", "Unidades", "V.Unit.", "V. Total", "Unidades", "V. Unit", "V. Total"
+                "Fecha", "Detalle", "Unidades", "Stock final"
             }
         ));
         jScrollPane1.setViewportView(tblKardex);
 
-        jLabel5.setText("Ingreso");
-
-        jLabel6.setText("Salida");
-
-        jLabel7.setText("Existencias");
-
-        jButton1.setText("Exportar XLS");
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnExport.setText("Exportar XLS");
+        btnExport.setEnabled(false);
+        btnExport.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                jButton1MousePressed(evt);
+                btnExportMousePressed(evt);
             }
         });
 
@@ -243,38 +197,28 @@ public class KardexReport extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnReport)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel1)
-                                    .addComponent(jLabel2))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(dtcInitDate, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
-                                    .addComponent(comboWarehouseFrom, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel4))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(dtcEndDate, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
-                                    .addComponent(comboProductFrom, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 988, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(293, 293, 293)
-                        .addComponent(jLabel5)
-                        .addGap(238, 238, 238)
-                        .addComponent(jLabel6)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(dtcInitDate, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                            .addComponent(comboWarehouseFrom, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(44, 44, 44)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel7)
-                        .addGap(116, 116, 116))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(comboProductFrom, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(dtcEndDate, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnExport, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnReport, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -289,8 +233,8 @@ public class KardexReport extends javax.swing.JInternalFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(comboProductFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(comboProductFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -304,18 +248,13 @@ public class KardexReport extends javax.swing.JInternalFrame {
                             .addComponent(dtcEndDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnReport)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addGap(19, 19, 19)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnExport)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -343,11 +282,13 @@ public class KardexReport extends javax.swing.JInternalFrame {
             
             if(hasErrors){
                 JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_KARDEX_TITLE,JOptionPane.WARNING_MESSAGE);
+                btnExport.setEnabled(false);
             }else{
                 kardex = new ArrayList<Kardex>();
                 kardex = kardexApplication.queryByParameters(warehouses.get(comboWarehouseFrom.getSelectedIndex()).getId(), products.get(comboProductFrom.getSelectedIndex()).getId(), dtcInitDate.getDate(),dtcEndDate.getDate());
                 System.out.println(kardex.size());
                 fillKardex();
+                btnExport.setEnabled(true);
             }
         }
     }//GEN-LAST:event_btnReportActionPerformed
@@ -357,7 +298,7 @@ public class KardexReport extends javax.swing.JInternalFrame {
             fillProducts(warehouses.get(comboWarehouseFrom.getSelectedIndex()).getCondicion().getId());
     }//GEN-LAST:event_comboWarehouseFromItemStateChanged
 
-    private void jButton1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MousePressed
+    private void btnExportMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportMousePressed
         JOptionPane.setDefaultLocale(new Locale("es", "ES"));
         fc.setDialogTitle("Seleccione un archivo");
         fc.showOpenDialog(this);
@@ -389,24 +330,21 @@ public class KardexReport extends javax.swing.JInternalFrame {
             Logger.getLogger(KardexReport.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir el archivo",Strings.ERROR_KARDEX_TITLE,JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_jButton1MousePressed
+    }//GEN-LAST:event_btnExportMousePressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnExport;
     private javax.swing.JButton btnReport;
     private javax.swing.JComboBox comboProductFrom;
     private javax.swing.JComboBox comboWarehouseFrom;
     private com.toedter.calendar.JDateChooser dtcEndDate;
     private com.toedter.calendar.JDateChooser dtcInitDate;
-    private javax.swing.JButton jButton1;
     private com.toedter.calendar.JCalendar jCalendar1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable tblKardex;
