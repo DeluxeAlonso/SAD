@@ -551,14 +551,18 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
     }//GEN-LAST:event_fileBtnActionPerformed
 
     private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
-        if(editTransportUnit(EntityType.TRANSPORT_UNITS.get(transportTable.getSelectedRow()))){
-            transportUnitApplication.refreshTransportUnits();
-            JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_TRANSPORT_UNIT_CREATED,Strings.MESSAGE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
-            disableButtons();
-            refreshTable();
+        if(validFields()){
+            if(editTransportUnit(EntityType.TRANSPORT_UNITS.get(transportTable.getSelectedRow()))){
+                transportUnitApplication.refreshTransportUnits();
+                JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_TRANSPORT_UNIT_CREATED,Strings.MESSAGE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
+                disableButtons();
+                refreshTable();
+            }
+            else
+                JOptionPane.showMessageDialog(this, Strings.ERROR_MESSAGE_TRANSPORT_UNIT,Strings.MESSAGE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
         }
         else
-            JOptionPane.showMessageDialog(this, Strings.ERROR_MESSAGE_TRANSPORT_UNIT,Strings.MESSAGE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_NEW_LOCAL_TITLE,JOptionPane.WARNING_MESSAGE);
     }//GEN-LAST:event_editBtnActionPerformed
 
 
