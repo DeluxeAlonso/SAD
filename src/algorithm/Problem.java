@@ -15,7 +15,7 @@ import java.util.ArrayList;
  *
  * @author robert
  */
-class Problem {    
+public class Problem {    
     private ArrayList<PedidoParcial> orders;
     private ArrayList<UnidadTransporte> vehicles;
     

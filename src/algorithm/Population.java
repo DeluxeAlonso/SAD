@@ -9,7 +9,7 @@ package algorithm;
  *
  * @author robert
  */
-class Population {
+public class Population {
     private Solution[] solutions;
     private Algorithm algorithm;
     private Problem problem;
@@ -49,5 +49,9 @@ class Population {
 
     public void setProblem(Problem problem) {
         this.problem = problem;
+    }
+
+    Solution getBestSolution() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -3,15 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package algorithm;
+package algorithm.operators;
+
+import algorithm.Algorithm;
+import algorithm.Problem;
+import algorithm.Solution;
 
 /**
  *
  * @author robert
  */
-public class Crossover {
+public class Mutation {
 
-    public static Solution uniformCrossover(Solution[] parents, Algorithm algorithm, Problem problem) {
+    public static Solution mutation(Solution child, Algorithm algorithm, Problem problem) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
