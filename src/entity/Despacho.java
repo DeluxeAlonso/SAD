@@ -1,5 +1,5 @@
 package entity;
-// Generated May 26, 2015 4:12:25 AM by Hibernate Tools 4.3.1
+// Generated May 27, 2015 11:57:07 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -17,7 +17,6 @@ public class Despacho  implements java.io.Serializable {
      private Date fechaDespacho;
      private Integer estado;
      private Set guiaRemisions = new HashSet(0);
-     private Set pallets = new HashSet(0);
 
     public Despacho() {
     }
@@ -26,12 +25,11 @@ public class Despacho  implements java.io.Serializable {
     public Despacho(UnidadTransporte unidadTransporte) {
         this.unidadTransporte = unidadTransporte;
     }
-    public Despacho(UnidadTransporte unidadTransporte, Date fechaDespacho, Integer estado, Set guiaRemisions, Set pallets) {
+    public Despacho(UnidadTransporte unidadTransporte, Date fechaDespacho, Integer estado, Set guiaRemisions) {
        this.unidadTransporte = unidadTransporte;
        this.fechaDespacho = fechaDespacho;
        this.estado = estado;
        this.guiaRemisions = guiaRemisions;
-       this.pallets = pallets;
     }
    
     public Integer getId() {
@@ -68,13 +66,6 @@ public class Despacho  implements java.io.Serializable {
     
     public void setGuiaRemisions(Set guiaRemisions) {
         this.guiaRemisions = guiaRemisions;
-    }
-    public Set getPallets() {
-        return this.pallets;
-    }
-    
-    public void setPallets(Set pallets) {
-        this.pallets = pallets;
     }
 
 

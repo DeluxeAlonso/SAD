@@ -126,7 +126,7 @@ public class MainView extends javax.swing.JFrame {
         menuBar = new javax.swing.JMenuBar();
         menuMov = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
+        Pedidos = new javax.swing.JMenuItem();
         jMenuItem6 = new javax.swing.JMenuItem();
         menuOp = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -185,13 +185,13 @@ public class MainView extends javax.swing.JFrame {
         });
         menuMov.add(jMenuItem2);
 
-        jMenuItem3.setText("Pedidos");
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+        Pedidos.setText("Pedidos");
+        Pedidos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
+                PedidosActionPerformed(evt);
             }
         });
-        menuMov.add(jMenuItem3);
+        menuMov.add(Pedidos);
 
         jMenuItem6.setText("Movimientos Pallets");
         jMenuItem6.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -673,6 +673,20 @@ public class MainView extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_RackItemMousePressed
 
+    private void PedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PedidosActionPerformed
+        if (orderView == null || !orderView.isShowing()) {
+            orderView = new OrderView();
+            orderView.setVisible(true);
+            mainPanel.add(orderView);
+            try {
+                // TODO add your handling code here:
+                orderView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_PedidosActionPerformed
+
     private void jMenuItem15MousePressed(java.awt.event.MouseEvent evt) {
         // TODO add your handling code here:
         if (availabilityReport == null || !availabilityReport.isShowing()) {
@@ -693,6 +707,7 @@ public class MainView extends javax.swing.JFrame {
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem Pedidos;
     private javax.swing.JMenuItem RackItem;
     private javax.swing.JMenuItem TUFrame;
     private javax.swing.JMenuItem WarehouseMenu;
@@ -707,7 +722,6 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem18;
     private javax.swing.JMenuItem jMenuItem19;
     private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;

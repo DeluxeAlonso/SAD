@@ -1,1 +1,0 @@
-ALTER TABLE saddb.cliente ADD estado INT;

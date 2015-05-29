@@ -26,7 +26,7 @@ public class ProductApplication {
     
     public void createProduct(Producto product) {
         try{
-            productRepository.insert(product);
+            int i = productRepository.insert(product);
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -40,6 +40,16 @@ public class ProductApplication {
             e.printStackTrace();
         }
         return actions;
+    }  
+    
+    public ArrayList<Producto> queryByType(int idType){
+        ArrayList<Producto> products=null;
+        try{
+            products = productRepository.queryByType(idType);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return products;
     }
     
     public void delete(Producto product){

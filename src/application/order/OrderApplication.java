@@ -46,7 +46,7 @@ public class OrderApplication {
         return client;
     }
     
-    public Boolean CreateOrder(Pedido order, PedidoParcial p, PedidoParcialXProducto pp){
+    public Boolean CreateOrder(Pedido order, PedidoParcial p, ArrayList<PedidoParcialXProducto> pp){
         Boolean response = false;
         try {
             response = orderRepository.createOrder(order, p, pp);
@@ -68,6 +68,26 @@ public class OrderApplication {
     
     public void refreshOrders(){
         EntityType.ORDERS = getAllOrders();
+    }
+
+    public ArrayList<PedidoParcial> getPendingPartialOrders() {
+        ArrayList<PedidoParcial> partialOrders = new ArrayList<>();
+        try{
+            partialOrders = orderRepository.queryAllPendingPartialOrders();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return partialOrders;
+    }
+    
+    public ArrayList<PedidoParcialXProducto> queryAllPartialOrderProducts(Integer partialOrderId){
+        ArrayList<PedidoParcialXProducto> partialProducts = new ArrayList<>();
+        try{
+            partialProducts = orderRepository.queryAllPartialOrderProducts(partialOrderId);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return partialProducts;
     }
         
 }

@@ -70,15 +70,14 @@ public class AppStart {
         SpotApplication spotApplication = InstanceFactory.Instance.getInstance("spotApplication", SpotApplication.class);
         OrderApplication orderApplication = InstanceFactory.Instance.getInstance("orderApplication", OrderApplication.class);
         ClientApplication clientApplication = InstanceFactory.Instance.getInstance("clientApplication", ClientApplication.class);
-        ProductApplication productApplication = InstanceFactory.Instance.getInstance("productApplication", ProductApplication.class);
-        //al final se tiene que cargar el arreglo desde la base de datos        
-        EntityType.CONDITIONS = conditionApplication.queryAll();
+        ProductApplication productApplication = InstanceFactory.Instance.getInstance("productApplication", ProductApplication.class);        
+        conditionApplication.refreshConditions();
         EntityType.fillConditionNames();
         //Se llama un metodo para que actualice los perfiles en la variable global PROFILES y ACTIONS
         profileApplication.refreshProfiles();
         actionApplication.refreshActions();       
         transportUnitApplication.refreshTransportUnits();
-        //orderApplication.refreshOrders();
+        orderApplication.refreshOrders();
         clientApplication.refreshClients();
         productApplication.refreshProducts();
     }

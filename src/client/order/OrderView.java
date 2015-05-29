@@ -12,6 +12,7 @@ import entity.Local;
 import entity.Pedido;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
+import entity.PedidoParcialXProductoId;
 import entity.Producto;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -38,8 +39,8 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
     LocalApplication localApplication = new LocalApplication();
     public static OrderView orderView;
     ArrayList<Local> locals = new ArrayList<>();
-    ArrayList<Producto> orderProducts = new ArrayList<>();
-    ArrayList<Integer> productQuantities = new ArrayList<>();
+    ArrayList<Producto> orderProducts;
+    ArrayList<Integer> productQuantities;
     String[] clientNames;
     String[] localNames;
     Integer selectedRowIndex = 0;
@@ -55,8 +56,24 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
     }
 
     public void setupElements(){
+        /*ArrayList<PedidoParcial> partials = new ArrayList<>();
+        partials = orderApplication.getPendingPartialOrders();
+        for(int i=0;i<partials.size();i++){
+            System.out.println(partials.get(i).getPedido().getId() + " " + partials.get(i).getPedido().getEstado());
+            ArrayList<PedidoParcialXProducto> products = new ArrayList<>();
+            products = orderApplication.queryAllPartialOrderProducts(partials.get(i).getId());
+            for(int j=0; j<products.size(); j++){
+                System.out.println(products.get(j).getProducto().getNombre());
+            }
+        }*/
+        initializeArrays();
         fillCombos();
         refreshTable();
+    }
+
+    public void initializeArrays(){
+        orderProducts = new ArrayList<>();
+        productQuantities = new ArrayList<>();
     }
     
     public void fillCombos(){
@@ -96,21 +113,54 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         DefaultTableModel tableModel = new DefaultTableModel(cols.toArray(), 0);
         orderTable.setModel(tableModel);
         EntityType.ORDERS.stream().forEach((_order) -> {
-            Object[] row = {_order.getId(), orderApplication.getOrderClient(_order.getIdCliente()).getNombre()
+            Object[] row = {_order.getId(), orderApplication.getOrderClient(_order.getId()).getNombre()
                     , _order.getLocal().getNombre(),EntityState.getOrdersState()[_order.getEstado()]};
             tableModel.addRow(row);
         });
     }
     
     public void setupListeners() {
+        jScrollPane2.addMouseListener(this);
         orderTable.addMouseListener(this);
         productTable.addMouseListener(this);
         clientCombo.addItemListener(this);
     }
     
+    /*ORDER METHODS*/
+    
+    public void createOrder(){
+        Pedido p = new Pedido();
+        p.setEstado(1);
+        p.setCliente(EntityType.CLIENTS.get(clientCombo.getSelectedIndex() - 1));
+        p.setLocal(locals.get(localCombo.getSelectedIndex()));
+        
+        PedidoParcial pp = new PedidoParcial();
+        pp.setEstado(1);
+        pp.setPedido(p);
+        
+        ArrayList<PedidoParcialXProducto> partialProducts = new ArrayList<>(); 
+        for(int i=0;i<orderProducts.size();i++){
+            PedidoParcialXProducto partialProduct = new PedidoParcialXProducto();
+            PedidoParcialXProductoId id = new PedidoParcialXProductoId();
+            
+            id.setIdProducto(orderProducts.get(i).getId());
+            
+            partialProduct.setId(id);
+            partialProduct.setCantidad(productQuantities.get(i));
+            partialProduct.setPedidoParcial(pp);
+            partialProduct.setProducto(orderProducts.get(i));
+            
+            partialProducts.add(partialProduct);
+        }
+        
+        if (orderApplication.CreateOrder(p, pp, partialProducts))
+            JOptionPane.showMessageDialog(this, Strings.MESSAGE_CREATE_ORDER,
+                    Strings.MESSAGE_CREATE_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
+    }
+    
     public void deleteOrder(){
-        EntityType.ORDERS.get(selectedRowIndex).setEstado(0);
-        if(orderApplication.updateOrder(EntityType.ORDERS.get(selectedRowIndex))){
+        EntityType.ORDERS.get(currentOrderIndex()).setEstado(0);
+        if(orderApplication.updateOrder(EntityType.ORDERS.get(currentOrderIndex()))){
             orderApplication.refreshOrders();
             refreshTable();
             JOptionPane.showMessageDialog(this, Strings.MESSAGE_DELETE_ORDER,
@@ -119,12 +169,11 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         }
     }
     
+    /*PRODUCT METHODS*/
+    
     public void addProduct(Producto p, Integer q){
-        System.out.println("CANTIDAD " + q);
-        System.out.println("PRODUCTO " + p.getNombre());
         if(orderProducts.contains(p)){
             int index = orderProducts.indexOf(p);
-            System.out.println("INDEX " + index);
             productQuantities.set(index, q + productQuantities.get(index));
             if (productQuantities.get(index) > p.getStockTotal())
                 productQuantities.set(index, p.getStockTotal());
@@ -136,13 +185,24 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
             }else{
                 productQuantities.add(q); 
             }
-             
-            System.out.println(productQuantities.get(0));
         }
         refreshProductTable();
     }
     
-    public void refreshProductTable(){
+    public void deleteProduct(int index){
+        ArrayList<Producto> products = new ArrayList<>();
+        ArrayList<Integer> quantities = new ArrayList<>();
+        for(int i=0;i<orderProducts.size();i++){
+            if(i != index){
+                products.add(orderProducts.get(i));
+                quantities.add(productQuantities.get(i));
+            }
+        }
+        orderProducts = products;
+        productQuantities = quantities;
+    }
+    
+        public void refreshProductTable(){
         ArrayList<String> cols = new ArrayList<>();
         for (int i = 0; i<productTable.getColumnCount(); i++)
             cols.add(productTable.getColumnName(i));
@@ -154,6 +214,15 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
             Object[] row = {_product.getId(), _product.getNombre(), _product.getCondicion().getNombre(), productQuantities.get(orderProducts.indexOf(_product))};
             tableModel.addRow(row);
         });
+    }
+    
+    public int currentOrderIndex(){
+        return orderTable.getSelectedRow();
+    }
+    
+    public int currentProductIndex(){
+        System.out.println(productTable.getSelectedRow());
+        return productTable.getSelectedRow();
     }
     
     /**
@@ -188,6 +257,14 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         setClosable(true);
 
         jScrollPane2.setEnabled(false);
+        jScrollPane2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jScrollPane2MousePressed(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jScrollPane2MouseEntered(evt);
+            }
+        });
 
         orderTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -431,32 +508,25 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
     }//GEN-LAST:event_deleteBtnActionPerformed
 
     private void removeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBtnActionPerformed
-        System.out.println("indexdelete " + selectedProductRowIndex);
-        System.out.println(orderProducts.get(selectedProductRowIndex).getNombre());
-        orderProducts.remove(orderProducts.get(selectedProductRowIndex));
-        productQuantities.remove(selectedProductRowIndex);
+        deleteProduct(currentProductIndex());
         refreshProductTable();
     }//GEN-LAST:event_removeBtnActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        Pedido p = new Pedido();
-        p.setEstado(1);
-        p.setIdCliente(EntityType.CLIENTS.get(clientCombo.getSelectedIndex() - 1).getId());
-        p.setLocal(locals.get(localCombo.getSelectedIndex()));
-        
-        PedidoParcial pp = new PedidoParcial();
-        pp.setEstado(1);
-        pp.setPedido(p);
-        
-        orderApplication.CreateOrder(p, pp, null);
+        createOrder();
         orderApplication.refreshOrders();
+        initializeArrays();
+        refreshProductTable();
         refreshTable();
-        
-        JOptionPane.showMessageDialog(this, Strings.MESSAGE_CREATE_ORDER,
-                    Strings.MESSAGE_CREATE_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
-        //PedidoParcialXProducto pxp = new PedidoParcialXProducto();
-
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jScrollPane2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane2MousePressed
+
+    }//GEN-LAST:event_jScrollPane2MousePressed
+
+    private void jScrollPane2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane2MouseEntered
+
+    }//GEN-LAST:event_jScrollPane2MouseEntered
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -483,16 +553,14 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        System.out.println("MouseCliced" + orderTable.getSelectedRow() + e.getSource().getClass().getName());
         JTable target = (JTable)e.getSource();
-        if(target != null){
+        if(target != null && orderTable.getSelectedRow() != -1){
             if(target.getColumnName(3).equals("Cantidad")){
-                selectedProductRowIndex = target.getSelectedRow();
-                System.out.println(selectedProductRowIndex);
                 removeBtn.setEnabled(true);
             }
             else{
-                selectedRowIndex = target.getSelectedRow();
-                if(EntityType.ORDERS.get(selectedRowIndex).getEstado() != 0){
+                if(EntityType.ORDERS.get(currentOrderIndex()).getEstado() != 0){
                     deleteBtn.setEnabled(true);
                 }else
                     deleteBtn.setEnabled(false);
