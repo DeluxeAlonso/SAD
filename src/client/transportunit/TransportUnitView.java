@@ -10,11 +10,14 @@ import application.transportunit.TransportUnitApplication;
 import application.transportunittype.TransportUnitTypeApplication;
 import entity.TipoUnidadTransporte;
 import entity.UnidadTransporte;
+import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Locale;
+import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
@@ -22,6 +25,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import util.EntityState;
 import util.EntityType;
@@ -36,8 +40,10 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
     
     TransportUnitApplication transportUnitApplication = InstanceFactory.Instance.getInstance("transportUnitApplication", TransportUnitApplication.class);
     TransportUnitTypeApplication transportUnitTypeApplication = InstanceFactory.Instance.getInstance("transportUnitTypeApplication", TransportUnitTypeApplication.class);
+    Border errorBorder = BorderFactory.createLineBorder(Color.RED, 1);
+    Border regularBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
     public static TransportUnitView transportUnitView;
-    Integer selectedRowIndex = 0;
+    String error_message;
     /**
      * Creates new form TUForm
      */
@@ -54,11 +60,127 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
         refreshTable();
     }
     
+    public void setupListeners() {
+        addMouseListener(this);
+        transportScrollPanel.addMouseListener(this);
+        transportTable.addMouseListener(this);
+    }
+    
     public void fillCombos(){
         EntityType.TRANSPORT_TYPES = transportUnitTypeApplication.getAllTransportUnitTypes();
         EntityType.fillUnitTransportTypesNames();
         transportTypeCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.TRANSPORT_TYPE_NAMES));
+        typeCreateCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.TRANSPORT_TYPE_NAMES));
     }
+    
+    //TRANSPORT UNIT METHODS
+    
+    public Boolean saveTransportUnit(){
+        UnidadTransporte transportUnit = new UnidadTransporte();
+        transportUnit.setPlaca(plateCreateTxt.getText());
+        transportUnit.setTransportista(transportistCreateTxt.getText());
+        transportUnit.setEstado(1);
+        transportUnit.setTipoUnidadTransporte(EntityType.TRANSPORT_TYPES.get(typeCreateCombo.getSelectedIndex()-1));
+        return transportUnitApplication.createTransportUnit(transportUnit);
+    }
+    
+    public Boolean editTransportUnit(UnidadTransporte updatedTransportUnit) {
+        updatedTransportUnit.setPlaca(plateCreateTxt.getText());
+        updatedTransportUnit.setTransportista(transportistCreateTxt.getText());
+        updatedTransportUnit.setEstado(1);
+        updatedTransportUnit.setTipoUnidadTransporte(EntityType.TRANSPORT_TYPES.get(typeCreateCombo.getSelectedIndex()-1));
+        return transportUnitApplication.updateTransportUnit(updatedTransportUnit);
+    }
+    
+    public void deleteTransportUnit(){
+        EntityType.TRANSPORT_UNITS.get(transportTable.getSelectedRow()).setEstado(0);
+        if(transportUnitApplication.updateTransportUnit(EntityType.TRANSPORT_UNITS.get(transportTable.getSelectedRow()))){
+            transportUnitApplication.refreshTransportUnits();
+            refreshTable();
+            JOptionPane.showMessageDialog(this, Strings.MESSAGE_DELETE_TRANSPORT_UNIT,
+                    Strings.MESSAGE_DELETE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+   
+    /*BUTTON'S HANDLING METHODS*/
+    
+    public void enableButtons(){
+        editBtn.setEnabled(true);
+        deleteBtn.setEnabled(true);  
+    }
+    
+    public void disableButtons(){
+        editBtn.setEnabled(false);
+        deleteBtn.setEnabled(false);
+    }
+    
+    /*INPUT FIELDS METHODS*/
+    
+    public void fillCreateFields(UnidadTransporte transportUnit){
+        plateCreateTxt.setText(transportUnit.getPlaca());
+        transportistCreateTxt.setText(transportUnit.getTransportista());
+        typeCreateCombo.setSelectedItem(transportUnit.getTipoUnidadTransporte().getDescripcion());
+    }
+    
+    public void clearFields(){
+        plateCreateTxt.setText("");
+        transportistCreateTxt.setText("");
+        typeCreateCombo.setSelectedIndex(0);
+    }
+    
+    public void clearNewTransportUnitFielBorders(){
+        plateCreateTxt.setBorder(regularBorder);
+        transportistCreateTxt.setBorder(regularBorder);
+    }
+    
+    public Boolean validFields(){                                         
+        clearNewTransportUnitFielBorders();
+        error_message = "Errores:\n";
+        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+        boolean valid = true;
+        if(plateCreateTxt.getText().isEmpty()){
+            error_message += Strings.ERROR_PLATE_REQUIRED+"\n";
+            plateCreateTxt.setBorder(errorBorder);
+            valid = false;
+        }
+        else if(plateCreateTxt.getText().length() != 6){
+            error_message += Strings.ERROR_PLATE_NOT_6+"\n";
+            plateCreateTxt.setBorder(errorBorder);
+            valid = false;
+        }
+        if(transportistCreateTxt.getText().isEmpty()){
+            error_message += Strings.ERROR_TRANSPORTIST_REQUIRED+"\n";
+            transportistCreateTxt.setBorder(errorBorder);
+            valid = false;
+        }
+        else if(transportistCreateTxt.getText().length() > 60){
+            error_message += Strings.ERROR_TRANSPORTIST_MORE_60+"\n";
+            transportistCreateTxt.setBorder(errorBorder);
+            valid = false; 
+        }
+        if(typeCreateCombo.getSelectedIndex() == 0){
+            error_message += Strings.ERROR_TRANSPORT_TYPE_REQUIRED+"\n";
+            valid = false; 
+        }
+        return valid;
+    }
+    
+    /*FILE METHODS*/
+    
+    public void loadFile(String filename){
+        Boolean response = transportUnitApplication.loadTransportUnit(filename);
+        if(response){
+            JOptionPane.showMessageDialog(this, Strings.MESSAGE_FILE_TRANSPORT_UNIT,
+                    Strings.MESSAGE_FILE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
+            transportUnitApplication.refreshTransportUnits();
+            refreshTable();
+        }
+        else
+            JOptionPane.showMessageDialog(this, Strings.MESSAGE_FILE_ERROR_TRANSPORT_UNIT,
+                    Strings.MESSAGE_FILE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    /*JTABLE METHODS*/
     
     public void refreshTable(){
         ArrayList<String> cols = new ArrayList<>();
@@ -74,39 +196,7 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
         });
     }
     
-    public void setupListeners() {
-        addMouseListener(this);
-        transportScrollPanel.addMouseListener(this);
-        transportTable.addMouseListener(this);
-    }
-
-    public void deleteTransportUnit(){
-        EntityType.TRANSPORT_UNITS.get(selectedRowIndex).setEstado(0);
-        if(transportUnitApplication.updateTransportUnit(EntityType.TRANSPORT_UNITS.get(selectedRowIndex))){
-            transportUnitApplication.refreshTransportUnits();
-            refreshTable();
-            JOptionPane.showMessageDialog(this, Strings.MESSAGE_DELETE_TRANSPORT_UNIT,
-                    Strings.MESSAGE_DELETE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
-        }
-    }
-    
-    public void disableButtons(){
-        editBtn.setEnabled(false);
-        deleteBtn.setEnabled(false);
-    }
-    
-    public void loadFile(String filename){
-        Boolean response = transportUnitApplication.loadTransportUnit(filename);
-        if(response){
-            JOptionPane.showMessageDialog(this, Strings.MESSAGE_FILE_TRANSPORT_UNIT,
-                    Strings.MESSAGE_FILE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
-            transportUnitApplication.refreshTransportUnits();
-            refreshTable();
-        }
-        else
-            JOptionPane.showMessageDialog(this, Strings.MESSAGE_FILE_ERROR_TRANSPORT_UNIT,
-                    Strings.MESSAGE_FILE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
-    }
+    /*ACTIONS*/
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -119,19 +209,27 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
 
         transportScrollPanel = new javax.swing.JScrollPane();
         transportTable = new javax.swing.JTable();
-        newBtn = new javax.swing.JButton();
-        editBtn = new javax.swing.JButton();
         deleteBtn = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         fileTxt = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        loadBtn = new javax.swing.JButton();
+        fileBtn = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         plateTxt = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         transportTypeCombo = new javax.swing.JComboBox();
         searchBtn = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        saveBtn = new javax.swing.JButton();
+        plateCreateTxt = new javax.swing.JTextField();
+        transportistCreateTxt = new javax.swing.JTextField();
+        typeCreateCombo = new javax.swing.JComboBox();
+        editBtn = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Unidad de Tranporte");
@@ -168,21 +266,6 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
             transportTable.getColumnModel().getColumn(4).setResizable(false);
         }
 
-        newBtn.setText("Nuevo");
-        newBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newBtnActionPerformed(evt);
-            }
-        });
-
-        editBtn.setText("Editar");
-        editBtn.setEnabled(false);
-        editBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editBtnActionPerformed(evt);
-            }
-        });
-
         deleteBtn.setText("Eliminar");
         deleteBtn.setEnabled(false);
         deleteBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -202,10 +285,19 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
             }
         });
 
-        jButton1.setText("Importar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        loadBtn.setText("Cargar");
+        loadBtn.setEnabled(false);
+        loadBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                loadBtnActionPerformed(evt);
+            }
+        });
+
+        fileBtn.setText("...");
+        fileBtn.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        fileBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fileBtnActionPerformed(evt);
             }
         });
 
@@ -216,25 +308,26 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(fileTxt)
+                        .addComponent(fileTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)))
-                .addContainerGap())
+                        .addComponent(fileBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(loadBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(6, 6, 6)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(fileTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
-                .addContainerGap(12, Short.MAX_VALUE))
+                    .addComponent(loadBtn)
+                    .addComponent(fileBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtros"));
@@ -258,28 +351,104 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(plateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(transportTypeCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addComponent(searchBtn)
-                .addContainerGap())
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(searchBtn)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(plateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(28, 28, 28)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(transportTypeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(9, 9, 9)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(plateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
-                    .addComponent(transportTypeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(searchBtn))
-                .addContainerGap(20, Short.MAX_VALUE))
+                    .addComponent(transportTypeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(searchBtn))
+        );
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Nueva Unidad de Transporte"));
+
+        jLabel4.setText("*Placa:");
+
+        jLabel5.setText("*Transportista:");
+
+        jLabel6.setText("*Tipo:");
+
+        saveBtn.setText("Guardar");
+        saveBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveBtnActionPerformed(evt);
+            }
+        });
+
+        typeCreateCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        typeCreateCombo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                typeCreateComboActionPerformed(evt);
+            }
+        });
+
+        editBtn.setText("Editar");
+        editBtn.setEnabled(false);
+        editBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addGap(18, 18, 18)
+                        .addComponent(typeCreateCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(plateCreateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(saveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(editBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(transportistCreateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(plateCreateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(transportistCreateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(typeCreateCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(saveBtn)
+                    .addComponent(editBtn))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -287,53 +456,37 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(newBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(editBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteBtn))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(20, 20, 20)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(transportScrollPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(transportScrollPanel))))
                 .addGap(20, 20, 20))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(14, 14, 14)
+                .addGap(8, 8, 8)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(newBtn)
-                    .addComponent(editBtn)
-                    .addComponent(deleteBtn))
+                .addGap(6, 6, 6)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(transportScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(transportScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20))
+                .addComponent(deleteBtn)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void newBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newBtnActionPerformed
-        // TODO add your handling code here:
-
-        NewTransportUnitView newTU=new NewTransportUnitView((JFrame)SwingUtilities.getWindowAncestor(this),true);
-        newTU.setVisible(true);
-    }//GEN-LAST:event_newBtnActionPerformed
-
-    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
-        NewTransportUnitView newTU=new NewTransportUnitView((JFrame)SwingUtilities.getWindowAncestor(this),true,EntityType.TRANSPORT_UNITS.get(selectedRowIndex));
-        newTU.setVisible(true);
-    }//GEN-LAST:event_editBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
         // TODO add your handling code here:
@@ -347,7 +500,43 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
         // TODO add your handling code here:
     }//GEN-LAST:event_fileTxtActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void loadBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadBtnActionPerformed
+        loadFile(fileTxt.getText());
+    }//GEN-LAST:event_loadBtnActionPerformed
+
+    private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
+        // TODO add your handling code here:
+        String plate = plateTxt.getText();
+        TipoUnidadTransporte type = null;
+        Integer index = transportTypeCombo.getSelectedIndex() - 1;
+        if (index >= 0)
+            type = EntityType.TRANSPORT_TYPES.get(index);
+        EntityType.TRANSPORT_UNITS = transportUnitApplication.searchTransportUnits(plate, type);
+        refreshTable();
+    }//GEN-LAST:event_searchBtnActionPerformed
+
+    private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
+        if(validFields()){   
+            if(saveTransportUnit()){
+                transportUnitApplication.refreshTransportUnits();
+                JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_TRANSPORT_UNIT_CREATED,Strings.MESSAGE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
+                clearFields();
+                refreshTable();
+            }
+            else{
+                JOptionPane.showMessageDialog(this, Strings.ERROR_MESSAGE_TRANSPORT_UNIT,Strings.MESSAGE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+        else{
+            JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_NEW_LOCAL_TITLE,JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_saveBtnActionPerformed
+
+    private void typeCreateComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeCreateComboActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_typeCreateComboActionPerformed
+    
+    private void fileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileBtnActionPerformed
         JFileChooser fc = new JFileChooser();
         fc.setDialogTitle("Seleccione un archivo");
         fc.showOpenDialog(this);
@@ -357,53 +546,54 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
         }
         else{
             fileTxt.setText(file.getAbsolutePath());
-            loadFile(file.getAbsolutePath());
+            loadBtn.setEnabled(true);
         }
-        
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_fileBtnActionPerformed
 
-    private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
-        // TODO add your handling code here:
-        String plate = plateTxt.getText();
-        TipoUnidadTransporte type = null;
-        Integer index = transportTypeCombo.getSelectedIndex() - 1;
-        System.out.println(index);
-        if (index >= 0)
-            type = EntityType.TRANSPORT_TYPES.get(index);
-        EntityType.TRANSPORT_UNITS = transportUnitApplication.searchTransportUnits(plate, type);
-        refreshTable();
-    }//GEN-LAST:event_searchBtnActionPerformed
+    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
+        if(editTransportUnit(EntityType.TRANSPORT_UNITS.get(transportTable.getSelectedRow()))){
+            transportUnitApplication.refreshTransportUnits();
+            JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_TRANSPORT_UNIT_CREATED,Strings.MESSAGE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
+            disableButtons();
+            refreshTable();
+        }
+        else
+            JOptionPane.showMessageDialog(this, Strings.ERROR_MESSAGE_TRANSPORT_UNIT,Strings.MESSAGE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_editBtnActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton deleteBtn;
     private javax.swing.JButton editBtn;
+    private javax.swing.JButton fileBtn;
     private javax.swing.JTextField fileTxt;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JButton newBtn;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JButton loadBtn;
+    private javax.swing.JTextField plateCreateTxt;
     private javax.swing.JTextField plateTxt;
+    private javax.swing.JButton saveBtn;
     private javax.swing.JButton searchBtn;
     private javax.swing.JScrollPane transportScrollPanel;
     private javax.swing.JTable transportTable;
     private javax.swing.JComboBox transportTypeCombo;
+    private javax.swing.JTextField transportistCreateTxt;
+    private javax.swing.JComboBox typeCreateCombo;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        System.out.println("mouseClicked");
-        editBtn.setEnabled(true);
-        deleteBtn.setEnabled(true);
-        JTable target = (JTable)e.getSource();
-        selectedRowIndex = target.getSelectedRow();
-        if (e.getClickCount() == 2) {    
-            NewTransportUnitView newTransportUnitView = new NewTransportUnitView((JFrame)SwingUtilities.getWindowAncestor(this),true);
-            newTransportUnitView.setVisible(true);
+        if(transportTable.getSelectedRow() != -1){
+            clearNewTransportUnitFielBorders();
+            enableButtons();
+            fillCreateFields(EntityType.TRANSPORT_UNITS.get(transportTable.getSelectedRow()));
         }
     }
 

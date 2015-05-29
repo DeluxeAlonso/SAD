@@ -56,6 +56,16 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
     }
 
     public void setupElements(){
+        /*ArrayList<PedidoParcial> partials = new ArrayList<>();
+        partials = orderApplication.getPendingPartialOrders();
+        for(int i=0;i<partials.size();i++){
+            System.out.println(partials.get(i).getPedido().getId() + " " + partials.get(i).getPedido().getEstado());
+            ArrayList<PedidoParcialXProducto> products = new ArrayList<>();
+            products = orderApplication.queryAllPartialOrderProducts(partials.get(i).getId());
+            for(int j=0; j<products.size(); j++){
+                System.out.println(products.get(j).getProducto().getNombre());
+            }
+        }*/
         initializeArrays();
         fillCombos();
         refreshTable();

@@ -86,6 +86,13 @@ public class Strings {
     public static final String MESSAGE_FILE_TRANSPORT_UNIT_TITLE="Carga Masiva";
     public static final String MESSAGE_FILE_TRANSPORT_UNIT="Se realizo la carga de forma correcta";
     public static final String MESSAGE_FILE_ERROR_TRANSPORT_UNIT="No se puedo realizar la carga masiva";
+    public static final String ERROR_PLATE_REQUIRED="El campo Placa es requerido.";
+    public static final String ERROR_PLATE_NOT_6="El campo Placa debe contener exactamanete 6 caracteres.";
+    public static final String ERROR_TRANSPORTIST_REQUIRED="El campo Transportista es requerido.";
+    public static final String ERROR_TRANSPORTIST_MORE_60="El campo Transportista no debe contener mas de 60 caracteres.";
+    public static final String ERROR_TRANSPORT_TYPE_REQUIRED="El campo Tipo es requerido.";
+    
+    
     /*END*/
     
     /*ORDERS MESSAGES*/
