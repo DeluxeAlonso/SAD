@@ -20,4 +20,6 @@ public interface IOrderRepository extends IRepository<Pedido> {
     Boolean updateOrder(Pedido order);
     Cliente queryOrderClientById(Integer clientId);
     Boolean createOrder(Pedido order, PedidoParcial partialOrder, ArrayList<PedidoParcialXProducto> products);
+    ArrayList<PedidoParcial> queryAllPendingPartialOrders();
+    ArrayList<PedidoParcialXProducto> queryAllPartialOrderProducts(Integer partialOrderId);
 }
