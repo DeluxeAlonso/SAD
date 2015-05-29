@@ -12,8 +12,14 @@ import application.spot.SpotApplication;
 import application.warehouse.WarehouseApplication;
 import entity.Almacen;
 import entity.Condicion;
+import java.awt.Image;
+import java.io.IOException;
 import java.util.ArrayList;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import util.EntityState;
@@ -29,6 +35,8 @@ public class WarehouseView extends javax.swing.JInternalFrame {
     ConditionApplication conditionApplication=InstanceFactory.Instance.getInstance("conditionApplication", ConditionApplication.class);
     RackApplication rackApplication=InstanceFactory.Instance.getInstance("rackApplication", RackApplication.class);
     SpotApplication spotApplication=InstanceFactory.Instance.getInstance("spotApplication", SpotApplication.class);
+    Image img;
+    Image img2;
     /**
      * Creates new form WarehouseForm
      */
@@ -38,8 +46,31 @@ public class WarehouseView extends javax.swing.JInternalFrame {
         this.EstadoCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getWarehousesState()));       
         clearGrid();
         fillTable();
+        JPanel j = new JPanel();
+        //j.set
+        //searchBtn.add(j);
+        //searchBtn.setSize(64, 64);
+        try{
+        //Image img = ImageIO.read(getClass().getResource("../../images/save.png"));
+        //img = img.getScaledInstance(64, 64, 0);
+        //searchBtn.setIcon(new ImageIcon(img));
+        }catch (Exception e){}
+        System.out.println("Buscar: "+ searchBtn.getWidth()+" "+searchBtn.getHeight());
+        System.out.println("Buscar: "+ searchBtn.getPreferredSize().width+" "+searchBtn.getPreferredSize().height);
+        System.out.println("Nuevo: "+ newBtn.getWidth()+ " "+newBtn.getHeight());
+        System.out.println("Editar: "+ editBtn.getWidth()+ " "+ editBtn.getHeight());
+        
     }
 
+    public void         calculartam(JButton searchBtn){
+        int w = searchBtn.getWidth();
+        int h = searchBtn.getHeight();
+        System.out.println("W:"+w+"");
+        System.out.println("H:"+h+"");
+        
+        
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -137,7 +168,6 @@ public class WarehouseView extends javax.swing.JInternalFrame {
 
         condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        searchBtn.setText("Buscar");
         searchBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 searchBtnMouseClicked(evt);
@@ -193,7 +223,7 @@ public class WarehouseView extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(WarehouseGrid, javax.swing.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE)
+                    .addComponent(WarehouseGrid)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(newBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -215,7 +245,7 @@ public class WarehouseView extends javax.swing.JInternalFrame {
                                 .addGap(26, 26, 26)
                                 .addComponent(jLabel2)
                                 .addGap(18, 18, 18)
-                                .addComponent(condicionCombo, 0, 193, Short.MAX_VALUE)
+                                .addComponent(condicionCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGap(18, 18, 18)))
                         .addComponent(searchBtn)))
                 .addGap(27, 27, 27))
@@ -285,6 +315,11 @@ public class WarehouseView extends javax.swing.JInternalFrame {
 
     private void searchBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchBtnMouseClicked
         // TODO add your handling code here:
+                int w = searchBtn.getWidth();
+        int h = searchBtn.getHeight();
+        System.out.println("W:"+w+"");
+        System.out.println("H:"+h+"");
+        searchBtn.setSize(64, 64);
         clearGrid();
         int idS;
         int condicionS;

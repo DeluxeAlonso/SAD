@@ -423,6 +423,7 @@ public class MainView extends javax.swing.JFrame {
 
     private void WarehouseMenuMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WarehouseMenuMousePressed
         // TODO add your handling code here:
+        try{
         if (warehouseView == null || !warehouseView.isShowing()) {
             warehouseView = new WarehouseView();
             warehouseView.setVisible(true);
@@ -434,7 +435,7 @@ public class MainView extends javax.swing.JFrame {
                 Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        }catch(Exception e){}
 
     }//GEN-LAST:event_WarehouseMenuMousePressed
 
