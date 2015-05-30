@@ -18,7 +18,16 @@ public class Algorithm {
     private double overtimePenalty; 
     private double overstockPenalty; 
     private double maxPriority;
-    private double basePriority;    
+    private double basePriority;  
+    private double maxTravelTime;
+
+    public double getMaxTravelTime() {
+        return maxTravelTime;
+    }
+
+    public void setMaxTravelTime(double maxTravelTime) {
+        this.maxTravelTime = maxTravelTime;
+    }
     
     public int getNumberOfGenerations() {
         return numberOfGenerations;

@@ -31,6 +31,7 @@ public class AlgorithmExecution {
         algorithm.setMutationRate(0.5f);
         algorithm.setMaxPriority(10000);
         algorithm.setBasePriority(1.2);
+        algorithm.setMaxTravelTime(3);
         
         Problem problem = new Problem();
         
