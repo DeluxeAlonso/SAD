@@ -52,6 +52,16 @@ public class ProductApplication {
         return products;
     }
     
+    public ArrayList<Producto> searchProduct(Producto product){
+        ArrayList<Producto> products=null;
+        try{
+            products = productRepository.searchProduct(product);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return products;
+    }
+    
     public void delete(Producto product){
         try{
             productRepository.delete(product);

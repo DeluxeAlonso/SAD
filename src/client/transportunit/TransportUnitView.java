@@ -594,15 +594,15 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
 
     @Override
     public void mouseClicked(MouseEvent e) {
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
         if(transportTable.getSelectedRow() != -1){
             clearNewTransportUnitFielBorders();
             enableButtons();
             fillCreateFields(EntityType.TRANSPORT_UNITS.get(transportTable.getSelectedRow()));
         }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
     }
 
     @Override

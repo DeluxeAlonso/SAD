@@ -785,7 +785,10 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        System.out.println("MouseCliced" + orderTable.getSelectedRow() + e.getSource().getClass().getName());
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
         JTable target = (JTable)e.getSource();
         if(target != null && orderTable.getSelectedRow() != -1){
             if(target.getColumnName(3).equals("Cantidad")){
@@ -799,11 +802,6 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
                     deleteBtn.setEnabled(false);
             }
         }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

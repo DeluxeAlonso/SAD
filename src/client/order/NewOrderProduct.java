@@ -41,6 +41,7 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
     LocalApplication localApplication = new LocalApplication();
     ArrayList<Local> locals = new ArrayList<>();
     ArrayList<Producto> orderProducts;
+    ArrayList<Producto> productsToAdd;
     ArrayList<Integer> productQuantities;
     String[] clientNames;
     String[] localNames;
@@ -56,8 +57,9 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
     public void setupElements(){
         initializeArrays();
         productApplication.refreshProducts();
+        productsToAdd = EntityType.PRODUCTS;
         qtySpinner.setValue(1);
-        refreshTable();
+        refreshProductsToAddTable();
         fillCombos();
         setupListeners();
     }
@@ -97,14 +99,14 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
         localCombo.setModel(new javax.swing.DefaultComboBoxModel(localNames));
     }
     
-    public void refreshTable(){
+    public void refreshProductsToAddTable(){
         ArrayList<String> cols = new ArrayList<>();
         for (int i = 0; i<productAddTable.getColumnCount(); i++)
             cols.add(productAddTable.getColumnName(i));
         DefaultTableModel tableModel = new DefaultTableModel(cols.toArray(), 0);
         productAddTable.setModel(tableModel);
         System.out.println(EntityType.PRODUCTS.size());
-        EntityType.PRODUCTS.stream().forEach((_product) -> {
+        productsToAdd.stream().forEach((_product) -> {
             Object[] row = {_product.getId(), _product.getNombre(), _product.getCondicion().getNombre(), _product.getStockTotal()};
             tableModel.addRow(row);
         });
@@ -131,7 +133,7 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
                 productQuantities.add(q); 
             }
         }
-        refreshProductTable();
+        refreshOrderProductsTable();
     }
     
     public void deleteProduct(int index){
@@ -148,15 +150,13 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
         removeBtn.setEnabled(false);
     }
     
-    public void refreshProductTable(){
+    public void refreshOrderProductsTable(){
         ArrayList<String> cols = new ArrayList<>();
         for (int i = 0; i<productTable.getColumnCount(); i++)
             cols.add(productTable.getColumnName(i));
         DefaultTableModel tableModel = new DefaultTableModel(cols.toArray(), 0);
         productTable.setModel(tableModel);
         orderProducts.stream().forEach((_product) -> {
-            System.out.println(productQuantities.get(0));
-            System.out.println("index" + orderProducts.indexOf(_product));
             Object[] row = {_product.getId(), _product.getNombre(), _product.getCondicion().getNombre(), productQuantities.get(orderProducts.indexOf(_product))};
             tableModel.addRow(row);
         });
@@ -209,9 +209,9 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTextField1 = new javax.swing.JTextField();
+        codPorductTxt = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        productTxt = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         productAddTable = new javax.swing.JTable();
@@ -231,9 +231,9 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        codPorductTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                codPorductTxtActionPerformed(evt);
             }
         });
 
@@ -398,11 +398,11 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(codPorductTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField2)
+                        .addComponent(productTxt)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -421,9 +421,9 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
                     .addGroup(layout.createSequentialGroup()
                         .addGap(27, 27, 27)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(codPorductTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(productTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton1)
                             .addComponent(jLabel1))
                         .addGap(26, 26, 26)
@@ -445,8 +445,8 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         createOrder();
         initializeArrays();
-        refreshProductTable();
-        refreshTable();
+        refreshOrderProductsTable();
+        refreshProductsToAddTable();
         OrderView.orderView.refreshOrders();
         this.dispose();        // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -456,22 +456,29 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
     }//GEN-LAST:event_productAddTableMouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        Producto product = new Producto();
+        if(codPorductTxt.getText().length() == 0)
+            product.setId(null);
+        else
+            product.setId(Integer.parseInt(codPorductTxt.getText()));
+        product.setNombre(productTxt.getText());
+        productsToAdd = productApplication.searchProduct(product);
+        refreshProductsToAddTable();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        addProduct(EntityType.PRODUCTS.get(productAddTable.getSelectedRow()), (Integer)qtySpinner.getValue());
-        refreshProductTable();
+        addProduct(productsToAdd.get(productAddTable.getSelectedRow()), (Integer)qtySpinner.getValue());
+        refreshOrderProductsTable();
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void removeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBtnActionPerformed
         deleteProduct(currentProductIndex());
-        refreshProductTable();
+        refreshOrderProductsTable();
     }//GEN-LAST:event_removeBtnActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void codPorductTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codPorductTxtActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_codPorductTxtActionPerformed
 
     /**
      * @param args the command line arguments
@@ -518,6 +525,7 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBtn;
     private javax.swing.JComboBox clientCombo;
+    private javax.swing.JTextField codPorductTxt;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
@@ -528,17 +536,20 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPanel;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JComboBox localCombo;
     private javax.swing.JTable productAddTable;
     private javax.swing.JTable productTable;
+    private javax.swing.JTextField productTxt;
     private javax.swing.JSpinner qtySpinner;
     private javax.swing.JButton removeBtn;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void mouseClicked(MouseEvent e) {
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
         JTable target = (JTable)e.getSource();
         if(productAddTable.getSelectedRow() != -1){
             qtySpinner.setEnabled(true);
@@ -548,11 +559,6 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
         if(productTable.getSelectedRow() != -1){
             removeBtn.setEnabled(true); 
         }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
