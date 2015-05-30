@@ -101,6 +101,7 @@ public class Strings {
     public static final String MESSAGE_DELETE_ORDER="El pedido ha sido anulado";
     public static final String MESSAGE_CREATE_ORDER="El pedido ha sido creado";
     public static final String MESSAGE_CREATE_ORDER_TITLE="Creacion de Pedido";
+    public static final String ERROR_CREATE_ORDER_LESS_0="La cantidad seleccionada no puede ser menor a cero";
     /*END*/
     
     /*KARDEX MESSAGES*/

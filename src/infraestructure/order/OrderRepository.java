@@ -33,6 +33,9 @@ public class OrderRepository implements IOrderRepository{
             int partialId = (int)session.save(partialOrder);
             for(int i=0;i<products.size();i++){
                 products.get(i).getId().setIdPedidoParcial(partialId);
+                Integer stock = products.get(i).getProducto().getStockTotal();
+                products.get(i).getProducto().setStockTotal(stock - products.get(i).getCantidad());
+                session.update(products.get(i).getProducto());
                 session.save(products.get(i));
             }
             session.getTransaction().commit();
@@ -109,6 +112,28 @@ public class OrderRepository implements IOrderRepository{
     }
     
     @Override
+    public ArrayList<PedidoParcial> queryAllPendingPartialOrdersById(Integer id){
+                Session session = Tools.getSessionInstance();
+        String hql = "from PedidoParcial where estado=1 and id_pedido=:id";
+        ArrayList<PedidoParcial> partialOrders = new ArrayList<>();
+        Transaction trns = null;
+        try{
+            trns = session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("id", id);
+            partialOrders = (ArrayList<PedidoParcial>) q.list();
+            session.getTransaction().commit();
+        }
+        catch (RuntimeException e){
+            if(trns != null){
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return partialOrders;
+    }
+    
+    @Override
     public ArrayList<PedidoParcialXProducto> queryAllPartialOrderProducts(Integer partialOrderId){
                 Session session = Tools.getSessionInstance();
         String hql = "from PedidoParcialXProducto where id_pedido_parcial=:partialId";
@@ -128,6 +153,32 @@ public class OrderRepository implements IOrderRepository{
             e.printStackTrace();
         }
         return partialProducts;
+    }
+    
+    public ArrayList<Pedido> searchOrder(Pedido order){
+        String hql="from Pedido "
+                + "where (:id is null or id=:id) and (:id_local is null or id_local=:id_local)"
+                + "and (:status is null or estado=:status) and (:id_cliente is null or id_cliente=:id_cliente)";
+        ArrayList<Pedido> orders=null;
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("id", order.getId());
+            q.setParameter("id_local", order.getLocal().getId());
+            q.setParameter("status", order.getEstado());
+            q.setParameter("id_cliente", order.getCliente().getId());
+            orders = (ArrayList<Pedido>) q.list();             
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        } 
+        return orders;
     }
     
     @Override
