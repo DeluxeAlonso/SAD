@@ -18,7 +18,7 @@ insert into saddb.accion values (18,"Stock",4);
 insert into saddb.accion values (19,"Guías de remisión",4);
 insert into saddb.accion values (20,"Disponibilidad de almacén",4);
 insert into saddb.accion values (21,"Caducidad de productos",4);
-insert into saddb.accion values (22,"Usuarios",5);
+insert into saddb.accion values (22,"Usuarios y Perfiles",5);
 insert into saddb.accion values (23,"Log",5);
 insert into saddb.accion values (24,"Personal",6);
 insert into saddb.accion values (25,"Clientes",6);
