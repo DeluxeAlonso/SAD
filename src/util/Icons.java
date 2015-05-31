@@ -20,10 +20,10 @@ public class Icons {
     
     public static Image img= null;
     public static ArrayList<Image> images = new ArrayList<Image>();
-    public static enum ICONOS { GUARDAR , CANCELAR, BUSCAR };
+    public static enum ICONOS { GUARDAR , CANCELAR, BUSCAR, CREATE, MODIFY, DELETE };
     
     public static String[] getIconNames(){
-         String[] iconNames={"Guardar","Cancelar","Buscar"};
+         String[] iconNames={"Guardar","Cancelar","Buscar", "Nuevo", "Editar", "Eliminar"};
          return iconNames;
     }
     
@@ -36,7 +36,7 @@ public class Icons {
         
         try{
             img = images.get(a);
-            img = img.getScaledInstance(20, 20,0);
+            img = img.getScaledInstance(16, 16,0);
             b.setIcon(new ImageIcon(img));
             b.setToolTipText(getIconNames()[a]);
             
@@ -66,6 +66,12 @@ public class Icons {
             img = ImageIO.read(URL.class.getResource("../../images/Close.png"));
             images.add(img);
             img = ImageIO.read(URL.class.getResource("../../images/Zoom.png"));
+            images.add(img);
+            img = ImageIO.read(URL.class.getResource("../../images/Create.png"));
+            images.add(img);
+            img = ImageIO.read(URL.class.getResource("../../images/Modify.png"));
+            images.add(img);
+            img = ImageIO.read(URL.class.getResource("../../images/Delete.png"));
             images.add(img);
             
         }catch(Exception e){

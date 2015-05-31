@@ -703,6 +703,15 @@ public class ProductView extends javax.swing.JInternalFrame implements MouseList
             condicionCombo.setBorder(errorBorder);
             hasErrors = true;
         }
+        if (pesoTxt.getText().isEmpty()){
+            error_message += Strings.ERROR_PESO_PROD_REQUIRED+"\n";
+            pesoTxt.setBorder(errorBorder);
+            hasErrors = true;
+        }else if (!isDouble(pesoTxt.getText())){
+            error_message += Strings.ERROR_PESO_PROD_DOUBLE+"\n";
+            pesoTxt.setBorder(errorBorder);
+            hasErrors = true;            
+        }
         
         if(hasErrors){
             JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_NEW_LOCAL_TITLE,JOptionPane.ERROR_MESSAGE);

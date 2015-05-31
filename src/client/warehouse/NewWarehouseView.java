@@ -14,12 +14,15 @@ import application.warehouse.WarehouseApplication;
 import entity.Almacen;
 import entity.Rack;
 import entity.Ubicacion;
+import java.awt.Color;
 import java.awt.Image;
 import java.net.URL;
 import java.util.Calendar;
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.border.Border;
 import util.Constants;
 import util.EntityState;
 import util.EntityType;
@@ -38,6 +41,8 @@ public class NewWarehouseView extends javax.swing.JDialog {
     SpotApplication spotApplication=InstanceFactory.Instance.getInstance("spotApplication", SpotApplication.class);
     Image img;
     Image img2;
+    Border errorBorder = BorderFactory.createLineBorder(Color.RED, 1);
+    Border regularBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
     /**
      * Creates new form NewWarehouse
      */
@@ -218,10 +223,10 @@ public class NewWarehouseView extends javax.swing.JDialog {
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(17, 17, 17))
             .addGroup(layout.createSequentialGroup()
-                .addGap(68, 68, 68)
-                .addComponent(cancelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(55, 55, 55)
-                .addComponent(saveTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(112, 112, 112)
+                .addComponent(cancelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29)
+                .addComponent(saveTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -244,11 +249,11 @@ public class NewWarehouseView extends javax.swing.JDialog {
                     .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cancelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(saveTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(saveTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
+                    .addComponent(cancelBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         pack();
@@ -257,7 +262,7 @@ public class NewWarehouseView extends javax.swing.JDialog {
     private void saveTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveTxtActionPerformed
         // TODO add your handling code here:
         
-        
+        if (!hasErrors()){
         Almacen al = new Almacen();
         Calendar cal = Calendar.getInstance();
         int capa = Integer.parseInt(this.capacityTxt.getText());
@@ -307,7 +312,7 @@ public class NewWarehouseView extends javax.swing.JDialog {
         }
         JOptionPane.showMessageDialog(this, Strings.MESSAGE_WAREHOUSE_CREATED);
         clearFields();
-
+        }
     }//GEN-LAST:event_saveTxtActionPerformed
 
     public void clearFields(){
@@ -318,8 +323,66 @@ public class NewWarehouseView extends javax.swing.JDialog {
         condicionCombo.setSelectedIndex(0);
     }
     
+        public boolean isDouble( String str ){
+        try{
+            Double.parseDouble( str );
+            return true;
+        }catch( Exception e ){
+            return false;
+        }
+    }
+    
+    public boolean isInteger( String str ){
+        try{
+            Integer.parseInt(str);
+            return true;
+        }catch( Exception e ){
+            return false;
+        }
+    }
     
     
+    private boolean hasErrors(){
+        boolean errorFlag=false;
+        String error_message = "Errores:\n";
+        if (AreaTxt.getText().isEmpty()){
+            error_message += Strings.ERROR_AREA_WAREHOUSE_REQUIRED+"\n";
+            AreaTxt.setBorder(errorBorder);
+            errorFlag = true;
+        } else if (!isDouble(AreaTxt.getText())){
+            error_message += Strings.ERROR_AREA_WAREHOUSE_DOUBLE+"\n";
+            AreaTxt.setBorder(errorBorder);
+            errorFlag = true;
+        }
+        if (capacityTxt.getText().isEmpty()){
+            error_message += Strings.ERROR_CAPACITY_WAREHOUSE_REQUIRED+"\n";
+            capacityTxt.setBorder(errorBorder);
+            errorFlag = true;
+        } else if (!isInteger(capacityTxt.getText())){
+            error_message += Strings.ERROR_CAPACITY_WAREHOUSE_INT+"\n";
+            capacityTxt.setBorder(errorBorder);
+            errorFlag = true;
+        }
+        if (racksTxt.getText().isEmpty()){
+            error_message += Strings.ERROR_RACKS_WAREHOUSE_REQUIRED+"\n";
+            racksTxt.setBorder(errorBorder);
+            errorFlag = true;
+        } else if (!isInteger(racksTxt.getText())){
+            error_message += Strings.ERROR_RACKS_WAREHOUSE_INT+"\n";
+            racksTxt.setBorder(errorBorder);
+            errorFlag = true;
+        }
+        if (condicionCombo.getSelectedIndex()==0){
+            error_message += Strings.ERROR_CONDICION_WAREHOUSE_REQUIRED+"\n";
+            condicionCombo.setBorder(errorBorder);
+            errorFlag = true;
+        }
+        
+        if (errorFlag==true)
+        JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_NEW_CLIENT_TITLE,JOptionPane.WARNING_MESSAGE);
+        
+        return errorFlag;
+    }
     
     private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
         // TODO add your handling code here:
