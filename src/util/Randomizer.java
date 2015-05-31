@@ -14,7 +14,7 @@ import java.util.Random;
 public class Randomizer {
     static final Random randomGenerator = new Random();
 
-    public static boolean doIt(float probability) {
+    public static boolean doIt(double probability) {
         float randomFloat = randomGenerator.nextFloat();
         return (randomFloat < probability);
     }
@@ -26,8 +26,8 @@ public class Randomizer {
     }
 
     //Numero aleatorio [0.0f,1.0f[
-    public static float randomFloat() {
-        // Returns a randomly generated int
-        return randomGenerator.nextFloat();
+    public static double randomDouble() {
+        // Returns a randomly generated double
+        return randomGenerator.nextDouble();
     }
 }
