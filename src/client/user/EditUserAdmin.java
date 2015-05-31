@@ -8,8 +8,11 @@ package client.user;
 import application.profile.ProfileApplication;
 import application.user.UserApplication;
 import entity.Usuario;
+import java.awt.Color;
 import java.awt.event.WindowEvent;
+import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
+import javax.swing.border.Border;
 import util.EntityState;
 import util.EntityType;
 import util.InstanceFactory;
@@ -24,41 +27,47 @@ public class EditUserAdmin extends javax.swing.JDialog {
     /**
      * Creates new form EditUserAdmin
      */
-    Usuario user=null;
-    ProfileApplication profileApplication=InstanceFactory.Instance.getInstance("profileApplication", ProfileApplication.class);
-    UserApplication userApplication=InstanceFactory.Instance.getInstance("userApplication", UserApplication.class);
-
-    public EditUserAdmin(java.awt.Frame parent, boolean modal,Usuario user) {
+    Usuario user = null;
+    ProfileApplication profileApplication = InstanceFactory.Instance.getInstance("profileApplication", ProfileApplication.class);
+    UserApplication userApplication = InstanceFactory.Instance.getInstance("userApplication", UserApplication.class);
+    Border errorBorder = BorderFactory.createLineBorder(Color.RED, 1);
+    Border regularBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
+    public EditUserAdmin(java.awt.Frame parent, boolean modal, Usuario user) {
         super(parent, modal);
         initComponents();
-        this.user=user;
+        this.user = user;
         fillCombos();
         fillUserFields();
     }
-    public void fillCombos(){
+
+    public void fillCombos() {
         comboState.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getUsersState()));
         comboProfile.setModel(new javax.swing.DefaultComboBoxModel(EntityType.PROFILES_NAMES));
     }
-    
-    public void fillUserFields(){
+
+    public void fillUserFields() {
         txtUserId.setText(user.getId());
         txtName.setText(user.getNombre());
         txtFirstName.setText(user.getApellidoPaterno());
         txtSecondName.setText(user.getApellidoMaterno());
         txtEmail.setText(user.getCorreo());
         comboState.setSelectedIndex(user.getEstado());
-        if(user.getPerfil()!=null)
+        if (user.getPerfil() != null) {
             comboProfile.setSelectedItem(user.getPerfil().getNombrePerfil());
-        /*user.setIdusuario(UUID.randomUUID().toString().replace("-", ""));
-        user.setNombre(nameTxt.getText());
-        user.setApellidoPaterno(firstNameTxt.getText());
-        user.setApellidoMaterno(secondNameTxt.getText());
-        user.setCorreo(emailTxt.getText());      
-        user.setEstado(stateCombo.getSelectedIndex());
-        user.setPassword(passwordTxt.getText());
-        user.setPerfil(profileApplication.getProfileInstance(profileCombo.getSelectedItem().toString()));*/
+        }        
     }
-
+    public boolean isValidForm(){
+        String message="Error:\n";
+        String name=txtName.getText();
+        String firstName=txtFirstName.getText();
+        String secondname=txtSecondName.getText();
+        String correo=txtEmail.getText();
+        if(name.length()==0){
+            message+="";
+        }
+        
+        return true;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -97,19 +106,19 @@ public class EditUserAdmin extends javax.swing.JDialog {
             }
         });
 
-        jLabel11.setText("Correo:");
+        jLabel11.setText("*Correo:");
 
-        jLabel12.setText("Apellido Materno:");
+        jLabel12.setText("*Apellido Materno:");
 
         comboProfile.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jLabel8.setText("Perfil:");
+        jLabel8.setText("*Perfil:");
 
-        jLabel13.setText("Apellido Paterno:");
+        jLabel13.setText("*Apellido Paterno:");
 
-        jLabel9.setText("Estado:");
+        jLabel9.setText("*Estado:");
 
-        jLabel14.setText("Nombres:");
+        jLabel14.setText("*Nombres:");
 
         comboState.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -178,7 +187,7 @@ public class EditUserAdmin extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
                             .addComponent(txtUserId))))
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -233,23 +242,24 @@ public class EditUserAdmin extends javax.swing.JDialog {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         // TODO add your handling code here:
-        
-        user.setNombre(txtName.getText());
-        user.setApellidoPaterno(txtFirstName.getText());
-        user.setApellidoMaterno(txtSecondName.getText());
-        user.setCorreo(txtEmail.getText());      
-        user.setEstado(comboState.getSelectedIndex());        
-        user.setPerfil(profileApplication.getProfileByName(comboProfile.getSelectedItem().toString()));
-        userApplication.updateUser(user);
-        JOptionPane.showMessageDialog(this, Strings.MESSAGE_USER_UPDATED);        
-        this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+        if (isValidForm()) {
+            user.setNombre(txtName.getText());
+            user.setApellidoPaterno(txtFirstName.getText());
+            user.setApellidoMaterno(txtSecondName.getText());
+            user.setCorreo(txtEmail.getText());
+            user.setEstado(comboState.getSelectedIndex());
+            user.setPerfil(profileApplication.getProfileByName(comboProfile.getSelectedItem().toString()));
+            userApplication.updateUser(user);
+            JOptionPane.showMessageDialog(this, Strings.MESSAGE_USER_UPDATED);
+            this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+        }
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         // TODO add your handling code here:
         this.dispose();
         UserView.userView.refreshGrid();
-        
+
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -257,7 +267,6 @@ public class EditUserAdmin extends javax.swing.JDialog {
         UserView.userView.refreshGrid();
     }//GEN-LAST:event_formWindowClosing
 
-  
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;

@@ -15,8 +15,10 @@ import application.spot.SpotApplication;
 import application.user.UserApplication;
 import application.warehouse.WarehouseApplication;
 import entity.Condicion;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import util.EntityType;
 import util.HibernateUtil;
 import util.InstanceFactory;
@@ -39,6 +41,8 @@ public class AppStart {
     }
 
     public void start() {
+        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+        
         try {
                   
             InstanceFactory.Instance.register("userApplication", UserApplication.class);

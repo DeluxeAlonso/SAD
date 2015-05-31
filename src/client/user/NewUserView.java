@@ -96,13 +96,13 @@ public class NewUserView extends javax.swing.JDialog {
 
         profileCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jLabel8.setText("Perfil:");
+        jLabel8.setText("*Perfil:");
 
-        jLabel9.setText("Estado:");
+        jLabel9.setText("*Estado:");
 
         stateCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jLabel10.setText("Contraseña:");
+        jLabel10.setText("*Contraseña:");
 
         autoGeneratePassBtn.setText("Generar");
         autoGeneratePassBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -111,13 +111,13 @@ public class NewUserView extends javax.swing.JDialog {
             }
         });
 
-        jLabel11.setText("Correo:");
+        jLabel11.setText("*Correo:");
 
-        jLabel12.setText("Apellido Materno:");
+        jLabel12.setText("*Apellido Materno:");
 
-        jLabel13.setText("Apellido Paterno:");
+        jLabel13.setText("*Apellido Paterno:");
 
-        jLabel14.setText("Nombres:");
+        jLabel14.setText("*Nombres:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -167,7 +167,7 @@ public class NewUserView extends javax.swing.JDialog {
                         .addComponent(saveTxt)
                         .addGap(29, 29, 29)
                         .addComponent(cancelBtn)))
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

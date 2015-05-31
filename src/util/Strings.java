@@ -42,6 +42,10 @@ public class Strings {
     public static final String MESSAGE_USER_UPDATED="El usuario ha sido actualizado con éxito.";
     public static final String ALERT_USER_INACTIVE="No tienes acceso a la aplicación.";
     public static final String ALERT_USER_DOES_NOT_EXIST="Correo o la contraseña incorrectos.";
+    public static final String ERROR_NAME_REQUIRED="El campo nombre es requerido.";
+    public static final String ERROR_FIRSTNAME_REQUIRED="El campo apellido paterno es requerido.";
+    public static final String ERROR_SECONDNAME_REQUIRED="El campo apellido materno es requerido.";
+    public static final String ERROR_EMAIL_REQUIRED="El campo correo es requerido.";
     /*END*/
     
     /*WAREHOUSE MODULE MESSAGES*/
