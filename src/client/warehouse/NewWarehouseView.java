@@ -15,6 +15,7 @@ import entity.Almacen;
 import entity.Rack;
 import entity.Ubicacion;
 import java.awt.Image;
+import java.net.URL;
 import java.util.Calendar;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -22,6 +23,7 @@ import javax.swing.JOptionPane;
 import util.Constants;
 import util.EntityState;
 import util.EntityType;
+import util.Icons;
 import util.InstanceFactory;
 import util.Strings;
 
@@ -44,18 +46,8 @@ public class NewWarehouseView extends javax.swing.JDialog {
         initComponents();
         this.setTitle("Nuevo Almacen");
         this.condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.CONDITIONS_NAMES));
-        System.out.println(cancelBtn.getWidth()+ "");
-        System.out.println(cancelBtn.getHeight()+"");
-        try{
-            img = ImageIO.read(getClass().getResource("../../images/save.png"));
-            
-            img2 = img.getScaledInstance(16, 16,0);
-            cancelBtn.setIcon(new ImageIcon(img2));
-            
-        }catch(Exception e){
-            System.out.println("Error al asignar icono");
-            System.out.println(e.toString());
-        }
+        Icons.setButton(saveTxt, Icons.ICONOS.GUARDAR.ordinal());
+        Icons.setButton(cancelBtn, Icons.ICONOS.CANCELAR.ordinal());
     }
 
     /**
@@ -83,9 +75,9 @@ public class NewWarehouseView extends javax.swing.JDialog {
         racksTxt = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        racksTxt1 = new javax.swing.JTextField();
+        nFilTxt = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
-        racksTxt2 = new javax.swing.JTextField();
+        nColTxt = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Nuevo Almacen");
@@ -94,14 +86,12 @@ public class NewWarehouseView extends javax.swing.JDialog {
 
         condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        saveTxt.setText("Guardar");
         saveTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveTxtActionPerformed(evt);
             }
         });
 
-        cancelBtn.setText("Cancelar");
         cancelBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelBtnActionPerformed(evt);
@@ -136,17 +126,17 @@ public class NewWarehouseView extends javax.swing.JDialog {
 
         jLabel9.setText("*Filas:");
 
-        racksTxt1.addActionListener(new java.awt.event.ActionListener() {
+        nFilTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                racksTxt1ActionPerformed(evt);
+                nFilTxtActionPerformed(evt);
             }
         });
 
         jLabel10.setText("*Columnas:");
 
-        racksTxt2.addActionListener(new java.awt.event.ActionListener() {
+        nColTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                racksTxt2ActionPerformed(evt);
+                nColTxtActionPerformed(evt);
             }
         });
 
@@ -166,11 +156,11 @@ public class NewWarehouseView extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jLabel9)
                 .addGap(18, 18, 18)
-                .addComponent(racksTxt1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(nFilTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(racksTxt2, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(nColTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(40, 40, 40))
         );
         jPanel1Layout.setVerticalGroup(
@@ -186,10 +176,10 @@ public class NewWarehouseView extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel10)
-                        .addComponent(racksTxt2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(nColTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel9)
-                        .addComponent(racksTxt1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(nFilTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -200,45 +190,48 @@ public class NewWarehouseView extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
+                        .addGap(23, 23, 23)
                         .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(descripcionTxt))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(descripcionTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(69, 69, 69)
-                        .addComponent(cancelBtn)
-                        .addGap(69, 69, 69)
-                        .addComponent(saveTxt))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(33, 33, 33)
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(AreaTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel6)
-                        .addGap(18, 18, 18)
-                        .addComponent(capacityTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel4))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(24, 24, 24))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(25, 25, 25)
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(AreaTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(26, 26, 26)
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(capacityTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel4))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(20, 20, 20)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel3)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(17, 17, 17))
             .addGroup(layout.createSequentialGroup()
-                .addGap(37, 37, 37)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(68, 68, 68)
+                .addComponent(cancelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(55, 55, 55)
+                .addComponent(saveTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(24, 24, 24)
+                .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(descripcionTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(AreaTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -249,13 +242,13 @@ public class NewWarehouseView extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancelBtn)
-                    .addComponent(saveTxt))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cancelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(saveTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         pack();
@@ -278,7 +271,8 @@ public class NewWarehouseView extends javax.swing.JDialog {
             al.setArea(area);
         }
         int uLibres = Integer.parseInt(this.racksTxt.getText());
-        
+        int fil = Integer.parseInt(this.nFilTxt.getText());
+        int col = Integer.parseInt(this.nColTxt.getText());
         al.setUbicLibres(capa-uLibres);
         
         al.setCondicion(conditionApplication.getConditionInstance(condicionCombo.getSelectedItem().toString()));
@@ -293,12 +287,12 @@ public class NewWarehouseView extends javax.swing.JDialog {
             r.setEstado(EntityState.Racks.ACTIVO.ordinal());
             r.setFechaRegistro(cal.getTime());
             r.setAlmacen(al);
-            r.setNumCol(Constants.COLUMNAS_RACK);
-            r.setNumFil(Constants.FILAS_RACK);
+            r.setNumCol(col);
+            r.setNumFil(fil);
             al.getRacks().add(r);
             rackApplication.insert(r);
-            for (int j=0;j<Constants.COLUMNAS_RACK;j++){
-                for (int k=0;k<Constants.FILAS_RACK;k++){
+            for (int j=0;j<col;j++){
+                for (int k=0;k<fil;k++){
                     Ubicacion u = new Ubicacion();
                     u.setRack(r);
                     u.setEstado(EntityState.Spots.LIBRE.ordinal());
@@ -342,13 +336,13 @@ public class NewWarehouseView extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_capacityTxtActionPerformed
 
-    private void racksTxt1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_racksTxt1ActionPerformed
+    private void nFilTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nFilTxtActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_racksTxt1ActionPerformed
+    }//GEN-LAST:event_nFilTxtActionPerformed
 
-    private void racksTxt2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_racksTxt2ActionPerformed
+    private void nColTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nColTxtActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_racksTxt2ActionPerformed
+    }//GEN-LAST:event_nColTxtActionPerformed
 
     /**
      * @param args the command line arguments
@@ -371,9 +365,9 @@ public class NewWarehouseView extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField nColTxt;
+    private javax.swing.JTextField nFilTxt;
     private javax.swing.JTextField racksTxt;
-    private javax.swing.JTextField racksTxt1;
-    private javax.swing.JTextField racksTxt2;
     private javax.swing.JButton saveTxt;
     // End of variables declaration//GEN-END:variables
 }
