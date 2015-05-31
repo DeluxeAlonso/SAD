@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -62,12 +63,17 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
 
     public void setupElements(){
         initializeArrays();
+        initializeData();
+        fillCombos();
+        setupButtons();
+        setupListeners();
+    }
+    
+    public void initializeData(){
         productApplication.refreshProducts();
         qtySpinner.setValue(1);
         productsToAdd = getAvailableProducts();
         refreshProductsToAddTable();
-        fillCombos();
-        setupListeners();
     }
     
     public void initializeArrays(){
@@ -103,6 +109,15 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
         locals = localApplication.queryLocalsByClient(EntityType.CLIENTS.get(clientCombo.getSelectedIndex()-1).getId());
         fillLocalNames();
         localCombo.setModel(new javax.swing.DefaultComboBoxModel(localNames));
+    }
+    
+    /*
+     * Buttons Configuration
+     */   
+    public void setupButtons(){
+        ImageIcon addIcon = new ImageIcon(getClass().getResource("/images/03_plus_16.ico"));
+        addBtn.setIcon(addIcon);
+        addBtn.revalidate();
     }
 
     /*
@@ -369,7 +384,6 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
             productTable.getColumnModel().getColumn(3).setResizable(false);
         }
 
-        addBtn.setText("<<Agregar");
         addBtn.setEnabled(false);
         addBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -396,10 +410,10 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(productContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(16, 16, 16)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(addBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(removeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(removeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
@@ -423,13 +437,13 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
                 .addGap(28, 28, 28)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(addBtn)
-                        .addGap(8, 8, 8)
+                        .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(removeBtn)
                         .addGap(6, 286, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(productContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 31, Short.MAX_VALUE))))
+                        .addGap(0, 72, Short.MAX_VALUE))))
         );
 
         jLabel1.setText("Codigo:");
