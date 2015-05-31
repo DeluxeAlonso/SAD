@@ -181,7 +181,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <Component id="jScrollPanel" min="-2" pref="424" max="-2" attributes="0"/>
+                          <Component id="productContainer" min="-2" pref="424" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="addBtn" max="32767" attributes="0"/>
@@ -222,7 +222,7 @@
                           <EmptySpace min="6" pref="286" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
-                          <Component id="jScrollPanel" min="-2" pref="321" max="-2" attributes="0"/>
+                          <Component id="productContainer" min="-2" pref="321" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="31" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -233,12 +233,12 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="jLabel3">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Cliente:"/>
+            <Property name="text" type="java.lang.String" value="*Cliente:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel5">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Local:"/>
+            <Property name="text" type="java.lang.String" value="*Local:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JComboBox" name="localCombo">
@@ -249,7 +249,7 @@
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
         </Component>
-        <Container class="javax.swing.JScrollPane" name="jScrollPanel">
+        <Container class="javax.swing.JScrollPane" name="productContainer">
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>

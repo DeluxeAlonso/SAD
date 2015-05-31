@@ -74,6 +74,9 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         productQuantities = new ArrayList<>();
     }
     
+    /*
+     * ComboBox Configuration
+     */
     public void fillCombos(){
         fillClientNames();
         filterClientCombo.setModel(new javax.swing.DefaultComboBoxModel(clientNames));
@@ -87,12 +90,10 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
     public void fillClientNames(){
         clientNames =  new String[EntityType.CLIENTS.size() + 1];
         for (int i=0; i < EntityType.CLIENTS.size() + 1; i++){
-            if (i == 0){
+            if (i == 0)
                 clientNames[i] = "";
-            }
-            else{
+            else
                 clientNames[i] = EntityType.CLIENTS.get(i-1).getNombre();
-            }
         }
     }
     
@@ -112,12 +113,22 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         filterLocalCombo.setModel(new javax.swing.DefaultComboBoxModel(localNames));
     }
     
+    /*
+     * Listeners Configuration
+     */
+    public void setupListeners() {
+        jScrollPane2.addMouseListener(this);
+        orderTable.addMouseListener(this);
+        productTable.addMouseListener(this);
+        filterClientCombo.addItemListener(this);
+        partialCombo.addItemListener(this);
+    } 
+    
+    /*
+     * Table Methods
+     */
     public void refreshTable(){
-        ArrayList<String> cols = new ArrayList<>();
-        for (int i = 0; i<orderTable.getColumnCount(); i++)
-            cols.add(orderTable.getColumnName(i));
-        DefaultTableModel tableModel = new DefaultTableModel(cols.toArray(), 0);
-        orderTable.setModel(tableModel);
+        DefaultTableModel tableModel = generateTableModel(orderTable);
         currentOrders.stream().forEach((_order) -> {
             Object[] row = {_order.getId(), _order.getCliente().getNombre()
                     , _order.getLocal().getNombre(),EntityState.getOrdersState()[_order.getEstado()]};
@@ -125,16 +136,40 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         });
     }
     
-    public void setupListeners() {
-        jScrollPane2.addMouseListener(this);
-        orderTable.addMouseListener(this);
-        productTable.addMouseListener(this);
-        filterClientCombo.addItemListener(this);
-        partialCombo.addItemListener(this);
+    public void refreshProductTable(Integer partialId){
+        DefaultTableModel tableModel = generateTableModel(productTable);
+        ArrayList<PedidoParcialXProducto> products = new ArrayList<>();
+        products = orderApplication.queryAllPartialOrderProducts(partialId);
+        products.stream().forEach((_product) -> {
+            Object[] row = {_product.getProducto().getId(), _product.getProducto().getNombre(),
+                _product.getProducto().getCondicion().getNombre(), _product.getCantidad()};
+            tableModel.addRow(row);
+        });
     }
     
-    /*ORDER METHODS*/
+    public void refreshAllProductsTable(Integer orderId){
+        DefaultTableModel tableModel = generateTableModel(productTable);
+        ArrayList<PedidoParcialXProducto> products = new ArrayList<>();
+        products = orderApplication.queryAllProductsByOrderId(orderId);
+        products.stream().forEach((_product) -> {
+            Object[] row = {_product.getProducto().getId(), _product.getProducto().getNombre(),
+                _product.getProducto().getCondicion().getNombre(), _product.getCantidad()};
+            tableModel.addRow(row);
+        });
+    }
     
+    public DefaultTableModel generateTableModel(JTable table){
+        ArrayList<String> cols = new ArrayList<>();
+        for (int i = 0; i<table.getColumnCount(); i++)
+            cols.add(table.getColumnName(i));
+        DefaultTableModel model = new DefaultTableModel(cols.toArray(), 0);
+        table.setModel(model);
+        return model;
+    }
+    
+    /*
+     * Order Methods
+     */
     public void deleteOrder(){
         EntityType.ORDERS.get(currentOrderIndex()).setEstado(0);
         if(orderApplication.updateOrder(EntityType.ORDERS.get(currentOrderIndex()))){
@@ -145,8 +180,9 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         }
     }
     
-    /*PRODUCT METHODS*/
-    
+    /*
+     * Product Methods
+     */
     public void deleteProduct(int index){
         ArrayList<Producto> products = new ArrayList<>();
         ArrayList<Integer> quantities = new ArrayList<>();
@@ -160,36 +196,9 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         productQuantities = quantities;
     }
     
-    public void refreshProductTable(Integer partialId){
-        ArrayList<String> cols = new ArrayList<>();
-        for (int i = 0; i<productTable.getColumnCount(); i++)
-            cols.add(productTable.getColumnName(i));
-        DefaultTableModel tableModel = new DefaultTableModel(cols.toArray(), 0);
-        productTable.setModel(tableModel);
-        ArrayList<PedidoParcialXProducto> products = new ArrayList<>();
-        products = orderApplication.queryAllPartialOrderProducts(partialId);
-        products.stream().forEach((_product) -> {
-            Object[] row = {_product.getProducto().getId(), _product.getProducto().getNombre(),
-                _product.getProducto().getCondicion().getNombre(), _product.getCantidad()};
-            tableModel.addRow(row);
-        });
-    }
-    
-    public int currentOrderIndex(){
-        return orderTable.getSelectedRow();
-    }
-    
-    public int currentProductIndex(){
-        System.out.println(productTable.getSelectedRow());
-        return productTable.getSelectedRow();
-    }
-    
-    public void refreshOrders(){
-        orderApplication.refreshOrders();
-        currentOrders = EntityType.ORDERS;
-        refreshTable();
-    }
-    
+    /*
+     * Input Fields Methods
+     */
     public void fillDetailFields(){
         clearDetailFields();
         Pedido order = currentOrders.get(orderTable.getSelectedRow());
@@ -228,7 +237,7 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
             }
         }
     }
-    
+        
     public void clearDetailFields(){
         detailClientTxt.setText("");
         rucTxt.setText("");
@@ -237,6 +246,26 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         direccionTxt.setText("");
         dateTxt.setText("");
         partialCombo.setEditable(false);
+        refreshAllProductsTable(0);
+    }
+    
+    /*
+     * JTable Handling Methods
+     */   
+    
+    public int currentOrderIndex(){
+        return orderTable.getSelectedRow();
+    }
+    
+    public int currentProductIndex(){
+        System.out.println(productTable.getSelectedRow());
+        return productTable.getSelectedRow();
+    }
+    
+    public void refreshOrders(){
+        orderApplication.refreshOrders();
+        currentOrders = EntityType.ORDERS;
+        refreshTable();
     }
     
     /**
@@ -551,11 +580,13 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
                                         .addComponent(jLabel10)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(localTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addComponent(partialCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(dateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel12)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(dateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jLabel12))
+                                    .addComponent(partialCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(detailStatusCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -665,15 +696,7 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
             detailStatusCombo.setSelectedIndex(1);
         }
     }//GEN-LAST:event_deleteBtnActionPerformed
-
-    private void jScrollPane2MousePressed(java.awt.event.MouseEvent evt) {                                          
-
-    }                                         
-
-    private void jScrollPane2MouseEntered(java.awt.event.MouseEvent evt) {                                          
-
-    }                                         
-
+                                     
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         NewOrderProduct newOrderProductView = new NewOrderProduct((JFrame) SwingUtilities.getWindowAncestor(this), true);
         newOrderProductView.setVisible(true);
@@ -709,17 +732,6 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         refreshTable();
         clearDetailFields();
     }//GEN-LAST:event_searchBtnActionPerformed
-
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        if(partialCombo.getSelectedIndex()==0){
-            
-        }
-        else{
-            refreshProductTable(currentPartialOrders.get(partialCombo.getSelectedIndex()-1).getId());
-        }
-        
-    }//GEN-LAST:event_jButton5ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -802,13 +814,21 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
     @Override
     public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
-          Object item = e.getItem();
-          System.out.println(item);
-          if(filterClientCombo.getSelectedIndex() != 0){
-              filterLocalCombo.setEnabled(true);
-              fillLocalCombo();
-          }else
-              filterLocalCombo.setEnabled(false);
+          String item = (String)e.getItem();
+          String arr[] = item.split(" ", 2);
+          if(arr[0].equals("Cliente"))
+            if(filterClientCombo.getSelectedIndex() != 0){
+                filterLocalCombo.setEnabled(true);
+                fillLocalCombo();
+            }else
+                filterLocalCombo.setEnabled(false);
+          else
+            if(partialCombo.getSelectedIndex()==0){
+                refreshAllProductsTable(currentOrders.get(orderTable.getSelectedRow()).getId());
+            }
+            else{
+                refreshProductTable(currentPartialOrders.get(partialCombo.getSelectedIndex()-1).getId());
+            }
         }
     }
     

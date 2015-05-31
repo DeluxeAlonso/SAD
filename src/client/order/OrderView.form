@@ -454,11 +454,15 @@
                                       </Group>
                                   </Group>
                               </Group>
-                              <Component id="partialCombo" min="-2" pref="137" max="-2" attributes="0"/>
-                              <Group type="102" attributes="0">
-                                  <Component id="dateTxt" min="-2" pref="131" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="dateTxt" min="-2" pref="131" max="-2" attributes="0"/>
+                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                          <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Component id="partialCombo" alignment="0" min="-2" pref="137" max="-2" attributes="0"/>
+                                  </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="detailStatusCombo" min="-2" pref="125" max="-2" attributes="0"/>
                               </Group>

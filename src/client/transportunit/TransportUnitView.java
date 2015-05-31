@@ -73,8 +73,9 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
         typeCreateCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.TRANSPORT_TYPE_NAMES));
     }
     
-    //TRANSPORT UNIT METHODS
-    
+    /*
+     * Transport Unit Methods
+     */  
     public Boolean saveTransportUnit(){
         UnidadTransporte transportUnit = new UnidadTransporte();
         transportUnit.setPlaca(plateCreateTxt.getText());
@@ -102,8 +103,9 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
         }
     }
    
-    /*BUTTON'S HANDLING METHODS*/
-    
+    /*
+     * Buttons Handling Methods
+     */ 
     public void enableButtons(){
         editBtn.setEnabled(true);
         deleteBtn.setEnabled(true);  
@@ -114,8 +116,9 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
         deleteBtn.setEnabled(false);
     }
     
-    /*INPUT FIELDS METHODS*/
-    
+    /*
+     * Input Fields Methods
+     */ 
     public void fillCreateFields(UnidadTransporte transportUnit){
         plateCreateTxt.setText(transportUnit.getPlaca());
         transportistCreateTxt.setText(transportUnit.getTransportista());
@@ -165,8 +168,9 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
         return valid;
     }
     
-    /*FILE METHODS*/
-    
+    /*
+     * File Methods
+     */ 
     public void loadFile(String filename){
         Boolean response = transportUnitApplication.loadTransportUnit(filename);
         if(response){
@@ -180,8 +184,9 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
                     Strings.MESSAGE_FILE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
     }
     
-    /*JTABLE METHODS*/
-    
+    /*
+     * Table Methods
+     */ 
     public void refreshTable(){
         ArrayList<String> cols = new ArrayList<>();
         for (int i = 0; i<transportTable.getColumnCount(); i++)
@@ -195,8 +200,6 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
             tableModel.addRow(row);
         });
     }
-    
-    /*ACTIONS*/
     
     /**
      * This method is called from within the constructor to initialize the form.
