@@ -18,7 +18,25 @@ public class Algorithm {
     private double overtimePenalty; 
     private double overstockPenalty; 
     private double maxPriority;
-    private double basePriority;    
+    private double basePriority;  
+    private double maxTravelTime;
+    private double graspAlpha;
+
+    public double getGraspAlpha() {
+        return graspAlpha;
+    }
+
+    public void setGraspAlpha(double graspAlpha) {
+        this.graspAlpha = graspAlpha;
+    }
+    
+    public double getMaxTravelTime() {
+        return maxTravelTime;
+    }
+
+    public void setMaxTravelTime(double maxTravelTime) {
+        this.maxTravelTime = maxTravelTime;
+    }
     
     public int getNumberOfGenerations() {
         return numberOfGenerations;

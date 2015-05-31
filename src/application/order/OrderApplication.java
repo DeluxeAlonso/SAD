@@ -27,13 +27,13 @@ public class OrderApplication {
     }
     
     public ArrayList<Pedido> getAllOrders(){
-        ArrayList<Pedido> actions=null;
+        ArrayList<Pedido> orders=null;
         try{
-            actions=orderRepository.queryAll();
+            orders=orderRepository.queryAll();
         }catch(Exception e){
             e.printStackTrace();
         }
-        return actions;
+        return orders;
     }
     
     public Cliente getOrderClient(Integer clientId){
@@ -80,6 +80,16 @@ public class OrderApplication {
         return partialOrders;
     }
     
+    public ArrayList<PedidoParcial> getPendingPartialOrdersById(Integer id) {
+        ArrayList<PedidoParcial> partialOrders = new ArrayList<>();
+        try{
+            partialOrders = orderRepository.queryAllPendingPartialOrdersById(id);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return partialOrders;
+    }
+    
     public ArrayList<PedidoParcialXProducto> queryAllPartialOrderProducts(Integer partialOrderId){
         ArrayList<PedidoParcialXProducto> partialProducts = new ArrayList<>();
         try{
@@ -88,6 +98,16 @@ public class OrderApplication {
             e.printStackTrace();
         }
         return partialProducts;
+    }
+    
+    public ArrayList<Pedido> searchOrders(Pedido o){
+        ArrayList<Pedido> order=null;
+        try{
+            order=orderRepository.searchOrder(o);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return order;
     }
         
 }

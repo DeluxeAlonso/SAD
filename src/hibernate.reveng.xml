@@ -2,29 +2,29 @@
 <!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd">
 <hibernate-reverse-engineering>
   <schema-selection match-catalog="saddb"/>
-  <table-filter match-name="unidad_transporte"/>
-  <table-filter match-name="tipo_producto"/>
-  <table-filter match-name="tipo_unidad_transporte"/>
-  <table-filter match-name="cliente"/>
-  <table-filter match-name="perfil"/>
-  <table-filter match-name="pedido_parcial"/>
-  <table-filter match-name="pregunta_secreta"/>
-  <table-filter match-name="producto"/>
-  <table-filter match-name="usuario"/>
-  <table-filter match-name="condicion"/>
-  <table-filter match-name="pedido"/>
-  <table-filter match-name="ubicacion"/>
-  <table-filter match-name="orden_internamiento_x_producto"/>
-  <table-filter match-name="despacho"/>
   <table-filter match-name="orden_internamiento"/>
-  <table-filter match-name="pallet"/>
-  <table-filter match-name="accion"/>
-  <table-filter match-name="kardex"/>
   <table-filter match-name="rack"/>
-  <table-filter match-name="guia_remision"/>
+  <table-filter match-name="tipo_producto"/>
+  <table-filter match-name="producto"/>
+  <table-filter match-name="orden_internamiento_x_producto"/>
+  <table-filter match-name="pregunta_secreta"/>
   <table-filter match-name="perfil_x_accion"/>
+  <table-filter match-name="guia_remision"/>
+  <table-filter match-name="ubicacion"/>
+  <table-filter match-name="pedido"/>
+  <table-filter match-name="pedido_parcial"/>
+  <table-filter match-name="cliente"/>
   <table-filter match-name="local"/>
+  <table-filter match-name="tipo_unidad_transporte"/>
   <table-filter match-name="historial_movimientos"/>
+  <table-filter match-name="perfil"/>
+  <table-filter match-name="condicion"/>
+  <table-filter match-name="kardex"/>
+  <table-filter match-name="despacho"/>
+  <table-filter match-name="unidad_transporte"/>
+  <table-filter match-name="usuario"/>
+  <table-filter match-name="accion"/>
   <table-filter match-name="almacen"/>
   <table-filter match-name="pedido_parcial_x_producto"/>
+  <table-filter match-name="pallet"/>
 </hibernate-reverse-engineering>
