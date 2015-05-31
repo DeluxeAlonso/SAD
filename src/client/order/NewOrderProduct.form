@@ -216,10 +216,10 @@
                   <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <Component id="addBtn" min="-2" pref="72" max="-2" attributes="0"/>
+                          <Component id="addBtn" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="removeBtn" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="6" pref="286" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
                           <Component id="productContainer" min="-2" pref="321" max="-2" attributes="0"/>
@@ -300,6 +300,7 @@
         </Container>
         <Component class="javax.swing.JButton" name="addBtn">
           <Properties>
+            <Property name="text" type="java.lang.String" value="&lt;&lt;Agregar"/>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
