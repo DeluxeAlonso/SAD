@@ -8,6 +8,7 @@ package client.transportunit;
 
 import application.transportunit.TransportUnitApplication;
 import application.transportunittype.TransportUnitTypeApplication;
+import client.base.BaseView;
 import entity.TipoUnidadTransporte;
 import entity.UnidadTransporte;
 import java.awt.Color;
@@ -36,25 +37,24 @@ import util.Strings;
  *
  * @author LUIS
  */
-public class TransportUnitView extends javax.swing.JInternalFrame implements MouseListener{
+public class TransportUnitView extends BaseView implements MouseListener{
     
     TransportUnitApplication transportUnitApplication = InstanceFactory.Instance.getInstance("transportUnitApplication", TransportUnitApplication.class);
     TransportUnitTypeApplication transportUnitTypeApplication = InstanceFactory.Instance.getInstance("transportUnitTypeApplication", TransportUnitTypeApplication.class);
-    Border errorBorder = BorderFactory.createLineBorder(Color.RED, 1);
-    Border regularBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
     public static TransportUnitView transportUnitView;
-    String error_message;
+
     /**
      * Creates new form TUForm
      */
     public TransportUnitView() {
         initComponents();
-        transportUnitView = this;
+        super.initialize();
         setupListeners();
         setupElements();
     }
     
     public void setupElements(){
+        transportUnitView = this;
         transportUnitApplication.refreshTransportUnits();
         fillCombos();
         refreshTable();
@@ -174,10 +174,10 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
     public void loadFile(String filename){
         Boolean response = transportUnitApplication.loadTransportUnit(filename);
         if(response){
+            refreshTable();
             JOptionPane.showMessageDialog(this, Strings.MESSAGE_FILE_TRANSPORT_UNIT,
                     Strings.MESSAGE_FILE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
             transportUnitApplication.refreshTransportUnits();
-            refreshTable();
         }
         else
             JOptionPane.showMessageDialog(this, Strings.MESSAGE_FILE_ERROR_TRANSPORT_UNIT,

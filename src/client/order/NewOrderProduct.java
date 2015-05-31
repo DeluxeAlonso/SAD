@@ -8,6 +8,7 @@ package client.order;
 import application.local.LocalApplication;
 import application.order.OrderApplication;
 import application.product.ProductApplication;
+import client.base.BaseDialogView;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -39,25 +40,23 @@ import util.Strings;
  *
  * @author Alonso
  */
-public class NewOrderProduct extends javax.swing.JDialog implements MouseListener,ItemListener{
+public class NewOrderProduct extends BaseDialogView implements MouseListener,ItemListener{
     OrderApplication orderApplication = new OrderApplication();
     ProductApplication productApplication = new ProductApplication();
     LocalApplication localApplication = new LocalApplication();
-    Border errorBorder = BorderFactory.createLineBorder(Color.RED, 1);
-    Border regularBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
     ArrayList<Local> locals = new ArrayList<>();
     ArrayList<Producto> orderProducts;
     ArrayList<Producto> productsToAdd;
     ArrayList<Integer> productQuantities;
     String[] clientNames;
     String[] localNames;
-    String error_message;
     /**
      * Creates new form NewOrderProduct
      */
     public NewOrderProduct(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        super.initialize();
         setupElements();
     }
 

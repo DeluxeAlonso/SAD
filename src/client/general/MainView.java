@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.MenuElement;
@@ -71,6 +72,7 @@ public class MainView extends javax.swing.JFrame {
     private RackView rackView = null;
     private KardexReport kardexReport = null;
     public static Usuario user = null;
+    public static JDesktopPane desktopPane = null;
     private BufferedImage img = null;
 
     /**
@@ -80,12 +82,15 @@ public class MainView extends javax.swing.JFrame {
         loadImageToDesktopPane();
         initComponents();
         this.user = user;
+        System.out.println(mainPanel);
+        desktopPane = mainPanel;
         renderUserMenu();
     }
 
     public MainView() {
         loadImageToDesktopPane();
         initComponents();
+        desktopPane = mainPanel;
     }
 
     private void renderUserMenu() {
