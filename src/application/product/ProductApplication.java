@@ -24,13 +24,27 @@ public class ProductApplication {
         this.productRepository = new ProductRepository();
     }
     
-    public void createProduct(Producto product) {
+    public int insert(Producto product) {
+        int i =1;
         try{
-            int i = productRepository.insert(product);
+            i = productRepository.insert(product);
         }catch(Exception e){
             e.printStackTrace();
+            return -1;
+        }
+        return i;
+    }
+    public int update(Producto product) {
+        int i =1;
+        try{
+            return productRepository.update(product);
+        }catch(Exception e){
+            e.printStackTrace();
+            return -1;
         }
     }
+    
+    
     
     public ArrayList<Producto> getAllProducts(){
         ArrayList<Producto> actions=null;
@@ -47,6 +61,7 @@ public class ProductApplication {
         try{
             products = productRepository.queryByType(idType);
         }catch(Exception e){
+            System.out.println(e.toString());
             e.printStackTrace();
         }
         return products;
