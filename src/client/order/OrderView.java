@@ -342,9 +342,8 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                     break;
                 }
             }
-	} catch (FileNotFoundException e) {
-            e.printStackTrace();
-	} catch (IOException e) {
+	} catch (Exception e) {
+            has_errors = true;
             e.printStackTrace();
 	} finally {
             if (br != null) {
@@ -360,6 +359,8 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                         JOptionPane.showMessageDialog(this, Strings.LOAD_ORDER_SUCCESS,
                         Strings.LOAD_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
                     }
+                    else
+                        JOptionPane.showMessageDialog(this, Strings.LOAD_ORDER_ERROR,Strings.LOAD_ORDER_TITLE,JOptionPane.ERROR_MESSAGE);
                 }
             }
 	}
