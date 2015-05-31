@@ -77,8 +77,7 @@ public class AppStart {
         conditionApplication.refreshConditions();
         EntityType.fillConditionNames();
         //Se llama un metodo para que actualice los perfiles en la variable global PROFILES y ACTIONS
-        profileApplication.refreshProfiles();
-        actionApplication.refreshActions();       
+        profileApplication.refreshProfiles();              
         transportUnitApplication.refreshTransportUnits();
         orderApplication.refreshOrders();
         clientApplication.refreshClients();

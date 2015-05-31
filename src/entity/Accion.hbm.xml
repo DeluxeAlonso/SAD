@@ -1,16 +1,25 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated May 29, 2015 5:58:45 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 30/05/2015 08:07:24 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entity.Accion" table="accion" catalog="saddb" optimistic-lock="version">
         <id name="id" type="int">
             <column name="id" />
             <generator class="assigned" />
         </id>
+        <many-to-one name="accion" class="entity.Accion" fetch="select">
+            <column name="idPadre" />
+        </many-to-one>
         <property name="nombre" type="string">
             <column name="nombre" length="80" />
         </property>
+        <set name="accions" table="accion" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="idPadre" />
+            </key>
+            <one-to-many class="entity.Accion" />
+        </set>
         <set name="perfils" table="perfil_x_accion" inverse="false" lazy="true" fetch="select">
             <key>
                 <column name="id_accion" not-null="true" />

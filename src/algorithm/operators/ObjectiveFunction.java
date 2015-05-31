@@ -8,7 +8,6 @@ package algorithm.operators;
 import algorithm.Algorithm;
 import algorithm.Node;
 import algorithm.Solution;
-import entity.PedidoParcial;
 import entity.UnidadTransporte;
 import java.awt.geom.Point2D;
 import java.util.HashMap;

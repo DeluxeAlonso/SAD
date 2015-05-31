@@ -41,6 +41,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.MenuElement;
 import util.InstanceFactory;
 
@@ -95,20 +97,37 @@ public class MainView extends javax.swing.JFrame {
 
     private void renderUserMenu() {
         Set actions = profileApplication.getProfileByName(user.getPerfil().getNombrePerfil()).getAccions();
-        int numActions=actionApplication.getAllActions().size();
+        int numActions = actionApplication.getParents().size();
+
         MenuElement[] topLevelElements = menuBar.getSubElements();
-        for (int i=0;i<numActions;i++) {
-            boolean found=false;            
-            for (Accion a : (Set<Accion>) actions) {
-                if(((JMenu)topLevelElements[i]).getText().equals(a.getNombre())){
-                    found=true;                    
-                    break;
+        for (int i = 0; i < numActions; i++) {
+            
+            if (!(((JMenu) topLevelElements[i]).getText().equals("Sesión"))) {
+                
+                int numMenuItem = 0;
+                MenuElement popItem= topLevelElements[i].getSubElements()[0];
+                MenuElement[] lowLevelElements = popItem.getSubElements();
+                for (int j = 0; j < lowLevelElements.length; j++) {
+                    boolean found = false;
+                    for (Accion a : (Set<Accion>) actions) {
+                        String menuApp=((JMenuItem) lowLevelElements[j]).getText().toLowerCase();
+                        String menuBD=a.getNombre().toLowerCase();
+                        if (menuApp.equals(menuBD)) {
+                            found = true;
+                            actions.remove(a);
+                            numMenuItem++;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        ((JPopupMenu)popItem).remove(((JMenuItem) lowLevelElements[j]));
+                    }
+                }
+                if (numMenuItem == 0) {
+                    menuBar.remove(((JMenu) topLevelElements[i]));
                 }
             }
-            
-            if(!found)
-                menuBar.remove(((JMenu)topLevelElements[i]));
-        }        
+        }
     }
 
     /**
@@ -141,6 +160,7 @@ public class MainView extends javax.swing.JFrame {
         WarehouseMenu = new javax.swing.JMenuItem();
         TUFrame = new javax.swing.JMenuItem();
         RackItem = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
         menuReport = new javax.swing.JMenu();
         jMenuItem12 = new javax.swing.JMenuItem();
         jMenuItem13 = new javax.swing.JMenuItem();
@@ -149,7 +169,7 @@ public class MainView extends javax.swing.JFrame {
         jMenuItem16 = new javax.swing.JMenuItem();
         menuSec = new javax.swing.JMenu();
         jMenuItem9 = new javax.swing.JMenuItem();
-        jMenuItem19 = new javax.swing.JMenuItem();
+        jMenuItem17 = new javax.swing.JMenuItem();
         menuInter = new javax.swing.JMenu();
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
@@ -177,7 +197,7 @@ public class MainView extends javax.swing.JFrame {
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 281, Short.MAX_VALUE)
+            .addGap(0, 283, Short.MAX_VALUE)
         );
 
         menuMov.setText("Movimientos");
@@ -265,6 +285,9 @@ public class MainView extends javax.swing.JFrame {
         });
         menuMaint.add(RackItem);
 
+        jMenuItem3.setText("Pallet");
+        menuMaint.add(jMenuItem3);
+
         menuBar.add(menuMaint);
 
         menuReport.setText("Reportes");
@@ -313,7 +336,7 @@ public class MainView extends javax.swing.JFrame {
 
         menuSec.setText("Seguridad");
 
-        jMenuItem9.setText("Usuarios");
+        jMenuItem9.setText("Usuarios y Perfiles");
         jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem9ActionPerformed(evt);
@@ -321,13 +344,8 @@ public class MainView extends javax.swing.JFrame {
         });
         menuSec.add(jMenuItem9);
 
-        jMenuItem19.setText("Perfil");
-        jMenuItem19.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
-            }
-        });
-        menuSec.add(jMenuItem19);
+        jMenuItem17.setText("Log");
+        menuSec.add(jMenuItem17);
 
         menuBar.add(menuSec);
 
@@ -425,8 +443,10 @@ public class MainView extends javax.swing.JFrame {
             try {
                 // TODO add your handling code here:
                 transportUnitView.setSelected(true);
+
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_TUFrameMousePressed
@@ -441,8 +461,10 @@ public class MainView extends javax.swing.JFrame {
             try {
                 // TODO add your handling code here:
                 warehouseView.setSelected(true);
+
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
         }catch(Exception e){}
@@ -458,8 +480,10 @@ public class MainView extends javax.swing.JFrame {
             try {
                 // TODO add your handling code here:
                 editUserView.setSelected(true);
+
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_jMenuItem5ActionPerformed
@@ -472,8 +496,10 @@ public class MainView extends javax.swing.JFrame {
             try {
                 // TODO add your handling code here:
                 productView.setSelected(true);
+
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_jMenuItem10ActionPerformed
@@ -487,8 +513,10 @@ public class MainView extends javax.swing.JFrame {
             try {
                 // TODO add your handling code here:
                 palletMovementsView.setSelected(true);
+
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_jMenuItem6MousePressed
@@ -502,8 +530,10 @@ public class MainView extends javax.swing.JFrame {
             try {
                 // TODO add your handling code here:
                 productCaducity.setSelected(true);
+
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_jMenuItem16ActionPerformed
@@ -517,8 +547,10 @@ public class MainView extends javax.swing.JFrame {
             try {
                 // TODO add your handling code here:
                 remissionGuide.setSelected(true);
+
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_jMenuItem14ActionPerformed
@@ -532,8 +564,10 @@ public class MainView extends javax.swing.JFrame {
             try {
                 // TODO add your handling code here:
                 stockReport.setSelected(true);
+
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_jMenuItem13ActionPerformed
@@ -546,8 +580,10 @@ public class MainView extends javax.swing.JFrame {
             try {
                 // TODO add your handling code here:
                 personalView.setSelected(true);
+
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }        // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem7ActionPerformed
@@ -561,8 +597,10 @@ public class MainView extends javax.swing.JFrame {
 
                 // TODO add your handling code here:
                 clientView.setSelected(true);
+
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }           // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem8ActionPerformed
@@ -575,8 +613,10 @@ public class MainView extends javax.swing.JFrame {
             try {
                 // TODO add your handling code here:
                 warehouseControlCheckView.setSelected(true);
+
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
@@ -590,8 +630,10 @@ public class MainView extends javax.swing.JFrame {
             try {
                 // TODO add your handling code here:
                 internmentSelectView.setSelected(true);
+
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -606,8 +648,10 @@ public class MainView extends javax.swing.JFrame {
             try {
                 // TODO add your handling code here:
                 devolutionView.setSelected(true);
+
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_jMenuItem11MousePressed
@@ -626,8 +670,10 @@ public class MainView extends javax.swing.JFrame {
             try {
                 // TODO add your handling code here:
                 kardexReport.setSelected(true);
+
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_jMenuItem12ActionPerformed
@@ -641,26 +687,13 @@ public class MainView extends javax.swing.JFrame {
             try {
                 // TODO add your handling code here:
                 userView.setSelected(true);
+
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_jMenuItem9ActionPerformed
-
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        // TODO add your handling code here:
-        if (userView == null || !userView.isShowing()) {
-            userView = new UserView(1);
-            userView.setVisible(true);
-            mainPanel.add(userView);
-            try {
-                // TODO add your handling code here:
-                userView.setSelected(true);
-            } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
         // TODO add your handling code here:
@@ -677,8 +710,10 @@ public class MainView extends javax.swing.JFrame {
             try {
                 // TODO add your handling code here:
                 rackView.setSelected(true);
+
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_RackItemMousePressed
@@ -691,8 +726,10 @@ public class MainView extends javax.swing.JFrame {
             try {
                 // TODO add your handling code here:
                 orderView.setSelected(true);
+
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_PedidosActionPerformed
@@ -722,8 +759,10 @@ public class MainView extends javax.swing.JFrame {
             try {
                 // TODO add your handling code here:
                 availabilityReport.setSelected(true);
+
             } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -745,9 +784,10 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem14;
     private javax.swing.JMenuItem jMenuItem15;
     private javax.swing.JMenuItem jMenuItem16;
+    private javax.swing.JMenuItem jMenuItem17;
     private javax.swing.JMenuItem jMenuItem18;
-    private javax.swing.JMenuItem jMenuItem19;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;

@@ -26,7 +26,7 @@ public class EntityType {
 
     public static ArrayList<Condicion> CONDITIONS = new ArrayList<>();
     public static ArrayList<Perfil> PROFILES = new ArrayList<>();
-    public static ArrayList<Accion> ACTIONS = new ArrayList<>();
+    
     public static ArrayList<UnidadTransporte> TRANSPORT_UNITS = new ArrayList<>();
     public static ArrayList<Pedido> ORDERS = new ArrayList<>();
     public static ArrayList<Cliente> CLIENTS = new ArrayList<>();
