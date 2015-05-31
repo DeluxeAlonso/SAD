@@ -6,6 +6,7 @@
 package base.pallet;
 
 import base.IRepository;
+import entity.OrdenInternamiento;
 import entity.Pallet;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,4 +18,6 @@ import java.util.List;
 public interface IPalletRepository extends IRepository<Pallet>{
     ArrayList<Pallet> queryPalletsByRack(int rackId);
     Boolean updatePalletSpot(int palletId, int spotId);
+
+    public Pallet getPalletsFromOrder(OrdenInternamiento rackId);
 }

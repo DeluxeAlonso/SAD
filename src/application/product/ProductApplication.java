@@ -60,6 +60,17 @@ public class ProductApplication {
         }
     }
     
+        public Producto queryById(int id){
+        Producto p = null;
+        try{
+            p = productRepository.queryById(id);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return p;
+    }
+    
+    
     public void refreshProducts(){
         EntityType.PRODUCTS = getAllProducts();
     }

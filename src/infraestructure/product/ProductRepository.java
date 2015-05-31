@@ -83,6 +83,30 @@ public class ProductRepository implements IProductRepository {
         return products;
     }
     
+@Override
+    public Producto queryById(int id) {
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        Producto producto = null;
+        String hql
+                = "from Producto where id=:id";
+        try {
+            
+            session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("id", id);
+            producto = (Producto) q.uniqueResult();
+            if(producto!=null)
+                Hibernate.initialize(producto.getNombre());
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return producto;
+    }
     
 
     @Override
@@ -112,10 +136,6 @@ public class ProductRepository implements IProductRepository {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public Producto queryById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public Producto queryById(String id) {
