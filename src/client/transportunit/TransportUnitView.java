@@ -174,10 +174,10 @@ public class TransportUnitView extends BaseView implements MouseListener{
     public void loadFile(String filename){
         Boolean response = transportUnitApplication.loadTransportUnit(filename);
         if(response){
+            transportUnitApplication.refreshTransportUnits();
             refreshTable();
             JOptionPane.showMessageDialog(this, Strings.MESSAGE_FILE_TRANSPORT_UNIT,
                     Strings.MESSAGE_FILE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
-            transportUnitApplication.refreshTransportUnits();
         }
         else
             JOptionPane.showMessageDialog(this, Strings.MESSAGE_FILE_ERROR_TRANSPORT_UNIT,
