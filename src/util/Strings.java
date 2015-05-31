@@ -110,5 +110,23 @@ public class Strings {
     public static final String ERROR_DATE_END="Seleccione fecha final";
     public static final String ERROR_DATE="La fecha inicial debe ser anterior a la final";
     /*END*/
+    
+    /*PRODUCT TYPE MESSAGES*/
+    public static final String MESSAGE_TPRODUCT_TITLE="Mensaje de inserción de tipo de producto";
+    public static final String MESSAGE_TPRODUCT_CREATED="Se registró correctamente el tipo de producto.";
+    /*END*/
 
+    /*PRODUCT MESSAGES*/
+    public static final String ERROR_CANTIDAD_PROD_REQUIRED="El campo Cantidad es obligatorio.";
+    public static final String ERROR_CANTIDAD_PROD_INT ="El campo cantidad debe ser un numero entero.";
+    public static final String ERROR_CANTIDADXPALLET_REQUIRED="El campo de cantidad por pallet es obligatorio.";
+    public static final String ERROR_CANTIDADXPALLET_INT ="El campo de cantidad por pallet debe ser un numero entero.";
+    public static final String ERROR_PRODUCT_NAME_LESS_2 ="El campo Nombre de Producto debe tener por lo menos 2 caracteres.";
+    public static final String ERROR_DESC_PROD_REQUIRED="El campo Descripcion del Producto es obligatorio.";
+    public static final String ERROR_CONDITION_PROD_REQUIRED="El campo condicion es obligatorio";
+    public static final String MESSAGE_NEW_PRODUCT_CREATED = "Se registró correctamente el producto.";
+    public static final String MESSAGE_NEW_PRODUCT_TITLE ="Mensaje de inserción de producto";
+    /*END*/
+    
+    
 }

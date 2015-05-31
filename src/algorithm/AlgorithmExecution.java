@@ -9,8 +9,8 @@ import algorithm.operators.Selection;
 import algorithm.operators.Crossover;
 import algorithm.operators.LocalSearch;
 import algorithm.operators.Mutation;
+import algorithm.operators.ObjectiveFunction;
 import algorithm.operators.Repair;
-import algorithm.operators.Replacement;
 import java.util.Arrays;
 
 /**
@@ -32,6 +32,7 @@ public class AlgorithmExecution {
         algorithm.setMaxPriority(10000);
         algorithm.setBasePriority(1.2);
         algorithm.setMaxTravelTime(3);
+        algorithm.setGraspAlpha(0.3);
         
         Problem problem = new Problem();
         
@@ -39,12 +40,12 @@ public class AlgorithmExecution {
         
         for (int i = 0; i < algorithm.getNumberOfGenerations(); i++) {
             Solution[] parents = new Solution[2];
-            parents[0] = Selection.tournamentSelection(
+            parents[0] = population.getSolutions()[Selection.tournamentSelection(
                         algorithm.getTournamentSelectionKValue(), population, 
-                        Selection.options.BEST.ordinal());
-            parents[1] = Selection.tournamentSelection(
+                        Selection.Options.BEST)];
+            parents[1] = population.getSolutions()[Selection.tournamentSelection(
                         algorithm.getTournamentSelectionKValue(), population, 
-                        Selection.options.BEST.ordinal());
+                        Selection.Options.BEST)];
             Arrays.sort(parents);
             
             Solution child = Crossover.uniformCrossover(parents, algorithm, problem);
@@ -52,12 +53,14 @@ public class AlgorithmExecution {
             child = Mutation.mutation(child, algorithm, problem);            
             child = LocalSearch.opt2Improvement(child);            
             child = Repair.repair(child);
+            child.setCost(ObjectiveFunction.getSolutionCost(child, algorithm,
+                problem.getProductsStock()));
             
-            Solution replacedSolution = Selection.tournamentSelection(
+            int replacedSolution = Selection.tournamentSelection(
                     algorithm.getTournamentSelectionKValue(), population, 
-                    Selection.options.WORST.ordinal());
+                    Selection.Options.WORST);
             
-            Replacement.solutionReplacement(population, child, replacedSolution);
+            population.getSolutions()[replacedSolution] = child;
         }
         long end = System.currentTimeMillis();
         System.out.println("Execution time: " + (end-ini) + "ms");

@@ -313,6 +313,11 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
             }
         });
         productTable.setName("productTable"); // NOI18N
+        productTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                productTableMouseClicked(evt);
+            }
+        });
         jScrollPanel.setViewportView(productTable);
         if (productTable.getColumnModel().getColumnCount() > 0) {
             productTable.getColumnModel().getColumn(0).setResizable(false);
@@ -479,6 +484,10 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
     private void codPorductTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codPorductTxtActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_codPorductTxtActionPerformed
+
+    private void productTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productTableMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_productTableMouseClicked
 
     /**
      * @param args the command line arguments

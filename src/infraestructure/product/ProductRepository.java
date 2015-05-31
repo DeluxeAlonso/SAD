@@ -88,6 +88,29 @@ public class ProductRepository implements IProductRepository {
     @Override
     public ArrayList<Producto> queryByType(int idType) {
         Session session = Tools.getSessionInstance();
+        // WHERE p.tipoProducto.id=:idType
+        String hql = "FROM Producto p WHERE p.tipoProducto.id=:idType";
+        ArrayList<Producto> products=null;
+        Transaction trns = null;
+        try{
+            trns = session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("idType", idType);
+            products = (ArrayList<Producto>) q.list();
+            session.getTransaction().commit();
+        }
+        catch (RuntimeException e){
+            if(trns != null){
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return products;
+    }
+    
+    
+    public ArrayList<Producto> queryByCondition(int idType) {
+        Session session = Tools.getSessionInstance();
         String hql = "FROM Producto p WHERE p.condicion.id=:idType";
         ArrayList<Producto> products = new ArrayList<>();
         Transaction trns = null;
@@ -132,7 +155,20 @@ public class ProductRepository implements IProductRepository {
 
     @Override
     public int update(Producto object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            session.saveOrUpdate(object);                      
+            session.getTransaction().commit();
+            return object.getId();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return -1;
+        }     
     }
 
     @Override

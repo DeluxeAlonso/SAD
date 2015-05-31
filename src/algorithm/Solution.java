@@ -5,7 +5,8 @@
  */
 package algorithm;
 
-import entity.PedidoParcial;
+import algorithm.grasp.Grasp;
+import algorithm.operators.ObjectiveFunction;
 import entity.UnidadTransporte;
 
 /**
@@ -18,12 +19,14 @@ public class Solution implements Comparable<Solution>{
     private UnidadTransporte[] vehicles;
     private Algorithm algorithm;
     private Problem problem;
-    private float cost;
+    private double cost;
 
     Solution(Algorithm algorithm, Problem problem) {
         this.algorithm = algorithm;
         this.problem = problem;
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.nodes = Grasp.construction(algorithm, problem);
+        //this.cost = ObjectiveFunction.getSolutionCost(this, algorithm, 
+        //        problem.getProductsStock());        
     }
     
     @Override
@@ -63,11 +66,11 @@ public class Solution implements Comparable<Solution>{
         this.problem = problem;
     }
 
-    public float getCost() {
+    public double getCost() {
         return cost;
     }
 
-    public void setCost(float cost) {
+    public void setCost(double cost) {
         this.cost = cost;
     }
     
