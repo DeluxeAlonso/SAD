@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -24,12 +25,43 @@ public class ProductApplication {
         this.productRepository = new ProductRepository();
     }
     
+    public int insert(Producto product) {
+        int i =1;
+        try{
+            i = productRepository.insert(product);
+        }catch(Exception e){
+            e.printStackTrace();
+            return -1;
+        }
+        return i;
+    }
+    public int update(Producto product) {
+        int i =1;
+        try{
+            return productRepository.update(product);
+        }catch(Exception e){
+            e.printStackTrace();
+            return -1;
+        }
+    }
+    
+       
     public void createProduct(Producto product) {
         try{
             int i = productRepository.insert(product);
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+    
+           public Producto queryById(int id){
+        Producto p = null;
+        try{
+            p = productRepository.queryById(id);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return p;
     }
     
     public ArrayList<Producto> getAllProducts(){
@@ -47,6 +79,7 @@ public class ProductApplication {
         try{
             products = productRepository.queryByType(idType);
         }catch(Exception e){
+            System.out.println(e.toString());
             e.printStackTrace();
         }
         return products;
@@ -60,19 +93,18 @@ public class ProductApplication {
         }
     }
     
-        public Producto queryById(int id){
-        Producto p = null;
+    public void refreshProducts(){
+        EntityType.PRODUCTS = getAllProducts();
+    }
+    
+    public ArrayList<Producto> searchProduct(Producto product){
+        ArrayList<Producto> products=null;
         try{
-            p = productRepository.queryById(id);
+            products = productRepository.searchProduct(product);
         }catch(Exception e){
             e.printStackTrace();
         }
-        return p;
-    }
-    
-    
-    public void refreshProducts(){
-        EntityType.PRODUCTS = getAllProducts();
+        return products;
     }
     
 }

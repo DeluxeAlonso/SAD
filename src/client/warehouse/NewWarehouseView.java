@@ -14,11 +14,19 @@ import application.warehouse.WarehouseApplication;
 import entity.Almacen;
 import entity.Rack;
 import entity.Ubicacion;
+import java.awt.Color;
+import java.awt.Image;
+import java.net.URL;
 import java.util.Calendar;
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.border.Border;
 import util.Constants;
 import util.EntityState;
 import util.EntityType;
+import util.Icons;
 import util.InstanceFactory;
 import util.Strings;
 
@@ -31,6 +39,10 @@ public class NewWarehouseView extends javax.swing.JDialog {
     ConditionApplication conditionApplication=InstanceFactory.Instance.getInstance("conditionApplication", ConditionApplication.class);
     RackApplication rackApplication=InstanceFactory.Instance.getInstance("rackApplication", RackApplication.class);
     SpotApplication spotApplication=InstanceFactory.Instance.getInstance("spotApplication", SpotApplication.class);
+    Image img;
+    Image img2;
+    Border errorBorder = BorderFactory.createLineBorder(Color.RED, 1);
+    Border regularBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
     /**
      * Creates new form NewWarehouse
      */
@@ -39,6 +51,8 @@ public class NewWarehouseView extends javax.swing.JDialog {
         initComponents();
         this.setTitle("Nuevo Almacen");
         this.condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.CONDITIONS_NAMES));
+        Icons.setButton(saveTxt, Icons.ICONOS.GUARDAR.ordinal());
+        Icons.setButton(cancelBtn, Icons.ICONOS.CANCELAR.ordinal());
     }
 
     /**
@@ -50,10 +64,8 @@ public class NewWarehouseView extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        racksTxt = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         condicionCombo = new javax.swing.JComboBox();
-        jLabel2 = new javax.swing.JLabel();
         saveTxt = new javax.swing.JButton();
         cancelBtn = new javax.swing.JButton();
         descripcionTxt = new javax.swing.JTextField();
@@ -63,44 +75,41 @@ public class NewWarehouseView extends javax.swing.JDialog {
         AreaTxt = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         capacityTxt = new javax.swing.JTextField();
+        jPanel1 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
+        racksTxt = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        nFilTxt = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        nColTxt = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Nuevo Almacen");
 
-        racksTxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                racksTxtActionPerformed(evt);
-            }
-        });
-
-        jLabel3.setText("Tipo:");
+        jLabel3.setText("*Condicion:");
 
         condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jLabel2.setText("Racks:");
-
-        saveTxt.setText("Guardar");
         saveTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveTxtActionPerformed(evt);
             }
         });
 
-        cancelBtn.setText("Cancelar");
         cancelBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelBtnActionPerformed(evt);
             }
         });
 
-        jLabel1.setText("Descripcion:");
+        jLabel1.setText("*Descripcion:");
 
         jLabel4.setText("Racks");
 
-        jLabel5.setText("Area (m2):");
+        jLabel5.setText("*Area (m2):");
 
-        jLabel6.setText("Capacidad:");
+        jLabel6.setText("*Capacidad:");
 
         capacityTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -108,83 +117,143 @@ public class NewWarehouseView extends javax.swing.JDialog {
             }
         });
 
-        jLabel7.setText("Racks");
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Racks"));
+
+        jLabel7.setText("*Cantidad:");
+
+        racksTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                racksTxtActionPerformed(evt);
+            }
+        });
+
+        jLabel8.setText("Dimensiones:");
+
+        jLabel9.setText("*Filas:");
+
+        nFilTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nFilTxtActionPerformed(evt);
+            }
+        });
+
+        jLabel10.setText("*Columnas:");
+
+        nColTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nColTxtActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addGap(18, 18, 18)
+                        .addComponent(racksTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel8))
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel9)
+                .addGap(18, 18, 18)
+                .addComponent(nFilTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
+                .addComponent(jLabel10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(nColTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(racksTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel10)
+                        .addComponent(nColTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel9)
+                        .addComponent(nFilTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(29, 29, 29)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(23, 23, 23)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(descripcionTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(6, 6, 6)
-                                .addComponent(descripcionTxt))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel6)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING))
+                                .addGap(25, 25, 25)
+                                .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(AreaTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(26, 26, 26)
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(capacityTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel4))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(20, 20, 20)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                    .addComponent(cancelBtn)
-                                                    .addGroup(layout.createSequentialGroup()
-                                                        .addComponent(capacityTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                        .addComponent(jLabel4)))
-                                                .addGap(37, 37, 37)
-                                                .addComponent(saveTxt))
-                                            .addComponent(AreaTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(racksTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(jLabel7)))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 55, Short.MAX_VALUE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 0, Short.MAX_VALUE)))))
-                        .addGap(34, 34, 34))))
+                                        .addComponent(jLabel3)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(17, 17, 17))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(112, 112, 112)
+                .addComponent(cancelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29)
+                .addComponent(saveTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(27, 27, 27)
+                .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(descripcionTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(9, 9, 9)
+                .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(AreaTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
+                    .addComponent(AreaTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
-                    .addComponent(capacityTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(capacityTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(racksTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancelBtn)
-                    .addComponent(saveTxt))
-                .addGap(17, 17, 17))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(saveTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
+                    .addComponent(cancelBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         pack();
@@ -193,7 +262,7 @@ public class NewWarehouseView extends javax.swing.JDialog {
     private void saveTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveTxtActionPerformed
         // TODO add your handling code here:
         
-        
+        if (!hasErrors()){
         Almacen al = new Almacen();
         Calendar cal = Calendar.getInstance();
         int capa = Integer.parseInt(this.capacityTxt.getText());
@@ -207,7 +276,8 @@ public class NewWarehouseView extends javax.swing.JDialog {
             al.setArea(area);
         }
         int uLibres = Integer.parseInt(this.racksTxt.getText());
-        
+        int fil = Integer.parseInt(this.nFilTxt.getText());
+        int col = Integer.parseInt(this.nColTxt.getText());
         al.setUbicLibres(capa-uLibres);
         
         al.setCondicion(conditionApplication.getConditionInstance(condicionCombo.getSelectedItem().toString()));
@@ -222,12 +292,12 @@ public class NewWarehouseView extends javax.swing.JDialog {
             r.setEstado(EntityState.Racks.ACTIVO.ordinal());
             r.setFechaRegistro(cal.getTime());
             r.setAlmacen(al);
-            r.setNumCol(Constants.COLUMNAS_RACK);
-            r.setNumFil(Constants.FILAS_RACK);
+            r.setNumCol(col);
+            r.setNumFil(fil);
             al.getRacks().add(r);
             rackApplication.insert(r);
-            for (int j=0;j<Constants.COLUMNAS_RACK;j++){
-                for (int k=0;k<Constants.FILAS_RACK;k++){
+            for (int j=0;j<col;j++){
+                for (int k=0;k<fil;k++){
                     Ubicacion u = new Ubicacion();
                     u.setRack(r);
                     u.setEstado(EntityState.Spots.LIBRE.ordinal());
@@ -242,7 +312,7 @@ public class NewWarehouseView extends javax.swing.JDialog {
         }
         JOptionPane.showMessageDialog(this, Strings.MESSAGE_WAREHOUSE_CREATED);
         clearFields();
-
+        }
     }//GEN-LAST:event_saveTxtActionPerformed
 
     public void clearFields(){
@@ -253,8 +323,66 @@ public class NewWarehouseView extends javax.swing.JDialog {
         condicionCombo.setSelectedIndex(0);
     }
     
+        public boolean isDouble( String str ){
+        try{
+            Double.parseDouble( str );
+            return true;
+        }catch( Exception e ){
+            return false;
+        }
+    }
+    
+    public boolean isInteger( String str ){
+        try{
+            Integer.parseInt(str);
+            return true;
+        }catch( Exception e ){
+            return false;
+        }
+    }
     
     
+    private boolean hasErrors(){
+        boolean errorFlag=false;
+        String error_message = "Errores:\n";
+        if (AreaTxt.getText().isEmpty()){
+            error_message += Strings.ERROR_AREA_WAREHOUSE_REQUIRED+"\n";
+            AreaTxt.setBorder(errorBorder);
+            errorFlag = true;
+        } else if (!isDouble(AreaTxt.getText())){
+            error_message += Strings.ERROR_AREA_WAREHOUSE_DOUBLE+"\n";
+            AreaTxt.setBorder(errorBorder);
+            errorFlag = true;
+        }
+        if (capacityTxt.getText().isEmpty()){
+            error_message += Strings.ERROR_CAPACITY_WAREHOUSE_REQUIRED+"\n";
+            capacityTxt.setBorder(errorBorder);
+            errorFlag = true;
+        } else if (!isInteger(capacityTxt.getText())){
+            error_message += Strings.ERROR_CAPACITY_WAREHOUSE_INT+"\n";
+            capacityTxt.setBorder(errorBorder);
+            errorFlag = true;
+        }
+        if (racksTxt.getText().isEmpty()){
+            error_message += Strings.ERROR_RACKS_WAREHOUSE_REQUIRED+"\n";
+            racksTxt.setBorder(errorBorder);
+            errorFlag = true;
+        } else if (!isInteger(racksTxt.getText())){
+            error_message += Strings.ERROR_RACKS_WAREHOUSE_INT+"\n";
+            racksTxt.setBorder(errorBorder);
+            errorFlag = true;
+        }
+        if (condicionCombo.getSelectedIndex()==0){
+            error_message += Strings.ERROR_CONDICION_WAREHOUSE_REQUIRED+"\n";
+            condicionCombo.setBorder(errorBorder);
+            errorFlag = true;
+        }
+        
+        if (errorFlag==true)
+        JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_NEW_CLIENT_TITLE,JOptionPane.WARNING_MESSAGE);
+        
+        return errorFlag;
+    }
     
     private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
         // TODO add your handling code here:
@@ -271,6 +399,14 @@ public class NewWarehouseView extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_capacityTxtActionPerformed
 
+    private void nFilTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nFilTxtActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nFilTxtActionPerformed
+
+    private void nColTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nColTxtActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nColTxtActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -283,12 +419,17 @@ public class NewWarehouseView extends javax.swing.JDialog {
     private javax.swing.JComboBox condicionCombo;
     private javax.swing.JTextField descripcionTxt;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField nColTxt;
+    private javax.swing.JTextField nFilTxt;
     private javax.swing.JTextField racksTxt;
     private javax.swing.JButton saveTxt;
     // End of variables declaration//GEN-END:variables

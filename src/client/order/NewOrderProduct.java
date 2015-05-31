@@ -5,9 +5,11 @@
  */
 package client.order;
 
+import application.client.ClientApplication;
 import application.local.LocalApplication;
 import application.order.OrderApplication;
 import application.product.ProductApplication;
+import client.base.BaseDialogView;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -21,26 +23,33 @@ import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
 import entity.PedidoParcialXProductoId;
 import entity.Producto;
+import java.awt.Color;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
 import util.Strings;
 
 /**
  *
  * @author Alonso
  */
-public class NewOrderProduct extends javax.swing.JDialog implements MouseListener,ItemListener{
+public class NewOrderProduct extends BaseDialogView implements MouseListener,ItemListener{
     OrderApplication orderApplication = new OrderApplication();
     ProductApplication productApplication = new ProductApplication();
     LocalApplication localApplication = new LocalApplication();
+    ClientApplication clientApplication = new ClientApplication();
     ArrayList<Local> locals = new ArrayList<>();
     ArrayList<Producto> orderProducts;
+    ArrayList<Producto> productsToAdd;
     ArrayList<Integer> productQuantities;
     String[] clientNames;
     String[] localNames;
@@ -50,16 +59,22 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
     public NewOrderProduct(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        super.initialize();
         setupElements();
     }
 
     public void setupElements(){
         initializeArrays();
-        productApplication.refreshProducts();
-        qtySpinner.setValue(1);
-        refreshTable();
+        initializeData();
         fillCombos();
         setupListeners();
+    }
+    
+    public void initializeData(){
+        productApplication.refreshProducts();
+        qtySpinner.setValue(1);
+        productsToAdd = getAvailableProducts();
+        refreshProductsToAddTable();
     }
     
     public void initializeArrays(){
@@ -67,28 +82,29 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
         productQuantities = new ArrayList<>();
     }
     
+    /*
+     * ComboBox Configuration
+     */
     public void fillCombos(){
         fillClientNames();
         clientCombo.setModel(new javax.swing.DefaultComboBoxModel(clientNames));
     }
     
     public void fillClientNames(){
+        clientApplication.refreshClients();
         clientNames =  new String[EntityType.CLIENTS.size() + 1];
         for (int i=0; i < EntityType.CLIENTS.size() + 1; i++){
-            if (i == 0){
+            if (i == 0)
                 clientNames[i] = "";
-            }
-            else{
+            else
                 clientNames[i] = EntityType.CLIENTS.get(i-1).getNombre();
-            }
         }
     }
     
     public void fillLocalNames(){
         localNames =  new String[locals.size()];
-        for (int i=0; i < locals.size(); i++){
+        for (int i=0; i < locals.size(); i++)
                 localNames[i] = locals.get(i).getNombre();
-        }
     } 
     
     public void fillLocalCombo(){
@@ -97,25 +113,18 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
         localCombo.setModel(new javax.swing.DefaultComboBoxModel(localNames));
     }
     
-    public void refreshTable(){
-        ArrayList<String> cols = new ArrayList<>();
-        for (int i = 0; i<productAddTable.getColumnCount(); i++)
-            cols.add(productAddTable.getColumnName(i));
-        DefaultTableModel tableModel = new DefaultTableModel(cols.toArray(), 0);
-        productAddTable.setModel(tableModel);
-        System.out.println(EntityType.PRODUCTS.size());
-        EntityType.PRODUCTS.stream().forEach((_product) -> {
-            Object[] row = {_product.getId(), _product.getNombre(), _product.getCondicion().getNombre(), _product.getStockTotal()};
-            tableModel.addRow(row);
-        });
-    }
-    
+    /*
+     * Listeners Configuration
+     */   
     public void setupListeners(){
         productAddTable.addMouseListener(this);
         productTable.addMouseListener(this);
         clientCombo.addItemListener(this);
     }
     
+    /*
+     * Product Methods
+     */   
     public void addProduct(Producto p, Integer q){
         if(orderProducts.contains(p)){
             int index = orderProducts.indexOf(p);
@@ -131,7 +140,7 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
                 productQuantities.add(q); 
             }
         }
-        refreshProductTable();
+        refreshOrderProductsTable();
     }
     
     public void deleteProduct(int index){
@@ -148,16 +157,37 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
         removeBtn.setEnabled(false);
     }
     
-    public void refreshProductTable(){
+    public ArrayList<Producto> getAvailableProducts(){
+        ArrayList<Producto> products = new ArrayList<>();
+        for(int i=0;i<EntityType.PRODUCTS.size();i++)
+            if(EntityType.PRODUCTS.get(i).getStockTotal()>0)
+                products.add(EntityType.PRODUCTS.get(i));
+        return products;
+    }
+    
+    /*
+     * Table Methods
+     */ 
+    public void refreshOrderProductsTable(){
         ArrayList<String> cols = new ArrayList<>();
         for (int i = 0; i<productTable.getColumnCount(); i++)
             cols.add(productTable.getColumnName(i));
         DefaultTableModel tableModel = new DefaultTableModel(cols.toArray(), 0);
         productTable.setModel(tableModel);
         orderProducts.stream().forEach((_product) -> {
-            System.out.println(productQuantities.get(0));
-            System.out.println("index" + orderProducts.indexOf(_product));
             Object[] row = {_product.getId(), _product.getNombre(), _product.getCondicion().getNombre(), productQuantities.get(orderProducts.indexOf(_product))};
+            tableModel.addRow(row);
+        });
+    }
+    
+    public void refreshProductsToAddTable(){
+        ArrayList<String> cols = new ArrayList<>();
+        for (int i = 0; i<productAddTable.getColumnCount(); i++)
+            cols.add(productAddTable.getColumnName(i));
+        DefaultTableModel tableModel = new DefaultTableModel(cols.toArray(), 0);
+        productAddTable.setModel(tableModel);
+        productsToAdd.stream().forEach((_product) -> {
+            Object[] row = {_product.getId(), _product.getNombre(), _product.getCondicion().getNombre(), _product.getStockTotal()};
             tableModel.addRow(row);
         });
     }
@@ -166,11 +196,13 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
         return productTable.getSelectedRow();
     }
     
-    public void createOrder(){
+    /*
+     * Order Methods
+     */ 
+    public Boolean createOrder(){
         Pedido p = new Pedido();
         p.setEstado(1);
         p.setCliente(EntityType.CLIENTS.get(clientCombo.getSelectedIndex() - 1));
-        System.out.println("CLIENTE SELECICONAD " + EntityType.CLIENTS.get(clientCombo.getSelectedIndex() - 1).getNombre());
         p.setLocal(locals.get(localCombo.getSelectedIndex()));
         
         Date date = new Date();
@@ -195,9 +227,28 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
             partialProducts.add(partialProduct);
         }
         
-        if (orderApplication.CreateOrder(p, pp, partialProducts))
-            JOptionPane.showMessageDialog(this, Strings.MESSAGE_CREATE_ORDER,
-                    Strings.MESSAGE_CREATE_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
+        return orderApplication.CreateOrder(p, pp, partialProducts);
+    }
+    
+    /*
+     * Input Fields Methods
+     */
+    
+    public Boolean validFields(){  
+        productContainer.setBorder(regularBorder);
+        error_message = "Errores:\n";
+        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+        boolean valid = true;
+        if(clientCombo.getSelectedIndex() == 0){
+            error_message += Strings.ERROR_CREATE_ORDER_NO_CLIENTE+"\n";
+            valid = false; 
+        }
+        if(orderProducts.size() == 0){
+            error_message += Strings.ERROR_CREATE_ORDER_NO_PRODUCTS+"\n";
+            productContainer.setBorder(errorBorder);
+            valid = false;
+        }
+        return valid;
     }
     
     /**
@@ -209,9 +260,9 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTextField1 = new javax.swing.JTextField();
+        codPorductTxt = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        productTxt = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         productAddTable = new javax.swing.JTable();
@@ -222,7 +273,7 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
         jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         localCombo = new javax.swing.JComboBox();
-        jScrollPanel = new javax.swing.JScrollPane();
+        productContainer = new javax.swing.JScrollPane();
         productTable = new javax.swing.JTable();
         addBtn = new javax.swing.JButton();
         removeBtn = new javax.swing.JButton();
@@ -231,9 +282,9 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        codPorductTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                codPorductTxtActionPerformed(evt);
             }
         });
 
@@ -290,9 +341,9 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
 
         qtySpinner.setEnabled(false);
 
-        jLabel3.setText("Cliente:");
+        jLabel3.setText("*Cliente:");
 
-        jLabel5.setText("Local:");
+        jLabel5.setText("*Local:");
 
         localCombo.setEnabled(false);
 
@@ -313,7 +364,7 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
             }
         });
         productTable.setName("productTable"); // NOI18N
-        jScrollPanel.setViewportView(productTable);
+        productContainer.setViewportView(productTable);
         if (productTable.getColumnModel().getColumnCount() > 0) {
             productTable.getColumnModel().getColumn(0).setResizable(false);
             productTable.getColumnModel().getColumn(1).setResizable(false);
@@ -347,11 +398,11 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(productContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(16, 16, 16)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(addBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(removeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(removeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
@@ -376,12 +427,12 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(addBtn)
-                        .addGap(8, 8, 8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(removeBtn)
-                        .addGap(6, 286, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 31, Short.MAX_VALUE))))
+                        .addComponent(productContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 72, Short.MAX_VALUE))))
         );
 
         jLabel1.setText("Codigo:");
@@ -392,17 +443,17 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 544, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(8, 8, 8)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(codPorductTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField2)
+                        .addComponent(productTxt)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -421,9 +472,9 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
                     .addGroup(layout.createSequentialGroup()
                         .addGap(27, 27, 27)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(codPorductTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(productTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton1)
                             .addComponent(jLabel1))
                         .addGap(26, 26, 26)
@@ -443,35 +494,57 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        createOrder();
-        initializeArrays();
-        refreshProductTable();
-        refreshTable();
-        OrderView.orderView.refreshOrders();
-        this.dispose();        // TODO add your handling code here:
+        if(validFields()){   
+            if(createOrder()){
+                JOptionPane.showMessageDialog(this, Strings.MESSAGE_CREATE_ORDER,
+                    Strings.MESSAGE_CREATE_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
+                initializeArrays();
+                refreshOrderProductsTable();
+                refreshProductsToAddTable();
+                OrderView.orderView.refreshOrders();
+                this.dispose();
+            }
+            else{
+                JOptionPane.showMessageDialog(this, Strings.ERROR_CREATE_ORDER,Strings.MESSAGE_CREATE_ORDER_TITLE,JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        else{
+            JOptionPane.showMessageDialog(this, error_message,Strings.MESSAGE_CREATE_ORDER_TITLE,JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void productAddTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productAddTableMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_productAddTableMouseClicked
 
+    private void  productTableMouseClicked(java.awt.event.MouseEvent evt){
+        
+    }
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        Producto product = new Producto();
+        if(codPorductTxt.getText().length() == 0)
+            product.setId(null);
+        else
+            product.setId(Integer.parseInt(codPorductTxt.getText()));
+        product.setNombre(productTxt.getText());
+        productsToAdd = productApplication.searchProduct(product);
+        refreshProductsToAddTable();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        addProduct(EntityType.PRODUCTS.get(productAddTable.getSelectedRow()), (Integer)qtySpinner.getValue());
-        refreshProductTable();
+        addProduct(productsToAdd.get(productAddTable.getSelectedRow()), (Integer)qtySpinner.getValue());
+        productContainer.setBorder(regularBorder);
+        refreshOrderProductsTable();
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void removeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBtnActionPerformed
         deleteProduct(currentProductIndex());
-        refreshProductTable();
+        refreshOrderProductsTable();
     }//GEN-LAST:event_removeBtnActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void codPorductTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codPorductTxtActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_codPorductTxtActionPerformed
 
     /**
      * @param args the command line arguments
@@ -518,6 +591,7 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBtn;
     private javax.swing.JComboBox clientCombo;
+    private javax.swing.JTextField codPorductTxt;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
@@ -527,18 +601,21 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPanel;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JComboBox localCombo;
     private javax.swing.JTable productAddTable;
+    private javax.swing.JScrollPane productContainer;
     private javax.swing.JTable productTable;
+    private javax.swing.JTextField productTxt;
     private javax.swing.JSpinner qtySpinner;
     private javax.swing.JButton removeBtn;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void mouseClicked(MouseEvent e) {
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
         JTable target = (JTable)e.getSource();
         if(productAddTable.getSelectedRow() != -1){
             qtySpinner.setEnabled(true);
@@ -548,11 +625,6 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
         if(productTable.getSelectedRow() != -1){
             removeBtn.setEnabled(true); 
         }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

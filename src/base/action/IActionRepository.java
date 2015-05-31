@@ -7,6 +7,7 @@ package base.action;
 
 import base.IRepository;
 import entity.Accion;
+import java.util.ArrayList;
 
 /**
  *
@@ -14,4 +15,6 @@ import entity.Accion;
  */
 public interface IActionRepository extends IRepository<Accion>{
     Accion queryByName(String name);
+    ArrayList<Accion> queryAllParents();
+    ArrayList<Accion> queryChildByParent(int idPadre);
 }

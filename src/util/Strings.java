@@ -42,6 +42,10 @@ public class Strings {
     public static final String MESSAGE_USER_UPDATED="El usuario ha sido actualizado con éxito.";
     public static final String ALERT_USER_INACTIVE="No tienes acceso a la aplicación.";
     public static final String ALERT_USER_DOES_NOT_EXIST="Correo o la contraseña incorrectos.";
+    public static final String ERROR_NAME_REQUIRED="El campo nombre es requerido.";
+    public static final String ERROR_FIRSTNAME_REQUIRED="El campo apellido paterno es requerido.";
+    public static final String ERROR_SECONDNAME_REQUIRED="El campo apellido materno es requerido.";
+    public static final String ERROR_EMAIL_REQUIRED="El campo correo es requerido.";
     /*END*/
     
     /*WAREHOUSE MODULE MESSAGES*/
@@ -50,6 +54,23 @@ public class Strings {
     public static final String ERROR_NO_SPOTS_SELECTED="Seleccione alguna ubicación de destino.";
     public static final String ERROR_PALLETS_DONT_MATCH_SPOTS="La cantidad de pallets y ubicaciones seleccionados deben ser iguales.";
     public static final String MESSAGE_WAREHOUSE_CREATED="El almacen se ha registrado con éxito.";
+    public static final String ERROR_AREA_WAREHOUSE_REQUIRED= "El campo Area es obligatorio.";
+    public static final String ERROR_AREA_WAREHOUSE_DOUBLE= "El campo Area tiene que ser un numero.";
+    public static final String ERROR_CAPACITY_WAREHOUSE_REQUIRED= "El campo capacidad es obligatorio.";
+    public static final String ERROR_CAPACITY_WAREHOUSE_INT= "El campo capacidad debe ser un numero entero.";
+    public static final String ERROR_RACKS_WAREHOUSE_REQUIRED= "El campo racks es obligatorio.";
+    public static final String ERROR_RACKS_WAREHOUSE_INT= "El campo rack debe ser un numero entero.";
+    public static final String ERROR_CONDICION_WAREHOUSE_REQUIRED= "El campo condicion es obligatorio.";
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /*END*/
     
     /*CLIENT MODULE MESSAGES*/
@@ -85,7 +106,7 @@ public class Strings {
     public static final String MESSAGE_CONFIRM_DELETE_TRANSPORT_UNIT="¿Está seguro de eliminar la unidad de transporte seleccionada?";
     public static final String MESSAGE_FILE_TRANSPORT_UNIT_TITLE="Carga Masiva";
     public static final String MESSAGE_FILE_TRANSPORT_UNIT="Se realizo la carga de forma correcta";
-    public static final String MESSAGE_FILE_ERROR_TRANSPORT_UNIT="No se puedo realizar la carga masiva";
+    public static final String MESSAGE_FILE_ERROR_TRANSPORT_UNIT="No se pudo realizar la carga masiva";
     public static final String ERROR_PLATE_REQUIRED="El campo Placa es requerido.";
     public static final String ERROR_PLATE_NOT_6="El campo Placa debe contener exactamanete 6 caracteres.";
     public static final String ERROR_TRANSPORTIST_REQUIRED="El campo Transportista es requerido.";
@@ -102,6 +123,35 @@ public class Strings {
     public static final String MESSAGE_CREATE_ORDER="El pedido ha sido creado";
     public static final String MESSAGE_CREATE_ORDER_TITLE="Creacion de Pedido";
     public static final String ERROR_CREATE_ORDER_LESS_0="La cantidad seleccionada no puede ser menor a cero";
+    public static final String ERROR_CREATE_ORDER_NO_CLIENTE="Debe seleccionar un cliente.";
+    public static final String ERROR_CREATE_ORDER_NO_PRODUCTS="Debe seleccionar al menos un producto.";
+    public static final String ERROR_CREATE_ORDER="Error al registrar nuevo Pedido.";
+    public static final String LOAD_ORDER_TITLE="Carga Masiva de Pedidos";
+    public static final String LOAD_ORDER_ERROR="No se puedo realizar la carga masiva de Pedidos";
+    public static final String LOAD_ORDER_SUCCESS="Se realizo la carga masiva de Pedidos de forma correcta";
+    /*END*/
+    
+    
+    /*PRODUCT TYPE MESSAGES*/
+    public static final String MESSAGE_TPRODUCT_TITLE="Mensaje de inserción de tipo de producto";
+    public static final String MESSAGE_TPRODUCT_CREATED="Se registró correctamente el tipo de producto.";
+    /*END*/
+
+    /*PRODUCT MESSAGES*/
+    public static final String ERROR_CANTIDAD_PROD_REQUIRED="El campo Cantidad es obligatorio.";
+    public static final String ERROR_CANTIDAD_PROD_INT ="El campo cantidad debe ser un numero entero.";
+    public static final String ERROR_CANTIDADXPALLET_REQUIRED="El campo de cantidad por pallet es obligatorio.";
+    public static final String ERROR_CANTIDADXPALLET_INT ="El campo de cantidad por pallet debe ser un numero entero.";
+    public static final String ERROR_PRODUCT_NAME_LESS_2 ="El campo Nombre de Producto debe tener por lo menos 2 caracteres.";
+    public static final String ERROR_DESC_PROD_REQUIRED="El campo Descripcion del Producto es obligatorio.";
+    public static final String ERROR_CONDITION_PROD_REQUIRED="El campo condicion es obligatorio";
+    public static final String MESSAGE_NEW_PRODUCT_CREATED = "Se registró correctamente el producto.";
+    public static final String MESSAGE_NEW_PRODUCT_TITLE ="Mensaje de inserción de producto";
+    
+    public static final String ERROR_PESO_PROD_REQUIRED="El campo peso es obligatorio.";
+    public static final String ERROR_PESO_PROD_DOUBLE="El campo peso debe ser un numero.";
+    
+    
     /*END*/
     
     /*KARDEX MESSAGES*/
@@ -110,5 +160,5 @@ public class Strings {
     public static final String ERROR_DATE_END="Seleccione fecha final";
     public static final String ERROR_DATE="La fecha inicial debe ser anterior a la final";
     /*END*/
-
+    
 }

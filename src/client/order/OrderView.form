@@ -40,7 +40,7 @@
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="jScrollPane2" min="-2" pref="429" max="-2" attributes="0"/>
@@ -56,15 +56,15 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Group type="102" attributes="0">
                       <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
                       <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
+                  <Component id="jPanel1" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace type="unrelated" max="32767" attributes="0"/>
+              <EmptySpace pref="12" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="jScrollPane1" pref="163" max="32767" attributes="0"/>
                   <Component id="jScrollPane2" pref="0" max="32767" attributes="0"/>
@@ -113,7 +113,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButton2" min="-2" pref="26" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                          <Component id="loadBtn" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -126,7 +126,7 @@
                   <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="loadBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="fileTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jButton2" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
                       </Group>
@@ -147,14 +147,17 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="fileTextField">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton1">
+        <Component class="javax.swing.JButton" name="loadBtn">
           <Properties>
             <Property name="enabled" type="boolean" value="false"/>
             <Property name="label" type="java.lang.String" value="Cargar"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadBtnActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="jButton2">
@@ -166,6 +169,9 @@
               </Border>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -173,10 +179,6 @@
       <Properties>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
-      <Events>
-        <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jScrollPane2MousePressed"/>
-        <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jScrollPane2MouseEntered"/>
-      </Events>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
@@ -458,15 +460,15 @@
                                       </Group>
                                   </Group>
                               </Group>
-                              <Group type="102" attributes="0">
-                                  <Component id="partialCombo" min="-2" pref="137" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
-                                  <Component id="jButton5" min="-2" pref="146" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" attributes="0">
-                                  <Component id="dateTxt" min="-2" pref="131" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="dateTxt" min="-2" pref="131" max="-2" attributes="0"/>
+                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                          <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Component id="partialCombo" alignment="0" min="-2" pref="137" max="-2" attributes="0"/>
+                                  </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="detailStatusCombo" min="-2" pref="125" max="-2" attributes="0"/>
                               </Group>
@@ -511,14 +513,11 @@
                       <Component id="detailStatusCombo" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="partialCombo" alignment="1" max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel13" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButton5" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
-                      </Group>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jLabel13" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="partialCombo" alignment="3" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -531,7 +530,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="detailClientTxt">
           <Properties>
-            <Property name="enabled" type="boolean" value="false"/>
+            <Property name="editable" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel7">
@@ -541,7 +540,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="rucTxt">
           <Properties>
-            <Property name="enabled" type="boolean" value="false"/>
+            <Property name="editable" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel8">
@@ -551,7 +550,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="codLocalTxt">
           <Properties>
-            <Property name="enabled" type="boolean" value="false"/>
+            <Property name="editable" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel9">
@@ -566,12 +565,12 @@
         </Component>
         <Component class="javax.swing.JTextField" name="localTxt">
           <Properties>
-            <Property name="enabled" type="boolean" value="false"/>
+            <Property name="editable" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="direccionTxt">
           <Properties>
-            <Property name="enabled" type="boolean" value="false"/>
+            <Property name="editable" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel11">
@@ -581,7 +580,7 @@
         </Component>
         <Component class="javax.swing.JFormattedTextField" name="dateTxt">
           <Properties>
-            <Property name="enabled" type="boolean" value="false"/>
+            <Property name="editable" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel12">
@@ -607,15 +606,8 @@
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="0"/>
             </Property>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="jButton5">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Ver productos"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton5ActionPerformed"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>

@@ -85,7 +85,7 @@
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace pref="36" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -157,12 +157,12 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel11">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Correo:"/>
+        <Property name="text" type="java.lang.String" value="*Correo:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel12">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Apellido Materno:"/>
+        <Property name="text" type="java.lang.String" value="*Apellido Materno:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtSecondName">
@@ -183,22 +183,22 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel8">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Perfil:"/>
+        <Property name="text" type="java.lang.String" value="*Perfil:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel13">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Apellido Paterno:"/>
+        <Property name="text" type="java.lang.String" value="*Apellido Paterno:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel9">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Estado:"/>
+        <Property name="text" type="java.lang.String" value="*Estado:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel14">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Nombres:"/>
+        <Property name="text" type="java.lang.String" value="*Nombres:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JComboBox" name="comboState">

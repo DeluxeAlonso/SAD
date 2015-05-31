@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<<<<<<< HEAD
+<!-- Generated 30/05/2015 08:07:24 PM by Hibernate Tools 4.3.1 -->
+=======
+<!-- Generated May 29, 2015 5:58:45 PM by Hibernate Tools 4.3.1 -->
+>>>>>>> e0f9f8ad445d567b175cc40875a2643c3864406d
+<hibernate-mapping>
+    <class name="entity.Almacen" table="almacen" catalog="saddb" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="condicion" class="entity.Condicion" fetch="select">
+            <column name="id_condicion" not-null="true" />
+        </many-to-one>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="200" />
+        </property>
+        <property name="capacidad" type="java.lang.Integer">
+            <column name="capacidad" />
+        </property>
+        <property name="area" type="java.lang.Integer">
+            <column name="area" />
+        </property>
+        <property name="fechaRegistro" type="timestamp">
+            <column name="fecha_registro" length="19" />
+        </property>
+        <property name="estado" type="java.lang.Integer">
+            <column name="estado" />
+        </property>
+        <property name="ubicLibres" type="java.lang.Integer">
+            <column name="ubic_libres" />
+        </property>
+        <set name="racks" table="rack" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_almacen" not-null="true" />
+            </key>
+            <one-to-many class="entity.Rack" />
+        </set>
+        <set name="historialMovimientosesForIdAlmacenOut" table="historial_movimientos" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_almacen_out" not-null="true" />
+            </key>
+            <one-to-many class="entity.HistorialMovimientos" />
+        </set>
+        <set name="historialMovimientosesForIdAlmacenIn" table="historial_movimientos" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_almacen_in" not-null="true" />
+            </key>
+            <one-to-many class="entity.HistorialMovimientos" />
+        </set>
+        <set name="kardexes" table="kardex" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_almacen" not-null="true" />
+            </key>
+            <one-to-many class="entity.Kardex" />
+        </set>
+    </class>
+</hibernate-mapping>

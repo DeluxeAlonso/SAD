@@ -20,6 +20,7 @@ import javax.swing.table.DefaultTableModel;
 import util.Constants;
 import util.EntityState;
 import util.EntityType;
+import util.Icons;
 import util.InstanceFactory;
 
 /**
@@ -39,6 +40,10 @@ public class EditWarehouseView extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.setTitle("Editar Almacen");
+        Icons.setButton(addBtn, Icons.ICONOS.CREATE.ordinal());
+        Icons.setButton(deleteBtn, Icons.ICONOS.DELETE.ordinal());
+        Icons.setButton(saveBtn, Icons.ICONOS.GUARDAR.ordinal());
+        Icons.setButton(cancelBtn, Icons.ICONOS.CANCELAR.ordinal());
     }
     
     public EditWarehouseView(java.awt.Frame parent, boolean modal,Almacen a) {
@@ -51,6 +56,10 @@ public class EditWarehouseView extends javax.swing.JDialog {
         fillFields();
         clearGrid();
         fillTable(a.getId());
+        Icons.setButton(addBtn, Icons.ICONOS.CREATE.ordinal());
+        Icons.setButton(deleteBtn, Icons.ICONOS.DELETE.ordinal());
+        Icons.setButton(saveBtn, Icons.ICONOS.GUARDAR.ordinal());
+        Icons.setButton(cancelBtn, Icons.ICONOS.CANCELAR.ordinal());
     }
     
     public void fillTable(int id) {
@@ -127,14 +136,12 @@ public class EditWarehouseView extends javax.swing.JDialog {
 
         jLabel2.setText("Capacidad:");
 
-        saveBtn.setText("Guardar");
         saveBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveBtnActionPerformed(evt);
             }
         });
 
-        cancelBtn.setText("Cancelar");
         cancelBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelBtnActionPerformed(evt);
@@ -164,6 +171,11 @@ public class EditWarehouseView extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
+        rackTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                rackTableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(rackTable);
         if (rackTable.getColumnModel().getColumnCount() > 0) {
             rackTable.getColumnModel().getColumn(0).setResizable(false);
@@ -178,14 +190,13 @@ public class EditWarehouseView extends javax.swing.JDialog {
 
         idTxt.setEnabled(false);
 
-        deleteBtn.setText("Eliminar");
+        deleteBtn.setEnabled(false);
         deleteBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteBtnActionPerformed(evt);
             }
         });
 
-        addBtn.setText("Agregar");
         addBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addBtnActionPerformed(evt);
@@ -197,16 +208,10 @@ public class EditWarehouseView extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(146, 146, 146)
-                .addComponent(cancelBtn)
-                .addGap(39, 39, 39)
-                .addComponent(saveBtn)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addGap(28, 28, 28)
@@ -228,18 +233,20 @@ public class EditWarehouseView extends javax.swing.JDialog {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(jLabel4))
                                     .addComponent(idTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(181, 181, 181)
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(addBtn)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(deleteBtn)))
-                        .addGap(0, 6, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
+                                .addComponent(deleteBtn)
+                                .addGap(12, 12, 12))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(127, 127, 127)
+                        .addComponent(cancelBtn)
+                        .addGap(18, 18, 18)
+                        .addComponent(saveBtn)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -261,18 +268,18 @@ public class EditWarehouseView extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(deleteBtn)
-                    .addComponent(addBtn)
-                    .addComponent(jLabel5))
-                .addGap(3, 3, 3)
+                .addGap(39, 39, 39)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel5)
+                    .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancelBtn)
-                    .addComponent(saveBtn))
-                .addGap(55, 55, 55))
+                .addGap(11, 11, 11)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(cancelBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                    .addComponent(saveBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -356,7 +363,13 @@ public class EditWarehouseView extends javax.swing.JDialog {
         rackApplication.update(r);
         clearGrid();
         fillTable(a.getId());
+        deleteBtn.setEnabled(false);
     }//GEN-LAST:event_deleteBtnActionPerformed
+
+    private void rackTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rackTableMouseClicked
+        // TODO add your handling code here:
+        deleteBtn.setEnabled(true);
+    }//GEN-LAST:event_rackTableMouseClicked
 
     /**
      * @param args the command line arguments

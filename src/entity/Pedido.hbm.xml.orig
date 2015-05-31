@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<<<<<<< HEAD
+<!-- Generated 30/05/2015 08:07:24 PM by Hibernate Tools 4.3.1 -->
+=======
+<!-- Generated May 29, 2015 5:58:45 PM by Hibernate Tools 4.3.1 -->
+>>>>>>> e0f9f8ad445d567b175cc40875a2643c3864406d
+<hibernate-mapping>
+    <class name="entity.Pedido" table="pedido" catalog="saddb" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="cliente" class="entity.Cliente" fetch="select">
+            <column name="id_cliente" not-null="true" />
+        </many-to-one>
+        <many-to-one name="local" class="entity.Local" fetch="select">
+            <column name="id_local" not-null="true" />
+        </many-to-one>
+        <property name="estado" type="java.lang.Integer">
+            <column name="estado" />
+        </property>
+        <property name="fecha" type="timestamp">
+            <column name="fecha" length="19" />
+        </property>
+        <set name="pedidoParcials" table="pedido_parcial" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_pedido" not-null="true" />
+            </key>
+            <one-to-many class="entity.PedidoParcial" />
+        </set>
+    </class>
+</hibernate-mapping>

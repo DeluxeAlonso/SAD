@@ -13,6 +13,7 @@ import application.spot.SpotApplication;
 import application.warehouse.WarehouseApplication;
 import entity.Almacen;
 import entity.Condicion;
+import entity.Rack;
 import entity.Ubicacion;
 import java.util.ArrayList;
 import javax.swing.JFrame;
@@ -38,7 +39,10 @@ public class RackView extends javax.swing.JInternalFrame {
     int idRack;
     public RackView() {
         initComponents();
-        clearGrid();
+        clearGridRack();
+        clearGridSpot();
+        
+        
         //fillTable();
     }
 
@@ -63,7 +67,32 @@ public class RackView extends javax.swing.JInternalFrame {
         }
 
     }
-    public void fillTable(int id) {
+
+    public void fillTableRack(int id) {
+        DefaultTableModel model = (DefaultTableModel) rackGrid.getModel();
+        ArrayList<Rack> racks = rackApplication.queryRacksByWarehouse(id);
+
+        for (Rack r : racks) {
+            String estado = "Desconocido";
+            String[] estados=EntityState.getRacksState();
+            estado =estados[r.getEstado()];
+            model.addRow(new Object[]{
+                Integer.toString(r.getId()),
+                r.getAlmacen().getId(),
+                r.getNumFil().toString(),
+                r.getNumCol().toString(),
+                estado
+            });
+            
+        }
+    
+    }
+    
+    
+    
+    
+    
+    public void fillTableSpot(int id) {
         DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();
         ArrayList<Ubicacion> ubicaciones = spotApplication.querySpotsByRack(id);
 
@@ -86,8 +115,13 @@ public class RackView extends javax.swing.JInternalFrame {
 
     }
     
-    public void clearGrid() {
+    public void clearGridSpot() {
         DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();
+        model.setRowCount(0);
+    }
+    
+    public void clearGridRack() {
+        DefaultTableModel model = (DefaultTableModel) rackGrid.getModel();
         model.setRowCount(0);
     }
     
@@ -100,49 +134,21 @@ public class RackView extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        activoBtn = new javax.swing.JButton();
-        inactivoBtn = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        idTxt = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        searchBtn = new javax.swing.JButton();
         WarehouseGrid = new javax.swing.JScrollPane();
         usersGrid = new javax.swing.JTable();
-        almacenTxt = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
+        WarehouseGrid1 = new javax.swing.JScrollPane();
+        rackGrid = new javax.swing.JTable();
+        inactivoBtn = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        activoBtn = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        idTxt = new javax.swing.JTextField();
+        searchBtn = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Rack");
-
-        activoBtn.setText("Activo");
-        activoBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                activoBtnActionPerformed(evt);
-            }
-        });
-
-        inactivoBtn.setText("Inactivo");
-        inactivoBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                inactivoBtnMouseClicked(evt);
-            }
-        });
-        inactivoBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                inactivoBtnActionPerformed(evt);
-            }
-        });
-
-        jLabel1.setText("Rack:");
-
-        jLabel2.setText("Almacen:");
-
-        searchBtn.setText("Buscar");
-        searchBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                searchBtnMouseClicked(evt);
-            }
-        });
 
         usersGrid.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -179,58 +185,152 @@ public class RackView extends javax.swing.JInternalFrame {
             usersGrid.getColumnModel().getColumn(4).setResizable(false);
         }
 
-        almacenTxt.setEnabled(false);
-
         jLabel4.setText("Ubicaciones:");
+
+        rackGrid.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Almacen", "# Filas", "# Columnas", "Estado"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        rackGrid.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                rackGridMouseClicked(evt);
+            }
+        });
+        WarehouseGrid1.setViewportView(rackGrid);
+        if (rackGrid.getColumnModel().getColumnCount() > 0) {
+            rackGrid.getColumnModel().getColumn(0).setResizable(false);
+            rackGrid.getColumnModel().getColumn(1).setResizable(false);
+            rackGrid.getColumnModel().getColumn(2).setResizable(false);
+            rackGrid.getColumnModel().getColumn(3).setResizable(false);
+            rackGrid.getColumnModel().getColumn(4).setResizable(false);
+        }
+
+        inactivoBtn.setText("Inactivo");
+        inactivoBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                inactivoBtnMouseClicked(evt);
+            }
+        });
+        inactivoBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inactivoBtnActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setText("Racks:");
+
+        activoBtn.setText("Activo");
+        activoBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                activoBtnActionPerformed(evt);
+            }
+        });
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Busqueda de Rack por Almacen"));
+
+        jLabel1.setText("Almacen:");
+
+        searchBtn.setText("Buscar");
+        searchBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                searchBtnMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addGap(4, 4, 4)
+                .addComponent(idTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(searchBtn)
+                .addGap(27, 27, 27))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(idTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(searchBtn))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(jLabel1)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(WarehouseGrid, javax.swing.GroupLayout.PREFERRED_SIZE, 403, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(18, 18, 18)
-                                .addComponent(idTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(WarehouseGrid1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)))
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
+                        .addComponent(activoBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(almacenTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(activoBtn)
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(searchBtn)
-                                    .addComponent(inactivoBtn))))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(inactivoBtn))
+                    .addComponent(WarehouseGrid, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(idTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(almacenTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(searchBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(9, 9, 9)
+                        .addComponent(jLabel5))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(inactivoBtn)
                         .addComponent(activoBtn)
-                        .addComponent(inactivoBtn))
-                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(WarehouseGrid, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(73, 73, 73))
+                        .addComponent(jLabel4)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(WarehouseGrid1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(WarehouseGrid, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -243,8 +343,8 @@ public class RackView extends javax.swing.JInternalFrame {
         int idSpot = Integer.parseInt(idString);
         spotApplication.updateSpotOccupancy(idSpot,EntityState.Spots.LIBRE.ordinal());
        
-        clearGrid();
-        fillTable(idRack);        
+        clearGridSpot();
+        fillTableSpot(idRack);        
         
     }//GEN-LAST:event_activoBtnActionPerformed
 
@@ -255,36 +355,46 @@ public class RackView extends javax.swing.JInternalFrame {
         int idSpot = Integer.parseInt(idString);
         spotApplication.updateSpotOccupancy(idSpot,EntityState.Spots.INACTIVO.ordinal());
        
-        clearGrid();
-        fillTable(idRack);    
+        clearGridSpot();
+        fillTableSpot(idRack);    
     }//GEN-LAST:event_inactivoBtnMouseClicked
 
     private void searchBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchBtnMouseClicked
         // TODO add your handling code here:
-        clearGrid();
+        clearGridRack();
         int idS;
         if (idTxt.getText().equals(""))
             idS=0;
         else idS=Integer.parseInt(idTxt.getText());
-        idRack=idS;
-        fillTable(idS);
-        almacenTxt.setText(rackApplication.queryById(idS).getAlmacen().getId().toString());
+        fillTableRack(idS);
     }//GEN-LAST:event_searchBtnMouseClicked
 
     private void inactivoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inactivoBtnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_inactivoBtnActionPerformed
 
+    private void rackGridMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rackGridMouseClicked
+        // TODO add your handling code here:
+        int sr = rackGrid.getSelectedRow();
+        String idString = rackGrid.getModel().getValueAt(sr, 0).toString();
+        int id = Integer.parseInt(idString);
+        idRack=id;
+        clearGridSpot();
+        fillTableSpot(id);
+    }//GEN-LAST:event_rackGridMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane WarehouseGrid;
+    private javax.swing.JScrollPane WarehouseGrid1;
     private javax.swing.JButton activoBtn;
-    private javax.swing.JTextField almacenTxt;
     private javax.swing.JTextField idTxt;
     private javax.swing.JButton inactivoBtn;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JTable rackGrid;
     private javax.swing.JButton searchBtn;
     private javax.swing.JTable usersGrid;
     // End of variables declaration//GEN-END:variables

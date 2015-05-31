@@ -50,6 +50,7 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
      */
     public ClientView() {
         initComponents();
+                System.out.println("Buscar: "+ btnSaveClient.getWidth()+" "+btnSaveClient.getHeight());
         setupListeners();
         fillClientsTable();
         clientView = this;
@@ -358,6 +359,11 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
         btnFileUpload.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btnFileUploadMousePressed(evt);
+            }
+        });
+        btnFileUpload.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFileUploadActionPerformed(evt);
             }
         });
 
@@ -671,6 +677,10 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
     private void jButton1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MousePressed
         GoogleMaps map = new GoogleMaps();
     }//GEN-LAST:event_jButton1MousePressed
+
+    private void btnFileUploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFileUploadActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnFileUploadActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

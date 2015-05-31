@@ -51,7 +51,7 @@ public class AlgorithmExecution {
             Solution child = Crossover.uniformCrossover(parents, algorithm, problem);
             
             child = Mutation.mutation(child, algorithm, problem);            
-            child = LocalSearch.opt2Improvement(child);            
+            child = LocalSearch.opt2Improvement(child, algorithm, problem);            
             child = Repair.repair(child);
             child.setCost(ObjectiveFunction.getSolutionCost(child, algorithm,
                 problem.getProductsStock()));
