@@ -33,11 +33,7 @@ public class ActionApplication {
         return actions;
     }
     
-    public void refreshActions() {
-        
-        EntityType.ACTIONS = getAllActions();
-        
-    }
+    
     public Accion getActionByName(String nombAccion){
         Accion action=null;
         try{
@@ -46,5 +42,25 @@ public class ActionApplication {
             e.printStackTrace();
         }
         return action;
+    }
+    
+    public ArrayList<Accion> getParents(){
+        ArrayList<Accion> actions=null;
+        try{
+            actions=actionRepository.queryAllParents();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return actions;
+    }
+    
+    public ArrayList<Accion> getChildsByParent(int idPadre){
+        ArrayList<Accion> actions=null;
+        try{
+            actions=actionRepository.queryChildByParent(idPadre);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return actions;
     }
 }
