@@ -8,10 +8,10 @@ package algorithm.operators;
 import algorithm.Algorithm;
 import algorithm.Node;
 import algorithm.Solution;
-import entity.PedidoParcial;
 import entity.UnidadTransporte;
 import java.awt.geom.Point2D;
 import java.util.HashMap;
+import util.Constants;
 
 /**
  *
@@ -22,9 +22,12 @@ public class ObjectiveFunction {
             Algorithm algorithm, int currentCap, double currentTime, 
             int extraCap, double travelCost, int remainingStock){
         
-        double customerPriority = b.getDaysDifference()<=0 ? 
+        double customerPriority;        
+        if(b!=null)
+            customerPriority = b.getDaysDifference()<=0 ? 
                 algorithm.getMaxPriority() :
                 Math.exp(-b.getDaysDifference()*Math.log(algorithm.getBasePriority()));
+        else customerPriority = 1;
                 
         int overCap = Math.max(0, currentCap + extraCap - 
                 t.getTipoUnidadTransporte().getCapacidadPallets());
@@ -43,23 +46,40 @@ public class ObjectiveFunction {
     public static double getRouteCost(UnidadTransporte vehicle, Node[] route, 
             Algorithm algorithm, HashMap<Integer,Integer> currentStock){
         double routeCost = 0; int currentCap = 0; double currentTime = 0;
-        for (int i = 1; i < route.length; i++) {
-            double travelCost = Point2D.distance(route[i-1].getX(), route[i-1].getY(), 
+        if(route==null) return routeCost;  
+        double speed = vehicle.getTipoUnidadTransporte().getVelocidadPromedio();
+        for (int i = 0; i < route.length+1; i++) {
+            double travelCost; int extraCap = 0, productId = 0, newStock = 0;
+            
+            if(i==route.length)
+                travelCost = Point2D.distance(route[i-1].getX(), route[i-1].getY(), 
+                    Constants.WAREHOUSE_LATITUDE, Constants.WAREHOUSE_LONGITUDE)/
+                    speed;
+            else if(i>0)
+                travelCost = Point2D.distance(route[i-1].getX(), route[i-1].getY(), 
                     route[i].getX(), route[i].getY())/
-                    vehicle.getTipoUnidadTransporte().getVelocidadPromedio();
-            int extraCap = route[i].getDemand();            
-            int productId = route[i].getProduct().getId();
-            int newStock = currentStock.get(productId)
-                    - route[i].getDemand();      
+                    speed;
+            else
+                travelCost = Point2D.distance(Constants.WAREHOUSE_LATITUDE, Constants.WAREHOUSE_LONGITUDE,
+                    route[i].getX(), route[i].getY())/
+                    speed;            
             
-            routeCost += objectiveFunction(vehicle, route[i], algorithm,
-                    currentCap, currentTime, extraCap, travelCost, newStock);    
-            
-            currentCap += extraCap;            
+            if(i < route.length) {                
+                extraCap = route[i].getDemand();
+                productId = route[i].getProduct().getId();
+                newStock = currentStock.get(productId)
+                        - route[i].getDemand();
+                routeCost += objectiveFunction(vehicle, route[i], algorithm,
+                        currentCap, currentTime, extraCap, travelCost, newStock);
+                currentCap += extraCap;                
+                currentStock.put(productId, newStock);
+            } 
+            else{
+                routeCost += objectiveFunction(vehicle, null, algorithm,
+                        currentCap, currentTime, extraCap, travelCost, newStock);
+            }
             currentTime += travelCost;
-            currentStock.put(productId, newStock);
         }
-        //add cost between warehouse-node, node-warehouse
         return routeCost;
     }
     

@@ -7,6 +7,7 @@ import application.condition.ConditionApplication;
 import application.internment.InternmentApplication;
 import application.order.OrderApplication;
 import application.product.ProductApplication;
+import application.producttype.ProductTypeApplication;
 import application.profile.ProfileApplication;
 import application.transportunit.TransportUnitApplication;
 import application.rack.RackApplication;
@@ -52,6 +53,7 @@ public class AppStart {
             InstanceFactory.Instance.register("orderApplication", OrderApplication.class);
             InstanceFactory.Instance.register("clientApplication", ClientApplication.class);
             InstanceFactory.Instance.register("productApplication", ProductApplication.class);  
+            InstanceFactory.Instance.register("productTypeApplication", ProductTypeApplication.class);              
         } catch (Exception ex) {
             Logger.getLogger(AppStart.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -71,6 +73,7 @@ public class AppStart {
         OrderApplication orderApplication = InstanceFactory.Instance.getInstance("orderApplication", OrderApplication.class);
         ClientApplication clientApplication = InstanceFactory.Instance.getInstance("clientApplication", ClientApplication.class);
         ProductApplication productApplication = InstanceFactory.Instance.getInstance("productApplication", ProductApplication.class);        
+        ProductTypeApplication productTypeApplication = InstanceFactory.Instance.getInstance("productTypeApplication", ProductTypeApplication.class);                
         conditionApplication.refreshConditions();
         EntityType.fillConditionNames();
         //Se llama un metodo para que actualice los perfiles en la variable global PROFILES y ACTIONS

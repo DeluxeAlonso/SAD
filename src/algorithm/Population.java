@@ -5,6 +5,10 @@
  */
 package algorithm;
 
+import algorithm.operators.LocalSearch;
+import algorithm.operators.ObjectiveFunction;
+import algorithm.operators.Selection;
+
 /**
  *
  * @author robert
@@ -23,7 +27,10 @@ public class Population {
     private void generatePopulation() {
         solutions = new Solution[algorithm.getPopulationSize()];
         for (int i = 0; i < solutions.length; i++) {
-            solutions[i] = new Solution(algorithm, problem);            
+            solutions[i] = new Solution(algorithm, problem); 
+            solutions[i] = LocalSearch.opt2Improvement(solutions[i], algorithm, problem);
+            solutions[i].setCost(ObjectiveFunction.getSolutionCost(solutions[i], 
+                    algorithm, problem.getProductsStock()));
         }        
     }
     
@@ -52,6 +59,7 @@ public class Population {
     }
 
     Solution getBestSolution() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return solutions[Selection.tournamentSelection(solutions.length, this, 
+                Selection.Options.BEST)];
     }
 }

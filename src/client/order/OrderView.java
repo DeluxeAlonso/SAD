@@ -23,6 +23,7 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -62,20 +63,15 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
     }
 
     public void setupElements(){
-        /*ArrayList<PedidoParcial> partials = new ArrayList<>();
-        partials = orderApplication.getPendingPartialOrders();
-        for(int i=0;i<partials.size();i++){
-            System.out.println(partials.get(i).getPedido().getId() + " " + partials.get(i).getPedido().getEstado());
-            ArrayList<PedidoParcialXProducto> products = new ArrayList<>();
-            products = orderApplication.queryAllPartialOrderProducts(partials.get(i).getId());
-            for(int j=0; j<products.size(); j++){
-                System.out.println(products.get(j).getProducto().getNombre());
-            }
-        }*/
         orderApplication.refreshOrders();
         currentOrders = EntityType.ORDERS;
         fillCombos();
         refreshTable();
+    }
+
+    public void initializeArrays(){
+        orderProducts = new ArrayList<>();
+        productQuantities = new ArrayList<>();
     }
     
     public void fillCombos(){
@@ -134,6 +130,7 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         orderTable.addMouseListener(this);
         productTable.addMouseListener(this);
         filterClientCombo.addItemListener(this);
+        partialCombo.addItemListener(this);
     }
     
     /*ORDER METHODS*/
@@ -205,6 +202,8 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         dateTxt.setText(dateFormat.format(order.getFecha()));
         
+        partialCombo.setEnabled(true);
+        
         detailStatusCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getOrdersState()));
         detailStatusCombo.setSelectedIndex(order.getEstado());
         
@@ -228,7 +227,6 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
                 System.out.println(products.get(j).getProducto().getNombre());
             }
         }
-        
     }
     
     public void clearDetailFields(){
@@ -238,6 +236,7 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         codLocalTxt.setText("");
         direccionTxt.setText("");
         dateTxt.setText("");
+        partialCombo.setEditable(false);
     }
     
     /**
@@ -287,7 +286,6 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         detailStatusCombo = new javax.swing.JComboBox();
         jLabel13 = new javax.swing.JLabel();
         partialCombo = new javax.swing.JComboBox();
-        jButton5 = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Pedidos");
@@ -349,14 +347,6 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         );
 
         jScrollPane2.setEnabled(false);
-        jScrollPane2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                jScrollPane2MousePressed(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jScrollPane2MouseEntered(evt);
-            }
-        });
 
         orderTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -496,27 +486,27 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
 
         jLabel6.setText("Cliente:");
 
-        detailClientTxt.setEnabled(false);
+        detailClientTxt.setEditable(false);
 
         jLabel7.setText("RUC:");
 
-        rucTxt.setEnabled(false);
+        rucTxt.setEditable(false);
 
         jLabel8.setText("Cod. Local:");
 
-        codLocalTxt.setEnabled(false);
+        codLocalTxt.setEditable(false);
 
         jLabel9.setText("Direccion:");
 
         jLabel10.setText("Local:");
 
-        localTxt.setEnabled(false);
+        localTxt.setEditable(false);
 
-        direccionTxt.setEnabled(false);
+        direccionTxt.setEditable(false);
 
         jLabel11.setText("Emision:");
 
-        dateTxt.setEnabled(false);
+        dateTxt.setEditable(false);
 
         jLabel12.setText("Estado:");
 
@@ -524,12 +514,7 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
 
         jLabel13.setText("P. Parcial:");
 
-        jButton5.setText("Ver productos");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
+        partialCombo.setEnabled(false);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -566,10 +551,7 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
                                         .addComponent(jLabel10)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(localTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(partialCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(37, 37, 37)
-                                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(partialCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(dateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -607,12 +589,10 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
                     .addComponent(jLabel12)
                     .addComponent(detailStatusCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(partialCombo, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel13)
-                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(14, 14, 14))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(partialCombo))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -645,13 +625,13 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(3, 3, 3)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
@@ -686,13 +666,13 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         }
     }//GEN-LAST:event_deleteBtnActionPerformed
 
-    private void jScrollPane2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane2MousePressed
+    private void jScrollPane2MousePressed(java.awt.event.MouseEvent evt) {                                          
 
-    }//GEN-LAST:event_jScrollPane2MousePressed
+    }                                         
 
-    private void jScrollPane2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane2MouseEntered
+    private void jScrollPane2MouseEntered(java.awt.event.MouseEvent evt) {                                          
 
-    }//GEN-LAST:event_jScrollPane2MouseEntered
+    }                                         
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         NewOrderProduct newOrderProductView = new NewOrderProduct((JFrame) SwingUtilities.getWindowAncestor(this), true);
@@ -730,6 +710,7 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         clearDetailFields();
     }//GEN-LAST:event_searchBtnActionPerformed
 
+
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         if(partialCombo.getSelectedIndex()==0){
             
@@ -755,7 +736,6 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -785,7 +765,10 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        System.out.println("MouseCliced" + orderTable.getSelectedRow() + e.getSource().getClass().getName());
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
         JTable target = (JTable)e.getSource();
         if(target != null && orderTable.getSelectedRow() != -1){
             if(target.getColumnName(3).equals("Cantidad")){
@@ -799,11 +782,6 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
                     deleteBtn.setEnabled(false);
             }
         }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -825,6 +803,7 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
     public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
           Object item = e.getItem();
+          System.out.println(item);
           if(filterClientCombo.getSelectedIndex() != 0){
               filterLocalCombo.setEnabled(true);
               fillLocalCombo();

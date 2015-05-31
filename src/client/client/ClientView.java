@@ -50,6 +50,7 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
      */
     public ClientView() {
         initComponents();
+                System.out.println("Buscar: "+ btnSaveClient.getWidth()+" "+btnSaveClient.getHeight());
         setupListeners();
         fillClientsTable();
         clientView = this;

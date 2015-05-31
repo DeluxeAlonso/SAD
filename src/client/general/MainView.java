@@ -363,6 +363,11 @@ public class MainView extends javax.swing.JFrame {
         menuInter.add(jMenuItem8);
 
         jMenuItem10.setText("Productos");
+        jMenuItem10.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMenuItem10MousePressed(evt);
+            }
+        });
         jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem10ActionPerformed(evt);
@@ -443,6 +448,7 @@ public class MainView extends javax.swing.JFrame {
 
     private void WarehouseMenuMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WarehouseMenuMousePressed
         // TODO add your handling code here:
+        try{
         if (warehouseView == null || !warehouseView.isShowing()) {
             warehouseView = new WarehouseView();
             warehouseView.setVisible(true);
@@ -456,7 +462,7 @@ public class MainView extends javax.swing.JFrame {
                         .getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        }catch(Exception e){}
 
     }//GEN-LAST:event_WarehouseMenuMousePressed
 
@@ -722,6 +728,22 @@ public class MainView extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_PedidosActionPerformed
+
+    private void jMenuItem10MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem10MousePressed
+        // TODO add your handling code here:
+        if (productView == null || !productView.isShowing()) {
+            productView = new ProductView();
+            productView.setVisible(true);
+            mainPanel.add(productView);
+            try {
+                // TODO add your handling code here:
+                productView.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }        
+        
+    }//GEN-LAST:event_jMenuItem10MousePressed
 
     private void jMenuItem15MousePressed(java.awt.event.MouseEvent evt) {
         // TODO add your handling code here:

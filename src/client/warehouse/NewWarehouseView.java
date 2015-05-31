@@ -14,9 +14,12 @@ import application.warehouse.WarehouseApplication;
 import entity.Almacen;
 import entity.Rack;
 import entity.Ubicacion;
+import java.awt.Image;
 import java.util.Calendar;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import util.Constans;
+import util.Constants;
 import util.EntityState;
 import util.EntityType;
 import util.InstanceFactory;
@@ -31,6 +34,8 @@ public class NewWarehouseView extends javax.swing.JDialog {
     ConditionApplication conditionApplication=InstanceFactory.Instance.getInstance("conditionApplication", ConditionApplication.class);
     RackApplication rackApplication=InstanceFactory.Instance.getInstance("rackApplication", RackApplication.class);
     SpotApplication spotApplication=InstanceFactory.Instance.getInstance("spotApplication", SpotApplication.class);
+    Image img;
+    Image img2;
     /**
      * Creates new form NewWarehouse
      */
@@ -39,6 +44,18 @@ public class NewWarehouseView extends javax.swing.JDialog {
         initComponents();
         this.setTitle("Nuevo Almacen");
         this.condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.CONDITIONS_NAMES));
+        System.out.println(cancelBtn.getWidth()+ "");
+        System.out.println(cancelBtn.getHeight()+"");
+        try{
+            img = ImageIO.read(getClass().getResource("../../images/save.png"));
+            
+            img2 = img.getScaledInstance(65, 64,0);
+            cancelBtn.setIcon(new ImageIcon(img2));
+            
+        }catch(Exception e){
+            System.out.println("Error al asignar icono");
+            System.out.println(e.toString());
+        }
     }
 
     /**
@@ -222,12 +239,12 @@ public class NewWarehouseView extends javax.swing.JDialog {
             r.setEstado(EntityState.Racks.ACTIVO.ordinal());
             r.setFechaRegistro(cal.getTime());
             r.setAlmacen(al);
-            r.setNumCol(Constans.COLUMNAS_RACK);
-            r.setNumFil(Constans.FILAS_RACK);
+            r.setNumCol(Constants.COLUMNAS_RACK);
+            r.setNumFil(Constants.FILAS_RACK);
             al.getRacks().add(r);
             rackApplication.insert(r);
-            for (int j=0;j<Constans.COLUMNAS_RACK;j++){
-                for (int k=0;k<Constans.FILAS_RACK;k++){
+            for (int j=0;j<Constants.COLUMNAS_RACK;j++){
+                for (int k=0;k<Constants.FILAS_RACK;k++){
                     Ubicacion u = new Ubicacion();
                     u.setRack(r);
                     u.setEstado(EntityState.Spots.LIBRE.ordinal());
