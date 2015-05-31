@@ -356,11 +356,6 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
             }
         });
         productTable.setName("productTable"); // NOI18N
-        productTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                productTableMouseClicked(evt);
-            }
-        });
         productContainer.setViewportView(productTable);
         if (productTable.getColumnModel().getColumnCount() > 0) {
             productTable.getColumnModel().getColumn(0).setResizable(false);
@@ -400,7 +395,7 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(addBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(removeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(17, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -440,7 +435,7 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 544, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(8, 8, 8)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
@@ -513,6 +508,7 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
     private void productAddTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productAddTableMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_productAddTableMouseClicked
+
     private void  productTableMouseClicked(java.awt.event.MouseEvent evt){
         
     }
@@ -541,10 +537,6 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
     private void codPorductTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codPorductTxtActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_codPorductTxtActionPerformed
-
-    private void productTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productTableMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_productTableMouseClicked
 
     /**
      * @param args the command line arguments
