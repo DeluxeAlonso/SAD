@@ -53,14 +53,14 @@ public class ObjectiveFunction {
             
             if(i==route.length)
                 travelCost = Point2D.distance(route[i-1].getX(), route[i-1].getY(), 
-                    Constants.WAREHOUSE_LATITUDE, Constants.WAREHOUSE_LONGITUDE)/
+                    Constants.WAREHOUSE_LONGITUDE, Constants.WAREHOUSE_LATITUDE)/
                     speed;
             else if(i>0)
                 travelCost = Point2D.distance(route[i-1].getX(), route[i-1].getY(), 
                     route[i].getX(), route[i].getY())/
                     speed;
             else
-                travelCost = Point2D.distance(Constants.WAREHOUSE_LATITUDE, Constants.WAREHOUSE_LONGITUDE,
+                travelCost = Point2D.distance(Constants.WAREHOUSE_LONGITUDE, Constants.WAREHOUSE_LATITUDE,
                     route[i].getX(), route[i].getY())/
                     speed;            
             

@@ -24,8 +24,8 @@ public class LocalSearch {
         for (Node[] node : nodes) {
             Node[] route = new Node[node.length + 1];
             Node warehouse = new Node();
-            warehouse.setX(Constants.WAREHOUSE_LATITUDE);
-            warehouse.setY(Constants.WAREHOUSE_LONGITUDE);
+            warehouse.setX(Constants.WAREHOUSE_LONGITUDE);
+            warehouse.setY(Constants.WAREHOUSE_LATITUDE);
             warehouse.setDaysDifference(0);
             route[0] = warehouse;
             for (int j = 1; j < route.length; j++) {
@@ -87,9 +87,7 @@ public class LocalSearch {
     private static void reorder(Node[] ruta, int idx1, int idx4) {        
         Node[] rutaAux = new Node[ruta.length];
         //Copiado auxiliar
-        for (int i = 0; i < ruta.length; i++) {
-            rutaAux[i] = ruta[i];
-        }
+        System.arraycopy(ruta, 0, rutaAux, 0, ruta.length);
         //Reordenamiento
         rutaAux[idx1 + 1] = ruta[idx4];
         rutaAux[idx4] = ruta[idx1 + 1];
@@ -97,8 +95,6 @@ public class LocalSearch {
             rutaAux[i] = ruta[j];
         }
         //Copiado final
-        for (int i = 0; i < ruta.length; i++) {
-            ruta[i] = rutaAux[i];
-        }
+        System.arraycopy(rutaAux, 0, ruta, 0, ruta.length);
     }
 }
