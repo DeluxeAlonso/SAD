@@ -80,7 +80,7 @@
                       <Component id="cancelBtn" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="35" max="32767" attributes="0"/>
+              <EmptySpace pref="29" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -185,12 +185,12 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel8">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Perfil:"/>
+        <Property name="text" type="java.lang.String" value="*Perfil:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel9">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Estado:"/>
+        <Property name="text" type="java.lang.String" value="*Estado:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JComboBox" name="stateCombo">
@@ -209,7 +209,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel10">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Contrase&#xf1;a:"/>
+        <Property name="text" type="java.lang.String" value="*Contrase&#xf1;a:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="autoGeneratePassBtn">
@@ -224,12 +224,12 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel11">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Correo:"/>
+        <Property name="text" type="java.lang.String" value="*Correo:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel12">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Apellido Materno:"/>
+        <Property name="text" type="java.lang.String" value="*Apellido Materno:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="secondNameTxt">
@@ -238,12 +238,12 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel13">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Apellido Paterno:"/>
+        <Property name="text" type="java.lang.String" value="*Apellido Paterno:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel14">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Nombres:"/>
+        <Property name="text" type="java.lang.String" value="*Nombres:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="nameTxt">

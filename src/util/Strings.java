@@ -42,6 +42,10 @@ public class Strings {
     public static final String MESSAGE_USER_UPDATED="El usuario ha sido actualizado con éxito.";
     public static final String ALERT_USER_INACTIVE="No tienes acceso a la aplicación.";
     public static final String ALERT_USER_DOES_NOT_EXIST="Correo o la contraseña incorrectos.";
+    public static final String ERROR_NAME_REQUIRED="El campo nombre es requerido.";
+    public static final String ERROR_FIRSTNAME_REQUIRED="El campo apellido paterno es requerido.";
+    public static final String ERROR_SECONDNAME_REQUIRED="El campo apellido materno es requerido.";
+    public static final String ERROR_EMAIL_REQUIRED="El campo correo es requerido.";
     /*END*/
     
     /*WAREHOUSE MODULE MESSAGES*/
@@ -110,12 +114,6 @@ public class Strings {
     public static final String LOAD_ORDER_SUCCESS="Se realizo la carga masiva de Pedidos de forma correcta";
     /*END*/
     
-    /*KARDEX MESSAGES*/
-    public static final String ERROR_KARDEX_TITLE="Error en reporte de Kardex";
-    public static final String ERROR_DATE_INI="Seleccione fecha inicial";
-    public static final String ERROR_DATE_END="Seleccione fecha final";
-    public static final String ERROR_DATE="La fecha inicial debe ser anterior a la final";
-    /*END*/
     
     /*PRODUCT TYPE MESSAGES*/
     public static final String MESSAGE_TPRODUCT_TITLE="Mensaje de inserción de tipo de producto";
@@ -134,5 +132,11 @@ public class Strings {
     public static final String MESSAGE_NEW_PRODUCT_TITLE ="Mensaje de inserción de producto";
     /*END*/
     
+    /*KARDEX MESSAGES*/
+    public static final String ERROR_KARDEX_TITLE="Error en reporte de Kardex";
+    public static final String ERROR_DATE_INI="Seleccione fecha inicial";
+    public static final String ERROR_DATE_END="Seleccione fecha final";
+    public static final String ERROR_DATE="La fecha inicial debe ser anterior a la final";
+    /*END*/
     
 }
