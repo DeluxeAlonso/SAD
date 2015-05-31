@@ -459,7 +459,9 @@ public class NewOrderProduct extends javax.swing.JDialog implements MouseListene
     private void productAddTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productAddTableMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_productAddTableMouseClicked
-
+    private void  productTableMouseClicked(java.awt.event.MouseEvent evt){
+        
+    }
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed

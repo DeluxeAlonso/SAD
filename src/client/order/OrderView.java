@@ -354,14 +354,6 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         );
 
         jScrollPane2.setEnabled(false);
-        jScrollPane2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                jScrollPane2MousePressed(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jScrollPane2MouseEntered(evt);
-            }
-        });
 
         orderTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -691,13 +683,13 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         }
     }//GEN-LAST:event_deleteBtnActionPerformed
 
-    private void jScrollPane2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane2MousePressed
+    private void jScrollPane2MousePressed(java.awt.event.MouseEvent evt) {                                          
 
-    }//GEN-LAST:event_jScrollPane2MousePressed
+    }                                         
 
-    private void jScrollPane2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane2MouseEntered
+    private void jScrollPane2MouseEntered(java.awt.event.MouseEvent evt) {                                          
 
-    }//GEN-LAST:event_jScrollPane2MouseEntered
+    }                                         
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         NewOrderProduct newOrderProductView = new NewOrderProduct((JFrame) SwingUtilities.getWindowAncestor(this), true);
@@ -744,14 +736,6 @@ public class OrderView extends javax.swing.JInternalFrame implements MouseListen
         }
         
     }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void jScrollPane2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane2MousePressed
-
-    }//GEN-LAST:event_jScrollPane2MousePressed
-
-    private void jScrollPane2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane2MouseEntered
-
-    }//GEN-LAST:event_jScrollPane2MouseEntered
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
