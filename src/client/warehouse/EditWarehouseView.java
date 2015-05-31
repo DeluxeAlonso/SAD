@@ -17,7 +17,7 @@ import entity.Ubicacion;
 import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.table.DefaultTableModel;
-import util.Constans;
+import util.Constants;
 import util.EntityState;
 import util.EntityType;
 import util.InstanceFactory;
@@ -326,12 +326,12 @@ public class EditWarehouseView extends javax.swing.JDialog {
         r.setEstado(EntityState.Racks.ACTIVO.ordinal());
         r.setFechaRegistro(cal.getTime());
         r.setAlmacen(a);
-        r.setNumCol(Constans.COLUMNAS_RACK);
-        r.setNumFil(Constans.FILAS_RACK);
+        r.setNumCol(Constants.COLUMNAS_RACK);
+        r.setNumFil(Constants.FILAS_RACK);
         a.getRacks().add(r);
         rackApplication.insert(r);
-        for (int j=0;j<Constans.COLUMNAS_RACK;j++){
-            for (int k=0;k<Constans.FILAS_RACK;k++){
+        for (int j=0;j<Constants.COLUMNAS_RACK;j++){
+            for (int k=0;k<Constants.FILAS_RACK;k++){
                 Ubicacion u = new Ubicacion();
                 u.setRack(r);
                 u.setEstado(EntityState.Spots.LIBRE.ordinal());
