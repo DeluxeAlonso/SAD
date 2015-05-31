@@ -5,6 +5,7 @@
  */
 package client.order;
 
+import application.client.ClientApplication;
 import application.local.LocalApplication;
 import application.order.OrderApplication;
 import application.product.ProductApplication;
@@ -50,6 +51,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     OrderApplication orderApplication = new OrderApplication();
     LocalApplication localApplication = new LocalApplication();
     ProductApplication productApplication = new ProductApplication();
+    ClientApplication clientApplication = new ClientApplication();
     public static OrderView orderView;
     ArrayList<Local> locals = new ArrayList<>();
     ArrayList<Producto> orderProducts;
@@ -98,6 +100,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     }
     
     public void fillClientNames(){
+        clientApplication.refreshClients();
         clientNames =  new String[EntityType.CLIENTS.size() + 1];
         for (int i=0; i < EntityType.CLIENTS.size() + 1; i++){
             if (i == 0)

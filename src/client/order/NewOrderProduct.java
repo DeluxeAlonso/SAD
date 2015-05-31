@@ -5,6 +5,7 @@
  */
 package client.order;
 
+import application.client.ClientApplication;
 import application.local.LocalApplication;
 import application.order.OrderApplication;
 import application.product.ProductApplication;
@@ -45,6 +46,7 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
     OrderApplication orderApplication = new OrderApplication();
     ProductApplication productApplication = new ProductApplication();
     LocalApplication localApplication = new LocalApplication();
+    ClientApplication clientApplication = new ClientApplication();
     ArrayList<Local> locals = new ArrayList<>();
     ArrayList<Producto> orderProducts;
     ArrayList<Producto> productsToAdd;
@@ -65,7 +67,6 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
         initializeArrays();
         initializeData();
         fillCombos();
-        setupButtons();
         setupListeners();
     }
     
@@ -90,6 +91,7 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
     }
     
     public void fillClientNames(){
+        clientApplication.refreshClients();
         clientNames =  new String[EntityType.CLIENTS.size() + 1];
         for (int i=0; i < EntityType.CLIENTS.size() + 1; i++){
             if (i == 0)
@@ -111,15 +113,6 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
         localCombo.setModel(new javax.swing.DefaultComboBoxModel(localNames));
     }
     
-    /*
-     * Buttons Configuration
-     */   
-    public void setupButtons(){
-        ImageIcon addIcon = new ImageIcon(getClass().getResource("/images/03_plus_16.ico"));
-        addBtn.setIcon(addIcon);
-        addBtn.revalidate();
-    }
-
     /*
      * Listeners Configuration
      */   
