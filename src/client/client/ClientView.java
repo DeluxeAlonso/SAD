@@ -361,6 +361,11 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
                 btnFileUploadMousePressed(evt);
             }
         });
+        btnFileUpload.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFileUploadActionPerformed(evt);
+            }
+        });
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Nuevo Local"));
 
@@ -672,6 +677,10 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
     private void jButton1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MousePressed
         GoogleMaps map = new GoogleMaps();
     }//GEN-LAST:event_jButton1MousePressed
+
+    private void btnFileUploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFileUploadActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnFileUploadActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

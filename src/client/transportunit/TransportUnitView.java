@@ -8,6 +8,7 @@ package client.transportunit;
 
 import application.transportunit.TransportUnitApplication;
 import application.transportunittype.TransportUnitTypeApplication;
+import client.base.BaseView;
 import entity.TipoUnidadTransporte;
 import entity.UnidadTransporte;
 import java.awt.Color;
@@ -36,25 +37,24 @@ import util.Strings;
  *
  * @author LUIS
  */
-public class TransportUnitView extends javax.swing.JInternalFrame implements MouseListener{
+public class TransportUnitView extends BaseView implements MouseListener{
     
     TransportUnitApplication transportUnitApplication = InstanceFactory.Instance.getInstance("transportUnitApplication", TransportUnitApplication.class);
     TransportUnitTypeApplication transportUnitTypeApplication = InstanceFactory.Instance.getInstance("transportUnitTypeApplication", TransportUnitTypeApplication.class);
-    Border errorBorder = BorderFactory.createLineBorder(Color.RED, 1);
-    Border regularBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
     public static TransportUnitView transportUnitView;
-    String error_message;
+
     /**
      * Creates new form TUForm
      */
     public TransportUnitView() {
         initComponents();
-        transportUnitView = this;
+        super.initialize();
         setupListeners();
         setupElements();
     }
     
     public void setupElements(){
+        transportUnitView = this;
         transportUnitApplication.refreshTransportUnits();
         fillCombos();
         refreshTable();
@@ -73,8 +73,9 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
         typeCreateCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.TRANSPORT_TYPE_NAMES));
     }
     
-    //TRANSPORT UNIT METHODS
-    
+    /*
+     * Transport Unit Methods
+     */  
     public Boolean saveTransportUnit(){
         UnidadTransporte transportUnit = new UnidadTransporte();
         transportUnit.setPlaca(plateCreateTxt.getText());
@@ -102,8 +103,9 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
         }
     }
    
-    /*BUTTON'S HANDLING METHODS*/
-    
+    /*
+     * Buttons Handling Methods
+     */ 
     public void enableButtons(){
         editBtn.setEnabled(true);
         deleteBtn.setEnabled(true);  
@@ -114,8 +116,9 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
         deleteBtn.setEnabled(false);
     }
     
-    /*INPUT FIELDS METHODS*/
-    
+    /*
+     * Input Fields Methods
+     */ 
     public void fillCreateFields(UnidadTransporte transportUnit){
         plateCreateTxt.setText(transportUnit.getPlaca());
         transportistCreateTxt.setText(transportUnit.getTransportista());
@@ -165,23 +168,25 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
         return valid;
     }
     
-    /*FILE METHODS*/
-    
+    /*
+     * File Methods
+     */ 
     public void loadFile(String filename){
         Boolean response = transportUnitApplication.loadTransportUnit(filename);
         if(response){
+            refreshTable();
             JOptionPane.showMessageDialog(this, Strings.MESSAGE_FILE_TRANSPORT_UNIT,
                     Strings.MESSAGE_FILE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
             transportUnitApplication.refreshTransportUnits();
-            refreshTable();
         }
         else
             JOptionPane.showMessageDialog(this, Strings.MESSAGE_FILE_ERROR_TRANSPORT_UNIT,
                     Strings.MESSAGE_FILE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
     }
     
-    /*JTABLE METHODS*/
-    
+    /*
+     * Table Methods
+     */ 
     public void refreshTable(){
         ArrayList<String> cols = new ArrayList<>();
         for (int i = 0; i<transportTable.getColumnCount(); i++)
@@ -195,8 +200,6 @@ public class TransportUnitView extends javax.swing.JInternalFrame implements Mou
             tableModel.addRow(row);
         });
     }
-    
-    /*ACTIONS*/
     
     /**
      * This method is called from within the constructor to initialize the form.

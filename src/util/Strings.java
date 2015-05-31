@@ -89,7 +89,7 @@ public class Strings {
     public static final String MESSAGE_CONFIRM_DELETE_TRANSPORT_UNIT="¿Está seguro de eliminar la unidad de transporte seleccionada?";
     public static final String MESSAGE_FILE_TRANSPORT_UNIT_TITLE="Carga Masiva";
     public static final String MESSAGE_FILE_TRANSPORT_UNIT="Se realizo la carga de forma correcta";
-    public static final String MESSAGE_FILE_ERROR_TRANSPORT_UNIT="No se puedo realizar la carga masiva";
+    public static final String MESSAGE_FILE_ERROR_TRANSPORT_UNIT="No se pudo realizar la carga masiva";
     public static final String ERROR_PLATE_REQUIRED="El campo Placa es requerido.";
     public static final String ERROR_PLATE_NOT_6="El campo Placa debe contener exactamanete 6 caracteres.";
     public static final String ERROR_TRANSPORTIST_REQUIRED="El campo Transportista es requerido.";
@@ -106,14 +106,14 @@ public class Strings {
     public static final String MESSAGE_CREATE_ORDER="El pedido ha sido creado";
     public static final String MESSAGE_CREATE_ORDER_TITLE="Creacion de Pedido";
     public static final String ERROR_CREATE_ORDER_LESS_0="La cantidad seleccionada no puede ser menor a cero";
+    public static final String ERROR_CREATE_ORDER_NO_CLIENTE="Debe seleccionar un cliente.";
+    public static final String ERROR_CREATE_ORDER_NO_PRODUCTS="Debe seleccionar al menos un producto.";
+    public static final String ERROR_CREATE_ORDER="Error al registrar nuevo Pedido.";
+    public static final String LOAD_ORDER_TITLE="Carga Masiva de Pedidos";
+    public static final String LOAD_ORDER_ERROR="No se puedo realizar la carga masiva de Pedidos";
+    public static final String LOAD_ORDER_SUCCESS="Se realizo la carga masiva de Pedidos de forma correcta";
     /*END*/
     
-    /*KARDEX MESSAGES*/
-    public static final String ERROR_KARDEX_TITLE="Error en reporte de Kardex";
-    public static final String ERROR_DATE_INI="Seleccione fecha inicial";
-    public static final String ERROR_DATE_END="Seleccione fecha final";
-    public static final String ERROR_DATE="La fecha inicial debe ser anterior a la final";
-    /*END*/
     
     /*PRODUCT TYPE MESSAGES*/
     public static final String MESSAGE_TPRODUCT_TITLE="Mensaje de inserción de tipo de producto";
