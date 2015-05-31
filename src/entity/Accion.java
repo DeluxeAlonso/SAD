@@ -1,5 +1,5 @@
 package entity;
-// Generated May 29, 2015 5:58:43 PM by Hibernate Tools 4.3.1
+// Generated 30/05/2015 08:07:22 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -12,7 +12,9 @@ public class Accion  implements java.io.Serializable {
 
 
      private int id;
+     private Accion accion;
      private String nombre;
+     private Set accions = new HashSet(0);
      private Set perfils = new HashSet(0);
 
     public Accion() {
@@ -22,9 +24,11 @@ public class Accion  implements java.io.Serializable {
     public Accion(int id) {
         this.id = id;
     }
-    public Accion(int id, String nombre, Set perfils) {
+    public Accion(int id, Accion accion, String nombre, Set accions, Set perfils) {
        this.id = id;
+       this.accion = accion;
        this.nombre = nombre;
+       this.accions = accions;
        this.perfils = perfils;
     }
    
@@ -35,12 +39,26 @@ public class Accion  implements java.io.Serializable {
     public void setId(int id) {
         this.id = id;
     }
+    public Accion getAccion() {
+        return this.accion;
+    }
+    
+    public void setAccion(Accion accion) {
+        this.accion = accion;
+    }
     public String getNombre() {
         return this.nombre;
     }
     
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+    public Set getAccions() {
+        return this.accions;
+    }
+    
+    public void setAccions(Set accions) {
+        this.accions = accions;
     }
     public Set getPerfils() {
         return this.perfils;

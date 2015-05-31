@@ -79,4 +79,14 @@ public class ProductApplication {
         EntityType.PRODUCTS = getAllProducts();
     }
     
+    public ArrayList<Producto> searchProduct(Producto product){
+        ArrayList<Producto> products=null;
+        try{
+            products = productRepository.searchProduct(product);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return products;
+    }
+    
 }

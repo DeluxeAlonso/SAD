@@ -129,6 +129,29 @@ public class ProductRepository implements IProductRepository {
         }
         return products;
     }
+    
+    public ArrayList<Producto> searchProduct(Producto product){
+        String hql="from Producto "
+                + "where (:id is null or id=:id) and (nombre like :name)";
+        ArrayList<Producto> products=null;
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("id", product.getId());
+            q.setParameter("name", "%" + product.getNombre() + "%");
+            products = (ArrayList<Producto>) q.list();             
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        } 
+        return products;
+    }
 
     @Override
     public int update(Producto object) {

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<<<<<<< HEAD
+<!-- Generated 30/05/2015 08:07:24 PM by Hibernate Tools 4.3.1 -->
+=======
+<!-- Generated May 29, 2015 5:58:45 PM by Hibernate Tools 4.3.1 -->
+>>>>>>> e0f9f8ad445d567b175cc40875a2643c3864406d
+<hibernate-mapping>
+    <class name="entity.HistorialMovimientos" table="historial_movimientos" catalog="saddb" optimistic-lock="version">
+        <composite-id name="id" class="entity.HistorialMovimientosId">
+            <key-property name="idPallet" type="int">
+                <column name="id_pallet" />
+            </key-property>
+            <key-property name="idAlmacenIn" type="int">
+                <column name="id_almacen_in" />
+            </key-property>
+            <key-property name="idAlmacenOut" type="int">
+                <column name="id_almacen_out" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="almacenByIdAlmacenOut" class="entity.Almacen" update="false" insert="false" fetch="select">
+            <column name="id_almacen_out" not-null="true" />
+        </many-to-one>
+        <many-to-one name="almacenByIdAlmacenIn" class="entity.Almacen" update="false" insert="false" fetch="select">
+            <column name="id_almacen_in" not-null="true" />
+        </many-to-one>
+        <many-to-one name="pallet" class="entity.Pallet" update="false" insert="false" fetch="select">
+            <column name="id_pallet" not-null="true" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

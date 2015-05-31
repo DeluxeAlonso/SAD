@@ -24,4 +24,5 @@ public interface IOrderRepository extends IRepository<Pedido> {
     ArrayList<PedidoParcialXProducto> queryAllPartialOrderProducts(Integer partialOrderId);
     ArrayList<PedidoParcial> queryAllPendingPartialOrdersById(Integer id);
     ArrayList<Pedido> searchOrder(Pedido order);
+    ArrayList<PedidoParcialXProducto> queryAllProductsByOrderId(Integer id);
 }

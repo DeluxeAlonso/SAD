@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<<<<<<< HEAD
+<!-- Generated 30/05/2015 08:07:24 PM by Hibernate Tools 4.3.1 -->
+=======
+<!-- Generated May 29, 2015 5:58:45 PM by Hibernate Tools 4.3.1 -->
+>>>>>>> e0f9f8ad445d567b175cc40875a2643c3864406d
+<hibernate-mapping>
+    <class name="entity.Kardex" table="kardex" catalog="saddb" optimistic-lock="version">
+        <composite-id name="id" class="entity.KardexId">
+            <key-property name="id" type="int">
+                <column name="id" />
+            </key-property>
+            <key-property name="idProducto" type="int">
+                <column name="id_producto" />
+            </key-property>
+            <key-property name="idAlmacen" type="int">
+                <column name="id_almacen" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="almacen" class="entity.Almacen" update="false" insert="false" fetch="select">
+            <column name="id_almacen" not-null="true" />
+        </many-to-one>
+        <many-to-one name="producto" class="entity.Producto" update="false" insert="false" fetch="select">
+            <column name="id_producto" not-null="true" />
+        </many-to-one>
+        <property name="cantidad" type="java.lang.Integer">
+            <column name="cantidad" />
+        </property>
+        <property name="fecha" type="timestamp">
+            <column name="fecha" length="19" />
+        </property>
+        <property name="tipoMovimiento" type="string">
+            <column name="tipo_movimiento" length="20" />
+        </property>
+        <property name="stockInicial" type="java.lang.Integer">
+            <column name="stock_inicial" />
+        </property>
+        <property name="stockFinal" type="java.lang.Integer">
+            <column name="stock_final" />
+        </property>
+    </class>
+</hibernate-mapping>

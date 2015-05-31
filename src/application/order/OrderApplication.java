@@ -90,6 +90,16 @@ public class OrderApplication {
         return partialOrders;
     }
     
+    public ArrayList<PedidoParcialXProducto> queryAllProductsByOrderId(Integer orderId){
+        ArrayList<PedidoParcialXProducto> partialProducts = new ArrayList<>();
+        try{
+            partialProducts = orderRepository.queryAllProductsByOrderId(orderId);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return partialProducts;
+    }
+    
     public ArrayList<PedidoParcialXProducto> queryAllPartialOrderProducts(Integer partialOrderId){
         ArrayList<PedidoParcialXProducto> partialProducts = new ArrayList<>();
         try{
