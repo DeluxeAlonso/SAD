@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Problem {    
     private ArrayList<PedidoParcial> orders;
+    private ArrayList<ArrayList<PedidoParcialXProducto>> partialOrdersXProducts;
     private ArrayList<UnidadTransporte> vehicles;  
     private HashMap<Integer,Integer> productsStock;
     private ArrayList<Node> nodes;
@@ -40,9 +41,12 @@ public class Problem {
         Date today = new Date();
         int nNodes = 0;
         
+        partialOrdersXProducts = new ArrayList<>();
+        
         for (PedidoParcial order : orders) {
             ArrayList<PedidoParcialXProducto> partialOrderProducts = 
                     orderApplication.queryAllPartialOrderProducts(order.getId());
+            partialOrdersXProducts.add(partialOrderProducts);
             for (PedidoParcialXProducto partialOrderProduct : partialOrderProducts) {
                 int demand = partialOrderProduct.getCantidad();
                 Pedido pedido = partialOrderProduct.getPedidoParcial().getPedido();
@@ -72,6 +76,13 @@ public class Problem {
         }
     }    
 
+    public ArrayList<ArrayList<PedidoParcialXProducto>> getPartialOrdersXProducts() {
+        return partialOrdersXProducts;
+    }
+
+    public void setPartialOrdersXProducts(ArrayList<ArrayList<PedidoParcialXProducto>> partialOrdersXProducts) {
+        this.partialOrdersXProducts = partialOrdersXProducts;
+    }
     public ArrayList<Node> getNodes() {
         return nodes;
     }
