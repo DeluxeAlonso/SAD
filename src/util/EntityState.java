@@ -74,5 +74,10 @@ public class EntityState {
          return ordersState;
     }
     
+    public static enum PartialOrders { ATENDIDO, NO_ATENDIDO, ANULADO};
+    public static String[] getPartialOrdersState(){
+         String[] partialOrdersState={"Atendido","No Atendido", "Anulado"};
+         return partialOrdersState;
+    }
 
 }
