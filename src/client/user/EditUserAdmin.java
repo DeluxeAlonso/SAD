@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.border.Border;
 import util.EntityState;
 import util.EntityType;
+import util.Icons;
 import util.InstanceFactory;
 import util.Regex;
 import util.Strings;
@@ -37,11 +38,17 @@ public class EditUserAdmin extends javax.swing.JDialog {
     public EditUserAdmin(java.awt.Frame parent, boolean modal, Usuario user) {
         super(parent, modal);
         initComponents();
+        addImagesToButton();
         this.user = user;
         fillCombos();
         fillUserFields();
     }
-
+    public void addImagesToButton(){
+        btnSave.setText("");
+        btnCancel.setText("");
+        Icons.setButton(btnSave, Icons.ICONOS.SAVE.ordinal());
+        Icons.setButton(btnCancel, Icons.ICONOS.CANCEL.ordinal());        
+    }
     public void fillCombos() {
         comboState.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getUsersState()));
         comboProfile.setModel(new javax.swing.DefaultComboBoxModel(EntityType.PROFILES_NAMES));

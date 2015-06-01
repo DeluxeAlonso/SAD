@@ -20,10 +20,18 @@ public class Icons {
     
     public static Image img= null;
     public static ArrayList<Image> images = new ArrayList<Image>();
-    public static enum ICONOS { GUARDAR , CANCELAR, BUSCAR, CREATE, MODIFY, DELETE };
+    public static enum ICONOS { 
+        SAVE , 
+        CANCEL, 
+        SEARCH, 
+        CREATE, 
+        MODIFY, 
+        DELETE,
+        RESET
+    };
     
     public static String[] getIconNames(){
-         String[] iconNames={"Guardar","Cancelar","Buscar", "Nuevo", "Editar", "Eliminar"};
+         String[] iconNames={"Guardar","Cancelar","Buscar", "Nuevo", "Editar", "Eliminar","Resetear"};
          return iconNames;
     }
     
@@ -72,6 +80,8 @@ public class Icons {
             img = ImageIO.read(URL.class.getResource("../../images/Modify.png"));
             images.add(img);
             img = ImageIO.read(URL.class.getResource("../../images/Delete.png"));
+            images.add(img);
+            img = ImageIO.read(URL.class.getResource("../../images/Unlock.png"));
             images.add(img);
             
         }catch(Exception e){

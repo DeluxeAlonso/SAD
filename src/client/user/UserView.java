@@ -28,6 +28,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import util.EntityState;
 import util.EntityType;
+import util.Icons;
 import util.InstanceFactory;
 import util.Regex;
 import util.Strings;
@@ -52,6 +53,7 @@ public class UserView extends javax.swing.JInternalFrame {
      */
     public UserView(int tab) {
         initComponents();
+        addImagesToButton();
         tabbedUP.setSelectedIndex(tab);
         //actionOriginList.setModel(new DefaultListModel());
         //actionDestList.setModel(new DefaultListModel());
@@ -64,7 +66,26 @@ public class UserView extends javax.swing.JInternalFrame {
         clearTree();
 
     }
-
+    public void addImagesToButton(){
+        btnAddProfile.setText("");
+        btnCancelEdit.setText("");
+        btnDeleteProfile.setText("");
+        btnEditUser.setText("");
+        btnEditProfile.setText("");
+        btnNewUser.setText("");
+        btnReset.setText("");
+        btnSaveProfile.setText("");
+        btnSearchUser.setText("");
+        Icons.setButton(btnAddProfile, Icons.ICONOS.CREATE.ordinal());
+        Icons.setButton(btnCancelEdit, Icons.ICONOS.CANCEL.ordinal());   
+        Icons.setButton(btnDeleteProfile, Icons.ICONOS.DELETE.ordinal());
+        Icons.setButton(btnEditUser, Icons.ICONOS.MODIFY.ordinal());
+        Icons.setButton(btnEditProfile, Icons.ICONOS.MODIFY.ordinal());
+        Icons.setButton(btnNewUser, Icons.ICONOS.CREATE.ordinal());
+        Icons.setButton(btnReset, Icons.ICONOS.RESET.ordinal());
+        Icons.setButton(btnSaveProfile, Icons.ICONOS.SAVE.ordinal());
+        Icons.setButton(btnSearchUser, Icons.ICONOS.SEARCH.ordinal());        
+    }
     public void clearTree() {
         DefaultTreeModel model = (DefaultTreeModel) treeActions.getModel();
         model.setRoot(null);
@@ -97,14 +118,14 @@ public class UserView extends javax.swing.JInternalFrame {
             @Override
             public void insertUpdate(javax.swing.event.DocumentEvent e) {
                 if (!txtProfileName.getText().equals("")) {
-                    saveProfileBtn.setEnabled(true);
+                    btnSaveProfile.setEnabled(true);
                 }
             }
 
             @Override
             public void removeUpdate(javax.swing.event.DocumentEvent e) {
                 if (txtProfileName.getText().equals("")) {
-                    saveProfileBtn.setEnabled(false);
+                    btnSaveProfile.setEnabled(false);
                 }
             }
 
@@ -181,14 +202,14 @@ public class UserView extends javax.swing.JInternalFrame {
         tabbedUP = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
-        newBtn = new javax.swing.JButton();
-        editBtn = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        btnNewUser = new javax.swing.JButton();
+        btnEditUser = new javax.swing.JButton();
+        btnReset = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         emailTxt = new javax.swing.JTextField();
         profileCombo1 = new javax.swing.JComboBox();
-        searchBtn = new javax.swing.JButton();
+        btnSearchUser = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         comboState = new javax.swing.JComboBox();
@@ -198,9 +219,9 @@ public class UserView extends javax.swing.JInternalFrame {
         usersGrid = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
-        cancelEditBtn = new javax.swing.JButton();
-        saveProfileBtn = new javax.swing.JButton();
-        editProfileBtn = new javax.swing.JButton();
+        btnCancelEdit = new javax.swing.JButton();
+        btnSaveProfile = new javax.swing.JButton();
+        btnEditProfile = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         treeActions = new client.user.JCheckBoxTree();
         jPanel5 = new javax.swing.JPanel();
@@ -214,24 +235,24 @@ public class UserView extends javax.swing.JInternalFrame {
         setClosable(true);
         setTitle("Usuarios");
 
-        newBtn.setText("Nuevo");
-        newBtn.addActionListener(new java.awt.event.ActionListener() {
+        btnNewUser.setText("Nuevo");
+        btnNewUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newBtnActionPerformed(evt);
+                btnNewUserActionPerformed(evt);
             }
         });
 
-        editBtn.setText("Editar");
-        editBtn.addActionListener(new java.awt.event.ActionListener() {
+        btnEditUser.setText("Editar");
+        btnEditUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editBtnActionPerformed(evt);
+                btnEditUserActionPerformed(evt);
             }
         });
 
-        jButton7.setText("Restablecer Contraseña");
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
+        btnReset.setText("Restablecer Contraseña");
+        btnReset.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
+                btnResetActionPerformed(evt);
             }
         });
 
@@ -241,10 +262,10 @@ public class UserView extends javax.swing.JInternalFrame {
 
         profileCombo1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        searchBtn.setText("Buscar");
-        searchBtn.addActionListener(new java.awt.event.ActionListener() {
+        btnSearchUser.setText("Buscar");
+        btnSearchUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchBtnActionPerformed(evt);
+                btnSearchUserActionPerformed(evt);
             }
         });
 
@@ -264,7 +285,7 @@ public class UserView extends javax.swing.JInternalFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(searchBtn))
+                        .addComponent(btnSearchUser))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(26, 26, 26)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -306,7 +327,7 @@ public class UserView extends javax.swing.JInternalFrame {
                         .addComponent(jLabel4)
                         .addComponent(comboState, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(20, 20, 20)
-                .addComponent(searchBtn)
+                .addComponent(btnSearchUser)
                 .addContainerGap())
         );
 
@@ -348,11 +369,11 @@ public class UserView extends javax.swing.JInternalFrame {
                     .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 566, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(23, 23, 23)
-                        .addComponent(newBtn)
+                        .addComponent(btnNewUser)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(editBtn)
+                        .addComponent(btnEditUser)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton7))
+                        .addComponent(btnReset))
                     .addComponent(jScrollPane1)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(51, Short.MAX_VALUE))
@@ -369,9 +390,9 @@ public class UserView extends javax.swing.JInternalFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(26, 26, 26)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(newBtn)
-                            .addComponent(editBtn)
-                            .addComponent(jButton7))))
+                            .addComponent(btnNewUser)
+                            .addComponent(btnEditUser)
+                            .addComponent(btnReset))))
                 .addGap(54, 54, 54)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(95, Short.MAX_VALUE))
@@ -381,27 +402,27 @@ public class UserView extends javax.swing.JInternalFrame {
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Acciones"));
 
-        cancelEditBtn.setText("Cancelar");
-        cancelEditBtn.setEnabled(false);
-        cancelEditBtn.addActionListener(new java.awt.event.ActionListener() {
+        btnCancelEdit.setText("Cancelar");
+        btnCancelEdit.setEnabled(false);
+        btnCancelEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelEditBtnActionPerformed(evt);
+                btnCancelEditActionPerformed(evt);
             }
         });
 
-        saveProfileBtn.setText("Guardar");
-        saveProfileBtn.setEnabled(false);
-        saveProfileBtn.addActionListener(new java.awt.event.ActionListener() {
+        btnSaveProfile.setText("Guardar");
+        btnSaveProfile.setEnabled(false);
+        btnSaveProfile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveProfileBtnActionPerformed(evt);
+                btnSaveProfileActionPerformed(evt);
             }
         });
 
-        editProfileBtn.setText("Modificar");
-        editProfileBtn.setEnabled(false);
-        editProfileBtn.addActionListener(new java.awt.event.ActionListener() {
+        btnEditProfile.setText("Modificar");
+        btnEditProfile.setEnabled(false);
+        btnEditProfile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editProfileBtnActionPerformed(evt);
+                btnEditProfileActionPerformed(evt);
             }
         });
 
@@ -416,11 +437,11 @@ public class UserView extends javax.swing.JInternalFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 481, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(editProfileBtn)
+                        .addComponent(btnEditProfile)
                         .addGap(18, 18, 18)
-                        .addComponent(saveProfileBtn)
+                        .addComponent(btnSaveProfile)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cancelEditBtn)))
+                        .addComponent(btnCancelEdit)))
                 .addContainerGap(53, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -428,9 +449,9 @@ public class UserView extends javax.swing.JInternalFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(saveProfileBtn)
-                    .addComponent(editProfileBtn)
-                    .addComponent(cancelEditBtn))
+                    .addComponent(btnSaveProfile)
+                    .addComponent(btnEditProfile)
+                    .addComponent(btnCancelEdit))
                 .addGap(39, 39, 39)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(69, Short.MAX_VALUE))
@@ -475,16 +496,16 @@ public class UserView extends javax.swing.JInternalFrame {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addGap(18, 18, 18)
-                        .addComponent(txtProfileName, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnAddProfile))
+                        .addComponent(txtProfileName, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addGap(18, 18, 18)
-                        .addComponent(comboProfile2, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(81, 81, 81)
-                        .addComponent(btnDeleteProfile)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(comboProfile2, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(66, 66, 66)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnDeleteProfile)
+                    .addComponent(btnAddProfile))
+                .addContainerGap(89, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -556,10 +577,10 @@ public class UserView extends javax.swing.JInternalFrame {
         txtProfileName.requestFocus();
         comboProfile2.setEnabled(false);
         btnDeleteProfile.setEnabled(false);
-        cancelEditBtn.setEnabled(true);
+        btnCancelEdit.setEnabled(true);
         btnAddProfile.setEnabled(false);
         comboProfile2.setSelectedIndex(0);
-        saveProfileBtn.setEnabled(false);
+        btnSaveProfile.setEnabled(false);
         treeActions.setEditable(true);
     }//GEN-LAST:event_btnAddProfileActionPerformed
 
@@ -573,9 +594,9 @@ public class UserView extends javax.swing.JInternalFrame {
             if (comboProfile2.getSelectedIndex() != 0) {
                 String profileName = comboProfile2.getSelectedItem().toString();
                 checkActions(profileName);
-                editProfileBtn.setEnabled(true);
+                btnEditProfile.setEnabled(true);
             } else {
-                editProfileBtn.setEnabled(false);
+                btnEditProfile.setEnabled(false);
             }
         }
     }//GEN-LAST:event_comboProfile2ItemStateChanged
@@ -604,18 +625,18 @@ public class UserView extends javax.swing.JInternalFrame {
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
         treeActions.checkNode(new TreePath(root.getPath()), false);
     }
-    private void editProfileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editProfileBtnActionPerformed
+    private void btnEditProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditProfileActionPerformed
         // TODO add your handling code here:
-        saveProfileBtn.setEnabled(true);
-        cancelEditBtn.setEnabled(true);
+        btnSaveProfile.setEnabled(true);
+        btnCancelEdit.setEnabled(true);
         treeActions.setEditable(true);
-        editProfileBtn.setEnabled(false);
-    }//GEN-LAST:event_editProfileBtnActionPerformed
+        btnEditProfile.setEnabled(false);
+    }//GEN-LAST:event_btnEditProfileActionPerformed
 
-    private void cancelEditBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelEditBtnActionPerformed
+    private void btnCancelEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelEditActionPerformed
         // TODO add your handling code here:
-        saveProfileBtn.setEnabled(false);
-        cancelEditBtn.setEnabled(false);
+        btnSaveProfile.setEnabled(false);
+        btnCancelEdit.setEnabled(false);
         treeActions.setEditable(false);
         txtProfileName.setText("");
         txtProfileName.setEnabled(false);
@@ -624,7 +645,7 @@ public class UserView extends javax.swing.JInternalFrame {
         if (btnAddProfile.isEnabled()) {
             clearSelections();
             checkActions(comboProfile2.getSelectedItem().toString());
-            editProfileBtn.setEnabled(true);
+            btnEditProfile.setEnabled(true);
         } else {
             clearSelections();
             comboProfile2.setSelectedIndex(0);
@@ -632,12 +653,12 @@ public class UserView extends javax.swing.JInternalFrame {
         txtProfileName.setBorder(regularBorder);
         btnAddProfile.setEnabled(true);
 
-    }//GEN-LAST:event_cancelEditBtnActionPerformed
+    }//GEN-LAST:event_btnCancelEditActionPerformed
 
-    private void saveProfileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveProfileBtnActionPerformed
+    private void btnSaveProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveProfileActionPerformed
         // TODO add your handling code here:
-        saveProfileBtn.setEnabled(false);
-        cancelEditBtn.setEnabled(false);
+        btnSaveProfile.setEnabled(false);
+        btnCancelEdit.setEnabled(false);
         treeActions.setEditable(false);
         if (!txtProfileName.getText().equals("")) {
             if (isValidProfile()) {
@@ -654,10 +675,10 @@ public class UserView extends javax.swing.JInternalFrame {
                 comboProfile2.setEnabled(true);
                 btnDeleteProfile.setEnabled(true);
                 txtProfileName.setBorder(regularBorder);
-                editProfileBtn.setEnabled(true);
+                btnEditProfile.setEnabled(true);
             } else {
-                saveProfileBtn.setEnabled(true);
-                cancelEditBtn.setEnabled(true);
+                btnSaveProfile.setEnabled(true);
+                btnCancelEdit.setEnabled(true);
                 treeActions.setEditable(true);
             }
         } else {
@@ -665,10 +686,10 @@ public class UserView extends javax.swing.JInternalFrame {
             profile.setAccions(getActionsFromTree());
             profileApplication.updateProfile(profile);
             JOptionPane.showMessageDialog(this, Strings.MESSAGE_PROFILE_EDITED);
-            editProfileBtn.setEnabled(true);
+            btnEditProfile.setEnabled(true);
         }
 
-    }//GEN-LAST:event_saveProfileBtnActionPerformed
+    }//GEN-LAST:event_btnSaveProfileActionPerformed
     private boolean isValidProfile() {
         String profileName = txtProfileName.getText().trim();
         String message = "";
@@ -703,12 +724,12 @@ public class UserView extends javax.swing.JInternalFrame {
         }
         return actions;
     }
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
         // TODO add your handling code here:
         JOptionPane.showMessageDialog(this, Strings.MESSAGE_RESTABLISH_PASSWORD);
-    }//GEN-LAST:event_jButton7ActionPerformed
+    }//GEN-LAST:event_btnResetActionPerformed
 
-    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
+    private void btnEditUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditUserActionPerformed
         // TODO add your handling code here:
         DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();
         int selectedRow = -1;
@@ -724,13 +745,13 @@ public class UserView extends javax.swing.JInternalFrame {
         }
 
 
-    }//GEN-LAST:event_editBtnActionPerformed
+    }//GEN-LAST:event_btnEditUserActionPerformed
 
-    private void newBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newBtnActionPerformed
+    private void btnNewUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewUserActionPerformed
         // TODO add your handling code here:
         NewUserView newUserView = new NewUserView((JFrame) SwingUtilities.getWindowAncestor(this), true);
         newUserView.setVisible(true);
-    }//GEN-LAST:event_newBtnActionPerformed
+    }//GEN-LAST:event_btnNewUserActionPerformed
 
     private void btnDeleteProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteProfileActionPerformed
         // TODO add your handling code here:
@@ -742,7 +763,7 @@ public class UserView extends javax.swing.JInternalFrame {
                 clearSelections();
                 fillCombos();
                 comboProfile2.setSelectedIndex(0);
-                editProfileBtn.setEnabled(false);
+                btnEditProfile.setEnabled(false);
             } else {
 
                 JOptionPane.showMessageDialog(this, Strings.ERROR_PROFILE_HAS_USERS, "Mensaje", JOptionPane.WARNING_MESSAGE);
@@ -750,7 +771,7 @@ public class UserView extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnDeleteProfileActionPerformed
 
-    private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
+    private void btnSearchUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchUserActionPerformed
         // TODO add your handling code here:
         Usuario user = new Usuario();
         user.setCorreo(emailTxt.getText());
@@ -762,19 +783,22 @@ public class UserView extends javax.swing.JInternalFrame {
             user.setEstado(comboState.getSelectedIndex() - 1);
         }
         fillTableWithUsers(userApplication.searchUser(user));
-    }//GEN-LAST:event_searchBtnActionPerformed
+    }//GEN-LAST:event_btnSearchUserActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddProfile;
+    private javax.swing.JButton btnCancelEdit;
     private javax.swing.JButton btnDeleteProfile;
-    private javax.swing.JButton cancelEditBtn;
+    private javax.swing.JButton btnEditProfile;
+    private javax.swing.JButton btnEditUser;
+    private javax.swing.JButton btnNewUser;
+    private javax.swing.JButton btnReset;
+    private javax.swing.JButton btnSaveProfile;
+    private javax.swing.JButton btnSearchUser;
     private javax.swing.JComboBox comboProfile2;
     private javax.swing.JComboBox comboState;
-    private javax.swing.JButton editBtn;
-    private javax.swing.JButton editProfileBtn;
     private javax.swing.JTextField emailTxt;
-    private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -789,10 +813,7 @@ public class UserView extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JButton newBtn;
     private javax.swing.JComboBox profileCombo1;
-    private javax.swing.JButton saveProfileBtn;
-    private javax.swing.JButton searchBtn;
     private javax.swing.JTabbedPane tabbedUP;
     private client.user.JCheckBoxTree treeActions;
     private javax.swing.JTextField txtName;

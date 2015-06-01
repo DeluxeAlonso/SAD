@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.border.Border;
 import util.EntityState;
 import util.EntityType;
+import util.Icons;
 import util.InstanceFactory;
 import util.Regex;
 import util.Strings;
@@ -37,11 +38,17 @@ public class NewUserView extends javax.swing.JDialog {
     public NewUserView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        addImagesToButton();
         //initialize user states combo
         fillCombos();
 
     }
-
+    public void addImagesToButton(){
+        btnSave.setText("");
+        btnCancel.setText("");
+        Icons.setButton(btnSave, Icons.ICONOS.SAVE.ordinal());
+        Icons.setButton(btnCancel, Icons.ICONOS.CANCEL.ordinal());        
+    }
     public void fillCombos() {
         comboState.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getUsersState()));
         comboProfile.setModel(new javax.swing.DefaultComboBoxModel(EntityType.PROFILES_NAMES));
@@ -187,8 +194,8 @@ public class NewUserView extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        cancelBtn = new javax.swing.JButton();
-        saveTxt = new javax.swing.JButton();
+        btnCancel = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
         comboProfile = new javax.swing.JComboBox();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
@@ -213,17 +220,17 @@ public class NewUserView extends javax.swing.JDialog {
             }
         });
 
-        cancelBtn.setText("Cancelar");
-        cancelBtn.addActionListener(new java.awt.event.ActionListener() {
+        btnCancel.setText("Cancelar");
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelBtnActionPerformed(evt);
+                btnCancelActionPerformed(evt);
             }
         });
 
-        saveTxt.setText("Guardar");
-        saveTxt.addActionListener(new java.awt.event.ActionListener() {
+        btnSave.setText("Guardar");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveTxtActionPerformed(evt);
+                btnSaveActionPerformed(evt);
             }
         });
 
@@ -297,9 +304,9 @@ public class NewUserView extends javax.swing.JDialog {
                         .addComponent(comboProfile, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(116, 116, 116)
-                        .addComponent(saveTxt)
+                        .addComponent(btnSave)
                         .addGap(29, 29, 29)
-                        .addComponent(cancelBtn)))
+                        .addComponent(btnCancel)))
                 .addContainerGap(29, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -350,21 +357,21 @@ public class NewUserView extends javax.swing.JDialog {
                     .addComponent(comboProfile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(saveTxt)
-                    .addComponent(cancelBtn))
+                    .addComponent(btnSave)
+                    .addComponent(btnCancel))
                 .addContainerGap(29, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         // TODO add your handling code here:
         UserView.userView.refreshGrid();
         this.dispose();
-    }//GEN-LAST:event_cancelBtnActionPerformed
+    }//GEN-LAST:event_btnCancelActionPerformed
 
-    private void saveTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveTxtActionPerformed
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         // TODO add your handling code here:
         if (isValidForm()) {
             Usuario user = new Usuario();
@@ -380,7 +387,7 @@ public class NewUserView extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_USER_CREATED);
             clearFields();
         }
-    }//GEN-LAST:event_saveTxtActionPerformed
+    }//GEN-LAST:event_btnSaveActionPerformed
 
     private void autoGeneratePassBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoGeneratePassBtnActionPerformed
         // TODO add your handling code here:
@@ -398,7 +405,8 @@ public class NewUserView extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton autoGeneratePassBtn;
-    private javax.swing.JButton cancelBtn;
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnSave;
     private javax.swing.JComboBox comboProfile;
     private javax.swing.JComboBox comboState;
     private javax.swing.JLabel jLabel10;
@@ -408,7 +416,6 @@ public class NewUserView extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JButton saveTxt;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtFirstName;
     private javax.swing.JTextField txtName;

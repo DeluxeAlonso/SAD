@@ -51,8 +51,8 @@ public class NewWarehouseView extends javax.swing.JDialog {
         initComponents();
         this.setTitle("Nuevo Almacen");
         this.condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.CONDITIONS_NAMES));
-        Icons.setButton(saveTxt, Icons.ICONOS.GUARDAR.ordinal());
-        Icons.setButton(cancelBtn, Icons.ICONOS.CANCELAR.ordinal());
+        Icons.setButton(saveTxt, Icons.ICONOS.SAVE.ordinal());
+        Icons.setButton(cancelBtn, Icons.ICONOS.CANCEL.ordinal());
     }
 
     /**
