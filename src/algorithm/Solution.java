@@ -6,7 +6,6 @@
 package algorithm;
 
 import algorithm.grasp.Grasp;
-import algorithm.operators.ObjectiveFunction;
 import entity.UnidadTransporte;
 
 /**
@@ -21,7 +20,13 @@ public class Solution implements Comparable<Solution>{
     private Problem problem;
     private double cost;
 
-    Solution(Algorithm algorithm, Problem problem) {
+    public Solution(Node[][] nodes, Algorithm algorithm, Problem problem) {
+        this.nodes = nodes;
+        this.algorithm = algorithm;
+        this.problem = problem;
+    }
+    
+    public Solution(Algorithm algorithm, Problem problem) {
         this.algorithm = algorithm;
         this.problem = problem;
         this.nodes = Grasp.construction(algorithm, problem);

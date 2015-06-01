@@ -21,7 +21,7 @@ public class Repair {
         Node[][] routes = s.getNodes();
         UnidadTransporte[] vehicles = s.getVehicles();
         int highestCostIdx = 0, lowestCostIdx = 0;
-        double highestCost = Double.MIN_VALUE, lowestCost = Double.MAX_VALUE;
+        double highestCost = -Double.MAX_VALUE, lowestCost = Double.MAX_VALUE;
         for (int i = 0; i < routes.length; i++) {
             double routeCost = getRouteCost(vehicles[i], routes[i], algorithm,
                     null);

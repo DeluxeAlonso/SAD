@@ -58,13 +58,24 @@ public class UserApplication {
     public Usuario login(String correo, String password) {
         Usuario user=null;
         try {
-            user= userRepository.getUser(correo);            
+            user= userRepository.getUser(correo);
+            if(!decrypt(user.getPassword()).equals(password))
+                return null;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return user;
     }
     
+    public boolean doesUserExist(String correo){
+        Usuario user=null;
+        try {
+            user= userRepository.getUser(correo);            
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return user!=null?true:false;
+    }
 
     public void createUser(Usuario user) {
         user.setPassword(encrypt(user.getPassword()));

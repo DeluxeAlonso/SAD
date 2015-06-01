@@ -50,7 +50,7 @@ public class WarehouseView extends javax.swing.JInternalFrame {
         Icons.setButton(newBtn, Icons.ICONOS.CREATE.ordinal());
         Icons.setButton(deleteBtn, Icons.ICONOS.DELETE.ordinal());
         Icons.setButton(editBtn, Icons.ICONOS.MODIFY.ordinal());
-        Icons.setButton(searchBtn, Icons.ICONOS.BUSCAR.ordinal());        
+        Icons.setButton(searchBtn, Icons.ICONOS.SEARCH.ordinal());        
         
     }
 

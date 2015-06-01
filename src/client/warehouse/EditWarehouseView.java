@@ -42,8 +42,8 @@ public class EditWarehouseView extends javax.swing.JDialog {
         this.setTitle("Editar Almacen");
         Icons.setButton(addBtn, Icons.ICONOS.CREATE.ordinal());
         Icons.setButton(deleteBtn, Icons.ICONOS.DELETE.ordinal());
-        Icons.setButton(saveBtn, Icons.ICONOS.GUARDAR.ordinal());
-        Icons.setButton(cancelBtn, Icons.ICONOS.CANCELAR.ordinal());
+        Icons.setButton(saveBtn, Icons.ICONOS.SAVE.ordinal());
+        Icons.setButton(cancelBtn, Icons.ICONOS.CANCEL.ordinal());
     }
     
     public EditWarehouseView(java.awt.Frame parent, boolean modal,Almacen a) {
@@ -58,8 +58,8 @@ public class EditWarehouseView extends javax.swing.JDialog {
         fillTable(a.getId());
         Icons.setButton(addBtn, Icons.ICONOS.CREATE.ordinal());
         Icons.setButton(deleteBtn, Icons.ICONOS.DELETE.ordinal());
-        Icons.setButton(saveBtn, Icons.ICONOS.GUARDAR.ordinal());
-        Icons.setButton(cancelBtn, Icons.ICONOS.CANCELAR.ordinal());
+        Icons.setButton(saveBtn, Icons.ICONOS.SAVE.ordinal());
+        Icons.setButton(cancelBtn, Icons.ICONOS.CANCEL.ordinal());
     }
     
     public void fillTable(int id) {

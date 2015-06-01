@@ -14,8 +14,6 @@ import entity.UnidadTransporte;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,6 +22,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Problem {    
     private ArrayList<PedidoParcial> orders;
+    private ArrayList<ArrayList<PedidoParcialXProducto>> partialOrdersXProducts;
     private ArrayList<UnidadTransporte> vehicles;  
     private HashMap<Integer,Integer> productsStock;
     private ArrayList<Node> nodes;
@@ -40,10 +39,14 @@ public class Problem {
         productsStock = new HashMap<>();
         nodes = new ArrayList<>();        
         Date today = new Date();
+        int nNodes = 0;
+        
+        partialOrdersXProducts = new ArrayList<>();
         
         for (PedidoParcial order : orders) {
             ArrayList<PedidoParcialXProducto> partialOrderProducts = 
                     orderApplication.queryAllPartialOrderProducts(order.getId());
+            partialOrdersXProducts.add(partialOrderProducts);
             for (PedidoParcialXProducto partialOrderProduct : partialOrderProducts) {
                 int demand = partialOrderProduct.getCantidad();
                 Pedido pedido = partialOrderProduct.getPedidoParcial().getPedido();
@@ -65,12 +68,21 @@ public class Problem {
                     
                     node.setPartialOrder(order);
                     node.setProduct(partialOrderProduct.getProducto());
+                    node.setIdx(nNodes++);
+                    
                     nodes.add(node);                    
                 }
             }            
         }
     }    
 
+    public ArrayList<ArrayList<PedidoParcialXProducto>> getPartialOrdersXProducts() {
+        return partialOrdersXProducts;
+    }
+
+    public void setPartialOrdersXProducts(ArrayList<ArrayList<PedidoParcialXProducto>> partialOrdersXProducts) {
+        this.partialOrdersXProducts = partialOrdersXProducts;
+    }
     public ArrayList<Node> getNodes() {
         return nodes;
     }
