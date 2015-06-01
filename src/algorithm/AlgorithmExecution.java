@@ -142,13 +142,13 @@ public class AlgorithmExecution {
         for (int i = 0; i < orders.size(); i++) {
             PedidoParcial pedido = new PedidoParcial();
             pedido.setPedido(orders.get(i).getPedido());
-            pedido.setEstado(EntityState.Orders.EN_CURSO.ordinal());              
+            pedido.setEstado(EntityState.PartialOrders.ATENDIDO.ordinal());              
             acceptedOrders.add(pedido);
         }
         for (int i = 0; i < orders.size(); i++) {
             PedidoParcial pedido = new PedidoParcial();
             pedido.setPedido(orders.get(i).getPedido());
-            pedido.setEstado(EntityState.Orders.REGISTRADO.ordinal());              
+            pedido.setEstado(EntityState.PartialOrders.NO_ATENDIDO.ordinal());              
             rejectedOrders.add(pedido);
         }        
         
@@ -195,6 +195,7 @@ public class AlgorithmExecution {
         
         //asignar guias de remision a las ordenes atendidas
         assignRemissionGuides(acceptedOrders);
+        createPartialOrders(acceptedOrders, acceptedOrdersXProd,rejectedOrders,rejectedOrdersXProd);
     }
     
     public void assignRemissionGuides(ArrayList<PedidoParcial> acceptedOrders){
@@ -203,11 +204,17 @@ public class AlgorithmExecution {
             GuiaRemision remissionGuide = new GuiaRemision();
             remissionGuide.setCliente(acceptedOrders.get(i).getPedido().getCliente());
             remissionGuide.setDespacho(null);
-            remissionGuide.setEstado(1);
+            remissionGuide.setEstado(0);
             acceptedOrders.get(i).setGuiaRemision(remissionGuide);
             remissionGuides.add(remissionGuide);
         }
-        orderApplication.CreateRemissionGuides(acceptedOrders, remissionGuides);
+        orderApplication.CreateRemissionGuides(acceptedOrders, remissionGuides);  
+    }
+    
+    public void createPartialOrders(ArrayList<PedidoParcial>acceptedOrders, 
+            ArrayList<ArrayList<PedidoParcialXProducto>>acceptedOrdersXProd,
+            ArrayList<PedidoParcial>rejectedOrders,ArrayList<ArrayList<PedidoParcialXProducto>>rejectedOrdersXProd){
+        orderApplication.createPartialOrders(acceptedOrders, acceptedOrdersXProd, rejectedOrders, rejectedOrdersXProd);
     }
     
 }

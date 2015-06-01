@@ -36,6 +36,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
+import util.Icons;
 import util.Strings;
 
 /**
@@ -68,6 +69,8 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
         initializeData();
         fillCombos();
         setupListeners();
+        Icons.setButton(saveBtn, Icons.ICONOS.SAVE.ordinal());
+        Icons.setButton(searchBtn, Icons.ICONOS.SEARCH.ordinal());
     }
     
     public void initializeData(){
@@ -263,10 +266,10 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
         codPorductTxt = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         productTxt = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        searchBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         productAddTable = new javax.swing.JTable();
-        jButton2 = new javax.swing.JButton();
+        saveBtn = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         qtySpinner = new javax.swing.JSpinner();
         jPanel2 = new javax.swing.JPanel();
@@ -290,10 +293,9 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
 
         jLabel2.setText("Producto:");
 
-        jButton1.setText("Buscar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        searchBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                searchBtnActionPerformed(evt);
             }
         });
 
@@ -330,10 +332,9 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
             productAddTable.getColumnModel().getColumn(3).setResizable(false);
         }
 
-        jButton2.setText("Guardar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        saveBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                saveBtnActionPerformed(evt);
             }
         });
 
@@ -403,7 +404,7 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(removeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(17, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -428,11 +429,9 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(addBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(removeBtn)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(productContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 72, Short.MAX_VALUE))))
+                        .addComponent(removeBtn))
+                    .addComponent(productContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         jLabel1.setText("Codigo:");
@@ -455,13 +454,13 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(productTxt)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(searchBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(qtySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2))
+                        .addComponent(saveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -475,7 +474,7 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
                             .addComponent(codPorductTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2)
                             .addComponent(productTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1)
+                            .addComponent(searchBtn)
                             .addComponent(jLabel1))
                         .addGap(26, 26, 26)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -483,17 +482,17 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
                             .addComponent(qtySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton2)))
+                            .addComponent(saveBtn)))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(5, 5, 5))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
         if(validFields()){   
             if(createOrder()){
                 JOptionPane.showMessageDialog(this, Strings.MESSAGE_CREATE_ORDER,
@@ -511,16 +510,13 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
         else{
             JOptionPane.showMessageDialog(this, error_message,Strings.MESSAGE_CREATE_ORDER_TITLE,JOptionPane.WARNING_MESSAGE);
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_saveBtnActionPerformed
 
     private void productAddTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productAddTableMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_productAddTableMouseClicked
 
-    private void  productTableMouseClicked(java.awt.event.MouseEvent evt){
-        
-    }
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
         Producto product = new Producto();
         if(codPorductTxt.getText().length() == 0)
             product.setId(null);
@@ -529,7 +525,7 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
         product.setNombre(productTxt.getText());
         productsToAdd = productApplication.searchProduct(product);
         refreshProductsToAddTable();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_searchBtnActionPerformed
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
         addProduct(productsToAdd.get(productAddTable.getSelectedRow()), (Integer)qtySpinner.getValue());
@@ -592,8 +588,6 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
     private javax.swing.JButton addBtn;
     private javax.swing.JComboBox clientCombo;
     private javax.swing.JTextField codPorductTxt;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -608,6 +602,8 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
     private javax.swing.JTextField productTxt;
     private javax.swing.JSpinner qtySpinner;
     private javax.swing.JButton removeBtn;
+    private javax.swing.JButton saveBtn;
+    private javax.swing.JButton searchBtn;
     // End of variables declaration//GEN-END:variables
 
     @Override

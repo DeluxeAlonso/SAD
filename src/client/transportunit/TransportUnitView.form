@@ -27,7 +27,7 @@
               <Group type="103" groupAlignment="1" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="32767" attributes="0"/>
-                      <Component id="deleteBtn" min="-2" max="-2" attributes="0"/>
+                      <Component id="deleteBtn" min="-2" pref="57" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
                       <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
@@ -115,7 +115,6 @@
     </Container>
     <Component class="javax.swing.JButton" name="deleteBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Eliminar"/>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
@@ -219,7 +218,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="searchBtn" min="-2" max="-2" attributes="0"/>
+                      <Component id="searchBtn" min="-2" pref="57" max="-2" attributes="0"/>
                       <Group type="102" attributes="0">
                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
@@ -276,9 +275,6 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="searchBtn">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Buscar"/>
-          </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="searchBtnActionPerformed"/>
           </Events>
@@ -311,21 +307,20 @@
                           <Component id="plateCreateTxt" min="-2" pref="156" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <Group type="103" groupAlignment="0" attributes="0">
+                  <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
                       <Group type="102" attributes="0">
-                          <EmptySpace max="32767" attributes="0"/>
-                          <Component id="saveBtn" min="-2" pref="81" max="-2" attributes="0"/>
+                          <Component id="saveBtn" min="-2" pref="57" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="editBtn" min="-2" pref="81" max="-2" attributes="0"/>
+                          <Component id="editBtn" min="-2" pref="57" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
-                          <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                           <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="transportistCreateTxt" min="-2" pref="140" max="-2" attributes="0"/>
+                          <Component id="transportistCreateTxt" min="-2" pref="134" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="12" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -342,8 +337,8 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="typeCreateCombo" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="saveBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="editBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="saveBtn" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="editBtn" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -367,9 +362,6 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="saveBtn">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Guardar"/>
-          </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveBtnActionPerformed"/>
           </Events>
@@ -395,7 +387,6 @@
         </Component>
         <Component class="javax.swing.JButton" name="editBtn">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Editar"/>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
