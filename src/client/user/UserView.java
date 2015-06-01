@@ -11,13 +11,16 @@ import application.user.UserApplication;
 import entity.Accion;
 import entity.Perfil;
 import entity.Usuario;
+import java.awt.Color;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -26,6 +29,7 @@ import javax.swing.tree.TreePath;
 import util.EntityState;
 import util.EntityType;
 import util.InstanceFactory;
+import util.Regex;
 import util.Strings;
 
 /**
@@ -39,7 +43,10 @@ public class UserView extends javax.swing.JInternalFrame {
     ActionApplication actionApplication = InstanceFactory.Instance.getInstance("actionApplication", ActionApplication.class);
     public static UserView userView;
     String newProfileName = "";
-    boolean treeFilled=false;
+    boolean treeFilled = false;
+    Border errorBorder = BorderFactory.createLineBorder(Color.RED, 1);
+    Border regularBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
+
     /**
      * Creates new form UserForm
      */
@@ -55,8 +62,7 @@ public class UserView extends javax.swing.JInternalFrame {
         refreshGrid();
         addListenerToProfileName();
         clearTree();
-        
-        
+
     }
 
     public void clearTree() {
@@ -68,26 +74,21 @@ public class UserView extends javax.swing.JInternalFrame {
 
         ArrayList<Accion> pActions = actionApplication.getParents();
 
-        
-
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Acciones");
         //Set<Accion> profileActions= p.getAccions();
         for (Accion a : pActions) {
-            DefaultMutableTreeNode parent=new DefaultMutableTreeNode(a.getNombre());
-            
+            DefaultMutableTreeNode parent = new DefaultMutableTreeNode(a.getNombre());
+
             root.add(parent);
-            ArrayList<Accion> children= actionApplication.getChildsByParent(a.getId());
-            for(Accion h: children){
+            ArrayList<Accion> children = actionApplication.getChildsByParent(a.getId());
+            for (Accion h : children) {
                 DefaultMutableTreeNode child = new DefaultMutableTreeNode(h.getNombre());
-                parent.add(child);               
+                parent.add(child);
             }
         }
-        DefaultTreeModel model = (DefaultTreeModel)new DefaultTreeModel(root);        
+        DefaultTreeModel model = (DefaultTreeModel) new DefaultTreeModel(root);
         treeActions.setModel(model);
         model.reload();
-        
-       
-        
 
     }
 
@@ -118,8 +119,8 @@ public class UserView extends javax.swing.JInternalFrame {
         profileApplication.refreshProfiles();
         profileCombo1.setModel(new javax.swing.DefaultComboBoxModel(EntityType.PROFILES_NAMES));
         comboProfile2.setModel(new javax.swing.DefaultComboBoxModel(EntityType.PROFILES_NAMES));
+        comboState.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getUsersState()));
     }
-
 
     public void clearUserGrid() {
         DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();
@@ -133,7 +134,7 @@ public class UserView extends javax.swing.JInternalFrame {
         for (Usuario u : users) {
             Usuario user = userApplication.getUserById(u.getId());
             String profileName = user.getPerfil() != null ? user.getPerfil().getNombrePerfil() : "";
-            String state = user.getEstado() != null ? EntityState.getUsersState()[user.getEstado()] : "";
+            String state = user.getEstado() != null ? EntityState.getUsersState()[user.getEstado() + 1] : "";
             model.addRow(new Object[]{
                 user.getId(),
                 user.getNombre() + " " + user.getApellidoPaterno() + " " + user.getApellidoMaterno(),
@@ -151,7 +152,7 @@ public class UserView extends javax.swing.JInternalFrame {
         for (Usuario u : users) {
             Usuario user = userApplication.getUserById(u.getId());
             String profileName = user.getPerfil() != null ? user.getPerfil().getNombrePerfil() : "";
-            String state = user.getEstado() != null ? EntityState.getUsersState()[user.getEstado()] : "";
+            String state = user.getEstado() != null ? EntityState.getUsersState()[user.getEstado() + 1] : "";
             model.addRow(new Object[]{
                 user.getId(),
                 user.getNombre() + " " + user.getApellidoPaterno() + " " + user.getApellidoMaterno(),
@@ -189,6 +190,10 @@ public class UserView extends javax.swing.JInternalFrame {
         profileCombo1 = new javax.swing.JComboBox();
         searchBtn = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        comboState = new javax.swing.JComboBox();
+        txtName = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         usersGrid = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
@@ -245,34 +250,64 @@ public class UserView extends javax.swing.JInternalFrame {
 
         jLabel2.setText("Perfil:");
 
+        jLabel4.setText("Estado:");
+
+        comboState.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel5.setText("Nombre:");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(emailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
-                .addComponent(jLabel2)
-                .addGap(18, 18, 18)
-                .addComponent(profileCombo1, 0, 111, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addComponent(searchBtn)
-                .addGap(103, 103, 103))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(searchBtn))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(18, 18, 18)
+                                .addComponent(emailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(comboState, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(18, 18, 18)
+                                .addComponent(profileCombo1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                .addGap(31, 31, 31))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(31, 31, 31)
+                .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(emailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(searchBtn)
                     .addComponent(jLabel2)
                     .addComponent(profileCombo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel5)
+                        .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel4)
+                        .addComponent(comboState, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(20, 20, 20)
+                .addComponent(searchBtn)
+                .addContainerGap())
         );
 
         usersGrid.setModel(new javax.swing.table.DefaultTableModel(
@@ -320,7 +355,7 @@ public class UserView extends javax.swing.JInternalFrame {
                         .addComponent(jButton7))
                     .addComponent(jScrollPane1)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(51, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -329,17 +364,17 @@ public class UserView extends javax.swing.JInternalFrame {
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
+                        .addGap(26, 26, 26)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(newBtn)
                             .addComponent(editBtn)
                             .addComponent(jButton7))))
-                .addGap(27, 27, 27)
+                .addGap(54, 54, 54)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(122, Short.MAX_VALUE))
+                .addContainerGap(95, Short.MAX_VALUE))
         );
 
         tabbedUP.addTab("Usuarios", jPanel1);
@@ -398,7 +433,7 @@ public class UserView extends javax.swing.JInternalFrame {
                     .addComponent(cancelEditBtn))
                 .addGap(39, 39, 39)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(69, Short.MAX_VALUE))
         );
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Perfil"));
@@ -512,10 +547,11 @@ public class UserView extends javax.swing.JInternalFrame {
 
     private void btnAddProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProfileActionPerformed
         // TODO add your handling code here:
-        if(!treeFilled)
+        if (!treeFilled) {
             fillJTree();
-        else
+        } else {
             clearSelections();
+        }
         txtProfileName.setEnabled(true);
         txtProfileName.requestFocus();
         comboProfile2.setEnabled(false);
@@ -524,13 +560,14 @@ public class UserView extends javax.swing.JInternalFrame {
         btnAddProfile.setEnabled(false);
         comboProfile2.setSelectedIndex(0);
         saveProfileBtn.setEnabled(false);
-        treeActions.setEditable(true);        
+        treeActions.setEditable(true);
     }//GEN-LAST:event_btnAddProfileActionPerformed
 
     private void comboProfile2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboProfile2ItemStateChanged
         // TODO add your handling code here:
-        if(!treeFilled)
+        if (!treeFilled) {
             fillJTree();
+        }
         clearSelections();
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             if (comboProfile2.getSelectedIndex() != 0) {
@@ -542,27 +579,29 @@ public class UserView extends javax.swing.JInternalFrame {
             }
         }
     }//GEN-LAST:event_comboProfile2ItemStateChanged
-    private void checkActions(String profileName){
-        Perfil p= profileApplication.getProfileByName(profileName);
-        Set<Accion> actions=p.getAccions();
-        DefaultMutableTreeNode root = (DefaultMutableTreeNode)treeActions.getModel().getRoot();
-        int numChild=root.getChildCount();
-        
-        for(Accion a:actions){
-            for(int i=0;i<numChild;i++){
-                DefaultMutableTreeNode child=(DefaultMutableTreeNode)root.getChildAt(i);
-                int numChild2=child.getChildCount();
-                for(int j=0;j<numChild2;j++){
-                    DefaultMutableTreeNode child2=(DefaultMutableTreeNode)child.getChildAt(j);
-                    if(a.getNombre().equals(child2.toString()))
+    private void checkActions(String profileName) {
+        Perfil p = profileApplication.getProfileByName(profileName);
+        Set<Accion> actions = p.getAccions();
+        DefaultMutableTreeNode root = (DefaultMutableTreeNode) treeActions.getModel().getRoot();
+        int numChild = root.getChildCount();
+
+        for (Accion a : actions) {
+            for (int i = 0; i < numChild; i++) {
+                DefaultMutableTreeNode child = (DefaultMutableTreeNode) root.getChildAt(i);
+                int numChild2 = child.getChildCount();
+                for (int j = 0; j < numChild2; j++) {
+                    DefaultMutableTreeNode child2 = (DefaultMutableTreeNode) child.getChildAt(j);
+                    if (a.getNombre().equals(child2.toString())) {
                         treeActions.checkNode(new TreePath(child2.getPath()), true);
+                    }
                 }
             }
         }
     }
-    private void clearSelections(){
-        DefaultTreeModel model=(DefaultTreeModel)treeActions.getModel();
-        DefaultMutableTreeNode root=(DefaultMutableTreeNode)model.getRoot();
+
+    private void clearSelections() {
+        DefaultTreeModel model = (DefaultTreeModel) treeActions.getModel();
+        DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
         treeActions.checkNode(new TreePath(root.getPath()), false);
     }
     private void editProfileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editProfileBtnActionPerformed
@@ -570,7 +609,7 @@ public class UserView extends javax.swing.JInternalFrame {
         saveProfileBtn.setEnabled(true);
         cancelEditBtn.setEnabled(true);
         treeActions.setEditable(true);
-        editProfileBtn.setEnabled(false);        
+        editProfileBtn.setEnabled(false);
     }//GEN-LAST:event_editProfileBtnActionPerformed
 
     private void cancelEditBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelEditBtnActionPerformed
@@ -590,6 +629,7 @@ public class UserView extends javax.swing.JInternalFrame {
             clearSelections();
             comboProfile2.setSelectedIndex(0);
         }
+        txtProfileName.setBorder(regularBorder);
         btnAddProfile.setEnabled(true);
 
     }//GEN-LAST:event_cancelEditBtnActionPerformed
@@ -600,33 +640,66 @@ public class UserView extends javax.swing.JInternalFrame {
         cancelEditBtn.setEnabled(false);
         treeActions.setEditable(false);
         if (!txtProfileName.getText().equals("")) {
-            Perfil profile = new Perfil();
-            profile.setNombrePerfil(txtProfileName.getText());
-            profile.setAccions(getActionsFromTree());
-            profileApplication.insertProfile(profile);
-            JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_PROFILE_CREATED);
-            fillCombos();
-            comboProfile2.setSelectedIndex(comboProfile2.getItemCount() - 1);
-            txtProfileName.setText("");
-            txtProfileName.setEnabled(false);
-            btnAddProfile.setEnabled(true);
-            comboProfile2.setEnabled(true);
-            btnDeleteProfile.setEnabled(true);
+            if (isValidProfile()) {
+                Perfil profile = new Perfil();
+                profile.setNombrePerfil(txtProfileName.getText().trim());
+                profile.setAccions(getActionsFromTree());
+                profileApplication.insertProfile(profile);
+                JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_PROFILE_CREATED);
+                fillCombos();
+                comboProfile2.setSelectedIndex(comboProfile2.getItemCount() - 1);
+                txtProfileName.setText("");
+                txtProfileName.setEnabled(false);
+                btnAddProfile.setEnabled(true);
+                comboProfile2.setEnabled(true);
+                btnDeleteProfile.setEnabled(true);
+                txtProfileName.setBorder(regularBorder);
+                editProfileBtn.setEnabled(true);
+            } else {
+                saveProfileBtn.setEnabled(true);
+                cancelEditBtn.setEnabled(true);
+                treeActions.setEditable(true);
+            }
         } else {
             Perfil profile = profileApplication.getProfileByName(comboProfile2.getSelectedItem().toString());
             profile.setAccions(getActionsFromTree());
             profileApplication.updateProfile(profile);
             JOptionPane.showMessageDialog(this, Strings.MESSAGE_PROFILE_EDITED);
+            editProfileBtn.setEnabled(true);
         }
-        editProfileBtn.setEnabled(true);
+
     }//GEN-LAST:event_saveProfileBtnActionPerformed
-    private Set getActionsFromTree(){
-        Set actions=new HashSet(0);
-        Set paths=treeActions.checkedPaths;
-        for(TreePath tp:(Set<TreePath>)paths){
-            Accion a=actionApplication.getActionByName(tp.getLastPathComponent().toString());
-            if(a!=null)
+    private boolean isValidProfile() {
+        String profileName = txtProfileName.getText().trim();
+        String message = "";
+        if (profileName.length() > 0 && profileName.length() <= 40) {
+            if (!profileName.matches(Regex.NUMBER_AND_LETTERS)) {
+                message += Strings.ERROR_PROFILE_NUMBERS_AND_LETTERS + "\n";
+                txtProfileName.setBorder(errorBorder);
+            } else {
+                txtProfileName.setBorder(regularBorder);
+            }
+        } else {
+            if (profileName.length() > 40) {
+                message += Strings.ERROR_PROFILE_LENGTH + "\n";
+            }
+            txtProfileName.setBorder(errorBorder);
+        }
+        if (!message.equals("")) {
+            JOptionPane.showMessageDialog(this, message, "Mensaje", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
+    private Set getActionsFromTree() {
+        Set actions = new HashSet(0);
+        Set paths = treeActions.checkedPaths;
+        for (TreePath tp : (Set<TreePath>) paths) {
+            Accion a = actionApplication.getActionByName(tp.getLastPathComponent().toString());
+            if (a != null) {
                 actions.add(a);
+            }
         }
         return actions;
     }
@@ -663,13 +736,16 @@ public class UserView extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         if (comboProfile2.getSelectedIndex() != 0) {
             Perfil p = profileApplication.getProfileByName(comboProfile2.getSelectedItem().toString());
-            if (p != null) {
+            if (p != null && p.getUsuarios().size() == 0) {
                 profileApplication.deleteProfile(p);
                 JOptionPane.showMessageDialog(this, Strings.MESSAGE_PROFILE_DELETED);
                 clearSelections();
                 fillCombos();
                 comboProfile2.setSelectedIndex(0);
                 editProfileBtn.setEnabled(false);
+            } else {
+
+                JOptionPane.showMessageDialog(this, Strings.ERROR_PROFILE_HAS_USERS, "Mensaje", JOptionPane.WARNING_MESSAGE);
             }
         }
     }//GEN-LAST:event_btnDeleteProfileActionPerformed
@@ -678,8 +754,12 @@ public class UserView extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         Usuario user = new Usuario();
         user.setCorreo(emailTxt.getText());
+        user.setNombre(txtName.getText());
         if (profileCombo1.getSelectedIndex() != 0) {
             user.setPerfil(profileApplication.getProfileByName(profileCombo1.getSelectedItem().toString()));
+        }
+        if (comboState.getSelectedIndex() != 0) {
+            user.setEstado(comboState.getSelectedIndex() - 1);
         }
         fillTableWithUsers(userApplication.searchUser(user));
     }//GEN-LAST:event_searchBtnActionPerformed
@@ -690,6 +770,7 @@ public class UserView extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnDeleteProfile;
     private javax.swing.JButton cancelEditBtn;
     private javax.swing.JComboBox comboProfile2;
+    private javax.swing.JComboBox comboState;
     private javax.swing.JButton editBtn;
     private javax.swing.JButton editProfileBtn;
     private javax.swing.JTextField emailTxt;
@@ -697,6 +778,8 @@ public class UserView extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -712,6 +795,7 @@ public class UserView extends javax.swing.JInternalFrame {
     private javax.swing.JButton searchBtn;
     private javax.swing.JTabbedPane tabbedUP;
     private client.user.JCheckBoxTree treeActions;
+    private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtProfileName;
     private javax.swing.JTable usersGrid;
     // End of variables declaration//GEN-END:variables

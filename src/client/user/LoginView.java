@@ -9,7 +9,10 @@ import application.user.UserApplication;
 import client.general.AppStart;
 import client.general.MainView;
 import entity.Usuario;
+import java.awt.Color;
+import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
+import javax.swing.border.Border;
 import util.EntityState;
 import util.InstanceFactory;
 import util.Strings;
@@ -19,18 +22,19 @@ import util.Strings;
  * @author Nevermade
  */
 public class LoginView extends javax.swing.JFrame {
-
+    
     UserApplication userApplication = InstanceFactory.Instance.getInstance("userApplication", UserApplication.class);
-
+    Border errorBorder = BorderFactory.createLineBorder(Color.RED, 1);
+    Border regularBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
     /**
      * Creates new form View
      */
     public LoginView() {
-
+        
         initComponents();
         AppStart.initConfig.start();
         getRootPane().setDefaultButton(loginBtn);
-
+        
     }
 
     /**
@@ -159,27 +163,59 @@ public class LoginView extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosing
     private void login() {
         Usuario user = null;
-        if (!userTxt.getText().equals("root")) {
-            user = userApplication.login(userTxt.getText(), new String(pwTxt.getPassword()));
-            if (user != null) {
-                if (user.getEstado() == EntityState.Users.ACTIVO.ordinal()) {
-                    new MainView(user).setVisible(true);
-                    dispose();
+        if (isValidForm()) {
+            if (!userTxt.getText().equals("root")) {
+                
+                user = userApplication.login(userTxt.getText(), new String(pwTxt.getPassword()));
+                
+                if (user != null) {
+                    if (user.getEstado() == EntityState.Users.ACTIVO.ordinal()) {
+                        new MainView(user).setVisible(true);
+                        dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(this, Strings.ALERT_USER_INACTIVE, "Mensaje", JOptionPane.WARNING_MESSAGE);
+                        userTxt.setText("");
+                        pwTxt.setText("");
+                    }
                 } else {
-                    JOptionPane.showMessageDialog(this, Strings.ALERT_USER_INACTIVE, "Alerta", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(this, Strings.ALERT_USER_DOES_NOT_EXIST, "Mensaje", JOptionPane.WARNING_MESSAGE);
+                    userTxt.setBorder(errorBorder);
+                    pwTxt.setBorder(errorBorder);
                     userTxt.setText("");
                     pwTxt.setText("");
                 }
             } else {
-                    JOptionPane.showMessageDialog(this, Strings.ALERT_USER_DOES_NOT_EXIST, "Error", JOptionPane.WARNING_MESSAGE);
-                    userTxt.setText("");
-                    pwTxt.setText("");
+                new MainView().setVisible(true);
+                dispose();
             }
-        } else {
-            new MainView().setVisible(true);
-            dispose();
         }
-
+    }
+    
+    private boolean isValidForm() {
+        if (userTxt.getText().length() > 0 && pwTxt.getPassword().length > 0) {
+            return true;
+        } else {
+            if (userTxt.getText().equals("root")) {
+                return true;
+                
+            };
+            
+            String message="";
+            
+            if (userTxt.getText().equals("")) {
+                message+=Strings.ALERT_USER_REQUIRED+"\n";
+                userTxt.setBorder(errorBorder);
+            }else
+                userTxt.setBorder(regularBorder);
+            if ((new String(pwTxt.getPassword())).equals("")) { 
+                message+=Strings.ALERT_PASSWORD_REQUIRED+"\n";
+                pwTxt.setBorder(errorBorder);
+            }else
+                pwTxt.setBorder(regularBorder);
+            
+            JOptionPane.showMessageDialog(this, message, "Mensaje", JOptionPane.WARNING_MESSAGE);            
+        }
+        return false;
     }
 
     /**
