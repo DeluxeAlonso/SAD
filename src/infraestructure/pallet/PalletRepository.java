@@ -132,5 +132,27 @@ public class PalletRepository implements IPalletRepository{
         else
             return orden.get(0); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public ArrayList<Pallet> queryPalletsByProduct(Integer productId) {
+        String hql="FROM Pallet WHERE id_producto=:productId and estado=1";
+        ArrayList<Pallet> pallets= new ArrayList<>();
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("productId", productId);
+            pallets = (ArrayList<Pallet>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return pallets;
+    }
     
 }

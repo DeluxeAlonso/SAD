@@ -55,10 +55,20 @@ public class PalletApplication {
         }
     }
     
-        public Pallet getPalletsFromOrder(OrdenInternamiento rackId){
+    public Pallet getPalletsFromOrder(OrdenInternamiento rackId){
         Pallet pallets = null;
         try {
             pallets = palletRepository.getPalletsFromOrder(rackId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pallets;
+    }
+        
+    public ArrayList<Pallet> getAvailablePalletsByProductId(Integer productId){
+        ArrayList<Pallet> pallets = null;
+        try {
+            pallets = palletRepository.queryPalletsByProduct(productId);
         } catch (Exception e) {
             e.printStackTrace();
         }
