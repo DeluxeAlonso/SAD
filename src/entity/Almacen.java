@@ -1,5 +1,5 @@
 package entity;
-// Generated May 31, 2015 6:46:01 PM by Hibernate Tools 4.3.1
+// Generated 01-jun-2015 18:57:54 by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -20,6 +20,8 @@ public class Almacen  implements java.io.Serializable {
      private Date fechaRegistro;
      private Integer estado;
      private Integer ubicLibres;
+     private Integer numFilas;
+     private Integer numColumnas;
      private Set racks = new HashSet(0);
      private Set historialMovimientosesForIdAlmacenOut = new HashSet(0);
      private Set historialMovimientosesForIdAlmacenIn = new HashSet(0);
@@ -32,7 +34,7 @@ public class Almacen  implements java.io.Serializable {
     public Almacen(Condicion condicion) {
         this.condicion = condicion;
     }
-    public Almacen(Condicion condicion, String descripcion, Integer capacidad, Integer area, Date fechaRegistro, Integer estado, Integer ubicLibres, Set racks, Set historialMovimientosesForIdAlmacenOut, Set historialMovimientosesForIdAlmacenIn, Set kardexes) {
+    public Almacen(Condicion condicion, String descripcion, Integer capacidad, Integer area, Date fechaRegistro, Integer estado, Integer ubicLibres, Integer numFilas, Integer numColumnas, Set racks, Set historialMovimientosesForIdAlmacenOut, Set historialMovimientosesForIdAlmacenIn, Set kardexes) {
        this.condicion = condicion;
        this.descripcion = descripcion;
        this.capacidad = capacidad;
@@ -40,6 +42,8 @@ public class Almacen  implements java.io.Serializable {
        this.fechaRegistro = fechaRegistro;
        this.estado = estado;
        this.ubicLibres = ubicLibres;
+       this.numFilas = numFilas;
+       this.numColumnas = numColumnas;
        this.racks = racks;
        this.historialMovimientosesForIdAlmacenOut = historialMovimientosesForIdAlmacenOut;
        this.historialMovimientosesForIdAlmacenIn = historialMovimientosesForIdAlmacenIn;
@@ -101,6 +105,20 @@ public class Almacen  implements java.io.Serializable {
     
     public void setUbicLibres(Integer ubicLibres) {
         this.ubicLibres = ubicLibres;
+    }
+    public Integer getNumFilas() {
+        return this.numFilas;
+    }
+    
+    public void setNumFilas(Integer numFilas) {
+        this.numFilas = numFilas;
+    }
+    public Integer getNumColumnas() {
+        return this.numColumnas;
+    }
+    
+    public void setNumColumnas(Integer numColumnas) {
+        this.numColumnas = numColumnas;
     }
     public Set getRacks() {
         return this.racks;

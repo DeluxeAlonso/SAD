@@ -32,8 +32,10 @@ import client.warehouseControlCheck.WarehouseControlCheckView;
 import entity.Accion;
 import entity.Usuario;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyVetoException;
+import java.net.URL;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,6 +47,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.MenuElement;
 import util.Icons;
+import static util.Icons.img;
 import util.InstanceFactory;
 
 /**
@@ -78,6 +81,7 @@ public class MainView extends javax.swing.JFrame {
     public static JDesktopPane desktopPane = null;
     public static Icons icons = new Icons();
     private BufferedImage img = null;
+    private Image icon = null;
 
     /**
      * Creates new form MainForm
@@ -89,12 +93,14 @@ public class MainView extends javax.swing.JFrame {
         System.out.println(mainPanel);
         desktopPane = mainPanel;
         renderUserMenu();
+        Icons.setMainIcon(this);
     }
 
     public MainView() {
         loadImageToDesktopPane();
         initComponents();
         desktopPane = mainPanel;
+        Icons.setMainIcon(this);
     }
 
     private void renderUserMenu() {
