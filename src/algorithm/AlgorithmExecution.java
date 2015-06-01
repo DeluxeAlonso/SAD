@@ -11,7 +11,15 @@ import algorithm.operators.LocalSearch;
 import algorithm.operators.Mutation;
 import algorithm.operators.ObjectiveFunction;
 import algorithm.operators.Repair;
+import entity.Despacho;
+import entity.GuiaRemision;
+import entity.PedidoParcialXProducto;
+import entity.UnidadTransporte;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Set;
 
 /**
  *
@@ -51,10 +59,18 @@ public class AlgorithmExecution {
             Solution child = Crossover.uniformCrossover(parents, algorithm, problem);
             
             child = Mutation.mutation(child, algorithm, problem);            
-            child = LocalSearch.opt2Improvement(child, algorithm, problem);            
-            child = Repair.repair(child, algorithm);
-            child.setCost(ObjectiveFunction.getSolutionCost(child, algorithm,
-                problem.getProductsStock()));
+            child = LocalSearch.opt2Improvement(child, algorithm, problem);  
+            
+            double cost = ObjectiveFunction.getSolutionCost(child, algorithm,
+                problem.getProductsStock());
+            if(cost>algorithm.getOvercapPenalty() || cost>algorithm.getOvertimePenalty() ||
+                    cost>algorithm.getOverstockPenalty()){
+                child = Repair.repair(child, algorithm);
+                child.setCost(ObjectiveFunction.getSolutionCost(child, algorithm,
+                        problem.getProductsStock()));
+            }
+            else
+                child.setCost(cost);
             
             int replacedSolution = Selection.tournamentSelection(
                     algorithm.getTournamentSelectionKValue(), population, 
@@ -66,5 +82,25 @@ public class AlgorithmExecution {
         System.out.println("Execution time: " + (end-ini) + "ms");
         
         Solution bestSolution = population.getBestSolution();
+        
+        //Here we can show the solution and the user can select running again the algorithm
+        
+        processOrders(bestSolution, problem);
+        
+    }
+    
+    public void processOrders(Solution solution, Problem problem){
+        ArrayList<UnidadTransporte> vehicles = problem.getVehicles();
+        HashMap<PedidoParcialXProducto, Integer> acceptedPartialOrders = new HashMap<>();
+        Node[][] nodes = solution.getNodes();
+        for (int i = 0; i < nodes.length; i++) {
+            if(nodes[i].length==0) continue;
+            Despacho despacho = new Despacho();
+            despacho.setFechaDespacho(new Date());
+            despacho.setEstado(i);
+            despacho.setUnidadTransporte(vehicles.get(i));
+            //Set<GuiaRemision> guiasRemision = new Set<>();
+            
+        }
     }
 }

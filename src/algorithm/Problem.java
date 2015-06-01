@@ -14,8 +14,6 @@ import entity.UnidadTransporte;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -40,6 +38,7 @@ public class Problem {
         productsStock = new HashMap<>();
         nodes = new ArrayList<>();        
         Date today = new Date();
+        int nNodes = 0;
         
         for (PedidoParcial order : orders) {
             ArrayList<PedidoParcialXProducto> partialOrderProducts = 
@@ -65,6 +64,8 @@ public class Problem {
                     
                     node.setPartialOrder(order);
                     node.setProduct(partialOrderProduct.getProducto());
+                    node.setIdx(nNodes++);
+                    
                     nodes.add(node);                    
                 }
             }            
