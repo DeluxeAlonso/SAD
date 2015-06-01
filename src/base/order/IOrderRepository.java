@@ -7,6 +7,7 @@ package base.order;
 
 import base.IRepository;
 import entity.Cliente;
+import entity.GuiaRemision;
 import entity.Pedido;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
@@ -25,4 +26,5 @@ public interface IOrderRepository extends IRepository<Pedido> {
     ArrayList<PedidoParcial> queryAllPendingPartialOrdersById(Integer id);
     ArrayList<Pedido> searchOrder(Pedido order);
     ArrayList<PedidoParcialXProducto> queryAllProductsByOrderId(Integer id);
+    Boolean createRemissionGuides(ArrayList<PedidoParcial> acceptedOrders, ArrayList<GuiaRemision> remissionGuides);
 }

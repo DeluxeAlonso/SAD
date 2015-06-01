@@ -7,6 +7,7 @@ package infraestructure.order;
 
 import base.order.IOrderRepository;
 import entity.Cliente;
+import entity.GuiaRemision;
 import entity.Pedido;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
@@ -49,6 +50,26 @@ public class OrderRepository implements IOrderRepository{
         }
     }
     
+    @Override
+    public Boolean createRemissionGuides(ArrayList<PedidoParcial> acceptedOrders, ArrayList<GuiaRemision> remissionGuides) {
+        Session session = Tools.getSessionInstance();
+        Transaction trns = null; 
+        try {            
+            trns=session.beginTransaction();
+            for(int i=0;i<acceptedOrders.size();i++){
+                session.update(acceptedOrders.get(i));
+                session.save(remissionGuides.get(i));
+            }
+            session.getTransaction().commit();
+            return true;
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }
+    }
     
     @Override
     public Boolean updateOrder(Pedido order){

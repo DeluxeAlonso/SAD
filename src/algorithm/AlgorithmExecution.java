@@ -11,6 +11,7 @@ import algorithm.operators.LocalSearch;
 import algorithm.operators.Mutation;
 import algorithm.operators.ObjectiveFunction;
 import algorithm.operators.Repair;
+import application.order.OrderApplication;
 import entity.Despacho;
 import entity.GuiaRemision;
 import entity.PedidoParcial;
@@ -31,6 +32,7 @@ import util.EntityState;
  * @author robert
  */
 public class AlgorithmExecution {
+    OrderApplication orderApplication = new OrderApplication();
     
     public void start(){
         long ini = System.currentTimeMillis();
@@ -192,6 +194,20 @@ public class AlgorithmExecution {
         
         
         //asignar guias de remision a las ordenes atendidas
-        
+        assignRemissionGuides(acceptedOrders);
     }
+    
+    public void assignRemissionGuides(ArrayList<PedidoParcial> acceptedOrders){
+        ArrayList<GuiaRemision> remissionGuides = new ArrayList<>();
+        for(int i=0;i<acceptedOrders.size();i++){
+            GuiaRemision remissionGuide = new GuiaRemision();
+            remissionGuide.setCliente(acceptedOrders.get(i).getPedido().getCliente());
+            remissionGuide.setDespacho(null);
+            remissionGuide.setEstado(1);
+            acceptedOrders.get(i).setGuiaRemision(remissionGuide);
+            remissionGuides.add(remissionGuide);
+        }
+        orderApplication.CreateRemissionGuides(acceptedOrders, remissionGuides);
+    }
+    
 }

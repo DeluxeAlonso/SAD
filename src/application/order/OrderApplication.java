@@ -7,6 +7,7 @@ package application.order;
 
 import base.order.IOrderRepository;
 import entity.Cliente;
+import entity.GuiaRemision;
 import entity.Pedido;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
@@ -50,6 +51,16 @@ public class OrderApplication {
         Boolean response = false;
         try {
             response = orderRepository.createOrder(order, p, pp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+    
+    public Boolean CreateRemissionGuides(ArrayList<PedidoParcial> acceptedOrders, ArrayList<GuiaRemision> remissionGuides){
+        Boolean response = false;
+        try {
+            response = orderRepository.createRemissionGuides(acceptedOrders, remissionGuides);
         } catch (Exception e) {
             e.printStackTrace();
         }
