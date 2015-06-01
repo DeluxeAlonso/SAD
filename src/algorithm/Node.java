@@ -13,8 +13,8 @@ import entity.Producto;
  * @author robert
  */
 public class Node {
-    private double x;
-    private double y;
+    private double x;//Longitud
+    private double y;//Latitud
     private double daysDifference;
     private Producto product;
     private int demand;    
