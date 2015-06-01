@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import util.EntityType;
 import util.HibernateUtil;
+import util.Icons;
 import util.InstanceFactory;
 
 
@@ -36,7 +37,7 @@ import util.InstanceFactory;
 public class AppStart {
 
     public static AppStart initConfig = new AppStart();
-
+    
     public AppStart() {
     }
 
@@ -80,12 +81,14 @@ public class AppStart {
         ProductTypeApplication productTypeApplication = InstanceFactory.Instance.getInstance("productTypeApplication", ProductTypeApplication.class);                
         conditionApplication.refreshConditions();
         EntityType.fillConditionNames();
+        Icons.loadIcons();
         //Se llama un metodo para que actualice los perfiles en la variable global PROFILES y ACTIONS
         profileApplication.refreshProfiles();              
         transportUnitApplication.refreshTransportUnits();
         orderApplication.refreshOrders();
         clientApplication.refreshClients();
         productApplication.refreshProducts();
+        
     }
 
 }

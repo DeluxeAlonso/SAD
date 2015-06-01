@@ -64,7 +64,7 @@ public class ObjectiveFunction {
                     route[i].getX(), route[i].getY())/
                     speed;            
             
-            if(i < route.length) {                
+            if(i < route.length && currentStock!=null) {                
                 extraCap = route[i].getDemand();
                 productId = route[i].getProduct().getId();
                 newStock = currentStock.get(productId)

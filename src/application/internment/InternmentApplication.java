@@ -21,17 +21,20 @@ public class InternmentApplication {
     
     
      private IInternmentRepository internmentRepository;
+     
     public InternmentApplication(){
         this.internmentRepository = new InternmentRepository();
     }
     
-    public void insert(OrdenInternamiento object) {
+    public int insert(OrdenInternamiento object) {
         try{
             InternmentRepository w = new InternmentRepository();
             w.insert(object);
+            return object.getId();
         }
         catch (Exception e){
-            
+            e.printStackTrace();
+            return -1;
         }
     }
     
@@ -45,5 +48,49 @@ public class InternmentApplication {
         return internmentOrder;
     }
     
+    public OrdenInternamiento queryById(int id){
+        OrdenInternamiento orden = null;
+        try {
+            orden = internmentRepository.queryById(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return orden;
+    }
     
+    public ArrayList<OrdenInternamiento> queryByType(int idType){
+        ArrayList<OrdenInternamiento> products=null;
+        try{
+            products = internmentRepository.queryByType(idType);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return products;
+    }
+    
+    public OrdenInternamientoXProducto getProdOrder(OrdenInternamiento idType){
+        OrdenInternamientoXProducto products=null;
+        try{
+            products = internmentRepository.getProdOrder(idType);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return products;
+    }
+    
+    
+    
+    public void insertOrdenXProducto(OrdenInternamientoXProducto object){
+            try{
+            InternmentRepository w = new InternmentRepository();
+            w.insertOrdenXProducto(object);
+            //return object.getId();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            //return -1;
+        }
+            
+        }
+        
 }

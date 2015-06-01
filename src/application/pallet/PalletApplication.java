@@ -6,6 +6,7 @@
 package application.pallet;
 
 import base.pallet.IPalletRepository;
+import entity.OrdenInternamiento;
 import entity.Pallet;
 import infraestructure.pallet.PalletRepository;
 import java.util.ArrayList;
@@ -41,4 +42,27 @@ public class PalletApplication {
         }
         return response;
     }
+    
+        public int insert(Pallet object) {
+        try{
+            PalletRepository w = new PalletRepository();
+            w.insert(object);
+            return object.getId();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return -1;
+        }
+    }
+    
+        public Pallet getPalletsFromOrder(OrdenInternamiento rackId){
+        Pallet pallets = null;
+        try {
+            pallets = palletRepository.getPalletsFromOrder(rackId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pallets;
+    }
+    
 }

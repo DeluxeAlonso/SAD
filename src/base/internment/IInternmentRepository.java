@@ -9,6 +9,7 @@ import base.IRepository;
 import entity.Usuario;
 import entity.Almacen;
 import entity.OrdenInternamiento;
+import entity.OrdenInternamientoXProducto;
 import java.util.ArrayList;
 
 /**
@@ -16,5 +17,9 @@ import java.util.ArrayList;
  * @author KEVIN BROWN
  */
 public interface IInternmentRepository extends IRepository<OrdenInternamiento>{
+
+    public ArrayList<OrdenInternamiento> queryByType(int idType);
+
+    public OrdenInternamientoXProducto getProdOrder(OrdenInternamiento idType);
     
 }

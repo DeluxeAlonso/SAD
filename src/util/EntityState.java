@@ -56,9 +56,9 @@ public class EntityState {
          return transportUnitsState;
     }
     
-    public static enum InternmentOrders { REGISTRADA, INTERNADA};
+    public static enum InternmentOrders { REGISTRADA, INTERNADA, PENDIENTE};
     public static String[] getInternmentOrdersState(){
-        String[] internmentOrdersState={"Registrada","Internada"};
+        String[] internmentOrdersState={"Registrada","Internada", "Pendiente"};
         return internmentOrdersState;
     }
     

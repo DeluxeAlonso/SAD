@@ -44,6 +44,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.MenuElement;
+import util.Icons;
 import util.InstanceFactory;
 
 /**
@@ -75,6 +76,7 @@ public class MainView extends javax.swing.JFrame {
     private KardexReport kardexReport = null;
     public static Usuario user = null;
     public static JDesktopPane desktopPane = null;
+    public static Icons icons = new Icons();
     private BufferedImage img = null;
 
     /**
