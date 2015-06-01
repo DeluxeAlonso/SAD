@@ -1,5 +1,5 @@
 package entity;
-// Generated 30/05/2015 08:07:22 PM by Hibernate Tools 4.3.1
+// Generated May 31, 2015 6:46:01 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -13,8 +13,8 @@ public class Pallet  implements java.io.Serializable {
 
 
      private Integer id;
-     private GuiaRemision guiaRemision;
      private OrdenInternamiento ordenInternamiento;
+     private PedidoParcial pedidoParcial;
      private Producto producto;
      private Ubicacion ubicacion;
      private String ean128;
@@ -30,9 +30,9 @@ public class Pallet  implements java.io.Serializable {
     public Pallet(Producto producto) {
         this.producto = producto;
     }
-    public Pallet(GuiaRemision guiaRemision, OrdenInternamiento ordenInternamiento, Producto producto, Ubicacion ubicacion, String ean128, Date fechaRegistro, Date fechaVencimiento, Integer estado, Set historialMovimientoses) {
-       this.guiaRemision = guiaRemision;
+    public Pallet(OrdenInternamiento ordenInternamiento, PedidoParcial pedidoParcial, Producto producto, Ubicacion ubicacion, String ean128, Date fechaRegistro, Date fechaVencimiento, Integer estado, Set historialMovimientoses) {
        this.ordenInternamiento = ordenInternamiento;
+       this.pedidoParcial = pedidoParcial;
        this.producto = producto;
        this.ubicacion = ubicacion;
        this.ean128 = ean128;
@@ -49,19 +49,19 @@ public class Pallet  implements java.io.Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
-    public GuiaRemision getGuiaRemision() {
-        return this.guiaRemision;
-    }
-    
-    public void setGuiaRemision(GuiaRemision guiaRemision) {
-        this.guiaRemision = guiaRemision;
-    }
     public OrdenInternamiento getOrdenInternamiento() {
         return this.ordenInternamiento;
     }
     
     public void setOrdenInternamiento(OrdenInternamiento ordenInternamiento) {
         this.ordenInternamiento = ordenInternamiento;
+    }
+    public PedidoParcial getPedidoParcial() {
+        return this.pedidoParcial;
+    }
+    
+    public void setPedidoParcial(PedidoParcial pedidoParcial) {
+        this.pedidoParcial = pedidoParcial;
     }
     public Producto getProducto() {
         return this.producto;

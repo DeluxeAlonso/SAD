@@ -52,7 +52,7 @@ public class AlgorithmExecution {
             
             child = Mutation.mutation(child, algorithm, problem);            
             child = LocalSearch.opt2Improvement(child, algorithm, problem);            
-            child = Repair.repair(child);
+            child = Repair.repair(child, algorithm);
             child.setCost(ObjectiveFunction.getSolutionCost(child, algorithm,
                 problem.getProductsStock()));
             

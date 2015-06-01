@@ -6,18 +6,43 @@
 package client.internment;
 
 import application.internment.InternmentApplication;
+import application.pallet.PalletApplication;
+import application.product.ProductApplication;
+import application.rack.RackApplication;
+import application.spot.SpotApplication;
 import application.warehouse.WarehouseApplication;
 import client.warehouse.EditWarehouseView;
 import entity.Almacen;
 import entity.Condicion;
 import entity.OrdenInternamiento;
+import entity.OrdenInternamientoXProducto;
+import entity.OrdenInternamientoXProductoId;
+import entity.Producto;
+import entity.Pallet;
+import entity.Rack;
+import entity.Ubicacion;
+import java.awt.event.ItemEvent;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import org.hibernate.Hibernate;
+import util.EntityState;
 import util.EntityType;
 import util.InstanceFactory;
 
@@ -28,14 +53,54 @@ import util.InstanceFactory;
 public class InternmentSelectView extends javax.swing.JInternalFrame {
     WarehouseApplication warehouseApplication=InstanceFactory.Instance.getInstance("warehouseApplication", WarehouseApplication.class);
     InternmentApplication internmentApplication=InstanceFactory.Instance.getInstance("internmentApplication", InternmentApplication.class);
+    ProductApplication productApplication=InstanceFactory.Instance.getInstance("productApplication", ProductApplication.class);
+    PalletApplication palletApplication=InstanceFactory.Instance.getInstance("palletApplication",PalletApplication.class);
+    RackApplication rackApplication=InstanceFactory.Instance.getInstance("rackApplication", RackApplication.class);
+    SpotApplication spotApplication = InstanceFactory.Instance.getInstance("spotApplicaiton", SpotApplication.class);
     /**
      * Creates new form InternmentSelectView
      */
+    
+    ArrayList<Buffer> ordenListada = new ArrayList<Buffer>();
+    ArrayList<Almacen> almacenes = new ArrayList<Almacen>();
+    public static class Buffer{
+        int id_item;
+        String fecha;
+        int cantidad;
+    }
+    JTable table = null;
+    public int cantAInternar;
+    public OrdenInternamiento ordenAInternar=null;
+    
     public InternmentSelectView() {
         initComponents();
+        jComboBox1.removeAllItems();
+        table = jTable2;
+        table.getModel().addTableModelListener(new TableModelListener() {
+        public void tableChanged(TableModelEvent e) {
+        Boolean isChecked;
+        int count=0;
+        int aux = cantAInternar;
+        if(table.getRowCount()>0){
+            for (int i = 0; i < table.getRowCount(); i++) {
+                aux=cantAInternar;
+                isChecked = (Boolean)table.getValueAt(i, 4);
+                if (isChecked != null && isChecked) {
+                    count++;
+                }
+                aux=aux-count;
+                jTextField3.setText(Integer.toString(aux));
+            }
+        } 
+      }
+    });
+        
+        
         fillTable();
     }
 
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -52,6 +117,15 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
         jTable1 = new javax.swing.JTable();
         lblFileChooser1 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
+        jComboBox1 = new javax.swing.JComboBox();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        jTextField3 = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jButton3 = new javax.swing.JButton();
 
         setClosable(true);
 
@@ -76,14 +150,14 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Número", "Fecha de carga"
+                "Num. Orden", "Producto", "Fecha de Vcto.", "Cantidad"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -94,18 +168,86 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jTable1MousePressed(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
         if (jTable1.getColumnModel().getColumnCount() > 0) {
             jTable1.getColumnModel().getColumn(0).setResizable(false);
             jTable1.getColumnModel().getColumn(1).setResizable(false);
+            jTable1.getColumnModel().getColumn(2).setResizable(false);
+            jTable1.getColumnModel().getColumn(3).setResizable(false);
         }
 
-        lblFileChooser1.setText("Órdenes de internamiento pendientes:");
+        lblFileChooser1.setText("Órdenes pendientes:");
 
-        jButton2.setText("Detalle");
+        jButton2.setText("Internar");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
+            }
+        });
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Rack", "Lado", "Fila", "Columna", "Seleccione"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(jTable2);
+        if (jTable2.getColumnModel().getColumnCount() > 0) {
+            jTable2.getColumnModel().getColumn(0).setResizable(false);
+            jTable2.getColumnModel().getColumn(1).setResizable(false);
+            jTable2.getColumnModel().getColumn(2).setResizable(false);
+            jTable2.getColumnModel().getColumn(3).setResizable(false);
+            jTable2.getColumnModel().getColumn(4).setResizable(false);
+        }
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox1ItemStateChanged(evt);
+            }
+        });
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Seleccione almacén destino:");
+
+        jLabel2.setText("Ubicaciones Disponibles:");
+
+        jTextField2.setEditable(false);
+
+        jTextField3.setEditable(false);
+
+        jLabel3.setText("Cantidad Pendiente por internar:");
+
+        jButton3.setText("Asignar Automático");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
             }
         });
 
@@ -115,19 +257,38 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(44, 44, 44)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblFileChooser)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(37, 37, 37)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(lblFileChooser1)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(38, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(150, 150, 150))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lblFileChooser1))
+                        .addGap(81, 81, 81)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(18, 18, 18)
+                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addComponent(jLabel1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jButton3)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel3)
+                                        .addGap(68, 68, 68)
+                                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                .addContainerGap(57, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -137,14 +298,26 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
-                .addGap(43, 43, 43)
-                .addComponent(lblFileChooser1)
-                .addGap(26, 26, 26)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
-                .addComponent(jButton2)
-                .addGap(35, 35, 35))
+                    .addComponent(jButton1)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addGap(40, 40, 40)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblFileChooser1)
+                    .addComponent(jLabel2)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addComponent(jButton3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2)
+                    .addComponent(jLabel3)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(21, 21, 21))
         );
 
         pack();
@@ -155,57 +328,217 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     public void fillTable(){
+        clearGrid(jTable1);
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        ArrayList<OrdenInternamiento> internmentOrder = internmentApplication.queryAll();
         
-       for (OrdenInternamiento a : internmentOrder) { 
+        ArrayList<OrdenInternamiento> orders = internmentApplication.queryByType(0);
+        orders.addAll(internmentApplication.queryByType(2));
+        for (OrdenInternamiento or : orders){
+            Producto prod = internmentApplication.getProdOrder(or).getProducto();
+            Pallet pal = palletApplication.getPalletsFromOrder(or);
             model.addRow(new Object[]{
-                a.getId(),
-                a.getFecha().toString()
-            });
+               or.getId(),
+               prod.getNombre(),
+               pal.getFechaVencimiento(),
+               internmentApplication.getProdOrder(or).getCantidad()
+            }); 
         }
         
     }
     
-        public void clearGrid() {
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        public void fillComboWarehouse(int type){
+        jComboBox1.removeAllItems();
+        almacenes = warehouseApplication.queryWarehousesByType(type);
+        if(almacenes.size()>0){
+            String[] nombresAlmacen = new String[almacenes.size()];
+            for(int i=0; i<almacenes.size(); i++){
+                nombresAlmacen[i] = almacenes.get(i).getDescripcion();
+            }
+            jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(nombresAlmacen));
+        }
+    }
+    
+    
+    public void clearGrid(JTable tabla) {
+        DefaultTableModel model = (DefaultTableModel) tabla.getModel();
         model.setRowCount(0);
     }
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-                JFileChooser fc = new JFileChooser();
+       
+       JFileChooser fc = new JFileChooser();
+        BufferedReader br = null;        
+        String line = "";
+        String cvsSplitBy = ",";
         fc.setDialogTitle("Seleccione un archivo");
         fc.showOpenDialog(this);
         File file = fc.getSelectedFile();
+        //ArrayList<Buffer> buffList = new ArrayList<>();
         if (!fc.getSelectedFile().getName().endsWith(".csv")) {
           JOptionPane.showMessageDialog(this, "El archivo seleccionado no es un archivo CSV.");
         }
-        else
-            jTextField1.setText(file.getAbsolutePath());
+        else{
+            try {
+                jTextField1.setText(file.getAbsolutePath());
+                br = new BufferedReader(new FileReader(file));
+                
+                while ((line = br.readLine()) != null){
+                    String[] lectura = line.split(cvsSplitBy);
+                    Buffer buff = new Buffer();
+                    buff.id_item =  Integer.parseInt(lectura[0]);
+                    buff.fecha = lectura[1];
+                    buff.cantidad = Integer.parseInt(lectura[2]);
+                    ordenListada.add(buff);
+                }
+                
+                
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(InternmentSelectView.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(InternmentSelectView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+           
+             
+        }
+        createInternmentOrders(ordenListada);
+        fillTable(); 
+        
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void createInternmentOrders(ArrayList<Buffer> listaBuff){
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        for (Buffer b : listaBuff){
+            //OrdenInternamiento
+            OrdenInternamiento orden = new OrdenInternamiento();
+            orden.setFecha(cal.getTime());
+            orden.setEstado(EntityState.InternmentOrders.REGISTRADA.ordinal());//REGISTRADA
+            int x = internmentApplication.insert(orden);
+            //OrdenInternamientoXProducto
+            OrdenInternamientoXProductoId id = new OrdenInternamientoXProductoId();
+            id.setIdOrdenInternamiento(x);
+            id.setIdProducto(b.id_item);
+            OrdenInternamientoXProducto ordenXProducto = new OrdenInternamientoXProducto();
+            ordenXProducto.setOrdenInternamiento(internmentApplication.queryById(x));
+            ordenXProducto.setProducto(productApplication.queryById(b.id_item));
+            ordenXProducto.setCantidad(b.cantidad);
+            ordenXProducto.setCantidadIngresada(0);
+            ordenXProducto.setId(id);
+            internmentApplication.insertOrdenXProducto(ordenXProducto);
+            //Pallets
+            for (int i=0;i<b.cantidad;i++){
+                Pallet pallet = new Pallet();
+                pallet.setEan128("Temporal");
+                pallet.setEstado(EntityState.Pallets.CREADO.ordinal());//CREADO
+                pallet.setFechaRegistro(orden.getFecha());
+                try {
+                    pallet.setFechaVencimiento( formatter.parse(b.fecha) );
+                } catch (ParseException ex) {
+                    Logger.getLogger(InternmentSelectView.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                pallet.setOrdenInternamiento(internmentApplication.queryById(x));
+                pallet.setProducto(productApplication.queryById(b.id_item));
+                palletApplication.insert(pallet);
+            }
+            
+            
+            
+        }
+        
+    }
+    
+    
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        
-         int sr = jTable1.getSelectedRow();
-        String idString = jTable1.getModel().getValueAt(sr, 0).toString();
-        //OrdenInternamiento a = internmentApplication.queryById(Integer.parseInt(idString));
-        //InternmentDetailView internmentDetailView = new InternmentDetailView((JFrame)SwingUtilities.getWindowAncestor(this),true,a);
-        //internmentDetailView.setVisible(true);
-        clearGrid();
-        fillTable();
-        
         
         
 
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jTable1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MousePressed
+        // TODO add your handling code here:
+        int row = jTable1.getSelectedRow();
+        int cod = Integer.parseInt(jTable1.getModel().getValueAt(row,0).toString());
+        OrdenInternamiento orden = internmentApplication.queryById(cod);
+        Producto prod = internmentApplication.getProdOrder(orden).getProducto();
+        cantAInternar = internmentApplication.getProdOrder(orden).getCantidad();
+        jTextField3.setText(Integer.toString(cantAInternar));
+        ordenAInternar = orden;
+        fillComboWarehouse(prod.getCondicion().getId());
+        fillFreeSpots();
+        
+    }//GEN-LAST:event_jTable1MousePressed
+
+    
+    
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void fillFreeSpots(){
+            
+            clearGrid(jTable2);
+            DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+            ArrayList<Ubicacion> ubi = new ArrayList<Ubicacion>();
+            Almacen alm = almacenes.get(jComboBox1.getSelectedIndex());
+            jTextField2.setText(alm.getUbicLibres().toString());
+            ArrayList<Rack> racks = rackApplication.queryRacksByWarehouse(alm.getId());
+            for (Rack r : racks){
+                ubi = (ArrayList<Ubicacion>) spotApplication.queryEmptySpotsByRack(r.getId());
+                for (Ubicacion ub : ubi){
+                    model.addRow(new Object[]{
+                    r.getId(),
+                    ub.getLado(),
+                    ub.getFila(),
+                    ub.getColumna()
+                });
+                }
+                
+            }
+        
+    }
+    
+    private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
+        // TODO add your handling code here:
+        if(evt.getStateChange() == ItemEvent.SELECTED){
+             fillFreeSpots();
+        }
+        
+    }//GEN-LAST:event_jComboBox1ItemStateChanged
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        //Asignar auto
+            int cont = cantAInternar - Integer.parseInt(jTextField3.getText());
+            int aux=0;
+            if(table.getRowCount()>0){
+            for (int i = 0; i < table.getRowCount(); i++) {
+                table.setValueAt(true, i, 4);
+                cont++;
+                if (cont == cantAInternar) break;
+            }
+            aux = cantAInternar - cont;
+            jTextField3.setText(Integer.toString(aux));
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
     private javax.swing.JLabel lblFileChooser;
     private javax.swing.JLabel lblFileChooser1;
     // End of variables declaration//GEN-END:variables

@@ -73,6 +73,23 @@ public class Strings {
     public static final String ERROR_NO_SPOTS_SELECTED="Seleccione alguna ubicación de destino.";
     public static final String ERROR_PALLETS_DONT_MATCH_SPOTS="La cantidad de pallets y ubicaciones seleccionados deben ser iguales.";
     public static final String MESSAGE_WAREHOUSE_CREATED="El almacen se ha registrado con éxito.";
+    public static final String ERROR_AREA_WAREHOUSE_REQUIRED= "El campo Area es obligatorio.";
+    public static final String ERROR_AREA_WAREHOUSE_DOUBLE= "El campo Area tiene que ser un numero.";
+    public static final String ERROR_CAPACITY_WAREHOUSE_REQUIRED= "El campo capacidad es obligatorio.";
+    public static final String ERROR_CAPACITY_WAREHOUSE_INT= "El campo capacidad debe ser un numero entero.";
+    public static final String ERROR_RACKS_WAREHOUSE_REQUIRED= "El campo racks es obligatorio.";
+    public static final String ERROR_RACKS_WAREHOUSE_INT= "El campo rack debe ser un numero entero.";
+    public static final String ERROR_CONDICION_WAREHOUSE_REQUIRED= "El campo condicion es obligatorio.";
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /*END*/
     
     /*CLIENT MODULE MESSAGES*/
@@ -149,7 +166,18 @@ public class Strings {
     public static final String ERROR_CONDITION_PROD_REQUIRED="El campo condicion es obligatorio";
     public static final String MESSAGE_NEW_PRODUCT_CREATED = "Se registró correctamente el producto.";
     public static final String MESSAGE_NEW_PRODUCT_TITLE ="Mensaje de inserción de producto";
+    
+    public static final String ERROR_PESO_PROD_REQUIRED="El campo peso es obligatorio.";
+    public static final String ERROR_PESO_PROD_DOUBLE="El campo peso debe ser un numero.";
+    
+    
     /*END*/
     
+    /*KARDEX MESSAGES*/
+    public static final String ERROR_KARDEX_TITLE="Error en reporte de Kardex";
+    public static final String ERROR_DATE_INI="Seleccione fecha inicial";
+    public static final String ERROR_DATE_END="Seleccione fecha final";
+    public static final String ERROR_DATE="La fecha inicial debe ser anterior a la final";
+    /*END*/
     
 }

@@ -182,10 +182,10 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <Component id="productContainer" min="-2" pref="424" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="addBtn" max="32767" attributes="0"/>
-                              <Component id="removeBtn" max="32767" attributes="0"/>
+                              <Component id="addBtn" min="-2" pref="94" max="-2" attributes="0"/>
+                              <Component id="removeBtn" pref="0" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace pref="17" max="32767" attributes="0"/>
                       </Group>
@@ -217,13 +217,13 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <Component id="addBtn" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="removeBtn" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="6" pref="286" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
                           <Component id="productContainer" min="-2" pref="321" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="31" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="72" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -292,9 +292,6 @@
                   <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
                 </Property>
               </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="productTableMouseClicked"/>
-              </Events>
             </Component>
           </SubComponents>
         </Container>

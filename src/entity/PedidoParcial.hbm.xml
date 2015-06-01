@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 30/05/2015 08:07:24 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated May 31, 2015 6:46:05 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entity.PedidoParcial" table="pedido_parcial" catalog="saddb" optimistic-lock="version">
         <id name="id" type="java.lang.Integer">
@@ -17,6 +17,12 @@
         <property name="estado" type="java.lang.Integer">
             <column name="estado" />
         </property>
+        <set name="pallets" table="pallet" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_pedido_parcial" />
+            </key>
+            <one-to-many class="entity.Pallet" />
+        </set>
         <set name="pedidoParcialXProductos" table="pedido_parcial_x_producto" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="id_pedido_parcial" not-null="true" />

@@ -6,6 +6,7 @@
 package infraestructure.pallet;
 
 import base.pallet.IPalletRepository;
+import entity.OrdenInternamiento;
 import entity.Pallet;
 import java.util.ArrayList;
 import org.hibernate.Query;
@@ -105,6 +106,31 @@ public class PalletRepository implements IPalletRepository{
     @Override
     public Pallet queryById(String id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public Pallet getPalletsFromOrder(OrdenInternamiento id) {
+        String hql="FROM Pallet WHERE ordenInternamiento=:id";
+        ArrayList<Pallet> orden=null;
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("id", id);
+            orden = (ArrayList<Pallet>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        if (orden.size()==0)
+            return null;
+        else
+            return orden.get(0); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

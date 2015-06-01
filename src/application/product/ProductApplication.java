@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -44,7 +45,24 @@ public class ProductApplication {
         }
     }
     
+       
+    public void createProduct(Producto product) {
+        try{
+            int i = productRepository.insert(product);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
     
+           public Producto queryById(int id){
+        Producto p = null;
+        try{
+            p = productRepository.queryById(id);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return p;
+    }
     
     public ArrayList<Producto> getAllProducts(){
         ArrayList<Producto> actions=null;
