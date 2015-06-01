@@ -324,6 +324,11 @@ public class MainView extends javax.swing.JFrame {
                 jMenuItem15MousePressed(evt);
             }
         });
+        jMenuItem15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem15ActionPerformed(evt);
+            }
+        });
         menuReport.add(jMenuItem15);
 
         jMenuItem16.setText("Caducidad de Productos");
@@ -751,6 +756,10 @@ public class MainView extends javax.swing.JFrame {
         }        
         
     }//GEN-LAST:event_jMenuItem10MousePressed
+
+    private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem15ActionPerformed
 
     private void jMenuItem15MousePressed(java.awt.event.MouseEvent evt) {
         // TODO add your handling code here:
