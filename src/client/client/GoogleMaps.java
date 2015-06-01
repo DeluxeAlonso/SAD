@@ -1,5 +1,7 @@
 package client.client;
 
+import algorithm.Node;
+import algorithm.Solution;
 import com.teamdev.jxbrowser.chromium.Browser;
 import com.teamdev.jxbrowser.chromium.dom.DOMDocument;
 import com.teamdev.jxbrowser.chromium.dom.DOMElement;
@@ -10,10 +12,12 @@ import com.teamdev.jxbrowser.chromium.swing.BrowserView;
 
 import javax.swing.*;
 import java.awt.*;
+import util.Constants;
 
 public class GoogleMaps {
     
-    public GoogleMaps(){
+    public GoogleMaps(Solution solution){
+        Node[][] nodes = solution.getNodes();
         final Browser browser = new Browser();
         BrowserView browserView = new BrowserView(browser);
 
@@ -44,16 +48,24 @@ public class GoogleMaps {
 "    zoom: 4,\n" +
 "    center: myLatlng\n" +
 "  }\n" +
-"  var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);\n";
-                for(int i=0;i<10;i++){
-                    
-html += " var newLatlng = new google.maps.LatLng("+i+","+i+"); "+
+"  var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);\n" +
+" var newLatlng = new google.maps.LatLng("+Constants.WAREHOUSE_LATITUDE+","+Constants.WAREHOUSE_LONGITUDE+"); "+
 "      var marker = new google.maps.Marker({\n" +
 "      position: newLatlng,\n" +
 "      map: map,\n" +
-"      title: 'Hello World!'\n" +
+"      icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',\n" +
+"      title: 'Centro de distribucion'\n" +
+"  });\n";
+    for(int i=0;i<nodes.length;i++){
+        for(int j=0;j<nodes[i].length;j++){
+html += " var newLatlng = new google.maps.LatLng("+nodes[i][j].getY()+","+nodes[i][j].getX()+"); "+
+"      var marker = new google.maps.Marker({\n" +
+"      position: newLatlng,\n" +
+"      map: map,\n" +
+//"      title: "+nodes[i][j].getPartialOrder().getPedido().getCliente().getNombre()+"\n" +
 "  });\n";
         }
+    }
 html += "" +
 "var request = {\n" +
 "    origin: new google.maps.LatLng(1,1),\n" +

@@ -19,6 +19,8 @@ public class Solution implements Comparable<Solution>{
     private Algorithm algorithm;
     private Problem problem;
     private double cost;
+    
+    public Solution(){}
 
     public Solution(Node[][] nodes, Algorithm algorithm, Problem problem) {
         this.nodes = nodes;
