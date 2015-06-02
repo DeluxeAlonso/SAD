@@ -186,7 +186,7 @@ public class SpotRepository implements ISpotRepository{
                 "(u.rack.id = :rackId OR :rackId=0) AND u.rack.estado!=:estado"+
                 "  ORDER BY u.rack.id, u.fila, u.columna";
         ArrayList<Ubicacion> spots=null;
-        
+        //gracias baldeon por enseniarme a usar DAO
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
         try {            
