@@ -11,6 +11,7 @@ import application.condition.ConditionApplication;
 import application.rack.RackApplication;
 import application.spot.SpotApplication;
 import application.warehouse.WarehouseApplication;
+import client.base.BaseDialogView;
 import entity.Almacen;
 import entity.Rack;
 import entity.Ubicacion;
@@ -34,7 +35,7 @@ import util.Strings;
  *
  * @author LUIS
  */
-public class NewWarehouseView extends javax.swing.JDialog {
+public class NewWarehouseView extends BaseDialogView {
     WarehouseApplication warehouseApplication=InstanceFactory.Instance.getInstance("warehouseApplication", WarehouseApplication.class);
     ConditionApplication conditionApplication=InstanceFactory.Instance.getInstance("conditionApplication", ConditionApplication.class);
     RackApplication rackApplication=InstanceFactory.Instance.getInstance("rackApplication", RackApplication.class);
@@ -50,6 +51,7 @@ public class NewWarehouseView extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.setTitle("Nuevo Almacen");
+        initialize();
         this.condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.CONDITIONS_NAMES));
         Icons.setButton(saveTxt, Icons.ICONOS.SAVE.ordinal());
         Icons.setButton(cancelBtn, Icons.ICONOS.CANCEL.ordinal());
@@ -266,6 +268,8 @@ public class NewWarehouseView extends javax.swing.JDialog {
         al.setFechaRegistro(cal.getTime());
         al.setKardexes(null);
         al.setUbicLibres(fil*col*uLibres*2);
+        al.setNumFilas(fil);
+        al.setNumColumnas(col);
         warehouseApplication.insert(al);
         
         for (int i=0;i<uLibres;i++){
@@ -277,21 +281,30 @@ public class NewWarehouseView extends javax.swing.JDialog {
             r.setNumFil(fil);
             r.setUbicLibres(col*fil);
             al.getRacks().add(r);
+            
             rackApplication.insert(r);
             for (int j=0;j<col;j++){
                 for (int k=0;k<fil;k++){
-                    Ubicacion u = new Ubicacion();
-                    u.setRack(r);
-                    u.setEstado(EntityState.Spots.LIBRE.ordinal());
-                    u.setColumna(j+1);
-                    u.setFila(k+1);
-                    u.setLado("A");
-                    spotApplication.insert(u);
-                    u.setLado("B");
-                    spotApplication.insert(u);
+                    Ubicacion u1 = new Ubicacion();
+                    Ubicacion u2 = new Ubicacion();
+                    u1.setRack(r);
+                    u1.setEstado(EntityState.Spots.LIBRE.ordinal());
+                    u1.setColumna(j+1);
+                    u1.setFila(k+1);
+                    u1.setLado("A");
+                    u2.setRack(r);
+                    u2.setEstado(EntityState.Spots.LIBRE.ordinal());
+                    u2.setColumna(j+1);
+                    u2.setFila(k+1);
+                    u2.setLado("B");
+                    spotApplication.insert(u1);
+                    spotApplication.insert(u2);
+                    r.getUbicacions().add(u1);
+                    r.getUbicacions().add(u2);
                 }
             }
         }
+        //warehouseApplication.insert(al);
         JOptionPane.showMessageDialog(this, Strings.MESSAGE_WAREHOUSE_CREATED);
         clearFields();
         clearBorders();
@@ -372,6 +385,13 @@ public class NewWarehouseView extends javax.swing.JDialog {
             error_message += Strings.ERROR_CAPACITY_WAREHOUSE_INT+"\n";
             capacityTxt.setBorder(errorBorder);
             errorFlag = true;
+        }else {
+            int  capA=Integer.parseInt(capacityTxt.getText());
+            if (capA > 50){
+                error_message += "La capacidad de un almacen no debe ser mayor a 50."+"\n";
+                capacityTxt.setBorder(errorBorder);
+                errorFlag = true;                
+            }
         }
         if (racksTxt.getText().isEmpty()){
             error_message += Strings.ERROR_RACKS_WAREHOUSE_REQUIRED+"\n";
@@ -383,8 +403,8 @@ public class NewWarehouseView extends javax.swing.JDialog {
             errorFlag = true;
         } else if (isInteger(racksTxt.getText())){
             int rackA =Integer.parseInt(nColTxt.getText());
-            if (rackA > 20){
-                error_message += "El numero de racks debe ser menor que 20"+"\n";
+            if (rackA > 50){
+                error_message += "El numero de racks debe ser menor o igual que 50."+"\n";
                 racksTxt.setBorder(errorBorder);
                 errorFlag = true;                
             }
@@ -402,7 +422,7 @@ public class NewWarehouseView extends javax.swing.JDialog {
         }else if (isInteger(nFilTxt.getText())){
             int filA =Integer.parseInt(nColTxt.getText());
             if (filA > 15){
-                error_message += "El numero de filas debe ser menor que 15"+"\n";
+                error_message += "El numero de filas debe ser menor que 15."+"\n";
                 nFilTxt.setBorder(errorBorder);
                 errorFlag = true;                
             }
@@ -430,7 +450,7 @@ public class NewWarehouseView extends javax.swing.JDialog {
         }
         
         if (errorFlag==true)
-        JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_NEW_CLIENT_TITLE,JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(this, error_message,"Mensaje de insercion de almacen",JOptionPane.WARNING_MESSAGE);
         
         return errorFlag;
     }

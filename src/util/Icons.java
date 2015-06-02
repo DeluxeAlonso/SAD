@@ -9,6 +9,7 @@ import java.awt.Image;
 import java.net.URL;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -31,11 +32,12 @@ public class Icons {
         CREATE, 
         MODIFY, 
         DELETE,
-        RESET
+        RESET,
+        DELIVERY
     };
     
     public static String[] getIconNames(){
-         String[] iconNames={"Guardar","Cancelar","Buscar", "Nuevo", "Editar", "Eliminar","Resetear"};
+         String[] iconNames={"Guardar","Cancelar","Buscar", "Nuevo", "Editar", "Eliminar","Resetear","Despacho"};
          return iconNames;
     }
     
@@ -45,6 +47,9 @@ public class Icons {
     
     public static void setMainIcon(JFrame c){
         c.setIconImage(mainIcon);
+    }
+    public static void setMainIcon(JInternalFrame c){
+        c.setFrameIcon(new ImageIcon(mainIcon));
     }
     public static void setMainIcon(JDialog c){
         c.setIconImage(mainIcon);
@@ -94,6 +99,8 @@ public class Icons {
             img = ImageIO.read(URL.class.getResource("../../images/Delete.png"));
             images.add(img);
             img = ImageIO.read(URL.class.getResource("../../images/Unlock.png"));
+            images.add(img);
+            img = ImageIO.read(URL.class.getResource("../../images/Delivery.png"));
             images.add(img);
             img = ImageIO.read(URL.class.getResource("../../images/warehouse-512-000000.png"));
             mainIcon=img;
