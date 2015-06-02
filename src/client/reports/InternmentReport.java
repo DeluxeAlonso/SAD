@@ -49,6 +49,8 @@ public class InternmentReport extends BaseView {
         jTable1 = new javax.swing.JTable();
         jSeparator1 = new javax.swing.JSeparator();
 
+        setClosable(true);
+
         jLabel1.setText("Producto:");
 
         jLabel2.setText("Tipo Producto:");
