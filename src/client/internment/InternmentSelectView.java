@@ -72,7 +72,7 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
     public int cantAInternar;
     public OrdenInternamiento ordenAInternar=null;
     public ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
-    
+    public ArrayList<OrdenInternamiento> orders = new ArrayList<OrdenInternamiento>();
     
     public InternmentSelectView() {
         initComponents();
@@ -335,8 +335,9 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
         clearGrid(jTable1);
         int x = 0;
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        ArrayList<OrdenInternamiento> orders = internmentApplication.queryByType(0);
-        orders.addAll(internmentApplication.queryByType(2));
+        orders.clear();
+        orders.addAll(internmentApplication.queryByType(EntityState.InternmentOrders.REGISTRADA.ordinal()));
+        orders.addAll(internmentApplication.queryByType(EntityState.InternmentOrders.PENDIENTE.ordinal()));
         for (OrdenInternamiento or : orders){
             Producto prod = internmentApplication.getProdOrder(or).getProducto();
             ArrayList<Pallet> pal = palletApplication.getPalletsFromOrder(or.getId());
@@ -502,8 +503,10 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
             if(table.getRowCount()>0){
             for (int i = 0; i < table.getRowCount(); i++) {
                 if (internmentApplication.getProdOrder(ordenAInternar).getCantidadIngresada() == internmentApplication.getProdOrder(ordenAInternar).getCantidad()){
-                    ordenAInternar.setEstado(EntityState.InternmentOrders.INTERNADA.ordinal());
-                    internmentApplication.update(ordenAInternar);
+                    //ordenAInternar.setEstado(EntityState.InternmentOrders.INTERNADA.ordinal());
+                    OrdenInternamiento ord = internmentApplication.queryById(ordenAInternar.getId());
+                    ord.setEstado(EntityState.InternmentOrders.INTERNADA.ordinal());
+                    internmentApplication.update(ord);
                     break;
                 }
                 
