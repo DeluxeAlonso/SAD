@@ -104,15 +104,16 @@ public class InternmentApplication {
             
         }
     
-    public int update(OrdenInternamiento object){
-        OrdenInternamientoXProducto products=null;
+    public int update(OrdenInternamiento object) {
         try{
-            products = internmentRepository.getProdOrder(object);
-        }catch(Exception e){
-            e.printStackTrace();
+            InternmentRepository i = new InternmentRepository();
+            return i.update(object);
         }
-        return object.getId();
-    }    
+        catch (Exception e){
+            return -1;
+        }
+        
+    } 
     
         
 }

@@ -7,6 +7,7 @@ package base.kardex;
 
 import base.IRepository;
 import entity.Kardex;
+import entity.KardexId;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -16,4 +17,6 @@ import java.util.Date;
  */
 public interface IKardexRepository extends IRepository<Kardex>{
     public ArrayList<Kardex> queryByParameters(int idWarehouse,int idProduct, Date dateIni, Date dateEnd);
+    public ArrayList<Kardex> queryByParameters(int idWarehouse,int idProduct);
+    public int insertKardexID(KardexId object);
 }

@@ -68,6 +68,7 @@ public class Crossover {
                 }
                 idx1++;
             }
+            if(idxChild==nRoutes) break;
             while(!found2 && idx2 < parentRoutes2.length){
                 if(posCand2[order2[idx2]] && parentRoutes2[order2[idx2]].length>0){
                     childRoutes[idxChild] = parentRoutes2[order2[idx2]];

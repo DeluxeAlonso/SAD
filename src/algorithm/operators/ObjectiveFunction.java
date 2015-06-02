@@ -7,9 +7,11 @@ package algorithm.operators;
 
 import algorithm.Algorithm;
 import algorithm.Node;
+import algorithm.Problem;
 import algorithm.Solution;
 import entity.UnidadTransporte;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.HashMap;
 import util.Constants;
 
@@ -37,6 +39,10 @@ public class ObjectiveFunction {
         
         double overStock = Math.max(0, -remainingStock);
         
+        /**if(overCap>0) System.out.println("overcap " + overCap);
+        if(overTime>0) System.out.println("overtime " + overTime);
+        if(overStock>0) System.out.println("overstock " + overStock);*/
+        
         return travelCost/customerPriority + 
                 algorithm.getOvercapPenalty()*overCap +
                 algorithm.getOvertimePenalty()*overTime + 
@@ -49,9 +55,9 @@ public class ObjectiveFunction {
         if(route==null) return routeCost;  
         double speed = vehicle.getTipoUnidadTransporte().getVelocidadPromedio();
         for (int i = 0; i < route.length+1; i++) {
-            double travelCost; int extraCap = 0, productId = 0, newStock = 0;
+            double travelCost = 0; int extraCap = 0, productId = 0, newStock = 0;
             
-            if(i==route.length)
+            if(i>0 && i==route.length)
                 travelCost = Point2D.distance(route[i-1].getX(), route[i-1].getY(), 
                     Constants.WAREHOUSE_LONGITUDE, Constants.WAREHOUSE_LATITUDE)/
                     speed;
@@ -59,7 +65,7 @@ public class ObjectiveFunction {
                 travelCost = Point2D.distance(route[i-1].getX(), route[i-1].getY(), 
                     route[i].getX(), route[i].getY())/
                     speed;
-            else
+            else if(i<route.length)
                 travelCost = Point2D.distance(Constants.WAREHOUSE_LONGITUDE, Constants.WAREHOUSE_LATITUDE,
                     route[i].getX(), route[i].getY())/
                     speed;            
@@ -69,6 +75,9 @@ public class ObjectiveFunction {
                 productId = route[i].getProduct().getId();
                 newStock = currentStock.get(productId)
                         - route[i].getDemand();
+                
+                //System.out.println("productId: " + productId + "  currentStock: " + 
+                //        currentStock.get(productId) + "  demand: " + route[i].getDemand());
                 routeCost += objectiveFunction(vehicle, route[i], algorithm,
                         currentCap, currentTime, extraCap, travelCost, newStock);
                 currentCap += extraCap;                
@@ -83,14 +92,14 @@ public class ObjectiveFunction {
         return routeCost;
     }
     
-    public static double getSolutionCost(Solution s, Algorithm algorithm, 
+    public static double getSolutionCost(Solution s, Algorithm algorithm, Problem problem,
             HashMap<Integer,Integer> productsStock){
         HashMap<Integer,Integer> currentStock = new HashMap<> (productsStock);        
         Node[][] routes = s.getNodes();
-        UnidadTransporte[] vehicles = s.getVehicles();
+        ArrayList<UnidadTransporte> vehicles = problem.getVehicles();
         double solutionCost = 0;
         for (int i = 0; i < routes.length; i++) {
-            double routeCost = getRouteCost(vehicles[i], routes[i], algorithm,
+            double routeCost = getRouteCost(vehicles.get(i), routes[i], algorithm,
                     currentStock);
             solutionCost += routeCost;            
         }        
