@@ -35,6 +35,21 @@ public class WarehouseApplication {
         return -1;
     }
     
+    
+    public ArrayList<Almacen> queryByParameters(int wareId,int conId, int state ){
+        ArrayList<Almacen> a = null;
+        try{
+            WarehouseRepository w = new WarehouseRepository();
+            return w.queryByParameters(wareId,conId,state);
+        }
+        catch (Exception e){
+            return null;
+        }
+    }
+    
+    
+    
+    
     public int update(Almacen object) {
         try{
             WarehouseRepository w = new WarehouseRepository();

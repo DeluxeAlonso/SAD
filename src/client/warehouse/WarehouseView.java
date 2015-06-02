@@ -46,7 +46,8 @@ public class WarehouseView extends BaseView {
         initComponents();
         super.initialize();
         this.condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.CONDITIONS_NAMES));
-        this.EstadoCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getWarehousesState()));       
+        fillEstadoCombo();
+               
         clearGrid();
         fillTable();
         Icons.setButton(newBtn, Icons.ICONOS.CREATE.ordinal());
@@ -64,7 +65,13 @@ public class WarehouseView extends BaseView {
         
         
     }
-    
+    public void fillEstadoCombo(){
+        String [] stateNames = new String[1+EntityState.getWarehousesState().length];
+        stateNames[0]="";
+        for (int i=0;i<EntityState.getWarehousesState().length;i++)
+            stateNames[i+1]=EntityState.getWarehousesState()[i];
+        this.EstadoCombo.setModel(new javax.swing.DefaultComboBoxModel(stateNames));
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -74,34 +81,34 @@ public class WarehouseView extends BaseView {
         DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();
         ArrayList<Almacen> warehouses = warehouseApplication.queryAll();
         for (Almacen a : warehouses) {
-            
+            String estado = EntityState.getWarehousesState()[a.getEstado()];
             Condicion con = EntityType.getCondition(a.getCondicion().getId());
             model.addRow(new Object[]{
                 a.getId().toString(),
                 a.getDescripcion(),
                 a.getCapacidad().toString(),
                 con.getNombre(),
-                a.getEstado().toString()
+                estado
             });
         }
 
     }
-    public void fillTable(int id,int condicion) {
+    public void fillTable(int id,int condicion,int  state) {
         DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();
-        ArrayList<Almacen> warehouses = warehouseApplication.queryAll();
+        ArrayList<Almacen> warehouses = warehouseApplication.queryByParameters(id,condicion,state);
         for (Almacen a : warehouses) {
-            if ((a.getId() == id || id==0)&&(condicion==0||a.getCondicion().getId()==condicion)){
+
             Condicion con = EntityType.getCondition(a.getCondicion().getId());
-            
-                model.addRow(new Object[]{
-                    a.getId().toString(),
-                    a.getDescripcion(),
-                    a.getCapacidad().toString(),
-                    con.getNombre(),
-                    a.getEstado().toString()
-                });
-            }
+            String estado = EntityState.getWarehousesState()[a.getEstado()];
+            model.addRow(new Object[]{
+                a.getId().toString(),
+                a.getDescripcion(),
+                a.getCapacidad().toString(),
+                con.getNombre(),
+                estado
+            });
         }
+        
 
     }
     
@@ -348,6 +355,7 @@ public class WarehouseView extends BaseView {
         clearGrid();
         int idS;
         int condicionS;
+        int state;
         if (idTxt.getText().equals(""))
             idS=0;
         else idS=Integer.parseInt(idTxt.getText());
@@ -356,8 +364,12 @@ public class WarehouseView extends BaseView {
             condicionS = 0;
         else 
             condicionS=conditionApplication.getConditionInstance(condicionCombo.getSelectedItem().toString()).getId();
-        if (idS==0 && condicionS ==0) fillTable();
-        else fillTable(idS,condicionS);
+        if (EstadoCombo.getSelectedIndex()==0)
+            state = -1;
+        else
+            state = EstadoCombo.getSelectedIndex()-1;
+        
+        fillTable(idS,condicionS,state);
         editBtn.setEnabled(false);
         deleteBtn.setEnabled(false);
     }//GEN-LAST:event_searchBtnMouseClicked
