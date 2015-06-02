@@ -23,4 +23,29 @@ public class AlgorithmReturnValues {
         this.acceptedOrders = acceptedOrders;
         this.despachos = despachos;
     }
+    
+        public ArrayList<PedidoParcial> getRejectedOrders() {
+        return rejectedOrders;
+    }
+
+    public void setRejectedOrders(ArrayList<PedidoParcial> rejectedOrders) {
+        this.rejectedOrders = rejectedOrders;
+    }
+
+    public ArrayList<PedidoParcial> getAcceptedOrders() {
+        return acceptedOrders;
+    }
+
+    public void setAcceptedOrders(ArrayList<PedidoParcial> acceptedOrders) {
+        this.acceptedOrders = acceptedOrders;
+    }
+
+    public ArrayList<Despacho> getDespachos() {
+        return despachos;
+    }
+
+    public void setDespachos(ArrayList<Despacho> despachos) {
+        this.despachos = despachos;
+    }
+
 }

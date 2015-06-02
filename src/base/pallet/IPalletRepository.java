@@ -24,4 +24,6 @@ public interface IPalletRepository extends IRepository<Pallet>{
 
     public ArrayList<Pallet> queryPalletsByPartialOrder(Integer partialOrderId);
 
+    public Boolean updatePallets(ArrayList<Pallet> pallets);
+
 }

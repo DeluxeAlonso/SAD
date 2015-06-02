@@ -12,9 +12,11 @@ import algorithm.operators.Mutation;
 import algorithm.operators.ObjectiveFunction;
 import algorithm.operators.Repair;
 import application.order.OrderApplication;
+import application.pallet.PalletApplication;
 import entity.Cliente;
 import entity.Despacho;
 import entity.GuiaRemision;
+import entity.Pallet;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
 import entity.Producto;
@@ -33,7 +35,6 @@ import util.EntityState;
  * @author robert
  */
 public class AlgorithmExecution {
-    OrderApplication orderApplication = new OrderApplication();
     Problem problem;
     
     public Solution start(double maxTravelTime){
@@ -290,38 +291,6 @@ public class AlgorithmExecution {
         
         
         return new AlgorithmReturnValues(despachos, acceptedOrders, rejectedOrders);
-    }
-    
-    public void assignRemissionGuides(ArrayList<Despacho> deliveries){
-        ArrayList<PedidoParcial> acceptedOrders = new ArrayList<>();
-        ArrayList<GuiaRemision> remissionGuides = new ArrayList<>();
-        for(int i=0;i<deliveries.size();i++)
-            for (Iterator<GuiaRemision> remissionGuide = deliveries.get(i).getGuiaRemisions().iterator(); remissionGuide.hasNext(); ) {
-                GuiaRemision g = remissionGuide.next();
-                for(Iterator<PedidoParcial> partialOrder = g.getPedidoParcials().iterator(); partialOrder.hasNext();){
-                    PedidoParcial p = partialOrder.next();
-                    acceptedOrders.add(p);
-                }
-                remissionGuides.add(g);
-            }
-        orderApplication.CreateRemissionGuides(acceptedOrders, remissionGuides); 
-    }
-    
-    public void createPartialOrders(ArrayList<PedidoParcial>acceptedOrders, ArrayList<PedidoParcial>rejectedOrders){
-        ArrayList<PedidoParcialXProducto> acceptedOrdersXProd = getPartialOrderDetail(acceptedOrders);
-        ArrayList<PedidoParcialXProducto> rejectedOrdersXProd = getPartialOrderDetail(rejectedOrders);
-        
-        orderApplication.createPartialOrders(acceptedOrders, acceptedOrdersXProd, rejectedOrders, rejectedOrdersXProd);
-    }
-    
-    public ArrayList<PedidoParcialXProducto> getPartialOrderDetail(ArrayList<PedidoParcial> orders){
-        ArrayList<PedidoParcialXProducto> orderDetails = new ArrayList<>();
-        for(int i=0;i<orders.size();i++)
-            for(Iterator<PedidoParcialXProducto> partialOrderDetail = orders.get(i).getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){
-                    PedidoParcialXProducto p = partialOrderDetail.next();
-                    orderDetails.add(p);
-            }
-        return orderDetails;
     }
 
     public StringBuffer displayRoutes(Solution bestSolution) {
