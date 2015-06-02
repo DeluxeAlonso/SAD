@@ -67,6 +67,16 @@ public class SpotApplication {
         }
         return spots;
     }
+    
+    public ArrayList<Ubicacion> queryByParameters(int idWare,int idCon){
+        ArrayList<Ubicacion> spots = null;
+        try {
+            spots = spotRepository.querySpotsByParameters(idWare, idCon);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return spots;
+    }
 
     public ArrayList<Ubicacion> querySpotsByRack(int rackId){
         ArrayList<Ubicacion> spots = null;

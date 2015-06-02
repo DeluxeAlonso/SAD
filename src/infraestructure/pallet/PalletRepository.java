@@ -192,5 +192,27 @@ public class PalletRepository implements IPalletRepository{
         }
         return pallets;
     }
+
+    @Override
+    public ArrayList<Pallet> queryPalletsByPartialOrder(Integer partialOrderId) {
+        String hql="FROM Pallet WHERE id_pedido_parcial=:partialOrderId";
+        ArrayList<Pallet> pallets= new ArrayList<>();
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("partialOrderId", partialOrderId);
+            pallets = (ArrayList<Pallet>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return pallets;
+    }
     
 }

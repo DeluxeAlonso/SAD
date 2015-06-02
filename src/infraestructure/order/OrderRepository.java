@@ -9,11 +9,13 @@ import application.order.OrderApplication;
 import base.order.IOrderRepository;
 import entity.Cliente;
 import entity.GuiaRemision;
+import entity.Pallet;
 import entity.Pedido;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
 import entity.Producto;
 import java.util.ArrayList;
+import java.util.Iterator;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -116,6 +118,11 @@ public class OrderRepository implements IOrderRepository{
         Transaction trns = null;
         try {            
             trns=session.beginTransaction();
+            for(Iterator<PedidoParcial> partialOrder = order.getPedidoParcials().iterator(); partialOrder.hasNext();){
+                PedidoParcial p = partialOrder.next();
+                p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
+                session.update(p);
+            }
             session.update(order);                      
             session.getTransaction().commit();
             return true;
@@ -307,6 +314,50 @@ public class OrderRepository implements IOrderRepository{
     @Override
     public Pedido queryById(String id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ArrayList<Pedido> queryAllOrders() {
+        Session session = Tools.getSessionInstance();
+        String hql = "from Pedido order by id desc";
+        ArrayList<Pedido> orders = new ArrayList<>();
+        Transaction trns = null;
+        try{
+            trns = session.beginTransaction();
+            Query q = session.createQuery(hql);
+            orders = (ArrayList<Pedido>) q.list();
+            session.getTransaction().commit();
+        }
+        catch (RuntimeException e){
+            if(trns != null){
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return orders;
+    }
+
+    @Override
+    public Boolean updatePartialOrder(PedidoParcial p, ArrayList<Pallet> pallets) {
+        Session session = Tools.getSessionInstance();
+        Transaction trns = null;
+        try {            
+            trns=session.beginTransaction();
+            for(int i=0;i<pallets.size();i++){
+                session.update(pallets.get(i));
+            }
+            System.out.println(p.getPedido().getEstado());
+            session.update(p.getPedido());
+            session.update(p);                      
+            session.getTransaction().commit();
+            return true;
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }  
     }
 
 }

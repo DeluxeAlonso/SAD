@@ -8,12 +8,14 @@ package client.delivery;
 import algorithm.AlgorithmExecution;
 import algorithm.Solution;
 import client.client.GoogleMaps;
+import client.base.BaseView;
+import util.Icons;
 
 /**
  *
  * @author alulab14
  */
-public class DeliveryView extends javax.swing.JInternalFrame {
+public class DeliveryView extends BaseView {
     private Solution solution = null;
     private AlgorithmExecution algorithmExecution = null;
     
@@ -22,6 +24,10 @@ public class DeliveryView extends javax.swing.JInternalFrame {
      */
     public DeliveryView() {        
         initComponents();
+        super.initialize();
+        Icons.setButton(btnProcess, Icons.ICONOS.APPLY.ordinal());
+        Icons.setButton(btnExecuteAlgorithm, Icons.ICONOS.PLAY.ordinal());
+        Icons.setButton(btnViewSolution, Icons.ICONOS.DELIVERY.ordinal());
     }
 
     /**
