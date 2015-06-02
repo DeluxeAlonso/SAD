@@ -19,8 +19,10 @@ import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
 import java.util.ArrayList;
 import java.util.Iterator;
+import javax.swing.JOptionPane;
 import util.EntityState;
 import util.Icons;
+import util.Strings;
 
 /**
  *
@@ -149,7 +151,12 @@ public class DeliveryView extends BaseView {
         if(solution!=null && algorithmExecution!=null){
             AlgorithmReturnValues returnValues = algorithmExecution.processOrders(solution);
             assignRemissionGuides(returnValues.getDespachos());
-            createPartialOrders(returnValues.getAcceptedOrders(), returnValues.getRejectedOrders());
+            if(createPartialOrders(returnValues.getAcceptedOrders(), returnValues.getRejectedOrders()))
+                JOptionPane.showMessageDialog(this, Strings.MESSAGE_DELETE_ORDER,
+                    Strings.MESSAGE_DELETE_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
+            else
+                JOptionPane.showMessageDialog(this, Strings.MESSAGE_DELETE_ORDER,
+                    Strings.MESSAGE_DELETE_ORDER_TITLE,JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnProcessActionPerformed
 
@@ -193,11 +200,11 @@ public class DeliveryView extends BaseView {
         orderApplication.CreateRemissionGuides(acceptedOrders, remissionGuides); 
     }
     
-    public void createPartialOrders(ArrayList<PedidoParcial>acceptedOrders, ArrayList<PedidoParcial>rejectedOrders){
+    public Boolean createPartialOrders(ArrayList<PedidoParcial>acceptedOrders, ArrayList<PedidoParcial>rejectedOrders){
         ArrayList<PedidoParcialXProducto> acceptedOrdersXProd = getAcceptedPartialOrderDetail(acceptedOrders);
         ArrayList<PedidoParcialXProducto> rejectedOrdersXProd = getRejectedPartialOrderDetail(rejectedOrders);
         
-        orderApplication.createPartialOrders(acceptedOrders, acceptedOrdersXProd, rejectedOrders, rejectedOrdersXProd);
+        return orderApplication.createPartialOrders(acceptedOrders, acceptedOrdersXProd, rejectedOrders, rejectedOrdersXProd);
     }
     
     public ArrayList<PedidoParcialXProducto> getAcceptedPartialOrderDetail(ArrayList<PedidoParcial> orders){
