@@ -10,6 +10,7 @@ import application.condition.ConditionApplication;
 import application.rack.RackApplication;
 import application.spot.SpotApplication;
 import application.warehouse.WarehouseApplication;
+import client.base.BaseDialogView;
 import entity.Almacen;
 import entity.Condicion;
 import entity.Rack;
@@ -27,7 +28,7 @@ import util.InstanceFactory;
  *
  * @author LUIS
  */
-public class EditWarehouseView extends javax.swing.JDialog {
+public class EditWarehouseView extends BaseDialogView {
     WarehouseApplication warehouseApplication=InstanceFactory.Instance.getInstance("warehouseApplication", WarehouseApplication.class);
     ConditionApplication conditionApplication=InstanceFactory.Instance.getInstance("conditionApplication", ConditionApplication.class);
     RackApplication rackApplication=InstanceFactory.Instance.getInstance("rackApplication", RackApplication.class);
@@ -43,6 +44,8 @@ public class EditWarehouseView extends javax.swing.JDialog {
         Icons.setButton(addBtn, Icons.ICONOS.CREATE.ordinal());
         Icons.setButton(deleteBtn, Icons.ICONOS.DELETE.ordinal());
         Icons.setButton(saveBtn, Icons.ICONOS.SAVE.ordinal());
+        saveBtn.setText("Guardar");
+        cancelBtn.setText("Cancelar");
         Icons.setButton(cancelBtn, Icons.ICONOS.CANCEL.ordinal());
     }
     
@@ -50,6 +53,7 @@ public class EditWarehouseView extends javax.swing.JDialog {
 
         super(parent, modal);
         initComponents();
+        initialize();
         this.setTitle("Editar Almacen");
         this.condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.CONDITIONS_NAMES));
         this.a = a;
@@ -70,11 +74,11 @@ public class EditWarehouseView extends javax.swing.JDialog {
             String estado = "Desconocido";
             String[] estados=EntityState.getRacksState();
             estado =estados[r.getEstado()];
-
+            int a= r.getNumCol()*r.getNumFil()*2;
             model.addRow(new Object[]{
                 Integer.toString(r.getId()),
                 r.getFechaRegistro().toString(),
-                Integer.toString(r.getNumCol()*r.getNumFil()),
+                Integer.toString(a),
                 estado
             });
             
@@ -136,12 +140,14 @@ public class EditWarehouseView extends javax.swing.JDialog {
 
         jLabel2.setText("Capacidad:");
 
+        saveBtn.setText("Guardar");
         saveBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveBtnActionPerformed(evt);
             }
         });
 
+        cancelBtn.setText("Cancelar");
         cancelBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelBtnActionPerformed(evt);
@@ -242,10 +248,10 @@ public class EditWarehouseView extends javax.swing.JDialog {
                                 .addComponent(deleteBtn)
                                 .addGap(12, 12, 12))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(127, 127, 127)
-                        .addComponent(cancelBtn)
+                        .addGap(92, 92, 92)
+                        .addComponent(saveBtn)
                         .addGap(18, 18, 18)
-                        .addComponent(saveBtn)))
+                        .addComponent(cancelBtn)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -276,8 +282,8 @@ public class EditWarehouseView extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(11, 11, 11)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(cancelBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cancelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(saveBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -333,12 +339,12 @@ public class EditWarehouseView extends javax.swing.JDialog {
         r.setEstado(EntityState.Racks.ACTIVO.ordinal());
         r.setFechaRegistro(cal.getTime());
         r.setAlmacen(a);
-        r.setNumCol(Constants.COLUMNAS_RACK);
-        r.setNumFil(Constants.FILAS_RACK);
+        r.setNumCol(a.getNumColumnas());
+        r.setNumFil(a.getNumFilas());
         a.getRacks().add(r);
         rackApplication.insert(r);
-        for (int j=0;j<Constants.COLUMNAS_RACK;j++){
-            for (int k=0;k<Constants.FILAS_RACK;k++){
+        for (int j=0;j<a.getNumColumnas();j++){
+            for (int k=0;k<a.getNumFilas();k++){
                 Ubicacion u = new Ubicacion();
                 u.setRack(r);
                 u.setEstado(EntityState.Spots.LIBRE.ordinal());

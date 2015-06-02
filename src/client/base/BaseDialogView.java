@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
+import util.Icons;
 
 /**
  *
@@ -29,6 +30,7 @@ public abstract class BaseDialogView extends javax.swing.JDialog{
         Dimension jInternalFrameSize = this.getSize();
         this.setLocation((desktopSize.width - jInternalFrameSize.width)/2,
         (desktopSize.height- jInternalFrameSize.height)/2);
+        Icons.setMainIcon(this);
     }
     
 }

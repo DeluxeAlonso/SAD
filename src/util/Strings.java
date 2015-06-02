@@ -80,7 +80,11 @@ public class Strings {
     public static final String ERROR_RACKS_WAREHOUSE_REQUIRED= "El campo racks es obligatorio.";
     public static final String ERROR_RACKS_WAREHOUSE_INT= "El campo rack debe ser un numero entero.";
     public static final String ERROR_CONDICION_WAREHOUSE_REQUIRED= "El campo condicion es obligatorio.";
-    
+    public static final String ERROR_RACKS_FIL_REQUIRED="El campo de numero de filas del rack es obligatorio";
+    public static final String ERROR_RACKS_FIL_INT="El campo de numero de filas del rack debe ser un numero entero";
+    public static final String ERROR_RACKS_COL_REQUIRED="El campo de numero de columnas del rack es obligatorio";
+    public static final String ERROR_RACKS_COL_INT="El campo de numero de columnas del rack debe ser un numero entero";
+    public static final String ERROR_DESC_WAREHOUSE_REQUIRED="El campo descripcion es obligatorio.";
     
     
     

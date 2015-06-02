@@ -109,8 +109,33 @@ public class PalletRepository implements IPalletRepository{
     }
     
     @Override
-    public Pallet getPalletsFromOrder(OrdenInternamiento id) {
-        String hql="FROM Pallet WHERE ordenInternamiento=:id";
+    public Boolean updateSpot(int palletId,int spotId) {
+        String hql="UPDATE Pallet u SET u.ubicacion.id=:spotId WHERE u.id=:palletId";
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createSQLQuery(hql);
+            q.setParameter("palletId", palletId);
+            q.setParameter("spotId", spotId);  
+            q.executeUpdate();
+            session.getTransaction().commit();
+            return true;
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    
+    
+    @Override
+    public ArrayList<Pallet> getPalletsFromOrder(int id) {
+        String hql="FROM Pallet p WHERE p.ordenInternamiento.id=:id";
         ArrayList<Pallet> orden=null;
         
         Transaction trns = null;
@@ -130,7 +155,7 @@ public class PalletRepository implements IPalletRepository{
         if (orden.size()==0)
             return null;
         else
-            return orden.get(0); //To change body of generated methods, choose Tools | Templates.
+            return orden; //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

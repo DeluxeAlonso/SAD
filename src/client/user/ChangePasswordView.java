@@ -6,6 +6,7 @@
 package client.user;
 
 import javax.swing.JOptionPane;
+import util.Icons;
 import util.Strings;
 
 /**
@@ -20,6 +21,7 @@ public class ChangePasswordView extends javax.swing.JDialog {
     public ChangePasswordView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        Icons.setMainIcon(this);
     }
 
     /**

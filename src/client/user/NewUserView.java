@@ -37,6 +37,7 @@ public class NewUserView extends javax.swing.JDialog {
      */
     public NewUserView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        Icons.setMainIcon(this);
         initComponents();
         addImagesToButton();
         //initialize user states combo

@@ -68,6 +68,17 @@ public class InternmentApplication {
         return products;
     }
     
+        public Boolean incCantOrderXProd(OrdenInternamientoXProducto object){
+        Boolean response = false;
+        try {
+            response = internmentRepository.incCantOrderXProd(object);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+    
+    
     public OrdenInternamientoXProducto getProdOrder(OrdenInternamiento idType){
         OrdenInternamientoXProducto products=null;
         try{
@@ -92,5 +103,16 @@ public class InternmentApplication {
         }
             
         }
+    
+    public int update(OrdenInternamiento object){
+        OrdenInternamientoXProducto products=null;
+        try{
+            products = internmentRepository.getProdOrder(object);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return object.getId();
+    }    
+    
         
 }

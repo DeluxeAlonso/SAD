@@ -30,6 +30,18 @@ public class RackApplication {
         return racks;
     }
     
+    public ArrayList<Rack> queryByParameters(int idWare,int idCon){
+        ArrayList<Rack> racks = null;
+        try {
+            racks = rackRepository.queryRacksByParameters(idWare, idCon);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return racks;
+    }
+    
+    
+    
     public Rack queryById(int id){
         Rack rack = null;
         try {

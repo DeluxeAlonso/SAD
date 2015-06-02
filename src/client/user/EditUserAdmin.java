@@ -38,6 +38,7 @@ public class EditUserAdmin extends javax.swing.JDialog {
     public EditUserAdmin(java.awt.Frame parent, boolean modal, Usuario user) {
         super(parent, modal);
         initComponents();
+        Icons.setMainIcon(this);
         addImagesToButton();
         this.user = user;
         fillCombos();

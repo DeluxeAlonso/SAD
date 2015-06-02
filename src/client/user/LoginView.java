@@ -10,10 +10,14 @@ import client.general.AppStart;
 import client.general.MainView;
 import entity.Usuario;
 import java.awt.Color;
+import java.awt.Image;
+import java.net.URL;
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.border.Border;
 import util.EntityState;
+import util.Icons;
 import util.InstanceFactory;
 import util.Strings;
 
@@ -26,6 +30,7 @@ public class LoginView extends javax.swing.JFrame {
     UserApplication userApplication = InstanceFactory.Instance.getInstance("userApplication", UserApplication.class);
     Border errorBorder = BorderFactory.createLineBorder(Color.RED, 1);
     Border regularBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
+    Image icon=null;
     /**
      * Creates new form View
      */
@@ -34,6 +39,7 @@ public class LoginView extends javax.swing.JFrame {
         initComponents();
         AppStart.initConfig.start();
         getRootPane().setDefaultButton(loginBtn);
+        Icons.setMainIcon(this);
         
     }
 
