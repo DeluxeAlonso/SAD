@@ -85,4 +85,15 @@ public class PalletApplication {
         return pallets;
     }
     
+        public void update(Pallet pallet){
+        
+        try{
+            palletRepository.update(pallet);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+    }
+    
+    
 }

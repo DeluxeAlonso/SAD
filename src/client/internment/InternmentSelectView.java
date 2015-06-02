@@ -71,7 +71,7 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
     JTable table = null;
     public int cantAInternar;
     public OrdenInternamiento ordenAInternar=null;
-    public ArrayList<Ubicacion> ubicaciones = null;
+    public ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
     
     
     public InternmentSelectView() {
@@ -509,9 +509,16 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
                 
                 isChecked = (Boolean)table.getValueAt(i, 4);
                 if (isChecked != null && isChecked) {
-                    //meter ubicacion al pallet
-                    palletApplication.updateSpot(palletsInter.get(cant).getId(),ubicaciones.get(i).getId());
+                    //meter ubicacion al pallet  
+                    
+                    //palletApplication.updateSpot(palletsInter.get(cant).getId(),ubicaciones.get(i).getId());
+                    Pallet pall = palletsInter.get(cant);
+                    pall.setEstado(EntityState.Pallets.UBICADO.ordinal());
+                    pall.setUbicacion(ubicaciones.get(i));
+                    palletApplication.update(pall);
+                    
                     // cambiar estado de ubicacion a ocupada
+
                     spotApplication.updateSpotOccupancy(ubicaciones.get(i).getId(), EntityState.Spots.OCUPADO.ordinal());
                                     
                     //actualizar cant a internar en ordeninteramientoXproducto
@@ -520,9 +527,14 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
                     internmentApplication.incCantOrderXProd(ordenXProd);
 
                     // actualizar stock total del producto
+                    Producto prod = internmentApplication.getProdOrder(ordenAInternar).getProducto();
+                    prod.setStockTotal(prod.getStockTotal()+1);
+                    productApplication.update(prod);
                     
                     //disminuir ubicaciones libres en racks y almacen
-                    
+                    Almacen alm = almacenes.get(jComboBox1.getSelectedIndex());
+                    alm.setUbicLibres(alm.getUbicLibres()-1);
+                    warehouseApplication.update(alm);
                     //ingresar algo en kardex
                     
                 }
@@ -546,6 +558,7 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
     private void fillFreeSpots(){
             
             clearGrid(jTable2);
+            ubicaciones.clear();
             DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
             ArrayList<Ubicacion> ubi = new ArrayList<Ubicacion>();
             Almacen alm = almacenes.get(jComboBox1.getSelectedIndex());
@@ -554,7 +567,7 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
             for (Rack r : racks){
                 //r.getUbicacions().
                 ubi = (ArrayList<Ubicacion>) spotApplication.queryEmptySpotsByRack(r.getId());
-                ubicaciones = ubi;
+                ubicaciones.addAll(ubi);
                 for (Ubicacion ub : ubi){
                     model.addRow(new Object[]{
                     r.getId(),
