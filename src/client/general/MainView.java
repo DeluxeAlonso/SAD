@@ -17,6 +17,7 @@ import client.personal.PersonalView;
 import client.client.ClientView;
 import client.delivery.DeliveryView;
 import client.order.OrderView;
+import client.pallet.PalletView;
 import client.rack.RackView;
 import client.reports.KardexReport;
 import client.reports.RemissionGuideReport;
@@ -75,6 +76,7 @@ public class MainView extends javax.swing.JFrame {
     private StockReport stockReport = null;
     private WarehouseControlCheckView warehouseControlCheckView = null;
     private InternmentSelectView internmentSelectView = null;
+    private PalletView palletView = null;
     private AvailabilityReport availabilityReport = null;
     private RackView rackView = null;
     private KardexReport kardexReport = null;
@@ -300,6 +302,11 @@ public class MainView extends javax.swing.JFrame {
         menuMaint.add(RackItem);
 
         jMenuItem3.setText("Pallet");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
         menuMaint.add(jMenuItem3);
 
         menuBar.add(menuMaint);
@@ -810,6 +817,23 @@ public class MainView extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jMenuItem4ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        // TODO add your handling code here:
+        if (palletView == null || !palletView.isShowing()) {
+            palletView = new PalletView();
+            palletView.setVisible(true);
+            mainPanel.add(palletView);
+            try {
+                // TODO add your handling code here:
+                palletView.setSelected(true);
+
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem15MousePressed(java.awt.event.MouseEvent evt) {
         // TODO add your handling code here:
