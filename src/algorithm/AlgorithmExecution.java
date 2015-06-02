@@ -324,16 +324,17 @@ public class AlgorithmExecution {
         return orderDetails;
     }
 
-    private void displayRoutes(Solution bestSolution) {
+    public StringBuffer displayRoutes(Solution bestSolution) {
+        StringBuffer buf = new StringBuffer();
         Node[][]nodes = bestSolution.getNodes();
-        for (int i = 0; i < nodes.length; i++) {
-            System.out.println("");
-            System.out.println("ruta " + i);
+        for (int i = 0; i < nodes.length; i++) {            
+            buf.append("Ruta ").append(i).append("\n") ;           
             for (int j = 0; j < nodes[i].length; j++) {
-                System.out.print(nodes[i][j].getX() + " " + nodes[i][j].getY());
+                buf.append(nodes[i][j].getX()).append(" ").append(nodes[i][j].getY());                
             }
-            System.out.println("");            
+            buf.append("\n");
         }
+        return buf;
     }
     
 }

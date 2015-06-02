@@ -6,6 +6,7 @@
 package client.delivery;
 
 import algorithm.AlgorithmExecution;
+import algorithm.AlgorithmReturnValues;
 import algorithm.Solution;
 import client.delivery.GoogleMaps;
 import client.base.BaseView;
@@ -47,6 +48,8 @@ public class DeliveryView extends BaseView {
         jLabel2 = new javax.swing.JLabel();
         txtMinutes = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtResult = new javax.swing.JTextArea();
 
         setClosable(true);
 
@@ -77,13 +80,18 @@ public class DeliveryView extends BaseView {
 
         jLabel3.setText("minutos");
 
+        txtResult.setColumns(20);
+        txtResult.setRows(5);
+        jScrollPane1.setViewportView(txtResult);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnProcess)
                         .addGap(18, 18, 18)
@@ -117,7 +125,9 @@ public class DeliveryView extends BaseView {
                     .addComponent(btnProcess)
                     .addComponent(btnExecuteAlgorithm)
                     .addComponent(btnViewSolution))
-                .addContainerGap(167, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -125,7 +135,7 @@ public class DeliveryView extends BaseView {
 
     private void btnProcessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessActionPerformed
         if(solution!=null && algorithmExecution!=null){
-            algorithmExecution.processOrders(solution);
+            AlgorithmReturnValues returnValues = algorithmExecution.processOrders(solution);
         }
     }//GEN-LAST:event_btnProcessActionPerformed
 
@@ -138,6 +148,8 @@ public class DeliveryView extends BaseView {
     private void btnExecuteAlgorithmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExecuteAlgorithmActionPerformed
         algorithmExecution = new AlgorithmExecution();
         solution = algorithmExecution.start(60);
+        StringBuffer buf = algorithmExecution.displayRoutes(solution);
+        txtResult.setText(buf.toString());
         /*try{
             double hours, minutes;
             if(txtHours.getText().isEmpty()) hours = 0;
@@ -159,7 +171,9 @@ public class DeliveryView extends BaseView {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField txtHours;
     private javax.swing.JTextField txtMinutes;
+    private javax.swing.JTextArea txtResult;
     // End of variables declaration//GEN-END:variables
 }

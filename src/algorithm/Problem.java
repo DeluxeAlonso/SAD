@@ -96,7 +96,7 @@ public class Problem {
         }
         for (int i = 0; i < nodes.size(); i++) {
             System.out.println("Product id: " + nodes.get(i).getProduct().getId() + 
-                    "demand: " + nodes.get(i).getDemand());
+                    "  Demand: " + nodes.get(i).getDemand());
             
         }
         
