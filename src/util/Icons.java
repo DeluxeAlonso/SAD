@@ -33,11 +33,14 @@ public class Icons {
         MODIFY, 
         DELETE,
         RESET,
-        DELIVERY
+        DELIVERY,
+        PLAY,
+        APPLY
     };
     
     public static String[] getIconNames(){
-         String[] iconNames={"Guardar","Cancelar","Buscar", "Nuevo", "Editar", "Eliminar","Resetear","Despacho"};
+         String[] iconNames={"Guardar","Cancelar","Buscar", "Nuevo", "Editar", "Eliminar","Resetear",
+             "Despacho","Correr algoritmo","Ver solución"};
          return iconNames;
     }
     
@@ -101,6 +104,10 @@ public class Icons {
             img = ImageIO.read(URL.class.getResource("../../images/Unlock.png"));
             images.add(img);
             img = ImageIO.read(URL.class.getResource("../../images/Delivery.png"));
+            images.add(img);
+            img = ImageIO.read(URL.class.getResource("../../images/Play.png"));
+            images.add(img);
+            img = ImageIO.read(URL.class.getResource("../../images/Apply.png"));
             images.add(img);
             img = ImageIO.read(URL.class.getResource("../../images/warehouse-512-000000.png"));
             mainIcon=img;

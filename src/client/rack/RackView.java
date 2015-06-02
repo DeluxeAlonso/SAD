@@ -11,6 +11,7 @@ import application.condition.ConditionApplication;
 import application.rack.RackApplication;
 import application.spot.SpotApplication;
 import application.warehouse.WarehouseApplication;
+import client.base.BaseView;
 import entity.Almacen;
 import entity.Condicion;
 import entity.Rack;
@@ -29,7 +30,7 @@ import util.Strings;
  *
  * @author LUIS
  */
-public class RackView extends javax.swing.JInternalFrame {
+public class RackView extends BaseView {
     WarehouseApplication warehouseApplication=InstanceFactory.Instance.getInstance("warehouseApplication", WarehouseApplication.class);
     ConditionApplication conditionApplication=InstanceFactory.Instance.getInstance("conditionApplication", ConditionApplication.class);
     RackApplication rackApplication=InstanceFactory.Instance.getInstance("rackApplication", RackApplication.class);
@@ -43,7 +44,7 @@ public class RackView extends javax.swing.JInternalFrame {
         initComponents();
         clearGridRack();
         clearGridSpot();
-        
+        initialize();
         
         //fillTable();
     }

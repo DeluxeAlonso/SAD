@@ -181,4 +181,29 @@ public class SpotRepository implements ISpotRepository{
         return spots; //To change body of generated methods, choose Tools | Templates.
     }
     
+    public ArrayList<Ubicacion> querySpotsByParameters(int wareId, int rackId) {
+        String hql="FROM Ubicacion u WHERE (u.rack.almacen.id=:wareId) AND "+
+                "(u.rack.id = :rackId OR :rackId=0) AND u.rack.estado!=:estado"+
+                "  ORDER BY u.rack.id, u.fila, u.columna";
+        ArrayList<Ubicacion> spots=null;
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("rackId", rackId);
+            q.setParameter("wareId", wareId);
+            q.setParameter("estado", EntityState.Racks.INACTIVO.ordinal());
+            spots = (ArrayList<Ubicacion>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return spots; //To change body of generated methods, choose Tools | Templates.
+    }
+    
 }
