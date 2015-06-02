@@ -10,6 +10,7 @@ import application.condition.ConditionApplication;
 import application.rack.RackApplication;
 import application.spot.SpotApplication;
 import application.warehouse.WarehouseApplication;
+import client.base.BaseView;
 import entity.Almacen;
 import entity.Condicion;
 import java.awt.Image;
@@ -31,7 +32,7 @@ import util.InstanceFactory;
  *
  * @author LUIS
  */
-public class WarehouseView extends javax.swing.JInternalFrame {
+public class WarehouseView extends BaseView {
     WarehouseApplication warehouseApplication=InstanceFactory.Instance.getInstance("warehouseApplication", WarehouseApplication.class);
     ConditionApplication conditionApplication=InstanceFactory.Instance.getInstance("conditionApplication", ConditionApplication.class);
     RackApplication rackApplication=InstanceFactory.Instance.getInstance("rackApplication", RackApplication.class);
@@ -43,6 +44,7 @@ public class WarehouseView extends javax.swing.JInternalFrame {
      */
     public WarehouseView() {
         initComponents();
+        super.initialize();
         this.condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.CONDITIONS_NAMES));
         this.EstadoCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getWarehousesState()));       
         clearGrid();

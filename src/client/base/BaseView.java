@@ -12,6 +12,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.border.Border;
+import util.Icons;
 
 /**
  *
@@ -28,6 +29,7 @@ public abstract class BaseView extends javax.swing.JInternalFrame {
         Dimension jInternalFrameSize = this.getSize();
         this.setLocation((desktopSize.width - jInternalFrameSize.width)/2,
         (desktopSize.height- jInternalFrameSize.height)/2 - 20);
+        Icons.setMainIcon(this);
     }
     
 }

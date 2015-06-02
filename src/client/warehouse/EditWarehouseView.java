@@ -10,6 +10,7 @@ import application.condition.ConditionApplication;
 import application.rack.RackApplication;
 import application.spot.SpotApplication;
 import application.warehouse.WarehouseApplication;
+import client.base.BaseDialogView;
 import entity.Almacen;
 import entity.Condicion;
 import entity.Rack;
@@ -27,7 +28,7 @@ import util.InstanceFactory;
  *
  * @author LUIS
  */
-public class EditWarehouseView extends javax.swing.JDialog {
+public class EditWarehouseView extends BaseDialogView {
     WarehouseApplication warehouseApplication=InstanceFactory.Instance.getInstance("warehouseApplication", WarehouseApplication.class);
     ConditionApplication conditionApplication=InstanceFactory.Instance.getInstance("conditionApplication", ConditionApplication.class);
     RackApplication rackApplication=InstanceFactory.Instance.getInstance("rackApplication", RackApplication.class);
@@ -52,6 +53,7 @@ public class EditWarehouseView extends javax.swing.JDialog {
 
         super(parent, modal);
         initComponents();
+        initialize();
         this.setTitle("Editar Almacen");
         this.condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.CONDITIONS_NAMES));
         this.a = a;
@@ -72,11 +74,11 @@ public class EditWarehouseView extends javax.swing.JDialog {
             String estado = "Desconocido";
             String[] estados=EntityState.getRacksState();
             estado =estados[r.getEstado()];
-
+            int a= r.getNumCol()*r.getNumFil()*2;
             model.addRow(new Object[]{
                 Integer.toString(r.getId()),
                 r.getFechaRegistro().toString(),
-                Integer.toString(r.getNumCol()*r.getNumFil()*2),
+                Integer.toString(a),
                 estado
             });
             
@@ -337,12 +339,12 @@ public class EditWarehouseView extends javax.swing.JDialog {
         r.setEstado(EntityState.Racks.ACTIVO.ordinal());
         r.setFechaRegistro(cal.getTime());
         r.setAlmacen(a);
-        r.setNumCol(Constants.COLUMNAS_RACK);
-        r.setNumFil(Constants.FILAS_RACK);
+        r.setNumCol(a.getNumColumnas());
+        r.setNumFil(a.getNumFilas());
         a.getRacks().add(r);
         rackApplication.insert(r);
-        for (int j=0;j<Constants.COLUMNAS_RACK;j++){
-            for (int k=0;k<Constants.FILAS_RACK;k++){
+        for (int j=0;j<a.getNumColumnas();j++){
+            for (int k=0;k<a.getNumFilas();k++){
                 Ubicacion u = new Ubicacion();
                 u.setRack(r);
                 u.setEstado(EntityState.Spots.LIBRE.ordinal());
