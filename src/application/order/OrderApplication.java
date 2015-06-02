@@ -78,8 +78,8 @@ public class OrderApplication {
     }
     
     public Boolean createPartialOrders(ArrayList<PedidoParcial>acceptedOrders, 
-            ArrayList<ArrayList<PedidoParcialXProducto>>acceptedOrdersXProd,
-            ArrayList<PedidoParcial>rejectedOrders,ArrayList<ArrayList<PedidoParcialXProducto>>rejectedOrdersXProd){
+            ArrayList<PedidoParcialXProducto>acceptedOrdersXProd,
+            ArrayList<PedidoParcial>rejectedOrders,ArrayList<PedidoParcialXProducto>rejectedOrdersXProd){
             Boolean response = false;
         try {
             response = orderRepository.createPartialOrders(acceptedOrders,acceptedOrdersXProd,rejectedOrders,rejectedOrdersXProd);

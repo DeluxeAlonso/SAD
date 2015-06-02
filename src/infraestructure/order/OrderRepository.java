@@ -1,4 +1,4 @@
-/*
+ /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -74,7 +74,7 @@ public class OrderRepository implements IOrderRepository{
     }
     
     @Override
-    public Boolean createPartialOrders(ArrayList<PedidoParcial> acceptedOrders, ArrayList<ArrayList<PedidoParcialXProducto>> acceptedOrdersXProd, ArrayList<PedidoParcial> rejectedOrders, ArrayList<ArrayList<PedidoParcialXProducto>> rejectedOrdersXProd) {
+    public Boolean createPartialOrders(ArrayList<PedidoParcial> acceptedOrders, ArrayList<PedidoParcialXProducto> acceptedOrdersXProd, ArrayList<PedidoParcial> rejectedOrders, ArrayList<PedidoParcialXProducto> rejectedOrdersXProd) {
         Session session = Tools.getSessionInstance();
         Transaction trns = null; 
         try {            
@@ -85,10 +85,8 @@ public class OrderRepository implements IOrderRepository{
                     oldOrders.get(j).setEstado(EntityState.PartialOrders.ANULADO.ordinal());
                     session.update(oldOrders.get(j));
                 }
-                for(int k=0;k<acceptedOrdersXProd.size();k++){
-                    for(int h=0;h<acceptedOrdersXProd.get(k).size();h++)
-                        session.save(acceptedOrdersXProd.get(k).get(h));
-                }
+                for(int k=0;k<acceptedOrdersXProd.size();k++)
+                    session.save(acceptedOrdersXProd.get(k));
             }
             for(int i=0;i<rejectedOrders.size();i++){
                 session.save(rejectedOrders.get(i));
@@ -97,10 +95,8 @@ public class OrderRepository implements IOrderRepository{
                     oldOrders.get(j).setEstado(EntityState.PartialOrders.ANULADO.ordinal());
                     session.update(oldOrders.get(j));
                 }
-                for(int k=0;k<rejectedOrdersXProd.size();k++){
-                    for(int h=0;h<rejectedOrdersXProd.get(k).size();h++)
-                        session.save(rejectedOrdersXProd.get(k).get(h));
-                }
+                for(int k=0;k<rejectedOrdersXProd.size();k++)
+                    session.save(rejectedOrdersXProd.get(k));
             }
             session.getTransaction().commit();
             return true;

@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import util.EntityState;
@@ -192,29 +193,41 @@ public class AlgorithmExecution {
             rejectedOrdersXProd.add(rejectedOrdersXProdOfOrder);
         }
         
-        
         //asignar guias de remision a las ordenes atendidas
-        assignRemissionGuides(acceptedOrders);
-        createPartialOrders(acceptedOrders, acceptedOrdersXProd,rejectedOrders,rejectedOrdersXProd);
+        //assignRemissionGuides(acceptedOrders);
+        //createPartialOrders(acceptedOrder,rejectedOrders);
     }
     
-    public void assignRemissionGuides(ArrayList<PedidoParcial> acceptedOrders){
+    public void assignRemissionGuides(ArrayList<Despacho> deliveries){
+        ArrayList<PedidoParcial> acceptedOrders = new ArrayList<>();
         ArrayList<GuiaRemision> remissionGuides = new ArrayList<>();
-        for(int i=0;i<acceptedOrders.size();i++){
-            GuiaRemision remissionGuide = new GuiaRemision();
-            remissionGuide.setCliente(acceptedOrders.get(i).getPedido().getCliente());
-            remissionGuide.setDespacho(null);
-            remissionGuide.setEstado(0);
-            acceptedOrders.get(i).setGuiaRemision(remissionGuide);
-            remissionGuides.add(remissionGuide);
-        }
-        orderApplication.CreateRemissionGuides(acceptedOrders, remissionGuides);  
+        for(int i=0;i<deliveries.size();i++)
+            for (Iterator<GuiaRemision> remissionGuide = deliveries.get(i).getGuiaRemisions().iterator(); remissionGuide.hasNext(); ) {
+                GuiaRemision g = remissionGuide.next();
+                for(Iterator<PedidoParcial> partialOrder = g.getPedidoParcials().iterator(); partialOrder.hasNext();){
+                    PedidoParcial p = partialOrder.next();
+                    acceptedOrders.add(p);
+                }
+                remissionGuides.add(g);
+            }
+        orderApplication.CreateRemissionGuides(acceptedOrders, remissionGuides); 
     }
     
-    public void createPartialOrders(ArrayList<PedidoParcial>acceptedOrders, 
-            ArrayList<ArrayList<PedidoParcialXProducto>>acceptedOrdersXProd,
-            ArrayList<PedidoParcial>rejectedOrders,ArrayList<ArrayList<PedidoParcialXProducto>>rejectedOrdersXProd){
+    public void createPartialOrders(ArrayList<PedidoParcial>acceptedOrders, ArrayList<PedidoParcial>rejectedOrders){
+        ArrayList<PedidoParcialXProducto> acceptedOrdersXProd = getPartialOrderDetail(acceptedOrders);
+        ArrayList<PedidoParcialXProducto> rejectedOrdersXProd = getPartialOrderDetail(rejectedOrders);
+        
         orderApplication.createPartialOrders(acceptedOrders, acceptedOrdersXProd, rejectedOrders, rejectedOrdersXProd);
+    }
+    
+    public ArrayList<PedidoParcialXProducto> getPartialOrderDetail(ArrayList<PedidoParcial> orders){
+        ArrayList<PedidoParcialXProducto> orderDetails = new ArrayList<>();
+        for(int i=0;i<orders.size();i++)
+            for(Iterator<PedidoParcialXProducto> partialOrderDetail = orders.get(i).getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){
+                    PedidoParcialXProducto p = partialOrderDetail.next();
+                    orderDetails.add(p);
+            }
+        return orderDetails;
     }
     
 }
