@@ -31,7 +31,7 @@ public class Problem {
         OrderApplication orderApplication = new OrderApplication();
         TransportUnitApplication transportUnitApplication = new TransportUnitApplication();
         orders = orderApplication.getPendingPartialOrders();
-        vehicles = transportUnitApplication.getAvailableTransportUnits(); 
+        vehicles = transportUnitApplication.getAllTransportUnits(); 
         
         int vehicleCapacity = 1;
         if(vehicles!=null) vehicleCapacity = vehicles.get(0).getTipoUnidadTransporte().getCapacidadPallets();
