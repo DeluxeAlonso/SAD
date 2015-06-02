@@ -35,6 +35,8 @@ public class Mutation {
                 break;
             }
         }
+        if(idxI<0 && idxJ==nodes.length)
+            throw new AssertionError("no full routes found");
         idxI = Math.max(idxI,idxJ);
         idxJ = Randomizer.randomInt(nodes[idxI].length);
         

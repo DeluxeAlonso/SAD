@@ -7,7 +7,7 @@ package client.delivery;
 
 import algorithm.AlgorithmExecution;
 import algorithm.Solution;
-import client.client.GoogleMaps;
+import client.delivery.GoogleMaps;
 
 /**
  *
@@ -131,14 +131,18 @@ public class DeliveryView extends javax.swing.JInternalFrame {
 
     private void btnExecuteAlgorithmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExecuteAlgorithmActionPerformed
         algorithmExecution = new AlgorithmExecution();
-        try{
-            double hours = Double.parseDouble(txtHours.getText());
-            double minutes = Double.parseDouble(txtMinutes.getText());
+        solution = algorithmExecution.start(60);
+        /*try{
+            double hours, minutes;
+            if(txtHours.getText().isEmpty()) hours = 0;
+            if(txtMinutes.getText().isEmpty()) minutes = 0;
+            hours = Double.parseDouble(txtHours.getText());
+            minutes = Double.parseDouble(txtMinutes.getText());
             solution = algorithmExecution.start(hours + minutes/60);
         }catch(Exception ex){
             ex.printStackTrace();
             //show message box
-        }        
+        } */       
     }//GEN-LAST:event_btnExecuteAlgorithmActionPerformed
 
 

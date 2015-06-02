@@ -678,29 +678,29 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
 
     private void jButton1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MousePressed
         
-        Node[] node1 = new Node[3];
+        Node[] node1 = new Node[1];
         node1[0] = new Node();
-        node1[1] = new Node();
-        node1[2] = new Node();
+        /*node1[1] = new Node();
+        node1[2] = new Node();*/
         node1[0].setX(-77.0632183);
         node1[0].setY(-12.0910106);
-        node1[1].setX(-77.0695376);
+       /* node1[1].setX(-77.0695376);
         node1[1].setY(-12.0867303);
         node1[2].setX(-77.0824336);
-        node1[2].setY(-12.081705);
-        Node[] node2 = new Node[4];
+        node1[2].setY(-12.081705);*/
+        Node[] node2 = new Node[1];
         node2[0] = new Node();
-        node2[1] = new Node();
+        /*node2[1] = new Node();
         node2[2] = new Node();
-        node2[3] = new Node();
+        node2[3] = new Node();*/
         node2[0].setX(-77.0781548);
         node2[0].setY(-12.0510629);
-        node2[1].setX(-77.0519621);
+        /*node2[1].setX(-77.0519621);
         node2[1].setY(-12.047751);
         node2[2].setX(-77.0462544);
         node2[2].setY(-12.0272688);
         node2[3].setX(-77.02564);
-        node2[3].setY(-12.0423633);
+        node2[3].setY(-12.0423633);*/
         
         Node[][] node = new Node[2][];
         node[0] = node1;

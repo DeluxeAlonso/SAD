@@ -7,9 +7,11 @@ package algorithm.operators;
 
 import algorithm.Algorithm;
 import algorithm.Node;
+import algorithm.Problem;
 import algorithm.Solution;
 import static algorithm.operators.ObjectiveFunction.getRouteCost;
 import entity.UnidadTransporte;
+import java.util.ArrayList;
 
 /**
  *
@@ -17,13 +19,13 @@ import entity.UnidadTransporte;
  */
 public class Repair {
 
-    public static Solution repair(Solution s, Algorithm algorithm) {
+    public static Solution repair(Solution s, Algorithm algorithm, Problem problem) {
         Node[][] routes = s.getNodes();
-        UnidadTransporte[] vehicles = s.getVehicles();
+        ArrayList<UnidadTransporte> vehicles = problem.getVehicles();
         int highestCostIdx = 0, lowestCostIdx = 0;
         double highestCost = -Double.MAX_VALUE, lowestCost = Double.MAX_VALUE;
         for (int i = 0; i < routes.length; i++) {
-            double routeCost = getRouteCost(vehicles[i], routes[i], algorithm,
+            double routeCost = getRouteCost(vehicles.get(i), routes[i], algorithm,
                     null);
             if(routeCost < lowestCost){
                 lowestCost = routeCost;

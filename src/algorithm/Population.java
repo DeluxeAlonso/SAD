@@ -30,7 +30,8 @@ public class Population {
             solutions[i] = new Solution(algorithm, problem); 
             solutions[i] = LocalSearch.opt2Improvement(solutions[i], algorithm, problem);
             solutions[i].setCost(ObjectiveFunction.getSolutionCost(solutions[i], 
-                    algorithm, problem.getProductsStock()));
+                    algorithm, problem, problem.getProductsStock()));
+            //System.out.println("Solucion " + i + " costo: " + solutions[i].getCost());
         }        
     }
     

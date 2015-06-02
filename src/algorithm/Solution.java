@@ -14,8 +14,7 @@ import entity.UnidadTransporte;
  */
 
 public class Solution implements Comparable<Solution>{
-    private Node[][] nodes;
-    private UnidadTransporte[] vehicles;
+    private Node[][] nodes;    
     private Algorithm algorithm;
     private Problem problem;
     private double cost;
@@ -30,7 +29,7 @@ public class Solution implements Comparable<Solution>{
     
     public Solution(Algorithm algorithm, Problem problem) {
         this.algorithm = algorithm;
-        this.problem = problem;
+        this.problem = problem;        
         this.nodes = Grasp.construction(algorithm, problem);
         //this.cost = ObjectiveFunction.getSolutionCost(this, algorithm, 
         //        problem.getProductsStock());        
@@ -47,14 +46,6 @@ public class Solution implements Comparable<Solution>{
 
     public void setNodes(Node[][] nodes) {
         this.nodes = nodes;
-    }
-
-    public UnidadTransporte[] getVehicles() {
-        return vehicles;
-    }
-
-    public void setVehicles(UnidadTransporte[] vehicles) {
-        this.vehicles = vehicles;
     }
 
     public Algorithm getAlgorithm() {
