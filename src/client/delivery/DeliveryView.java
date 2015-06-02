@@ -66,6 +66,7 @@ public class DeliveryView extends BaseView {
         txtResult = new javax.swing.JTextArea();
 
         setClosable(true);
+        setTitle(Strings.BAD_PARAMETERS_TITLE);
 
         btnProcess.setText("Escoger Solución");
         btnProcess.addActionListener(new java.awt.event.ActionListener() {
@@ -168,20 +169,22 @@ public class DeliveryView extends BaseView {
 
     private void btnExecuteAlgorithmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExecuteAlgorithmActionPerformed
         algorithmExecution = new AlgorithmExecution();
-        solution = algorithmExecution.start(60);
-        StringBuffer buf = algorithmExecution.displayRoutes(solution);
-        txtResult.setText(buf.toString());
-        /*try{
+        //solution = algorithmExecution.start(60);
+        
+        try{
             double hours, minutes;
             if(txtHours.getText().isEmpty()) hours = 0;
             if(txtMinutes.getText().isEmpty()) minutes = 0;
             hours = Double.parseDouble(txtHours.getText());
             minutes = Double.parseDouble(txtMinutes.getText());
-            solution = algorithmExecution.start(hours + minutes/60);
+            solution = algorithmExecution.start(60);
+            StringBuffer buf = algorithmExecution.displayRoutes(solution);
+            txtResult.setText(buf.toString());
         }catch(Exception ex){
             ex.printStackTrace();
-            //show message box
-        } */       
+            JOptionPane.showMessageDialog(this, Strings.BAD_PARAMETERS,
+                    Strings.BAD_PARAMETERS_TITLE,JOptionPane.INFORMATION_MESSAGE);
+        }        
     }//GEN-LAST:event_btnExecuteAlgorithmActionPerformed
 
     public void assignRemissionGuides(ArrayList<Despacho> deliveries){
