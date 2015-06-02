@@ -15,7 +15,9 @@ import javax.swing.JOptionPane;
 import javax.swing.border.Border;
 import util.EntityState;
 import util.EntityType;
+import util.Icons;
 import util.InstanceFactory;
+import util.Regex;
 import util.Strings;
 
 /**
@@ -32,14 +34,21 @@ public class EditUserAdmin extends javax.swing.JDialog {
     UserApplication userApplication = InstanceFactory.Instance.getInstance("userApplication", UserApplication.class);
     Border errorBorder = BorderFactory.createLineBorder(Color.RED, 1);
     Border regularBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
+
     public EditUserAdmin(java.awt.Frame parent, boolean modal, Usuario user) {
         super(parent, modal);
         initComponents();
+        addImagesToButton();
         this.user = user;
         fillCombos();
         fillUserFields();
     }
-
+    public void addImagesToButton(){
+        btnSave.setText("");
+        btnCancel.setText("");
+        Icons.setButton(btnSave, Icons.ICONOS.SAVE.ordinal());
+        Icons.setButton(btnCancel, Icons.ICONOS.CANCEL.ordinal());        
+    }
     public void fillCombos() {
         comboState.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getUsersState()));
         comboProfile.setModel(new javax.swing.DefaultComboBoxModel(EntityType.PROFILES_NAMES));
@@ -51,23 +60,117 @@ public class EditUserAdmin extends javax.swing.JDialog {
         txtFirstName.setText(user.getApellidoPaterno());
         txtSecondName.setText(user.getApellidoMaterno());
         txtEmail.setText(user.getCorreo());
-        comboState.setSelectedIndex(user.getEstado());
+        comboState.setSelectedIndex(user.getEstado() + 1);
         if (user.getPerfil() != null) {
             comboProfile.setSelectedItem(user.getPerfil().getNombrePerfil());
-        }        
-    }
-    public boolean isValidForm(){
-        String message="Error:\n";
-        String name=txtName.getText();
-        String firstName=txtFirstName.getText();
-        String secondname=txtSecondName.getText();
-        String correo=txtEmail.getText();
-        if(name.length()==0){
-            message+="";
         }
-        
+    }
+
+    public boolean isValidForm() {
+        String message = "";
+        String name = txtName.getText().trim();
+        String firstName = txtFirstName.getText().trim();
+        String secondName = txtSecondName.getText().trim();
+        String email = txtEmail.getText().trim();
+        //Validation name
+        if (name.length() > 0 && name.length() <= 40) {
+            if (!name.matches(Regex.ONLY_LETTERS)) {
+                message += Strings.ERROR_NAME_ONLY_LETTERS + "\n";
+                txtName.setBorder(errorBorder);
+            } else {
+                txtName.setBorder(regularBorder);
+            }
+        } else {
+            if (name.length() == 0) {
+                message += Strings.ERROR_NAME_REQUIRED + "\n";
+            }
+            if (name.length() > 40) {
+                message += Strings.ERROR_NAME_LENGTH + "\n";
+            }
+            txtName.setBorder(errorBorder);
+        }
+        //Validation firstName
+        if (firstName.length() > 0 && firstName.length() <= 40) {
+            if (!firstName.matches(Regex.ONLY_LETTERS)) {
+                message += Strings.ERROR_FIRSTNAME_ONLY_LETTERS + "\n";
+                txtFirstName.setBorder(errorBorder);
+            } else {
+                txtFirstName.setBorder(regularBorder);
+            }
+        } else {
+            if (firstName.length() == 0) {
+                message += Strings.ERROR_FIRSTNAME_REQUIRED + "\n";
+            }
+            if (firstName.length() > 40) {
+                message += Strings.ERROR_FIRSTNAME_LENGTH + "\n";
+            }
+            txtFirstName.setBorder(errorBorder);
+        }
+        //Validation secondName
+        if (secondName.length() > 0 && secondName.length() <= 40) {
+            if (!secondName.matches(Regex.ONLY_LETTERS)) {
+                message += Strings.ERROR_SECONDNAME_ONLY_LETTERS + "\n";
+                txtSecondName.setBorder(errorBorder);
+            } else {
+                txtSecondName.setBorder(regularBorder);
+            }
+        } else {
+            if (secondName.length() == 0) {
+                message += Strings.ERROR_SECONDNAME_REQUIRED + "\n";
+            }
+            if (secondName.length() > 40) {
+                message += Strings.ERROR_SECONDNAME_LENGTH + "\n";
+            }
+            txtSecondName.setBorder(errorBorder);
+        }
+
+        //Validation email
+        if (email.length() > 0 && email.length() <= 40) {
+            if (!email.matches(Regex.EMAIL)) {
+                message += Strings.ERROR_EMAIL_INVALID + "\n";
+                txtEmail.setBorder(errorBorder);
+            } else {
+                if (userApplication.doesUserExist(email)) {
+                    if (!email.equals(this.user.getCorreo())) {
+                        message += Strings.ERROR_USER_SAME_EMAIL + "\n";
+                        txtEmail.setBorder(errorBorder);
+                    }
+                } else {
+                    txtEmail.setBorder(regularBorder);
+                }
+            }
+
+        } else {
+            if (email.length() == 0) {
+                message += Strings.ERROR_EMAIL_REQUIRED + "\n";
+            }
+            if (email.length() > 40) {
+                message += Strings.ERROR_EMAIL_LENGTH + "\n";
+            }
+            txtEmail.setBorder(errorBorder);
+        }
+
+        //validate State
+        if (comboState.getSelectedIndex() == 0) {
+            message += Strings.ERROR_USER_STATUS_REQUIRED + "\n";
+            comboState.setBorder(errorBorder);
+        } else {
+            comboState.setBorder(regularBorder);
+        }
+        //Validate profile
+        if (comboProfile.getSelectedIndex() == 0) {
+            message += Strings.ERROR_USER_PROFILE_REQUIRED + "\n";
+            comboProfile.setBorder(errorBorder);
+        } else {
+            comboProfile.setBorder(regularBorder);
+        }
+        if (!message.equals("")) {
+            JOptionPane.showMessageDialog(this, message, "Mensaje", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
         return true;
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -243,11 +346,11 @@ public class EditUserAdmin extends javax.swing.JDialog {
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         // TODO add your handling code here:
         if (isValidForm()) {
-            user.setNombre(txtName.getText());
-            user.setApellidoPaterno(txtFirstName.getText());
-            user.setApellidoMaterno(txtSecondName.getText());
-            user.setCorreo(txtEmail.getText());
-            user.setEstado(comboState.getSelectedIndex());
+            user.setNombre(txtName.getText().trim());
+            user.setApellidoPaterno(txtFirstName.getText().trim());
+            user.setApellidoMaterno(txtSecondName.getText().trim());
+            user.setCorreo(txtEmail.getText().trim());
+            user.setEstado(comboState.getSelectedIndex() - 1);
             user.setPerfil(profileApplication.getProfileByName(comboProfile.getSelectedItem().toString()));
             userApplication.updateUser(user);
             JOptionPane.showMessageDialog(this, Strings.MESSAGE_USER_UPDATED);

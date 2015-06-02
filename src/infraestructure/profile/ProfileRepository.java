@@ -119,6 +119,7 @@ public class ProfileRepository implements IProfileRepository {
             Query q = session.createQuery(hql);
             q.setParameter("name", name);
             profile=(Perfil)q.uniqueResult();
+            Hibernate.initialize(profile.getUsuarios());
             if(profile!=null)
                 Hibernate.initialize(profile.getAccions());
             session.getTransaction().commit();

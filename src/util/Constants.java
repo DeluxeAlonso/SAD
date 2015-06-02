@@ -12,6 +12,6 @@ package util;
 public class Constants {
     public static int FILAS_RACK = 2;
     public static int COLUMNAS_RACK = 4; 
-    public static double WAREHOUSE_LATITUDE = 0;
-    public static double WAREHOUSE_LONGITUDE = 0;
+    public static double WAREHOUSE_LATITUDE = -12.0693885;
+    public static double WAREHOUSE_LONGITUDE = -77.0778219;
 }

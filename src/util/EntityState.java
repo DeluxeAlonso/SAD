@@ -16,7 +16,7 @@ public class EntityState {
     
     public static enum Users { ACTIVO , INACTIVO };
     public static String[] getUsersState(){
-         String[] userState={"Activo","Inactivo"};
+         String[] userState={" ","Activo","Inactivo"};
          return userState;
     }
     
@@ -74,5 +74,10 @@ public class EntityState {
          return ordersState;
     }
     
+    public static enum PartialOrders { ATENDIDO, NO_ATENDIDO, ANULADO};
+    public static String[] getPartialOrdersState(){
+         String[] partialOrdersState={"Atendido","No Atendido", "Anulado"};
+         return partialOrdersState;
+    }
 
 }

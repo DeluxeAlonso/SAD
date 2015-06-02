@@ -5,17 +5,120 @@
  */
 package client.reports;
 
+import application.kardex.KardexApplication;
+import application.pallet.PalletApplication;
+import application.product.ProductApplication;
+import application.rack.RackApplication;
+import application.spot.SpotApplication;
+import application.warehouse.WarehouseApplication;
+import entity.Almacen;
+import entity.Condicion;
+import entity.Kardex;
+import entity.Producto;
+import entity.Rack;
+import java.awt.event.ItemEvent;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+import util.EntityType;
+import static util.EntityType.CONDITIONS;
+import static util.EntityType.CONDITIONS_NAMES;
+import util.InstanceFactory;
+import util.Strings;
+
 /**
  *
- * @author Alonso
+ * @author prote_000
  */
 public class AvailabilityReport extends javax.swing.JInternalFrame {
-
+    WarehouseApplication warehouseApplication = InstanceFactory.Instance.getInstance("warehouseApplicaiton", WarehouseApplication.class);
+    RackApplication rackApplication = InstanceFactory.Instance.getInstance("rackApplicaiton", RackApplication.class);
+    SpotApplication spotApplication = InstanceFactory.Instance.getInstance("spotApplicaiton", SpotApplication.class);
+    PalletApplication palletApplication = InstanceFactory.Instance.getInstance("palletApplicaiton", PalletApplication.class);
+    ProductApplication productApplication = InstanceFactory.Instance.getInstance("productApplicaiton", ProductApplication.class);
+    KardexApplication kardexApplication = InstanceFactory.Instance.getInstance("kardexApplicaiton", KardexApplication.class);
+    public ArrayList<Almacen> warehouses;
+    public ArrayList<Condicion> conditions;
+    public ArrayList<Kardex> kardex;
+    public ArrayList<Rack> racks;
+    private String [] warehousesNames;
+    JFileChooser fc = new JFileChooser();
+    File file = null;
     /**
-     * Creates new form RemissionGuideReport
+     * Creates new form KardexReport
      */
     public AvailabilityReport() {
         initComponents();
+        condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.CONDITIONS_NAMES));
+        fillWarehouses();
+        warehouseCombo.setModel(new javax.swing.DefaultComboBoxModel(warehousesNames));
+    }
+    
+    public void fillWarehouses(){
+        warehouses = warehouseApplication.queryAll();
+        warehousesNames = new String[warehouses.size() + 1];
+        for (int i = 0; i < warehouses.size()+1; i++) {
+            if (i == 0) {
+                warehousesNames[i] = "";
+            } else {
+                warehousesNames[i] = warehouses.get(i-1).getDescripcion();
+            }
+        } 
+    }
+    
+    
+    public void clearKardex(){
+        DefaultTableModel model = (DefaultTableModel) tblKardex.getModel();
+        model.setRowCount(0);
+    }
+    
+    public void fillKardex(){
+        clearKardex();
+        DefaultTableModel model = (DefaultTableModel) tblKardex.getModel();
+        double precio_unit = 13.19;
+        if(racks.size()>0){
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM");
+            Object[] row;
+            // Inventario inicial
+            /*
+            row = new Object[]{
+                        sdf.format(racks.get(0).getFechaRegistro()),
+                        "Inventario Inicial",
+                        "-",
+                        0,
+                    };
+            model.addRow(row);*/
+            for(Rack rackItem : racks){
+                row = new Object[]{
+                    rackItem.getAlmacen().getId(),
+                    rackItem.getId(),
+                    rackItem.getAlmacen().getCondicion().getNombre(),
+                    0
+                };
+                model.addRow(row);
+            }
+            // Inventario final
+            /*
+            row = new Object[]{
+                        sdf.format(kardex.get(.size()-1).getFecha()),
+                        "Inventario Final",
+                        "-",
+                        "Hola 2",
+                    };
+            model.addRow(row);
+            */
+        }
     }
 
     /**
@@ -27,132 +130,189 @@ public class AvailabilityReport extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jEditorPane1 = new javax.swing.JEditorPane();
+        jCalendar1 = new com.toedter.calendar.JCalendar();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        warehouseCombo = new javax.swing.JComboBox();
+        btnReport = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        condicionCombo = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        tblKardex = new javax.swing.JTable();
         jSeparator1 = new javax.swing.JSeparator();
-        jButton2 = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-        profileCombo = new javax.swing.JComboBox();
-
-        jScrollPane2.setViewportView(jEditorPane1);
+        btnExport = new javax.swing.JButton();
 
         setClosable(true);
-        setTitle("Disponibilidad de Almacen");
-        setPreferredSize(new java.awt.Dimension(547, 456));
+        setTitle("Reporte de Disponibilidad");
 
-        jLabel1.setText("Almacen:");
+        jLabel1.setText("Almacén:");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        warehouseCombo.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                warehouseComboItemStateChanged(evt);
+            }
+        });
+
+        btnReport.setText("Generar Reporte");
+        btnReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReportActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Condicion:");
+
+        tblKardex.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
+                {null, null, null, null},
                 {null, null, null, null},
                 {null, null, null, null},
                 {null, null, null, null},
                 {null, null, null, null}
             },
             new String [] {
-                "Almacen", "Tipo", "Rack", "Posicion"
+                "Almacen", "Rack", "Condicion", "Ubicaciones Libres"
             }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
+        ));
+        jScrollPane1.setViewportView(tblKardex);
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(2).setPreferredWidth(4);
-        }
-
-        jButton1.setText("Buscar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+        btnExport.setText("Exportar XLS");
+        btnExport.setEnabled(false);
+        btnExport.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnExportMousePressed(evt);
             }
         });
-
-        jButton2.setText("Exportar");
-
-        jLabel2.setText("Tipo Almacen:");
-
-        profileCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(24, 24, 24)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jButton2))
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addGap(23, 23, 23))
-                    .addGroup(layout.createSequentialGroup()
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(17, 17, 17)
                         .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel2)
-                        .addGap(37, 37, 37)
-                        .addComponent(profileCombo, 0, 1, Short.MAX_VALUE)
-                        .addGap(88, 88, 88))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addGap(76, 76, 76))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(warehouseCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(50, 50, 50)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnReport, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnExport, javax.swing.GroupLayout.Alignment.TRAILING))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(profileCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26)
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(warehouseCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))))
                 .addGap(18, 18, 18)
+                .addComponent(btnReport)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(jButton2)
-                .addGap(29, 29, 29)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnExport)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportActionPerformed
+        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+        boolean hasErrors=false;
+        String error_message = "Errores:\n";
+            
+            if(hasErrors){
+                //JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_KARDEX_TITLE,JOptionPane.WARNING_MESSAGE);
+                btnExport.setEnabled(false);
+            }else{
+                int idWare;
+                int idCon;
+                racks = new ArrayList<Rack>();
+                if (warehouseCombo.getSelectedIndex()==0)
+                    idWare=0;
+                else
+                    idWare=warehouses.get(warehouseCombo.getSelectedIndex()-1).getId();
+                if (condicionCombo.getSelectedIndex()==0)
+                    idCon=0;
+                else
+                    idCon=EntityType.CONDITIONS.get(condicionCombo.getSelectedIndex()-1).getId();                
+                racks = rackApplication.queryByParameters(idWare,idCon);
+                System.out.println(racks.size());
+                fillKardex();
+                btnExport.setEnabled(true);
+            }
+        
+    }//GEN-LAST:event_btnReportActionPerformed
+
+    private void warehouseComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_warehouseComboItemStateChanged
+        //if(evt.getStateChange() == ItemEvent.SELECTED)
+            //fillProducts(warehouses.get(comboWarehouseFrom.getSelectedIndex()).getCondicion().getId());
+    }//GEN-LAST:event_warehouseComboItemStateChanged
+
+    private void btnExportMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportMousePressed
+        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+        fc.setDialogTitle("Seleccione un archivo");
+        fc.showOpenDialog(this);
+        file = fc.getSelectedFile();
+        System.out.println(file);
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        /* Export to XSL */
+        try {
+            FileWriter excel = new FileWriter(file);
+            DefaultTableModel model = (DefaultTableModel) tblKardex.getModel();
+            excel.write("\t\t\tKardex\n");
+            excel.write("Emitido\t"+dateFormat.format(date)+"\n");
+            excel.write("Almacen\t"+warehouses.get(warehouseCombo.getSelectedIndex()).getDescripcion()+"\n");
+            excel.write("Unidad\tPallets\n");
+
+            
+            for(int i = 0; i < model.getColumnCount(); i++)
+                excel.write(model.getColumnName(i) + "\t");
+            excel.write("\n");
+            for(int i=0; i< model.getRowCount(); i++) {
+                for(int j=0; j < model.getColumnCount(); j++)
+                    excel.write(model.getValueAt(i,j).toString()+"\t");
+                excel.write("\n");
+            }
+            excel.close();
+        } catch (IOException ex) {
+            Logger.getLogger(AvailabilityReport.class.getName()).log(Level.SEVERE, null, ex);
+            //JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir el archivo",Strings.ERROR_KARDEX_TITLE,JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnExportMousePressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JEditorPane jEditorPane1;
+    private javax.swing.JButton btnExport;
+    private javax.swing.JButton btnReport;
+    private javax.swing.JComboBox condicionCombo;
+    private com.toedter.calendar.JCalendar jCalendar1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JComboBox profileCombo;
+    private javax.swing.JTable tblKardex;
+    private javax.swing.JComboBox warehouseCombo;
     // End of variables declaration//GEN-END:variables
 }

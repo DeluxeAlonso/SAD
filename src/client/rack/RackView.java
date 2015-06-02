@@ -17,11 +17,13 @@ import entity.Rack;
 import entity.Ubicacion;
 import java.util.ArrayList;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import util.EntityState;
 import util.EntityType;
 import util.InstanceFactory;
+import util.Strings;
 
 /**
  *
@@ -35,7 +37,7 @@ public class RackView extends javax.swing.JInternalFrame {
     /**
      * Creates new form WarehouseForm
      */
-    
+    Rack rack =new Rack();
     int idRack;
     public RackView() {
         initComponents();
@@ -338,10 +340,17 @@ public class RackView extends javax.swing.JInternalFrame {
 
     private void activoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activoBtnActionPerformed
         // TODO add your handling code here:
+        
         int sr = usersGrid.getSelectedRow();
         String idString = usersGrid.getModel().getValueAt(sr, 0).toString();
         int idSpot = Integer.parseInt(idString);
-        spotApplication.updateSpotOccupancy(idSpot,EntityState.Spots.LIBRE.ordinal());
+        Ubicacion   u =spotApplication.queryById(idSpot);
+        if (u.getEstado()==EntityState.Spots.LIBRE.ordinal()){
+        
+        }else if (u.getEstado()==EntityState.Spots.INACTIVO.ordinal()){
+            rack.setUbicLibres(rack.getUbicLibres()+1);
+            spotApplication.updateSpotOccupancy(idSpot,EntityState.Spots.LIBRE.ordinal());
+        }
        
         clearGridSpot();
         fillTableSpot(idRack);        
@@ -353,7 +362,15 @@ public class RackView extends javax.swing.JInternalFrame {
         int sr = usersGrid.getSelectedRow();
         String idString = usersGrid.getModel().getValueAt(sr, 0).toString();
         int idSpot = Integer.parseInt(idString);
-        spotApplication.updateSpotOccupancy(idSpot,EntityState.Spots.INACTIVO.ordinal());
+        Ubicacion   u =spotApplication.queryById(idSpot);
+        if (u.getEstado()==EntityState.Spots.LIBRE.ordinal()){
+            spotApplication.updateSpotOccupancy(idSpot,EntityState.Spots.INACTIVO.ordinal());
+            rack.setUbicLibres(rack.getUbicLibres()-1);
+        }else if (u.getEstado()==EntityState.Spots.INACTIVO.ordinal()){
+            //spotApplication.updateSpotOccupancy(idSpot,EntityState.Spots.LIBRE.ordinal());
+        }else if (u.getEstado()==EntityState.Spots.OCUPADO.ordinal()){
+            JOptionPane.showMessageDialog(this, "No se puede inhabilitar una ubicacion ocupada.","Advertencia de Ubicacion",JOptionPane.WARNING_MESSAGE);
+        }
        
         clearGridSpot();
         fillTableSpot(idRack);    
@@ -379,6 +396,7 @@ public class RackView extends javax.swing.JInternalFrame {
         String idString = rackGrid.getModel().getValueAt(sr, 0).toString();
         int id = Integer.parseInt(idString);
         idRack=id;
+        rack = rackApplication.queryById(id);
         clearGridSpot();
         fillTableSpot(id);
     }//GEN-LAST:event_rackGridMouseClicked

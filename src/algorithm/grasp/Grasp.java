@@ -13,7 +13,6 @@ import entity.UnidadTransporte;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import util.Constants;
 import util.Randomizer;
 
@@ -121,7 +120,7 @@ public class Grasp {
         return RCL;
     }
 
-    private static ArrayList<Node> createRoute(UnidadTransporte vehicle, Algorithm algorithm,
+    public static ArrayList<Node> createRoute(UnidadTransporte vehicle, Algorithm algorithm,
             HashMap<Integer,Integer> currentStock, boolean[] visited) {
         ArrayList<Node> route = new ArrayList<>();
 
@@ -152,8 +151,8 @@ public class Grasp {
                 canBeAdded = false;
             }
             if (canBeAdded) {
-                visited[chosen] = true;
                 nextNode = RCL.get(chosen);
+                visited[nextNode.getIdx()] = true;                
                 route.add(nextNode);
                 currentCapacity += nextNode.getDemand();
 

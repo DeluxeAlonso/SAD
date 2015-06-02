@@ -50,11 +50,11 @@ public class WarehouseView extends javax.swing.JInternalFrame {
         Icons.setButton(newBtn, Icons.ICONOS.CREATE.ordinal());
         Icons.setButton(deleteBtn, Icons.ICONOS.DELETE.ordinal());
         Icons.setButton(editBtn, Icons.ICONOS.MODIFY.ordinal());
-        Icons.setButton(searchBtn, Icons.ICONOS.BUSCAR.ordinal());        
+        Icons.setButton(searchBtn, Icons.ICONOS.SEARCH.ordinal());
         
     }
 
-    public void         calculartam(JButton searchBtn){
+    public void calculartam(JButton searchBtn){
         int w = searchBtn.getWidth();
         int h = searchBtn.getHeight();
         System.out.println("W:"+w+"");
@@ -134,6 +134,12 @@ public class WarehouseView extends javax.swing.JInternalFrame {
         setClosable(true);
         setTitle("Almacen");
 
+        WarehouseGrid.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                WarehouseGridMouseClicked(evt);
+            }
+        });
+
         usersGrid.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
@@ -158,6 +164,11 @@ public class WarehouseView extends javax.swing.JInternalFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        usersGrid.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                usersGridMouseClicked(evt);
             }
         });
         WarehouseGrid.setViewportView(usersGrid);
@@ -196,12 +207,14 @@ public class WarehouseView extends javax.swing.JInternalFrame {
             }
         });
 
+        editBtn.setEnabled(false);
         editBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 editBtnMouseClicked(evt);
             }
         });
 
+        deleteBtn.setEnabled(false);
         deleteBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 deleteBtnMouseClicked(evt);
@@ -253,7 +266,7 @@ public class WarehouseView extends javax.swing.JInternalFrame {
                         .addComponent(jLabel3)
                         .addComponent(EstadoCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(searchBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(newBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(editBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -266,21 +279,20 @@ public class WarehouseView extends javax.swing.JInternalFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(WarehouseGrid, javax.swing.GroupLayout.PREFERRED_SIZE, 589, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 5, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(WarehouseGrid, javax.swing.GroupLayout.PREFERRED_SIZE, 589, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(47, 47, 47)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(WarehouseGrid, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(61, 61, 61))
+                .addGap(39, 39, 39))
         );
 
         pack();
@@ -305,10 +317,13 @@ public class WarehouseView extends javax.swing.JInternalFrame {
         editWarehouse.setVisible(true);
         clearGrid();
         fillTable();
+        editBtn.setEnabled(false);
+        deleteBtn.setEnabled(false);
     }//GEN-LAST:event_editBtnMouseClicked
 
     private void deleteBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteBtnMouseClicked
         // TODO add your handling code here:
+        if (deleteBtn.isEnabled()){
         int sr = usersGrid.getSelectedRow();
         String idString = usersGrid.getModel().getValueAt(sr, 0).toString();
         Almacen a = warehouseApplication.queryById(Integer.parseInt(idString));
@@ -316,11 +331,14 @@ public class WarehouseView extends javax.swing.JInternalFrame {
         warehouseApplication.update(a);
         clearGrid();
         fillTable();
+        editBtn.setEnabled(false);
+        deleteBtn.setEnabled(false);
+        }
     }//GEN-LAST:event_deleteBtnMouseClicked
 
     private void searchBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchBtnMouseClicked
         // TODO add your handling code here:
-                int w = searchBtn.getWidth();
+        int w = searchBtn.getWidth();
         int h = searchBtn.getHeight();
         System.out.println("W:"+w+"");
         System.out.println("H:"+h+"");
@@ -338,7 +356,21 @@ public class WarehouseView extends javax.swing.JInternalFrame {
             condicionS=conditionApplication.getConditionInstance(condicionCombo.getSelectedItem().toString()).getId();
         if (idS==0 && condicionS ==0) fillTable();
         else fillTable(idS,condicionS);
+        editBtn.setEnabled(false);
+        deleteBtn.setEnabled(false);
     }//GEN-LAST:event_searchBtnMouseClicked
+
+    private void WarehouseGridMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WarehouseGridMouseClicked
+        // TODO add your handling code here:
+        editBtn.setEnabled(true);
+        deleteBtn.setEnabled(true);
+    }//GEN-LAST:event_WarehouseGridMouseClicked
+
+    private void usersGridMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usersGridMouseClicked
+        // TODO add your handling code here:
+        editBtn.setEnabled(true);
+        deleteBtn.setEnabled(true);
+    }//GEN-LAST:event_usersGridMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

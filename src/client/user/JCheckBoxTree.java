@@ -109,7 +109,7 @@ public class JCheckBoxTree extends JTree {
         // Firing the check change event
         fireCheckChangeEvent(new CheckChangeEvent(new Object()));
         // Repainting tree after the data structures were updated
-        selfPointer.repaint();
+        //selfPointer.repaint();
     }
 
     private void resetCheckingState() {
@@ -165,9 +165,9 @@ public class JCheckBoxTree extends JTree {
             }            
             
             checkBox.setSelected(cn.isSelected);
-            checkBox.setText(obj.toString());
+            checkBox.setText(obj.toString());            
             checkBox.setOpaque(cn.isSelected && cn.hasChildren && !cn.allChildrenSelected);
-            checkBox.setEnabled(tree.isEditable());
+            checkBox.setEnabled(tree.isEditable());            
             tree.repaint();
             return this;
         }

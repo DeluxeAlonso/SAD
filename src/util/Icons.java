@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 
 /**
  *
@@ -19,16 +22,33 @@ import javax.swing.JButton;
 public class Icons {
     
     public static Image img= null;
+    public static Image mainIcon= null;
     public static ArrayList<Image> images = new ArrayList<Image>();
-    public static enum ICONOS { GUARDAR , CANCELAR, BUSCAR, CREATE, MODIFY, DELETE };
+    public static enum ICONOS { 
+        SAVE , 
+        CANCEL, 
+        SEARCH, 
+        CREATE, 
+        MODIFY, 
+        DELETE,
+        RESET
+    };
     
     public static String[] getIconNames(){
-         String[] iconNames={"Guardar","Cancelar","Buscar", "Nuevo", "Editar", "Eliminar"};
+         String[] iconNames={"Guardar","Cancelar","Buscar", "Nuevo", "Editar", "Eliminar","Resetear"};
          return iconNames;
     }
     
     public Icons(){
         loadIcons();
+    }
+    
+    public static void setMainIcon(JFrame c){
+        c.setIconImage(mainIcon);
+    }
+    public static void setMainIcon(JDialog c){
+        c.setIconImage(mainIcon);
+        //(images.get(images.size()-1));
     }
     
     
@@ -73,6 +93,10 @@ public class Icons {
             images.add(img);
             img = ImageIO.read(URL.class.getResource("../../images/Delete.png"));
             images.add(img);
+            img = ImageIO.read(URL.class.getResource("../../images/Unlock.png"));
+            images.add(img);
+            img = ImageIO.read(URL.class.getResource("../../images/warehouse-512-000000.png"));
+            mainIcon=img;
             
         }catch(Exception e){
             System.out.println("Error en carga masiva de iconos");

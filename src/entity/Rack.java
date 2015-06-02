@@ -1,5 +1,5 @@
 package entity;
-// Generated 30/05/2015 08:07:22 PM by Hibernate Tools 4.3.1
+// Generated 01-jun-2015 18:57:54 by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -18,6 +18,7 @@ public class Rack  implements java.io.Serializable {
      private Integer numCol;
      private Integer estado;
      private Date fechaRegistro;
+     private Integer ubicLibres;
      private Set ubicacions = new HashSet(0);
 
     public Rack() {
@@ -27,12 +28,13 @@ public class Rack  implements java.io.Serializable {
     public Rack(Almacen almacen) {
         this.almacen = almacen;
     }
-    public Rack(Almacen almacen, Integer numFil, Integer numCol, Integer estado, Date fechaRegistro, Set ubicacions) {
+    public Rack(Almacen almacen, Integer numFil, Integer numCol, Integer estado, Date fechaRegistro, Integer ubicLibres, Set ubicacions) {
        this.almacen = almacen;
        this.numFil = numFil;
        this.numCol = numCol;
        this.estado = estado;
        this.fechaRegistro = fechaRegistro;
+       this.ubicLibres = ubicLibres;
        this.ubicacions = ubicacions;
     }
    
@@ -77,6 +79,13 @@ public class Rack  implements java.io.Serializable {
     
     public void setFechaRegistro(Date fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
+    }
+    public Integer getUbicLibres() {
+        return this.ubicLibres;
+    }
+    
+    public void setUbicLibres(Integer ubicLibres) {
+        this.ubicLibres = ubicLibres;
     }
     public Set getUbicacions() {
         return this.ubicacions;

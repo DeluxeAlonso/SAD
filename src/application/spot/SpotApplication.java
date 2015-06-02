@@ -44,6 +44,18 @@ public class SpotApplication {
         }
     }
     
+    public Ubicacion queryById(int id) {
+        Ubicacion u=null;
+        try{
+            SpotRepository w = new SpotRepository();
+            u = w.queryById(id);
+            return u;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
     
     
     public ArrayList<Ubicacion> queryEmptySpotsByRack(int rackId){

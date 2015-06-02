@@ -89,7 +89,7 @@ public class ActionRepository implements IActionRepository{
 
     @Override
     public ArrayList<Accion> queryAllParents() {
-        String hql="from Accion where idPadre=null";
+        String hql="from Accion where id_padre=null";
         ArrayList<Accion> actions=null;
         
         Transaction trns = null;
@@ -111,7 +111,7 @@ public class ActionRepository implements IActionRepository{
 
     @Override
     public ArrayList<Accion> queryChildByParent(int idPadre) {
-        String hql="from Accion where idPadre=:idPadre";
+        String hql="from Accion where id_padre=:idPadre";
         ArrayList<Accion> actions=null;
         
         Transaction trns = null;

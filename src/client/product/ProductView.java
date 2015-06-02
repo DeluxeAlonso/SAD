@@ -257,7 +257,7 @@ public class ProductView extends javax.swing.JInternalFrame implements MouseList
         cantidadXPalletTxt.setBorder(regularBorder);
         descProdTxt.setBorder(regularBorder);
         condicionCombo.setBorder(regularBorder);
-        pesoTxt.setBorder(regularBorder);        
+        pesoTxt.setBorder(regularBorder);
     }
 
     /**

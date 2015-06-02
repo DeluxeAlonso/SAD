@@ -66,9 +66,19 @@ public class PalletApplication {
     }
     
         public ArrayList<Pallet> getPalletsFromOrder(int rackId){
-        ArrayList<Pallet> pallets = null;
+        ArrayList<Pallet> pallets = new ArrayList<>();
         try {
             pallets = palletRepository.getPalletsFromOrder(rackId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pallets;
+    }
+        
+    public ArrayList<Pallet> getAvailablePalletsByProductId(Integer productId){
+        ArrayList<Pallet> pallets = null;
+        try {
+            pallets = palletRepository.queryPalletsByProduct(productId);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,5 +1,5 @@
 package entity;
-// Generated 30/05/2015 08:07:22 PM by Hibernate Tools 4.3.1
+// Generated 01-jun-2015 18:57:54 by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -15,6 +15,7 @@ public class PedidoParcial  implements java.io.Serializable {
      private GuiaRemision guiaRemision;
      private Pedido pedido;
      private Integer estado;
+     private Set pallets = new HashSet(0);
      private Set pedidoParcialXProductos = new HashSet(0);
 
     public PedidoParcial() {
@@ -24,10 +25,11 @@ public class PedidoParcial  implements java.io.Serializable {
     public PedidoParcial(Pedido pedido) {
         this.pedido = pedido;
     }
-    public PedidoParcial(GuiaRemision guiaRemision, Pedido pedido, Integer estado, Set pedidoParcialXProductos) {
+    public PedidoParcial(GuiaRemision guiaRemision, Pedido pedido, Integer estado, Set pallets, Set pedidoParcialXProductos) {
        this.guiaRemision = guiaRemision;
        this.pedido = pedido;
        this.estado = estado;
+       this.pallets = pallets;
        this.pedidoParcialXProductos = pedidoParcialXProductos;
     }
    
@@ -58,6 +60,13 @@ public class PedidoParcial  implements java.io.Serializable {
     
     public void setEstado(Integer estado) {
         this.estado = estado;
+    }
+    public Set getPallets() {
+        return this.pallets;
+    }
+    
+    public void setPallets(Set pallets) {
+        this.pallets = pallets;
     }
     public Set getPedidoParcialXProductos() {
         return this.pedidoParcialXProductos;

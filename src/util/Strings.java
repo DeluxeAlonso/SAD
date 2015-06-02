@@ -42,10 +42,29 @@ public class Strings {
     public static final String MESSAGE_USER_UPDATED="El usuario ha sido actualizado con éxito.";
     public static final String ALERT_USER_INACTIVE="No tienes acceso a la aplicación.";
     public static final String ALERT_USER_DOES_NOT_EXIST="Correo o la contraseña incorrectos.";
+    public static final String ALERT_PASSWORD_REQUIRED="El campo contraseña es requerido.";
+    public static final String ALERT_USER_REQUIRED="El campo usuario es requerido.";
     public static final String ERROR_NAME_REQUIRED="El campo nombre es requerido.";
     public static final String ERROR_FIRSTNAME_REQUIRED="El campo apellido paterno es requerido.";
     public static final String ERROR_SECONDNAME_REQUIRED="El campo apellido materno es requerido.";
     public static final String ERROR_EMAIL_REQUIRED="El campo correo es requerido.";
+    public static final String ERROR_NAME_ONLY_LETTERS="El campo nombre solo permite letras.";
+    public static final String ERROR_FIRSTNAME_ONLY_LETTERS="El apellido paterno nombre solo permite letras.";
+    public static final String ERROR_SECONDNAME_ONLY_LETTERS="El apellido materno nombre solo permite letras.";
+    public static final String ERROR_EMAIL_INVALID="Ingrese un correo válido.";
+    public static final String ERROR_NAME_LENGTH="El campo nombre solo permite 40 caracteres.";
+    public static final String ERROR_FIRSTNAME_LENGTH="El campo apellido paterno solo permite 40 caracteres.";
+    public static final String ERROR_SECONDNAME_LENGTH="El campo apellido materno solo permite 40 caracteres.";
+    public static final String ERROR_EMAIL_LENGTH="El campo correo solo permite 40 caracteres.";
+    public static final String ERROR_USER_STATUS_REQUIRED="El campo estado es requerido.";
+    public static final String ERROR_USER_PROFILE_REQUIRED="El campo perfil es requerido.";
+    public static final String ERROR_PASSWORD_MIN_LENGTH="El password debe contener al menos 6 caracteres";
+    public static final String ERROR_USER_SAME_EMAIL="Ya existe un usuario con el mismo correo.";
+    public static final String ERROR_PASSWORD_REQUIRED="El campo contraseña es requerido";
+    public static final String ERROR_PASSWORD_LENGTH="El campo contraseña solo permite 40 caracteres.";
+    public static final String ERROR_PROFILE_LENGTH="El campo perfil solo permite 40 caracteres.";
+    public static final String ERROR_PROFILE_NUMBERS_AND_LETTERS="El campo perfil solo permite letras y números.";
+    public static final String ERROR_PROFILE_HAS_USERS="Hay usuarios que usan este perfil. No se puede eliminar.";
     /*END*/
     
     /*WAREHOUSE MODULE MESSAGES*/
@@ -61,7 +80,11 @@ public class Strings {
     public static final String ERROR_RACKS_WAREHOUSE_REQUIRED= "El campo racks es obligatorio.";
     public static final String ERROR_RACKS_WAREHOUSE_INT= "El campo rack debe ser un numero entero.";
     public static final String ERROR_CONDICION_WAREHOUSE_REQUIRED= "El campo condicion es obligatorio.";
-    
+    public static final String ERROR_RACKS_FIL_REQUIRED="El campo de numero de filas del rack es obligatorio";
+    public static final String ERROR_RACKS_FIL_INT="El campo de numero de filas del rack debe ser un numero entero";
+    public static final String ERROR_RACKS_COL_REQUIRED="El campo de numero de columnas del rack es obligatorio";
+    public static final String ERROR_RACKS_COL_INT="El campo de numero de columnas del rack debe ser un numero entero";
+    public static final String ERROR_DESC_WAREHOUSE_REQUIRED="El campo descripcion es obligatorio.";
     
     
     

@@ -138,19 +138,30 @@ public class UserRepository implements IUserRepository {
     }
     public ArrayList<Usuario> searchUser(Usuario user){
         String hql="from Usuario "
-                + "where (:idPerfil is null or id_perfil=:idPerfil) and (correo like :correo)";
+                + "where (:idPerfil is null or id_perfil=:idPerfil) and (correo like :correo) and "
+                + "(:nombre is null or (concat(nombre,' ',apellido_paterno,' ',apellido_materno) like :nombreL)) and "
+                + "(:estado is null or estado=:estado)";
         ArrayList<Usuario> users=null;
         
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
-            Query q = session.createQuery(hql);
+            Query q = session.createQuery(hql);            
             q.setParameter("correo", "%"+user.getCorreo()+"%");
+            q.setParameter("estado", user.getEstado());
             if(user.getPerfil()!=null)
                 q.setParameter("idPerfil", user.getPerfil().getId());
             else
                 q.setParameter("idPerfil", null);
+            if(user.getNombre()!=null){
+                q.setParameter("nombre", user.getNombre());
+                q.setParameter("nombreL", "%"+user.getNombre()+"%");
+            }
+            else{
+                q.setParameter("nombre", null);
+                q.setParameter("nombreL", null);
+            }
             users = (ArrayList<Usuario>) q.list();             
             session.getTransaction().commit();
         } catch (RuntimeException e) {
