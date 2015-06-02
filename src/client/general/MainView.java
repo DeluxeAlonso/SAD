@@ -15,12 +15,14 @@ import client.reports.AvailabilityReport;
 import client.product.ProductView;
 import client.personal.PersonalView;
 import client.client.ClientView;
+import client.delivery.DeliveryView;
 import client.order.OrderView;
 import client.rack.RackView;
 import client.reports.KardexReport;
 import client.reports.RemissionGuideReport;
 import client.reports.StockReport;
 import client.reports.ProductCaducityReport;
+import client.reports.SecurityLogView;
 
 import client.transportunit.*;
 import client.user.EditUserView;
@@ -35,7 +37,6 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyVetoException;
-import java.net.URL;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,7 +48,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.MenuElement;
 import util.Icons;
-import static util.Icons.img;
 import util.InstanceFactory;
 
 /**
@@ -67,6 +67,7 @@ public class MainView extends javax.swing.JFrame {
     private PersonalView personalView = null;
     private ClientView clientView = null;
     private OrderView orderView = null;
+    private DeliveryView deliveryView = null;
     private EditUserView editUserView = null;
     private PalletMovementsView palletMovementsView = null;
     private ProductCaducityReport productCaducity = null;
@@ -82,7 +83,7 @@ public class MainView extends javax.swing.JFrame {
     public static Icons icons = new Icons();
     private BufferedImage img = null;
     private Image icon = null;
-
+    private SecurityLogView securiryLog=null;
     /**
      * Creates new form MainForm
      */
@@ -247,6 +248,11 @@ public class MainView extends javax.swing.JFrame {
         menuOp.add(jMenuItem1);
 
         jMenuItem4.setText("Despacho");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
         menuOp.add(jMenuItem4);
 
         jMenuItem11.setText("Devoluciones");
@@ -358,6 +364,11 @@ public class MainView extends javax.swing.JFrame {
         menuSec.add(jMenuItem9);
 
         jMenuItem17.setText("Log");
+        jMenuItem17.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem17ActionPerformed(evt);
+            }
+        });
         menuSec.add(jMenuItem17);
 
         menuBar.add(menuSec);
@@ -766,6 +777,39 @@ public class MainView extends javax.swing.JFrame {
     private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem15ActionPerformed
+
+    private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
+        // TODO add your handling code here:
+        if (securiryLog == null || !securiryLog.isShowing()) {
+            securiryLog = new SecurityLogView();
+            securiryLog.setVisible(true);
+            mainPanel.add(securiryLog);
+            try {
+                // TODO add your handling code here:
+                securiryLog.setSelected(true);
+
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem17ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        if (deliveryView == null || !deliveryView.isShowing()) {
+            deliveryView = new DeliveryView();
+            deliveryView.setVisible(true);
+            mainPanel.add(deliveryView);
+            try {
+                // TODO add your handling code here:
+                deliveryView.setSelected(true);
+
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jMenuItem15MousePressed(java.awt.event.MouseEvent evt) {
         // TODO add your handling code here:

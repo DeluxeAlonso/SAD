@@ -903,7 +903,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
 
     private void deliverBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deliverBtnActionPerformed
         // TODO add your handling code here:
-        algorithmExecution.start();
+        //algorithmExecution.start();
     }//GEN-LAST:event_deliverBtnActionPerformed
 
     private void deletePartialBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletePartialBtnActionPerformed
@@ -916,10 +916,21 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
             }
             if(reasonCombo.getSelectedIndex() == 1)//PRODUCTOS VENCIDOS 
                 p.setEstado(EntityState.PartialOrders.NO_ATENDIDO.ordinal());
-            else//CLIENTE INSATISFECHO
-                p.setEstado(EntityState.PartialOrders.ATENDIDO.ordinal()); 
-            if(orderApplication.updatePartialOrder(p, pallets))
+            else{//CLIENTE INSATISFECHO
+                p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
+            }
+            if(orderApplication.updatePartialOrder(p, pallets)){
                 JOptionPane.showMessageDialog(this, Strings.DEVOLUTION_ORDER_SUCCESS,Strings.DEVOLUTION_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
+                ArrayList<PedidoParcial> availablePartialOrders = orderApplication.getPendingPartialOrdersById(p.getPedido().getId());
+                System.out.println("AVAIALBLE ORDERS " + availablePartialOrders.size());
+                if(availablePartialOrders.isEmpty()){
+                    p.getPedido().setEstado(EntityState.Orders.ANULADO.ordinal());
+                    orderApplication.updateOrder(p.getPedido());
+                }
+                currentOrders = orderApplication.getAllOrders();
+                refreshTable();
+                clearDetailFields();
+            }
             else
                 JOptionPane.showMessageDialog(this, Strings.DEVOLUTION_ORDER_ERROR,Strings.DEVOLUTION_ORDER_TITLE,JOptionPane.ERROR_MESSAGE);
         }

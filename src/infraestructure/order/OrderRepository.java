@@ -346,6 +346,8 @@ public class OrderRepository implements IOrderRepository{
             for(int i=0;i<pallets.size();i++){
                 session.update(pallets.get(i));
             }
+            System.out.println(p.getPedido().getEstado());
+            session.update(p.getPedido());
             session.update(p);                      
             session.getTransaction().commit();
             return true;

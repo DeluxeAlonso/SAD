@@ -84,7 +84,7 @@ public class PalletApplication {
         }
         return pallets;
     }
-    
+
     public ArrayList<Pallet> getPalletsByPartialOrder(Integer partialOrderId){
         ArrayList<Pallet> pallets = null;
         try {
@@ -94,5 +94,15 @@ public class PalletApplication {
         }
         return pallets;
     }
-    
+
+        public void update(Pallet pallet){
+        
+        try{
+            palletRepository.update(pallet);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+    }
+
 }

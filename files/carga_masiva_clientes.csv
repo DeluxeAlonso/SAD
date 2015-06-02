@@ -1,74 +1,74 @@
 23,,,,
 Cliente 1,12345678901,2,,
-85.678901,12.765309,Local 1 del Cliente 1,Descripción,Av. La Marina 1812 Oficina 601
-85.772901,12.166308,Local 2 del Cliente 1,Descripción,Av. La Marina 1812 Oficina 601
+-11.832386,-77.1444295,Local 1 del Cliente 1,Descripción,Av. La Marina 1812 Oficina 601
+-11.8394138,-77.1314789,Local 2 del Cliente 1,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 2,12345678902,1,,
-85.072201,12.463301,Local 1 del Cliente 2,Descripción,Av. La Marina 1812 Oficina 601
+-11.8338706,-77.1157081,Local 1 del Cliente 2,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 3,12345678903,1,,
-85.153201,12.317604,Local 1 del Cliente 3,Descripción,Av. La Marina 1812 Oficina 601
+-11.8746166,-77.0913113,Local 1 del Cliente 3,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 4,12345678904,3,,
-85.753201,12.816604,Local 1 del Cliente 4,Descripción,Av. La Marina 1812 Oficina 601
-85.873201,12.314605,Local 2 del Cliente 4,Descripción,Av. La Marina 1812 Oficina 601
-85.903241,12.612674,Local 3 del Cliente 4,Descripción,Av. La Marina 1812 Oficina 601
+-11.8392807,-77.153477,Local 1 del Cliente 4,Descripción,Av. La Marina 1812 Oficina 601
+-11.8332692,-77.16494,Local 2 del Cliente 4,Descripción,Av. La Marina 1812 Oficina 601
+-11.8500743,-77.1546326,Local 3 del Cliente 4,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 5,12345678905,2,,
-85.693271,12.172824,Local 1 del Cliente 5,Descripción,Av. La Marina 1812 Oficina 601
-85.602147,12.311574,Local 2 del Cliente 5,Descripción,Av. La Marina 1812 Oficina 601
+-11.8502026,-77.1363733,Local 1 del Cliente 5,Descripción,Av. La Marina 1812 Oficina 601
+-11.8332713,-77.137918,Local 2 del Cliente 5,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 6,12345678906,1,,
-85.793275,12.772824,Local 1 del Cliente 6,Descripción,Av. La Marina 1812 Oficina 601
+-11.8273794,-77.134278,Local 1 del Cliente 6,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 7,12345678907,4,,
-85.143775,12.873124,Local 1 del Cliente 7,Descripción,Av. La Marina 1812 Oficina 601
-85.150275,12.542824,Local 2 del Cliente 7,Descripción,Av. La Marina 1812 Oficina 601
-85.053275,12.773224,Local 3 del Cliente 7,Descripción,Av. La Marina 1812 Oficina 601
-85.103275,12.781004,Local 4 del Cliente 7,Descripción,Av. La Marina 1812 Oficina 601
+-11.8299473,-77.1299877,Local 1 del Cliente 7,Descripción,Av. La Marina 1812 Oficina 601
+-11.8290201,-77.1227624,Local 2 del Cliente 7,Descripción,Av. La Marina 1812 Oficina 601
+-11.8328884,-77.1201308,Local 3 del Cliente 7,Descripción,Av. La Marina 1812 Oficina 601
+-11.8490312,-77.0840853,Local 4 del Cliente 7,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 8,12345678908,5,,
-85.100775,12.072124,Local 1 del Cliente 8,Descripción,Av. La Marina 1812 Oficina 601
-85.510175,12.172724,Local 2 del Cliente 8,Descripción,Av. La Marina 1812 Oficina 601
-85.141942,12.273826,Local 3 del Cliente 8,Descripción,Av. La Marina 1812 Oficina 601
-85.166665,12.045894,Local 4 del Cliente 8,Descripción,Av. La Marina 1812 Oficina 601
-85.113702,12.042734,Local 5 del Cliente 8,Descripción,Av. La Marina 1812 Oficina 601
+-11.8406354,-77.070795,Local 1 del Cliente 8,Descripción,Av. La Marina 1812 Oficina 601
+-11.8298164,-77.0720452,Local 2 del Cliente 8,Descripción,Av. La Marina 1812 Oficina 601
+-11.8291519,-77.0475661,Local 3 del Cliente 8,Descripción,Av. La Marina 1812 Oficina 601
+-11.858879,-77.0109339,Local 4 del Cliente 8,Descripción,Av. La Marina 1812 Oficina 601
+-11.8207401,-77.0467008,Local 5 del Cliente 8,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 9,12345678909,2,,
-85.189675,12.072321,Local 1 del Cliente 9,Descripción,Av. La Marina 1812 Oficina 601
-85.011785,12.072421,Local 2 del Cliente 9,Descripción,Av. La Marina 1812 Oficina 601
+-12.0922395,-77.070573,Local 1 del Cliente 9,Descripción,Av. La Marina 1812 Oficina 601
+-12.0785927,-77.0657406,Local 2 del Cliente 9,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 10,12345678910,6,,
-85.777675,12.112373,Local 1 del Cliente 10,Descripción,Av. La Marina 1812 Oficina 601
-85.166075,12.431308,Local 2 del Cliente 10,Descripción,Av. La Marina 1812 Oficina 601
-85.185555,12.522001,Local 3 del Cliente 10,Descripción,Av. La Marina 1812 Oficina 601
-85.389444,12.802121,Local 4 del Cliente 10,Descripción,Av. La Marina 1812 Oficina 601
-85.163335,12.091221,Local 5 del Cliente 10,Descripción,Av. La Marina 1812 Oficina 601
-85.229622,12.512391,Local 6 del Cliente 10,Descripción,Av. La Marina 1812 Oficina 601
+-12.0718526,-77.0719614,Local 1 del Cliente 10,Descripción,Av. La Marina 1812 Oficina 601
+-12.0599891,-77.0588253,Local 2 del Cliente 10,Descripción,Av. La Marina 1812 Oficina 601
+-12.0508901,-77.0427199,Local 3 del Cliente 10,Descripción,Av. La Marina 1812 Oficina 601
+-12.0486238,-77.0010667,Local 4 del Cliente 10,Descripción,Av. La Marina 1812 Oficina 601
+-12.0440633,-76.9590139,Local 5 del Cliente 10,Descripción,Av. La Marina 1812 Oficina 601
+-12.0390368,-76.9331283,Local 6 del Cliente 10,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 11,12345678911,1,,
-85.592671,12.120372,Local 1 del Cliente 11,Descripción,Av. La Marina 1812 Oficina 601
+-12.0693051,-76.9516628,Local 1 del Cliente 11,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 12,12345678912,1,,
-86.090321,11.958579,Local 1 del Cliente 12,Descripción,Av. La Marina 1812 Oficina 601
+-12.0797931,-76.9545606,Local 1 del Cliente 12,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 13,12345678913,1,,
-86.029301,11.988769,Local 1 del Cliente 13,Descripción,Av. La Marina 1812 Oficina 601
+-12.1371962,-76.9949771,Local 1 del Cliente 13,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 14,12345678914,2,,
-86.020001,11.988769,Local 1 del Cliente 14,Descripción,Av. La Marina 1812 Oficina 601
-86.004211,11.999989,Local 2 del Cliente 14,Descripción,Av. La Marina 1812 Oficina 601
+-12.1394019,-77.0175869,Local 1 del Cliente 14,Descripción,Av. La Marina 1812 Oficina 601
+-12.1301439,-77.0293081,Local 2 del Cliente 14,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 15,12345678915,2,,
-86.104211,11.998989,Local 1 del Cliente 15,Descripción,Av. La Marina 1812 Oficina 601
-86.114227,11.987989,Local 2 del Cliente 15,Descripción,Av. La Marina 1812 Oficina 601
+-12.1810654,-77.0108343,Local 1 del Cliente 15,Descripción,Av. La Marina 1812 Oficina 601
+-12.1969921,-76.9999024,Local 2 del Cliente 15,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 16,12345678916,1,,
-85.994227,12.920989,Local 1 del Cliente 16,Descripción,Av. La Marina 1812 Oficina 601
+-12.2061675,-77.0123964,Local 1 del Cliente 16,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 17,12345678917,1,,
-85.394127,12.140289,Local 1 del Cliente 17,Descripción,Av. La Marina 1812 Oficina 601
+-12.1942267,-76.9546529,Local 1 del Cliente 17,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 18,12345678918,1,,
-85.334621,12.351289,Local 1 del Cliente 18,Descripción,Av. La Marina 1812 Oficina 601
+-12.1868117,-76.92693,Local 1 del Cliente 18,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 19,12345678919,1,,
-86.214527,11.487381,Local 1 del Cliente 19,Descripción,Av. La Marina 1812 Oficina 601
+-12.2281471,-76.9213081,Local 1 del Cliente 19,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 20,12345678920,4,,
-86.248507,11.682961,Local 1 del Cliente 20,Descripción,Av. La Marina 1812 Oficina 601
-86.278217,11.612671,Local 2 del Cliente 20,Descripción,Av. La Marina 1812 Oficina 601
-86.298527,11.783051,Local 3 del Cliente 20,Descripción,Av. La Marina 1812 Oficina 601
-86.218589,11.642551,Local 4 del Cliente 20,Descripción,Av. La Marina 1812 Oficina 601
+-12.216538,-76.905731,Local 1 del Cliente 20,Descripción,Av. La Marina 1812 Oficina 601
+-12.1960842,-77.0254134,Local 2 del Cliente 20,Descripción,Av. La Marina 1812 Oficina 601
+-12.168279,-77.0280684,Local 3 del Cliente 20,Descripción,Av. La Marina 1812 Oficina 601
+-12.145791,-77.0071107,Local 4 del Cliente 20,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 21,12345678921,3,,
-86.348107,11.672121,Local 1 del Cliente 21,Descripción,Av. La Marina 1812 Oficina 601
-86.448203,11.652701,Local 2 del Cliente 21,Descripción,Av. La Marina 1812 Oficina 601
-86.453801,11.658122,Local 3 del Cliente 21,Descripción,Av. La Marina 1812 Oficina 601
+-12.0389447,-76.9534584,Local 1 del Cliente 21,Descripción,Av. La Marina 1812 Oficina 601
+-12.0364675,-76.9953158,Local 2 del Cliente 21,Descripción,Av. La Marina 1812 Oficina 601
+-12.0435114,-77.112613,Local 3 del Cliente 21,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 22,12345678922,3,,
-86.340127,11.677295,Local 1 del Cliente 22,Descripción,Av. La Marina 1812 Oficina 601
-86.410277,11.670521,Local 2 del Cliente 22,Descripción,Av. La Marina 1812 Oficina 601
-86.170935,11.671123,Local 3 del Cliente 22,Descripción,Av. La Marina 1812 Oficina 601
+-12.0275841,-77.0635674,Local 1 del Cliente 22,Descripción,Av. La Marina 1812 Oficina 601
+-12.0103575,-77.070454,Local 2 del Cliente 22,Descripción,Av. La Marina 1812 Oficina 601
+-11.9935183,-77.0666403,Local 3 del Cliente 22,Descripción,Av. La Marina 1812 Oficina 601
 Cliente 23,12345678923,2,,
-86.470638,11.876923,Local 1 del Cliente 23,Descripción,Av. La Marina 1812 Oficina 601
-86.471935,11.831028,Local 2 del Cliente 23,Descripción,Av. La Marina 1812 Oficina 601
+-12.0113839,-77.1046398,Local 1 del Cliente 23,Descripción,Av. La Marina 1812 Oficina 601
+-11.9959416,-77.1002025,Local 2 del Cliente 23,Descripción,Av. La Marina 1812 Oficina 601
