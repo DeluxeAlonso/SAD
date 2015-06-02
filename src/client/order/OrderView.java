@@ -9,11 +9,13 @@ import algorithm.AlgorithmExecution;
 import application.client.ClientApplication;
 import application.local.LocalApplication;
 import application.order.OrderApplication;
+import application.pallet.PalletApplication;
 import application.product.ProductApplication;
 import client.base.BaseView;
 import entity.Cliente;
 import entity.GuiaRemision;
 import entity.Local;
+import entity.Pallet;
 import entity.Pedido;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
@@ -32,6 +34,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Locale;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -55,6 +58,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     ProductApplication productApplication = new ProductApplication();
     ClientApplication clientApplication = new ClientApplication();
     AlgorithmExecution algorithmExecution = new AlgorithmExecution();
+    PalletApplication palletApplication = new PalletApplication();
     public static OrderView orderView;
     ArrayList<Local> locals = new ArrayList<>();
     ArrayList<Producto> orderProducts;
@@ -78,8 +82,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     }
 
     public void setupElements(){
-        orderApplication.refreshOrders();
-        currentOrders = EntityType.ORDERS;
+        currentOrders = orderApplication.getAllOrders();
         fillCombos();
         refreshTable();
         Icons.setButton(newBtn, Icons.ICONOS.CREATE.ordinal());
@@ -192,8 +195,9 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
      * Order Methods
      */
     public void deleteOrder(){
-        EntityType.ORDERS.get(currentOrderIndex()).setEstado(0);
-        if(orderApplication.updateOrder(EntityType.ORDERS.get(currentOrderIndex()))){
+        Pedido currentOrder = currentOrders.get(currentOrderIndex());
+        currentOrder.setEstado(0);
+        if(orderApplication.updateOrder(currentOrder)){
             refreshOrders();
             JOptionPane.showMessageDialog(this, Strings.MESSAGE_DELETE_ORDER,
                     Strings.MESSAGE_DELETE_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
@@ -268,7 +272,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         dateTxt.setText("");
         partialStatusTxt.setText("");
         partialCombo.setEditable(false);
-        jComboBox1.setEnabled(false);
+        reasonCombo.setEnabled(false);
         deletePartialBtn.setEnabled(false);
         refreshAllProductsTable(0);
     }
@@ -287,8 +291,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     }
     
     public void refreshOrders(){
-        orderApplication.refreshOrders();
-        currentOrders = EntityType.ORDERS;
+        currentOrders = orderApplication.getAllOrders();
         refreshTable();
     }
     
@@ -367,8 +370,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                     e.printStackTrace();
                 } finally{
                     if(!has_errors){
-                        orderApplication.refreshOrders();
-                        currentOrders = EntityType.ORDERS;
+                        currentOrders = orderApplication.getAllOrders();
                         refreshTable();
                         JOptionPane.showMessageDialog(this, Strings.LOAD_ORDER_SUCCESS,
                         Strings.LOAD_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
@@ -430,7 +432,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         partialStatusTxt = new javax.swing.JLabel();
         deletePartialBtn = new javax.swing.JButton();
         jLabel14 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        reasonCombo = new javax.swing.JComboBox();
         deliverBtn = new javax.swing.JButton();
 
         setClosable(true);
@@ -608,6 +610,8 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
             }
         });
 
+        jScrollPane1.setEnabled(false);
+
         productTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -624,6 +628,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                 return canEdit [columnIndex];
             }
         });
+        productTable.setEnabled(false);
         jScrollPane1.setViewportView(productTable);
         if (productTable.getColumnModel().getColumnCount() > 0) {
             productTable.getColumnModel().getColumn(0).setResizable(false);
@@ -750,11 +755,16 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         );
 
         deletePartialBtn.setEnabled(false);
+        deletePartialBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deletePartialBtnActionPerformed(evt);
+            }
+        });
 
         jLabel14.setText("Razon:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar Razon", "Productos Vencidos", "Disconformidad" }));
-        jComboBox1.setEnabled(false);
+        reasonCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar Razon", "Productos Vencidos", "Disconformidad" }));
+        reasonCombo.setEnabled(false);
 
         deliverBtn.setText("Despachar");
         deliverBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -777,7 +787,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                                 .addGap(350, 350, 350)
                                 .addComponent(jLabel14)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(reasonCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(deletePartialBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
@@ -819,7 +829,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                         .addComponent(deleteBtn)
                         .addComponent(deletePartialBtn)
                         .addComponent(jLabel14)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(reasonCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(deliverBtn))
                 .addContainerGap())
         );
@@ -896,6 +906,25 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         algorithmExecution.start();
     }//GEN-LAST:event_deliverBtnActionPerformed
 
+    private void deletePartialBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletePartialBtnActionPerformed
+    if(reasonCombo.getSelectedIndex() != 0){
+            PedidoParcial p = currentPartialOrders.get(partialCombo.getSelectedIndex() -1);
+            ArrayList<Pallet> pallets = palletApplication.getPalletsByPartialOrder(p.getId());
+            for(int i=0;i<pallets.size();i++){
+                pallets.get(i).setEstado(EntityState.Pallets.UBICADO.ordinal());
+                pallets.get(i).setPedidoParcial(null);
+            }
+            if(reasonCombo.getSelectedIndex() == 1)//PRODUCTOS VENCIDOS 
+                p.setEstado(EntityState.PartialOrders.NO_ATENDIDO.ordinal());
+            else//CLIENTE INSATISFECHO
+                p.setEstado(EntityState.PartialOrders.ATENDIDO.ordinal()); 
+            if(orderApplication.updatePartialOrder(p, pallets))
+                JOptionPane.showMessageDialog(this, Strings.DEVOLUTION_ORDER_SUCCESS,Strings.DEVOLUTION_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
+            else
+                JOptionPane.showMessageDialog(this, Strings.DEVOLUTION_ORDER_ERROR,Strings.DEVOLUTION_ORDER_TITLE,JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_deletePartialBtnActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField codLocalTxt;
@@ -911,7 +940,6 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     private javax.swing.JTextField filterIdTxt;
     private javax.swing.JComboBox filterLocalCombo;
     private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -938,6 +966,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     private javax.swing.JComboBox partialCombo;
     private javax.swing.JLabel partialStatusTxt;
     private javax.swing.JTable productTable;
+    private javax.swing.JComboBox reasonCombo;
     private javax.swing.JTextField rucTxt;
     private javax.swing.JButton searchBtn;
     private javax.swing.JComboBox statusCombo;
@@ -953,7 +982,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         if(orderTable.getSelectedRow() != -1){
             fileTextField.setText("");
             fillDetailFields();
-            if(EntityType.ORDERS.get(currentOrderIndex()).getEstado() != 0){
+            if(currentOrders.get(currentOrderIndex()).getEstado() == 1){
                 deleteBtn.setEnabled(true);
             }else
                 deleteBtn.setEnabled(false);
@@ -993,7 +1022,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
             }
             else{
                 if(currentPartialOrders.get(partialCombo.getSelectedIndex()-1).getEstado() == 0){
-                    jComboBox1.setEnabled(true);
+                    reasonCombo.setEnabled(true);
                     deletePartialBtn.setEnabled(true);
                 }   
                 refreshProductTable(currentPartialOrders.get(partialCombo.getSelectedIndex()-1).getId());

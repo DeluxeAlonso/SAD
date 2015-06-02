@@ -152,6 +152,9 @@ public class Strings {
     public static final String LOAD_ORDER_TITLE="Carga Masiva de Pedidos";
     public static final String LOAD_ORDER_ERROR="No se puedo realizar la carga masiva de Pedidos";
     public static final String LOAD_ORDER_SUCCESS="Se realizo la carga masiva de Pedidos de forma correcta";
+    public static final String DEVOLUTION_ORDER_SUCCESS="Se realizo la devolucion con exito.";
+    public static final String DEVOLUTION_ORDER_ERROR="No se pudo realizar la devolucion del pedido parcial.";
+    public static final String DEVOLUTION_ORDER_TITLE="Devolucion de Orden Parcial.";
     /*END*/
     
     

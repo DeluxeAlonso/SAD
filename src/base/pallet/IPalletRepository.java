@@ -22,4 +22,6 @@ public interface IPalletRepository extends IRepository<Pallet>{
     public ArrayList<Pallet> getPalletsFromOrder(int rackId);
     public ArrayList<Pallet> queryPalletsByProduct(Integer productId);
 
+    public ArrayList<Pallet> queryPalletsByPartialOrder(Integer partialOrderId);
+
 }
