@@ -37,6 +37,7 @@ public class NewUserView extends javax.swing.JDialog {
      */
     public NewUserView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        Icons.setMainIcon(this);
         initComponents();
         addImagesToButton();
         //initialize user states combo
@@ -214,6 +215,7 @@ public class NewUserView extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Nuevo Usuario");
+        setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);

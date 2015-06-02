@@ -38,6 +38,7 @@ public class EditUserAdmin extends javax.swing.JDialog {
     public EditUserAdmin(java.awt.Frame parent, boolean modal, Usuario user) {
         super(parent, modal);
         initComponents();
+        Icons.setMainIcon(this);
         addImagesToButton();
         this.user = user;
         fillCombos();
@@ -203,6 +204,7 @@ public class EditUserAdmin extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Editar Usuario");
+        setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);

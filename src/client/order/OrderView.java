@@ -5,6 +5,7 @@
  */
 package client.order;
 
+import algorithm.AlgorithmExecution;
 import application.client.ClientApplication;
 import application.local.LocalApplication;
 import application.order.OrderApplication;
@@ -53,6 +54,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     LocalApplication localApplication = new LocalApplication();
     ProductApplication productApplication = new ProductApplication();
     ClientApplication clientApplication = new ClientApplication();
+    AlgorithmExecution algorithmExecution = new AlgorithmExecution();
     public static OrderView orderView;
     ArrayList<Local> locals = new ArrayList<>();
     ArrayList<Producto> orderProducts;
@@ -84,6 +86,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         Icons.setButton(searchBtn, Icons.ICONOS.SEARCH.ordinal());
         Icons.setButton(deleteBtn, Icons.ICONOS.DELETE.ordinal());
         Icons.setButton(deletePartialBtn, Icons.ICONOS.DELETE.ordinal());
+        Icons.setButton(deliverBtn, Icons.ICONOS.DELIVERY.ordinal());
     }
 
     public void initializeArrays(){
@@ -428,6 +431,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         deletePartialBtn = new javax.swing.JButton();
         jLabel14 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox();
+        deliverBtn = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Pedidos");
@@ -752,6 +756,13 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar Razon", "Productos Vencidos", "Disconformidad" }));
         jComboBox1.setEnabled(false);
 
+        deliverBtn.setText("Despachar");
+        deliverBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deliverBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -762,7 +773,8 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(447, 447, 447)
+                                .addComponent(deliverBtn)
+                                .addGap(350, 350, 350)
                                 .addComponent(jLabel14)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -801,12 +813,14 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(newBtn)
-                    .addComponent(deleteBtn)
-                    .addComponent(deletePartialBtn)
-                    .addComponent(jLabel14)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(deleteBtn)
+                        .addComponent(deletePartialBtn)
+                        .addComponent(jLabel14)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(deliverBtn))
                 .addContainerGap())
         );
 
@@ -877,12 +891,18 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void deliverBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deliverBtnActionPerformed
+        // TODO add your handling code here:
+        //algorithmExecution.start();
+    }//GEN-LAST:event_deliverBtnActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField codLocalTxt;
     private javax.swing.JFormattedTextField dateTxt;
     private javax.swing.JButton deleteBtn;
     private javax.swing.JButton deletePartialBtn;
+    private javax.swing.JButton deliverBtn;
     private javax.swing.JTextField detailClientTxt;
     private javax.swing.JComboBox detailStatusCombo;
     private javax.swing.JTextField direccionTxt;

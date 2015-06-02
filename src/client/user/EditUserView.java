@@ -7,6 +7,7 @@ package client.user;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import util.Icons;
 
 /**
  *
@@ -19,6 +20,7 @@ public class EditUserView extends javax.swing.JInternalFrame {
      */
     public EditUserView() {
         initComponents();
+        Icons.setMainIcon(this);
     }
 
     /**
