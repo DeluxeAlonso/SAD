@@ -613,6 +613,7 @@ public class InternmentSelectView extends BaseView {
         jButton3.setEnabled(false);    
         jComboBox1.removeAllItems();
         jTextField2.setText("");
+        jTextField3.setText("");
         }
     }
     
