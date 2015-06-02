@@ -6,6 +6,7 @@
 package algorithm;
 
 import entity.PedidoParcial;
+import entity.PedidoParcialXProducto;
 import entity.Producto;
 
 /**
@@ -20,6 +21,15 @@ public class Node {
     private int demand;    
     private PedidoParcial partialOrder;
     private int idx;
+    private PedidoParcialXProducto orderXProduct;
+    
+    public PedidoParcialXProducto getOrderXProduct() {
+        return orderXProduct;
+    }
+
+    public void setOrderXProduct(PedidoParcialXProducto orderXProduct) {
+        this.orderXProduct = orderXProduct;
+    }
     
     public int getIdx() {
         return idx;

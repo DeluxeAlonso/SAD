@@ -69,6 +69,7 @@ public class Problem {
                     node.setPartialOrder(order);
                     node.setProduct(partialOrderProduct.getProducto());
                     node.setIdx(nNodes++);
+                    node.setOrderXProduct(partialOrderProduct);
                     
                     nodes.add(node);                    
                 }
