@@ -21,5 +21,7 @@ public interface IInternmentRepository extends IRepository<OrdenInternamiento>{
     public ArrayList<OrdenInternamiento> queryByType(int idType);
 
     public OrdenInternamientoXProducto getProdOrder(OrdenInternamiento idType);
+
+    public Boolean incCantOrderXProd(OrdenInternamientoXProducto object);
     
 }

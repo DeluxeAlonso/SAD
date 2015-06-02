@@ -71,9 +71,13 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
     JTable table = null;
     public int cantAInternar;
     public OrdenInternamiento ordenAInternar=null;
+    public ArrayList<Ubicacion> ubicaciones = null;
+    
     
     public InternmentSelectView() {
         initComponents();
+        jButton2.setEnabled(false);
+        jButton3.setEnabled(false);
         jComboBox1.removeAllItems();
         table = jTable2;
         table.getModel().addTableModelListener(new TableModelListener() {
@@ -329,18 +333,19 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
 
     public void fillTable(){
         clearGrid(jTable1);
+        int x = 0;
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        
         ArrayList<OrdenInternamiento> orders = internmentApplication.queryByType(0);
         orders.addAll(internmentApplication.queryByType(2));
         for (OrdenInternamiento or : orders){
             Producto prod = internmentApplication.getProdOrder(or).getProducto();
-            Pallet pal = palletApplication.getPalletsFromOrder(or);
+            ArrayList<Pallet> pal = palletApplication.getPalletsFromOrder(or.getId());
+            x = internmentApplication.getProdOrder(or).getCantidad() - internmentApplication.getProdOrder(or).getCantidadIngresada();
             model.addRow(new Object[]{
                or.getId(),
                prod.getNombre(),
-               pal.getFechaVencimiento(),
-               internmentApplication.getProdOrder(or).getCantidad()
+               pal.get(0).getFechaVencimiento(),
+               x
             }); 
         }
         
@@ -448,20 +453,26 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
         
     }
     
+ 
+    
     
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         
-        
+        internarPallets();
 
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTable1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MousePressed
         // TODO add your handling code here:
+            jButton2.setEnabled(true);
+            jButton3.setEnabled(true);
+        
+        
         int row = jTable1.getSelectedRow();
         int cod = Integer.parseInt(jTable1.getModel().getValueAt(row,0).toString());
         OrdenInternamiento orden = internmentApplication.queryById(cod);
         Producto prod = internmentApplication.getProdOrder(orden).getProducto();
-        cantAInternar = internmentApplication.getProdOrder(orden).getCantidad();
+        cantAInternar = internmentApplication.getProdOrder(orden).getCantidad() - internmentApplication.getProdOrder(orden).getCantidadIngresada();
         jTextField3.setText(Integer.toString(cantAInternar));
         ordenAInternar = orden;
         fillComboWarehouse(prod.getCondicion().getId());
@@ -476,6 +487,62 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
         
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
+    
+    private void internarPallets(){
+        JTable table = jTable2;    
+        int cant = 0;
+        Boolean isChecked=null;
+        if (ordenAInternar != null){
+            ArrayList<Pallet> pallets = palletApplication.getPalletsFromOrder(ordenAInternar.getId());
+            ArrayList<Pallet> palletsInter = new ArrayList<Pallet>();
+            for (int i = 0;i< pallets.size();i++){
+                if (pallets.get(i).getUbicacion() == null)
+                    palletsInter.add(pallets.get(i));
+            }
+            if(table.getRowCount()>0){
+            for (int i = 0; i < table.getRowCount(); i++) {
+                if (internmentApplication.getProdOrder(ordenAInternar).getCantidadIngresada() == internmentApplication.getProdOrder(ordenAInternar).getCantidad()){
+                    ordenAInternar.setEstado(EntityState.InternmentOrders.INTERNADA.ordinal());
+                    internmentApplication.update(ordenAInternar);
+                    break;
+                }
+                
+                isChecked = (Boolean)table.getValueAt(i, 4);
+                if (isChecked != null && isChecked) {
+                    //meter ubicacion al pallet
+                    palletApplication.updateSpot(palletsInter.get(cant).getId(),ubicaciones.get(i).getId());
+                    // cambiar estado de ubicacion a ocupada
+                    spotApplication.updateSpotOccupancy(ubicaciones.get(i).getId(), EntityState.Spots.OCUPADO.ordinal());
+                                    
+                    //actualizar cant a internar en ordeninteramientoXproducto
+                    OrdenInternamientoXProducto ordenXProd = internmentApplication.getProdOrder(ordenAInternar);
+                    ordenXProd.setCantidadIngresada(ordenXProd.getCantidadIngresada()+1);
+                    internmentApplication.incCantOrderXProd(ordenXProd);
+
+                    // actualizar stock total del producto
+                    
+                    //disminuir ubicaciones libres en racks y almacen
+                    
+                    //ingresar algo en kardex
+                    
+                }
+                cant++;
+            }
+            
+            //si cant y cantInternada son iguales cambiar estado de orden
+            
+            
+            
+        }
+        fillTable();
+        clearGrid(jTable2);
+        jButton2.setEnabled(false);
+        jButton3.setEnabled(false);    
+        jComboBox1.removeAllItems();
+        }
+    }
+    
+    
     private void fillFreeSpots(){
             
             clearGrid(jTable2);
@@ -485,7 +552,9 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
             jTextField2.setText(alm.getUbicLibres().toString());
             ArrayList<Rack> racks = rackApplication.queryRacksByWarehouse(alm.getId());
             for (Rack r : racks){
+                //r.getUbicacions().
                 ubi = (ArrayList<Ubicacion>) spotApplication.queryEmptySpotsByRack(r.getId());
+                ubicaciones = ubi;
                 for (Ubicacion ub : ubi){
                     model.addRow(new Object[]{
                     r.getId(),
