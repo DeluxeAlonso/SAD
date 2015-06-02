@@ -893,7 +893,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
 
     private void deliverBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deliverBtnActionPerformed
         // TODO add your handling code here:
-        algorithmExecution.start();
+        //algorithmExecution.start();
     }//GEN-LAST:event_deliverBtnActionPerformed
 
 

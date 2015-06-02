@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import util.EntityState;
 
 /**
@@ -35,8 +34,9 @@ import util.EntityState;
  */
 public class AlgorithmExecution {
     OrderApplication orderApplication = new OrderApplication();
+    Problem problem;
     
-    public void start(){
+    public Solution start(double maxTravelTime){
         long ini = System.currentTimeMillis();
         
         Algorithm algorithm = new Algorithm();
@@ -48,10 +48,10 @@ public class AlgorithmExecution {
         algorithm.setMutationRate(0.5f);
         algorithm.setMaxPriority(10000);
         algorithm.setBasePriority(1.2);
-        algorithm.setMaxTravelTime(3);
+        algorithm.setMaxTravelTime(maxTravelTime);
         algorithm.setGraspAlpha(0.3);
         
-        Problem problem = new Problem();
+        problem = new Problem();
         
         Population population = new Population(algorithm, problem);
         
@@ -91,17 +91,17 @@ public class AlgorithmExecution {
         System.out.println("Execution time: " + (end-ini) + "ms");
         
         Solution bestSolution = population.getBestSolution();
-                
+        return bestSolution;        
         //Here we can show the solution and the user can decide to run again the algorithm
-        AlgorithmView window = new AlgorithmView(bestSolution);
+        /*AlgorithmView window = new AlgorithmView(bestSolution);
         window.setBounds(0, 0, 700, 700);
-        window.setVisible(true);
+        window.setVisible(true);*/
         
-        processOrders(bestSolution, problem);
+        //processOrders(bestSolution, problem);
         
     }
     
-    public AlgorithmReturnValues processOrders(Solution solution, Problem problem){
+    public AlgorithmReturnValues processOrders(Solution solution){
         ArrayList<UnidadTransporte> vehicles = problem.getVehicles();               
         
         ArrayList<PedidoParcial> orders = problem.getOrders();
