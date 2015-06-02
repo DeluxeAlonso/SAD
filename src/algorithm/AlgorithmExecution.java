@@ -40,22 +40,32 @@ public class AlgorithmExecution {
         long ini = System.currentTimeMillis();
         
         Algorithm algorithm = new Algorithm();
-        algorithm.setPopulationSize(50000);
+        algorithm.setNumberOfGenerations(0);
+        algorithm.setPopulationSize(1000);
         algorithm.setTournamentSelectionKValue(50);
         algorithm.setOvercapPenalty(10000);
         algorithm.setOvertimePenalty(10000);
         algorithm.setOverstockPenalty(10000);
         algorithm.setMutationRate(0.5f);
-        algorithm.setMaxPriority(10000);
+        algorithm.setMaxPriority(100);
         algorithm.setBasePriority(1.2);
-        algorithm.setMaxTravelTime(maxTravelTime);
+        algorithm.setMaxTravelTime(maxTravelTime); 
         algorithm.setGraspAlpha(0.3);
         
         problem = new Problem();
         
         Population population = new Population(algorithm, problem);
+        System.out.println("Se creo la población");
+        
+        Solution bestSolution = population.getBestSolution();
+        System.out.println("bestSolution: " + bestSolution.getCost());
+        
+        //displayRoutes(bestSolution);
+        
+        
         
         for (int i = 0; i < algorithm.getNumberOfGenerations(); i++) {
+            System.out.println("Generación: " + i);
             Solution[] parents = new Solution[2];
             parents[0] = population.getSolutions()[Selection.tournamentSelection(
                         algorithm.getTournamentSelectionKValue(), population, 
@@ -67,31 +77,44 @@ public class AlgorithmExecution {
             
             Solution child = Crossover.uniformCrossover(parents, algorithm, problem);
             
-            child = Mutation.mutation(child, algorithm, problem);            
+            //displayRoute(child);
+            
+            //child = Mutation.mutation(child, algorithm, problem);            
             child = LocalSearch.opt2Improvement(child, algorithm, problem);  
             
-            double cost = ObjectiveFunction.getSolutionCost(child, algorithm,
+            
+            
+            double cost = ObjectiveFunction.getSolutionCost(child, algorithm, problem,
                 problem.getProductsStock());
             if(cost>algorithm.getOvercapPenalty() || cost>algorithm.getOvertimePenalty() ||
                     cost>algorithm.getOverstockPenalty()){
-                child = Repair.repair(child, algorithm);
-                child.setCost(ObjectiveFunction.getSolutionCost(child, algorithm,
+                //child = Repair.repair(child, algorithm, problem);
+                child.setCost(ObjectiveFunction.getSolutionCost(child, algorithm, problem, 
                         problem.getProductsStock()));
             }
             else
                 child.setCost(cost);
             
+            
             int replacedSolution = Selection.tournamentSelection(
                     algorithm.getTournamentSelectionKValue(), population, 
                     Selection.Options.WORST);
+            
+            System.out.println(child.getCost());
             
             population.getSolutions()[replacedSolution] = child;
         }
         long end = System.currentTimeMillis();
         System.out.println("Execution time: " + (end-ini) + "ms");
         
-        Solution bestSolution = population.getBestSolution();
-        return bestSolution;        
+        bestSolution = population.getBestSolution();
+        displayRoutes(bestSolution);
+        
+        
+        return bestSolution;  
+        
+        
+        
         //Here we can show the solution and the user can decide to run again the algorithm
         /*AlgorithmView window = new AlgorithmView(bestSolution);
         window.setBounds(0, 0, 700, 700);
@@ -299,6 +322,18 @@ public class AlgorithmExecution {
                     orderDetails.add(p);
             }
         return orderDetails;
+    }
+
+    private void displayRoutes(Solution bestSolution) {
+        Node[][]nodes = bestSolution.getNodes();
+        for (int i = 0; i < nodes.length; i++) {
+            System.out.println("");
+            System.out.println("ruta " + i);
+            for (int j = 0; j < nodes[i].length; j++) {
+                System.out.print(nodes[i][j].getX() + " " + nodes[i][j].getY());
+            }
+            System.out.println("");            
+        }
     }
     
 }

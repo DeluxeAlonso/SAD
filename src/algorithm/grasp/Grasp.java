@@ -32,12 +32,15 @@ public class Grasp {
         HashMap<Integer,Integer> currentStock = new HashMap<> (problem.getProductsStock());        
         
         for (int i = 0; i < routesNo; i++) {
+            //System.out.println("vehicle " + i);
+            
             UnidadTransporte vehicle = problem.getVehicles().get(i);
             
             ArrayList<Node> route = createRoute(vehicle, algorithm, currentStock, visited);
             
             routes[i] = new Node[route.size()];
             routes[i] = route.toArray(routes[i]);
+            if(routes[i].length == 0) throw new AssertionError(i + " is a bad route");
         }
         return routes;
     }
@@ -68,6 +71,8 @@ public class Grasp {
                 
                 double cost = ObjectiveFunction.objectiveFunction(vehicle, 
                         nodes.get(i), algorithm, 0, currentTime, 0, travelCost, newStock);
+                
+                //System.out.println(i + " travelCost: " + travelCost + "   cost: " + cost);
                 
                 if(cost>algorithm.getOvertimePenalty() || cost>algorithm.getOverstockPenalty())
                     continue;
@@ -127,7 +132,8 @@ public class Grasp {
         ArrayList<Node> RCL;
         
         int currentCapacity = 0, vehicleCapacity = vehicle.getTipoUnidadTransporte().getCapacidadPallets();
-        double currentTime = 0;
+        double currentTime = 0; 
+        int idx = 0;
 
         boolean alreadyInit = false;
         Node node = null, nextNode;
@@ -142,14 +148,22 @@ public class Grasp {
                 RCL = generateRCL(node, param.getBeta(), param.getTau(), algorithm.getGraspAlpha(), vehicle, 
                         algorithm, currentTime, currentStock, visited);
             }
+            
+            //System.out.println(param.getBeta() + " " + param.getTau());
+            if(idx==0 && RCL.isEmpty()) throw new AssertionError("bad RCL");            
+            
             if (RCL.isEmpty()) {
                 break; //if there are no more nodes to add
             }
             int chosen = Randomizer.randomInt(RCL.size());
             boolean canBeAdded = true;
-            if (currentCapacity < RCL.get(chosen).getDemand()) {
+            if (currentCapacity + RCL.get(chosen).getDemand() > vehicleCapacity) {
                 canBeAdded = false;
             }
+            
+            //System.out.println(currentCapacity + " " + RCL.get(chosen).getDemand() + " " + vehicleCapacity );
+            if(idx==0 && !canBeAdded) throw new AssertionError("bad demand");
+            
             if (canBeAdded) {
                 nextNode = RCL.get(chosen);
                 visited[nextNode.getIdx()] = true;                
@@ -176,6 +190,8 @@ public class Grasp {
             } else {
                 break; //if the vehicle is full
             }
+            
+            idx++;
         }
         return route;
     }
