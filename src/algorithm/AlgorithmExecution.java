@@ -101,7 +101,7 @@ public class AlgorithmExecution {
         
     }
     
-    public void processOrders(Solution solution, Problem problem){
+    public AlgorithmReturnValues processOrders(Solution solution, Problem problem){
         ArrayList<UnidadTransporte> vehicles = problem.getVehicles();               
         
         ArrayList<PedidoParcial> orders = problem.getOrders();
@@ -110,6 +110,7 @@ public class AlgorithmExecution {
         Node[][] nodes = solution.getNodes();
         ArrayList<PedidoParcial> rejectedOrders = new ArrayList<>();
         ArrayList<PedidoParcial> acceptedOrders = new ArrayList<>();
+        ArrayList<Despacho> despachos = new ArrayList<>();
         for (int i = 0; i < nodes.length; i++) {
             Despacho despacho = new Despacho();
             despacho.setEstado(1); // <-- set estado
@@ -141,6 +142,7 @@ public class AlgorithmExecution {
                     newPartialOrder.setGuiaRemision(customers.get(customer));
                     newPartialOrder.setPedido(partialOrder.getPedido());
                     newPartialOrder.setPedidoParcialXProductos(new HashSet<>());
+                    acceptedOrders.add(newPartialOrder);
                     partialOrders.add(newPartialOrder);                    
                     toNewOrder.put(partialOrder,newPartialOrder); //para no perder la referencia al nuevo pedido parcial
                 }
@@ -161,15 +163,8 @@ public class AlgorithmExecution {
                 newOrderXProduct.setCantidad(newDemand);
             }
             despacho.setGuiaRemisions(guiasRemision);
-            
-            
-            
+            despachos.add(despacho);
         }
-        
-        
-        
-        
-        /*
         
         //Primero se crea un par de hashmaps para almacenar la demanda de cada pedido parcial x producto
         //demand y demand2 tendra la demanda total y original del pedido parcial x producto        
@@ -201,29 +196,32 @@ public class AlgorithmExecution {
         
         //se crea un par de estructuras que representaran los pedidos parciales que se aceptan 
         //por el algoritmo y las ordenes que se rechazan
-        //aqui es donde se dividen los pedidos parciales en mas pedidos parciales
-        ArrayList<PedidoParcial> acceptedOrders = new ArrayList<>();
-        ArrayList<PedidoParcial> rejectedOrders = new ArrayList<>();
-        for (int i = 0; i < orders.size(); i++) {
+        //aqui es donde se dividen los pedidos parciales en mas pedidos parciales        
+        /*for (int i = 0; i < orders.size(); i++) {
             PedidoParcial pedido = new PedidoParcial();
             pedido.setPedido(orders.get(i).getPedido());
             pedido.setEstado(EntityState.PartialOrders.ATENDIDO.ordinal());              
             acceptedOrders.add(pedido);
-        }
+        }*/
+        
+        HashMap<PedidoParcial, PedidoParcial> toPedidoParcial = new HashMap<>();
         for (int i = 0; i < orders.size(); i++) {
             PedidoParcial pedido = new PedidoParcial();
             pedido.setPedido(orders.get(i).getPedido());
             pedido.setEstado(EntityState.PartialOrders.NO_ATENDIDO.ordinal());              
+            pedido.setPedidoParcialXProductos(new HashSet<>());
             rejectedOrders.add(pedido);
+            toPedidoParcial.put(orders.get(i), pedido);
         }        
         
         //ahora se crea un par de estructuras mas que almacenaran
         //el detalle de los pedidos parciales que se crearon arriba
-        ArrayList<ArrayList<PedidoParcialXProducto>> acceptedOrdersXProd = new ArrayList<>();
-        ArrayList<ArrayList<PedidoParcialXProducto>> rejectedOrdersXProd = new ArrayList<>();
+        //ArrayList<ArrayList<PedidoParcialXProducto>> acceptedOrdersXProd = new ArrayList<>();
+        //ArrayList<ArrayList<PedidoParcialXProducto>> rejectedOrdersXProd = new ArrayList<>();
         for (int i = 0; i < orders.size(); i++) {
-            ArrayList<PedidoParcialXProducto> acceptedOrdersXProdOfOrder = new ArrayList<>();
-            ArrayList<PedidoParcialXProducto> rejectedOrdersXProdOfOrder = new ArrayList<>();
+            //ArrayList<PedidoParcialXProducto> acceptedOrdersXProdOfOrder = new ArrayList<>();
+            HashSet<PedidoParcialXProducto> rejectedOrdersXProdOfOrder = 
+                    (HashSet<PedidoParcialXProducto>) toPedidoParcial.get(orders.get(i)).getPedidoParcialXProductos();
             HashMap<Producto,Integer> hm = demand.get(orders.get(i));
             HashMap<Producto,Integer> hm2 = demand2.get(orders.get(i));
             for (Map.Entry<Producto, Integer> entry : hm.entrySet()) {
@@ -237,31 +235,38 @@ public class AlgorithmExecution {
                     rejectedOrdersXProdOfOrder.add(row);
                 }
                 else if(servedDemand==totalDemand){ //atendida totalmente
-                    row.setCantidad(totalDemand);
+                    /*row.setCantidad(totalDemand);
                     row.setPedidoParcial(acceptedOrders.get(i));
-                    acceptedOrdersXProdOfOrder.add(row);
+                    acceptedOrdersXProdOfOrder.add(row);*/
                 }
                 else{ //atendida parcialmente
-                    PedidoParcialXProducto row2 = new PedidoParcialXProducto();//atendida
+                    /*PedidoParcialXProducto row2 = new PedidoParcialXProducto();//atendida
                     row2.setProducto(entry.getKey());
                     row2.setCantidad(servedDemand);
                     row2.setPedidoParcial(acceptedOrders.get(i));
-                    acceptedOrdersXProdOfOrder.add(row2);
+                    acceptedOrdersXProdOfOrder.add(row2);*/
                     
                     row.setCantidad(totalDemand-servedDemand);//no atendida
                     row.setPedidoParcial(rejectedOrders.get(i));
                     rejectedOrdersXProdOfOrder.add(row);
                 }
-            }
-            acceptedOrdersXProd.add(acceptedOrdersXProdOfOrder);
-            rejectedOrdersXProd.add(rejectedOrdersXProdOfOrder);
+            }                       
+            //acceptedOrdersXProd.add(acceptedOrdersXProdOfOrder);
+            //rejectedOrdersXProd.add(rejectedOrdersXProdOfOrder);
         }
         
-        //asignar guias de remision a las ordenes atendidas
-        //assignRemissionGuides(acceptedOrders);
-        //createPartialOrders(acceptedOrder,rejectedOrders);
+        Iterator<PedidoParcial> it = rejectedOrders.iterator();
+        while(it.hasNext()){
+            PedidoParcial rejectedOrder = it.next();
+            HashSet<PedidoParcialXProducto> rejectedOrdersXProdOfOrder
+                    = (HashSet<PedidoParcialXProducto>) rejectedOrder.getPedidoParcialXProductos();
+            if (rejectedOrdersXProdOfOrder.isEmpty()) {
+                it.remove();
+            }
+        }
         
-        */
+        
+        return new AlgorithmReturnValues(despachos, acceptedOrders, rejectedOrders);
     }
     
     public void assignRemissionGuides(ArrayList<Despacho> deliveries){
