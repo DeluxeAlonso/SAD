@@ -12,6 +12,7 @@ import algorithm.operators.Mutation;
 import algorithm.operators.ObjectiveFunction;
 import algorithm.operators.Repair;
 import application.order.OrderApplication;
+import entity.Cliente;
 import entity.Despacho;
 import entity.GuiaRemision;
 import entity.PedidoParcial;
@@ -100,11 +101,56 @@ public class AlgorithmExecution {
     }
     
     public void processOrders(Solution solution, Problem problem){
-        ArrayList<UnidadTransporte> vehicles = problem.getVehicles();        
-        Node[][] nodes = solution.getNodes();
+        ArrayList<UnidadTransporte> vehicles = problem.getVehicles();               
         
         ArrayList<PedidoParcial> orders = problem.getOrders();
-        ArrayList<ArrayList<PedidoParcialXProducto>> partialOrdersXProducts = problem.getPartialOrdersXProducts();
+        ArrayList<ArrayList<PedidoParcialXProducto>> partialOrdersXProducts = problem.getPartialOrdersXProducts();        
+        
+        Node[][] nodes = solution.getNodes();
+        HashSet<PedidoParcial> rejectedOrders = new HashSet<>();
+        for (int i = 0; i < nodes.length; i++) {
+            Despacho despacho = new Despacho();
+            despacho.setEstado(1); // <-- set estado
+            despacho.setFechaDespacho(new Date());
+            despacho.setUnidadTransporte(vehicles.get(i));
+            //HashSet<Cliente> customers = new HashSet<>();
+            HashSet<GuiaRemision> guiasRemision = new HashSet<>();
+            HashMap<Cliente,GuiaRemision> customers = new HashMap<>();
+            for (int j = 0; j < nodes[i].length; j++) {
+                PedidoParcial partialOrder = nodes[i][j].getPartialOrder();
+                Cliente customer = partialOrder.getPedido().getCliente();
+                if(!customers.containsKey(customer)){                     
+                    GuiaRemision guia = new GuiaRemision();
+                    guia.setCliente(customer);
+                    guia.setDespacho(despacho);
+                    guia.setEstado(1); // <-- set estado
+                    guia.setPedidoParcials(new HashSet<>());
+                    customers.put(customer, guia); //para no perder la referencia a la guia
+                }
+                HashSet<PedidoParcial> partialOrders = (HashSet<PedidoParcial>) 
+                        customers.get(customer).getPedidoParcials();
+                if(!partialOrders.contains(partialOrder)){
+                    PedidoParcial newPartialOrder = new PedidoParcial();
+                    newPartialOrder.setEstado(EntityState.PartialOrders.ATENDIDO.ordinal());
+                    newPartialOrder.setGuiaRemision(customers.get(customer));
+                    newPartialOrder.setPedido(partialOrder.getPedido());
+                    newPartialOrder.setPedidoParcialXProductos(new HashSet<>());
+                    partialOrders.add(newPartialOrder);                    
+                }
+                //HashSet<PedidoParcialXProductos> productos = partialOrders
+                
+                
+            }
+            
+            
+            
+            
+        }
+        
+        
+        
+        
+        /*
         
         //Primero se crea un par de hashmaps para almacenar la demanda de cada pedido parcial x producto
         //demand y demand2 tendra la demanda total y original del pedido parcial x producto        
@@ -196,6 +242,8 @@ public class AlgorithmExecution {
         //asignar guias de remision a las ordenes atendidas
         assignRemissionGuides(acceptedOrders);
         createPartialOrders(acceptedOrders, acceptedOrdersXProd,rejectedOrders,rejectedOrdersXProd);
+        
+        */
     }
     
     public void assignRemissionGuides(ArrayList<PedidoParcial> acceptedOrders){
