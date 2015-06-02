@@ -58,7 +58,22 @@ public class InternmentRepository implements IInternmentRepository {
         } 
     }
         
-        
+    public Boolean incCantOrderXProd(OrdenInternamientoXProducto object) {
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            session.saveOrUpdate(object);                      
+            session.getTransaction().commit();
+            return true;
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }     
+    }    
         
     @Override
     public int delete(OrdenInternamiento object) {
@@ -91,10 +106,25 @@ public class InternmentRepository implements IInternmentRepository {
 
     @Override
     public int update(OrdenInternamiento object) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        return -1;
+     Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            session.saveOrUpdate(object);                      
+            session.getTransaction().commit();
+            return object.getId();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return -1;
+        }   
     }
 
+    
+    
+    
     @Override
     public ArrayList<OrdenInternamiento> queryByType(int idType) {
         Session session = Tools.getSessionInstance();

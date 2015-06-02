@@ -18,6 +18,6 @@ import java.util.List;
 public interface IPalletRepository extends IRepository<Pallet>{
     ArrayList<Pallet> queryPalletsByRack(int rackId);
     Boolean updatePalletSpot(int palletId, int spotId);
-
-    public Pallet getPalletsFromOrder(OrdenInternamiento rackId);
+    public Boolean updateSpot(int palletId,int spotId);
+    public ArrayList<Pallet> getPalletsFromOrder(int rackId);
 }

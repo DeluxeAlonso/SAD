@@ -43,6 +43,16 @@ public class PalletApplication {
         return response;
     }
     
+        public Boolean updateSpot(int palletId, int spotId){
+        Boolean response = false;
+        try {
+            response = palletRepository.updatePalletSpot(palletId, spotId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+    
         public int insert(Pallet object) {
         try{
             PalletRepository w = new PalletRepository();
@@ -55,8 +65,8 @@ public class PalletApplication {
         }
     }
     
-        public Pallet getPalletsFromOrder(OrdenInternamiento rackId){
-        Pallet pallets = null;
+        public ArrayList<Pallet> getPalletsFromOrder(int rackId){
+        ArrayList<Pallet> pallets = null;
         try {
             pallets = palletRepository.getPalletsFromOrder(rackId);
         } catch (Exception e) {
