@@ -102,7 +102,16 @@ public class PalletApplication {
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
         
+    public Boolean updatePallets(ArrayList<Pallet>pallets){
+        Boolean response = false;
+        try {
+            response = palletRepository.updatePallets(pallets);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
     }
 
 }

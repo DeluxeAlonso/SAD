@@ -214,5 +214,25 @@ public class PalletRepository implements IPalletRepository{
         }
         return pallets;
     }
+
+    @Override
+    public Boolean updatePallets(ArrayList<Pallet> pallets) {
+                Session session = Tools.getSessionInstance();
+        Transaction trns = null;
+        try {            
+            trns=session.beginTransaction();
+            for(int i=0;i<pallets.size();i++){
+                session.update(pallets.get(i));
+            }                  
+            session.getTransaction().commit();
+            return true;
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }
+    }
     
 }

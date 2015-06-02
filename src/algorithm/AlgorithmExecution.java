@@ -12,9 +12,11 @@ import algorithm.operators.Mutation;
 import algorithm.operators.ObjectiveFunction;
 import algorithm.operators.Repair;
 import application.order.OrderApplication;
+import application.pallet.PalletApplication;
 import entity.Cliente;
 import entity.Despacho;
 import entity.GuiaRemision;
+import entity.Pallet;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
 import entity.Producto;
@@ -34,6 +36,7 @@ import util.EntityState;
  */
 public class AlgorithmExecution {
     OrderApplication orderApplication = new OrderApplication();
+    PalletApplication palletApplication = new PalletApplication();
     Problem problem;
     
     public Solution start(double maxTravelTime){
@@ -276,6 +279,7 @@ public class AlgorithmExecution {
             for (Iterator<GuiaRemision> remissionGuide = deliveries.get(i).getGuiaRemisions().iterator(); remissionGuide.hasNext(); ) {
                 GuiaRemision g = remissionGuide.next();
                 for(Iterator<PedidoParcial> partialOrder = g.getPedidoParcials().iterator(); partialOrder.hasNext();){
+                    
                     PedidoParcial p = partialOrder.next();
                     acceptedOrders.add(p);
                 }
@@ -285,13 +289,33 @@ public class AlgorithmExecution {
     }
     
     public void createPartialOrders(ArrayList<PedidoParcial>acceptedOrders, ArrayList<PedidoParcial>rejectedOrders){
-        ArrayList<PedidoParcialXProducto> acceptedOrdersXProd = getPartialOrderDetail(acceptedOrders);
-        ArrayList<PedidoParcialXProducto> rejectedOrdersXProd = getPartialOrderDetail(rejectedOrders);
+        ArrayList<PedidoParcialXProducto> acceptedOrdersXProd = getAcceptedPartialOrderDetail(acceptedOrders);
+        ArrayList<PedidoParcialXProducto> rejectedOrdersXProd = getRejectedPartialOrderDetail(rejectedOrders);
         
         orderApplication.createPartialOrders(acceptedOrders, acceptedOrdersXProd, rejectedOrders, rejectedOrdersXProd);
     }
     
-    public ArrayList<PedidoParcialXProducto> getPartialOrderDetail(ArrayList<PedidoParcial> orders){
+    public ArrayList<PedidoParcialXProducto> getAcceptedPartialOrderDetail(ArrayList<PedidoParcial> orders){
+        ArrayList<PedidoParcialXProducto> orderDetails = new ArrayList<>();
+        for(int i=0;i<orders.size();i++)
+            for(Iterator<PedidoParcialXProducto> partialOrderDetail = orders.get(i).getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){
+                    PedidoParcialXProducto p = partialOrderDetail.next();
+                    ArrayList<Pallet> pallets = palletApplication.getAvailablePalletsByProductId(p.getProducto().getId());
+                    ArrayList<Pallet> selectedPallets = new ArrayList<>();
+                    for(int j=0;j<p.getCantidad();j++){
+                        Pallet selectedPallet;
+                        selectedPallet = pallets.get(j);
+                        selectedPallet.setEstado(EntityState.Pallets.DESPACHADO.ordinal());                  
+                        selectedPallet.setPedidoParcial(p.getPedidoParcial());
+                        selectedPallets.add(selectedPallet);
+                    }
+                    palletApplication.updatePallets(selectedPallets);
+                    orderDetails.add(p);
+            }
+        return orderDetails;
+    }
+    
+    public ArrayList<PedidoParcialXProducto> getRejectedPartialOrderDetail(ArrayList<PedidoParcial> orders){
         ArrayList<PedidoParcialXProducto> orderDetails = new ArrayList<>();
         for(int i=0;i<orders.size();i++)
             for(Iterator<PedidoParcialXProducto> partialOrderDetail = orders.get(i).getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){

@@ -89,7 +89,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         Icons.setButton(searchBtn, Icons.ICONOS.SEARCH.ordinal());
         Icons.setButton(deleteBtn, Icons.ICONOS.DELETE.ordinal());
         Icons.setButton(deletePartialBtn, Icons.ICONOS.DELETE.ordinal());
-        Icons.setButton(deliverBtn, Icons.ICONOS.DELIVERY.ordinal());
+        //selectedPalletsstaIcons.setButton(deliverBtn, Icons.ICONOS.DELIVERY.ordinal());
     }
 
     public void initializeArrays(){
@@ -433,7 +433,6 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         deletePartialBtn = new javax.swing.JButton();
         jLabel14 = new javax.swing.JLabel();
         reasonCombo = new javax.swing.JComboBox();
-        deliverBtn = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Pedidos");
@@ -766,13 +765,6 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         reasonCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar Razon", "Productos Vencidos", "Disconformidad" }));
         reasonCombo.setEnabled(false);
 
-        deliverBtn.setText("Despachar");
-        deliverBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deliverBtnActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -783,8 +775,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(deliverBtn)
-                                .addGap(350, 350, 350)
+                                .addGap(460, 460, 460)
                                 .addComponent(jLabel14)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(reasonCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -829,8 +820,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                         .addComponent(deleteBtn)
                         .addComponent(deletePartialBtn)
                         .addComponent(jLabel14)
-                        .addComponent(reasonCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(deliverBtn))
+                        .addComponent(reasonCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -901,11 +891,6 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void deliverBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deliverBtnActionPerformed
-        // TODO add your handling code here:
-        //algorithmExecution.start();
-    }//GEN-LAST:event_deliverBtnActionPerformed
-
     private void deletePartialBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletePartialBtnActionPerformed
     if(reasonCombo.getSelectedIndex() != 0){
             PedidoParcial p = currentPartialOrders.get(partialCombo.getSelectedIndex() -1);
@@ -942,7 +927,6 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     private javax.swing.JFormattedTextField dateTxt;
     private javax.swing.JButton deleteBtn;
     private javax.swing.JButton deletePartialBtn;
-    private javax.swing.JButton deliverBtn;
     private javax.swing.JTextField detailClientTxt;
     private javax.swing.JComboBox detailStatusCombo;
     private javax.swing.JTextField direccionTxt;
