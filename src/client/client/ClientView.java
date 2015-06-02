@@ -9,6 +9,7 @@ import algorithm.Node;
 import algorithm.Solution;
 import application.client.ClientApplication;
 import application.local.LocalApplication;
+import client.base.BaseView;
 import entity.Cliente;
 import entity.Local;
 import java.awt.Color;
@@ -36,7 +37,7 @@ import util.Strings;
  *
  * @author Alonso
  */
-public class ClientView extends javax.swing.JInternalFrame implements MouseListener {
+public class ClientView extends BaseView implements MouseListener {
     ClientApplication clientApplication=InstanceFactory.Instance.getInstance("clientApplication", ClientApplication.class);
     LocalApplication localApplication=InstanceFactory.Instance.getInstance("localApplication", LocalApplication.class);
     ArrayList<Cliente> clients;
@@ -52,7 +53,7 @@ public class ClientView extends javax.swing.JInternalFrame implements MouseListe
      */
     public ClientView() {
         initComponents();
-                System.out.println("Buscar: "+ btnSaveClient.getWidth()+" "+btnSaveClient.getHeight());
+        super.initialize();
         setupListeners();
         fillClientsTable();
         clientView = this;

@@ -11,6 +11,7 @@ import application.product.ProductApplication;
 import application.rack.RackApplication;
 import application.spot.SpotApplication;
 import application.warehouse.WarehouseApplication;
+import client.base.BaseView;
 import entity.Almacen;
 import entity.Kardex;
 import entity.Producto;
@@ -36,7 +37,7 @@ import util.Strings;
  *
  * @author prote_000
  */
-public class KardexReport extends javax.swing.JInternalFrame {
+public class KardexReport extends BaseView {
     WarehouseApplication warehouseApplication = InstanceFactory.Instance.getInstance("warehouseApplicaiton", WarehouseApplication.class);
     RackApplication rackApplication = InstanceFactory.Instance.getInstance("rackApplicaiton", RackApplication.class);
     SpotApplication spotApplication = InstanceFactory.Instance.getInstance("spotApplicaiton", SpotApplication.class);
@@ -53,6 +54,7 @@ public class KardexReport extends javax.swing.JInternalFrame {
      */
     public KardexReport() {
         initComponents();
+        super.initialize();
         fillWarehouses();
         if(warehouses.size()>0)
             fillProducts(warehouses.get(0).getCondicion().getId());
