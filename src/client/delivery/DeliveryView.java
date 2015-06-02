@@ -9,6 +9,7 @@ import algorithm.AlgorithmExecution;
 import algorithm.Solution;
 import client.client.GoogleMaps;
 import client.base.BaseView;
+import util.Icons;
 
 /**
  *
@@ -24,6 +25,9 @@ public class DeliveryView extends BaseView {
     public DeliveryView() {        
         initComponents();
         super.initialize();
+        Icons.setButton(btnProcess, Icons.ICONOS.APPLY.ordinal());
+        Icons.setButton(btnExecuteAlgorithm, Icons.ICONOS.PLAY.ordinal());
+        Icons.setButton(btnViewSolution, Icons.ICONOS.DELIVERY.ordinal());
     }
 
     /**
