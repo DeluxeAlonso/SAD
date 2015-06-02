@@ -43,40 +43,51 @@ public class GoogleMaps {
 "     function initialize() {\n" +
 "  var directionsDisplay = new google.maps.DirectionsRenderer();\n" +
 "  var directionsService = new google.maps.DirectionsService();\n" +
-"  var myLatlng = new google.maps.LatLng(-11.9959406,-77.0816826);\n" +
+"  var limaLatlng = new google.maps.LatLng(-11.9416154,-77.0930122);\n" +
 "  var mapOptions = {\n" +
-"    zoom: 4,\n" +
-"    center: myLatlng\n" +
+"    zoom: 8,\n" +
+"    center: limaLatlng\n" +
 "  }\n" +
 "  var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);\n" +
-" var newLatlng = new google.maps.LatLng("+Constants.WAREHOUSE_LATITUDE+","+Constants.WAREHOUSE_LONGITUDE+"); "+
-"      var marker = new google.maps.Marker({\n" +
-"      position: newLatlng,\n" +
+"directionsDisplay.setMap(map);" +
+" var distributionCenter = new google.maps.LatLng("+Constants.WAREHOUSE_LATITUDE+","+Constants.WAREHOUSE_LONGITUDE+"); "+
+" var marker = new google.maps.Marker({\n" +
+"      position: distributionCenter,\n" +
 "      map: map,\n" +
 "      icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',\n" +
 "      title: 'Centro de distribucion'\n" +
-"  });\n";
+" });\n";
     for(int i=0;i<nodes.length;i++){
+html += " var waypts"+i+" = [];\n" +
+"waypts"+i+".push({location:distributionCenter,stopover:true});\n";
         for(int j=0;j<nodes[i].length;j++){
-html += " var newLatlng = new google.maps.LatLng("+nodes[i][j].getY()+","+nodes[i][j].getX()+"); "+
+            /* Pinto el marcador */
+html += " var newLatlng = new google.maps.LatLng("+nodes[i][j].getY()+","+nodes[i][j].getX()+");\n" +
+        
 "      var marker = new google.maps.Marker({\n" +
 "      position: newLatlng,\n" +
 "      map: map,\n" +
-//"      title: "+nodes[i][j].getPartialOrder().getPedido().getCliente().getNombre()+"\n" +
-"  });\n";
-        }
+"      title: RUTA"+i+"\n" +
+"  });\n" +
+
+"  waypts"+i+".push({location:newLatlng,stopover:true});";
+
+        }  
+html += "createRoute(waypts"+i+");";
     }
-html += "" +
+html += "function createRoute(waypts){\n" +
 "var request = {\n" +
-"    origin: new google.maps.LatLng(1,1),\n" +
-"    destination: new google.maps.LatLng(2,2),\n" +
+"    origin: new google.maps.LatLng(-11.9959406,-77.0816826),\n" +
+"    destination: new google.maps.LatLng(-12.0910106,-77.0632183),\n" +
+"    waypoints: waypts,\n" +
 "    travelMode: google.maps.TravelMode.DRIVING\n" +
-"  };\n" +
+"};\n" +
 "  directionsService.route(request, function(result, status) {\n" +
 "    if (status == google.maps.DirectionsStatus.OK) {\n" +
 "      directionsDisplay.setDirections(result);\n" +
 "    }\n" +
 "  });" +
+"}\n" +
 "}\n" +
 "\n" +
 "google.maps.event.addDomListener(window, 'load', initialize);\n" +
