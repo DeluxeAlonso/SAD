@@ -277,10 +277,10 @@ public class InternmentSelectView extends BaseView {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGroup(layout.createSequentialGroup()
                                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(lblFileChooser1))
                         .addGap(81, 81, 81)
@@ -340,6 +340,15 @@ public class InternmentSelectView extends BaseView {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
+    public static String crearEAN128(Pallet pallet){
+        String ean = "";
+        ean += "(02)0" + pallet.getProducto().getEan13();
+        ean += "37" + pallet.getProducto().getCantidadProductosEnPallet();
+        DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
+        ean += "(17)" + dateFormat.format(pallet.getFechaVencimiento());
+        return ean;
+    }
+    
     public void fillTable(){
         clearGrid(jTable1);
         int x = 0;
@@ -444,7 +453,6 @@ public class InternmentSelectView extends BaseView {
             //Pallets
             for (int i=0;i<b.cantidad;i++){
                 Pallet pallet = new Pallet();
-                pallet.setEan128("Temporal");
                 pallet.setEstado(EntityState.Pallets.CREADO.ordinal());//CREADO
                 pallet.setFechaRegistro(orden.getFecha());
                 try {
@@ -454,6 +462,7 @@ public class InternmentSelectView extends BaseView {
                 }
                 pallet.setOrdenInternamiento(internmentApplication.queryById(x));
                 pallet.setProducto(productApplication.queryById(b.id_item));
+                pallet.setEan128(crearEAN128(pallet));
                 palletApplication.insert(pallet);
             }
             

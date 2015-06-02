@@ -16,4 +16,5 @@ import java.util.ArrayList;
  */
 public interface IWarehouseRepository extends IRepository<Almacen>{
     ArrayList<Almacen> queryWarehousesByType(int type);
+    ArrayList<Almacen> queryByParameters(int wareId,int conId, int state );
 }

@@ -135,5 +135,32 @@ public class WarehouseRepository implements IWarehouseRepository{
     public Almacen queryById(String id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public ArrayList<Almacen> queryByParameters(int wareId, int conId, int state) {
+        String hql="FROM Almacen a WHERE (a.id=:wareId OR :wareId=0) AND "+
+                "(a.condicion.id = :conId OR :conId=0) AND "+ 
+                "(a.estado =:state OR :state = -1)"+
+                "  ORDER BY a.id, a.condicion, a.estado";
+        ArrayList<Almacen> warehouses=null;
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("wareId", wareId);
+            q.setParameter("conId", conId);
+            q.setParameter("state", state);
+            warehouses = (ArrayList<Almacen>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return warehouses; //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

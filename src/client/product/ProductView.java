@@ -141,7 +141,6 @@ public class ProductView extends BaseView implements MouseListener {
     public void changeNewLocalFormState(boolean state){
         productNameTxt.setEnabled(state);
         descProdTxt.setEnabled(state);
-        cantidadTxt.setEnabled(state);
         cantidadXPalletTxt.setEnabled(state);
         btnSaveLocal.setEnabled(state);
         pesoTxt.setEnabled(state);
@@ -244,7 +243,6 @@ public class ProductView extends BaseView implements MouseListener {
     public void clearNewLocalForm()
     {
         productNameTxt.setText("");
-        cantidadTxt.setText("");
         cantidadXPalletTxt.setText("");
         descProdTxt.setText("");
         condicionCombo.setSelectedIndex(0);
@@ -255,7 +253,6 @@ public class ProductView extends BaseView implements MouseListener {
     public void clearNewLocalFormBorders()
     {
         productNameTxt.setBorder(regularBorder);
-        cantidadTxt.setBorder(regularBorder);
         cantidadXPalletTxt.setBorder(regularBorder);
         descProdTxt.setBorder(regularBorder);
         condicionCombo.setBorder(regularBorder);
@@ -289,8 +286,6 @@ public class ProductView extends BaseView implements MouseListener {
         productNameTxt = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         descProdTxt = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
-        cantidadTxt = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         cantidadXPalletTxt = new javax.swing.JTextField();
         btnSaveLocal = new javax.swing.JButton();
@@ -425,10 +420,6 @@ public class ProductView extends BaseView implements MouseListener {
 
         descProdTxt.setEnabled(false);
 
-        jLabel6.setText("*Stock:");
-
-        cantidadTxt.setEnabled(false);
-
         jLabel7.setText("*Cantidad por Pallet:");
 
         cantidadXPalletTxt.setEnabled(false);
@@ -460,38 +451,30 @@ public class ProductView extends BaseView implements MouseListener {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnSaveLocal)
                     .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap(21, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel4)
-                            .addComponent(jLabel6)
                             .addComponent(jLabel5)
-                            .addComponent(jLabel9))
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel8))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(productNameTxt)
                             .addComponent(descProdTxt)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(condicionCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(cantidadTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel8)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jLabel7)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                        .addComponent(pesoTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
-                                        .addGap(2, 2, 2))
-                                    .addComponent(cantidadXPalletTxt))))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(pesoTxt))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(cantidadXPalletTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE))))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnSaveLocal)))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -505,18 +488,18 @@ public class ProductView extends BaseView implements MouseListener {
                     .addComponent(jLabel5)
                     .addComponent(descProdTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(cantidadTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7)
-                    .addComponent(cantidadXPalletTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel7)
+                        .addComponent(cantidadXPalletTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(pesoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel8)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(pesoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9)
                     .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
                 .addComponent(btnSaveLocal))
         );
 
@@ -672,15 +655,7 @@ public class ProductView extends BaseView implements MouseListener {
         String error_message = "Errores:\n";
         JOptionPane.setDefaultLocale(new Locale("es", "ES"));
         boolean hasErrors = false;
-        if(cantidadTxt.getText().isEmpty()){
-            error_message += Strings.ERROR_CANTIDAD_PROD_REQUIRED+"\n";
-            cantidadTxt.setBorder(errorBorder);
-            hasErrors = true;
-        }else if(!isInteger(cantidadTxt.getText())){
-            error_message += Strings.ERROR_CANTIDAD_PROD_INT+"\n";
-            cantidadTxt.setBorder(errorBorder);
-            hasErrors = true;
-        }
+        
         if(cantidadXPalletTxt.getText().isEmpty()){
             error_message += Strings.ERROR_CANTIDADXPALLET_REQUIRED+"\n";
             cantidadXPalletTxt.setBorder(errorBorder);
@@ -724,7 +699,7 @@ public class ProductView extends BaseView implements MouseListener {
             product.setDescripcion(descProdTxt.getText());
             product.setNombre(productNameTxt.getText());
             product.setPeso(Double.parseDouble(pesoTxt.getText()));
-            product.setStockTotal(Integer.parseInt(cantidadTxt.getText()));
+            product.setStockTotal(0);
             product.setTipoProducto(productTypes.get(tblClients.getSelectedRow()));
             
             int aux=productApplication.insert(product);
@@ -802,7 +777,6 @@ public class ProductView extends BaseView implements MouseListener {
     private javax.swing.JButton btnFileUpload;
     private javax.swing.JButton btnSaveClient;
     private javax.swing.JButton btnSaveLocal;
-    private javax.swing.JTextField cantidadTxt;
     private javax.swing.JTextField cantidadXPalletTxt;
     private javax.swing.JComboBox condicionCombo;
     private javax.swing.JTextField descProdTxt;
@@ -812,7 +786,6 @@ public class ProductView extends BaseView implements MouseListener {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
