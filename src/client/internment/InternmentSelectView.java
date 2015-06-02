@@ -6,14 +6,18 @@
 package client.internment;
 
 import application.internment.InternmentApplication;
+import application.kardex.KardexApplication;
 import application.pallet.PalletApplication;
 import application.product.ProductApplication;
 import application.rack.RackApplication;
 import application.spot.SpotApplication;
 import application.warehouse.WarehouseApplication;
+import client.base.BaseView;
 import client.warehouse.EditWarehouseView;
 import entity.Almacen;
 import entity.Condicion;
+import entity.Kardex;
+import entity.KardexId;
 import entity.OrdenInternamiento;
 import entity.OrdenInternamientoXProducto;
 import entity.OrdenInternamientoXProductoId;
@@ -27,10 +31,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -45,18 +51,21 @@ import org.hibernate.Hibernate;
 import util.EntityState;
 import util.EntityType;
 import util.InstanceFactory;
+import util.Strings;
 
 /**
  *
  * @author KEVIN BROWN
  */
-public class InternmentSelectView extends javax.swing.JInternalFrame {
+public class InternmentSelectView extends BaseView {
     WarehouseApplication warehouseApplication=InstanceFactory.Instance.getInstance("warehouseApplication", WarehouseApplication.class);
     InternmentApplication internmentApplication=InstanceFactory.Instance.getInstance("internmentApplication", InternmentApplication.class);
     ProductApplication productApplication=InstanceFactory.Instance.getInstance("productApplication", ProductApplication.class);
     PalletApplication palletApplication=InstanceFactory.Instance.getInstance("palletApplication",PalletApplication.class);
     RackApplication rackApplication=InstanceFactory.Instance.getInstance("rackApplication", RackApplication.class);
     SpotApplication spotApplication = InstanceFactory.Instance.getInstance("spotApplicaiton", SpotApplication.class);
+    KardexApplication kardexApplication = InstanceFactory.Instance.getInstance("kardexApplication",KardexApplication.class);
+    
     /**
      * Creates new form InternmentSelectView
      */
@@ -76,6 +85,8 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
     
     public InternmentSelectView() {
         initComponents();
+        initialize();
+        setTitle("Internamiento");
         jButton2.setEnabled(false);
         jButton3.setEnabled(false);
         jComboBox1.removeAllItems();
@@ -248,7 +259,7 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
 
         jLabel3.setText("Cantidad Pendiente por internar:");
 
-        jButton3.setText("Asignar Automático");
+        jButton3.setText("Seleccionar Automático");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -262,36 +273,35 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(44, 44, 44)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblFileChooser)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(layout.createSequentialGroup()
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(lblFileChooser1))
                         .addGap(81, 81, 81)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel2)
-                                .addGap(18, 18, 18)
-                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(jLabel1)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jButton3)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel3)
-                                        .addGap(68, 68, 68)
-                                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(24, 24, 24)
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jTextField3))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButton3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(57, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -309,18 +319,17 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblFileChooser1)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
-                .addComponent(jButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jLabel3)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton3)
+                    .addComponent(jButton2))
                 .addGap(21, 21, 21))
         );
 
@@ -371,7 +380,7 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
     }
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       
+       ordenListada.clear();
        JFileChooser fc = new JFileChooser();
         BufferedReader br = null;        
         String line = "";
@@ -458,8 +467,14 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
     
     
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        
-        internarPallets();
+        if (Integer.parseInt(jTextField3.getText()) >= 0){
+            internarPallets();
+        }
+        else{
+            JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+            JOptionPane.showMessageDialog(this, "Seleccione una cantidad de ubicaciones menor o igual a la cantidad de pallets","Error al Internar pallets",JOptionPane.ERROR_MESSAGE);
+        }
+          
 
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -492,6 +507,7 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
     private void internarPallets(){
         JTable table = jTable2;    
         int cant = 0;
+        int aux = 0;
         Boolean isChecked=null;
         if (ordenAInternar != null){
             ArrayList<Pallet> pallets = palletApplication.getPalletsFromOrder(ordenAInternar.getId());
@@ -507,6 +523,7 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
                     OrdenInternamiento ord = internmentApplication.queryById(ordenAInternar.getId());
                     ord.setEstado(EntityState.InternmentOrders.INTERNADA.ordinal());
                     internmentApplication.update(ord);
+                    aux = cant-1;
                     break;
                 }
                 
@@ -538,15 +555,47 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
                     Almacen alm = almacenes.get(jComboBox1.getSelectedIndex());
                     alm.setUbicLibres(alm.getUbicLibres()-1);
                     warehouseApplication.update(alm);
-                    //ingresar algo en kardex
+                    //historial mov
                     
+                    cant++;
+                    aux = cant;
+                } 
+                if (internmentApplication.getProdOrder(ordenAInternar).getCantidadIngresada() == internmentApplication.getProdOrder(ordenAInternar).getCantidad()){
+                    //ordenAInternar.setEstado(EntityState.InternmentOrders.INTERNADA.ordinal());
+                    OrdenInternamiento ord = internmentApplication.queryById(ordenAInternar.getId());
+                    ord.setEstado(EntityState.InternmentOrders.INTERNADA.ordinal());
+                    internmentApplication.update(ord);
+                    aux = cant;
+                    break;
                 }
-                cant++;
             }
             
-            //si cant y cantInternada son iguales cambiar estado de orden
+            
+            //ingresar algo en kardex
+            ArrayList<Kardex> kardex = kardexApplication.queryByParameters(almacenes.get(jComboBox1.getSelectedIndex()).getId(), internmentApplication.getProdOrder(ordenAInternar).getProducto().getId());
+            Kardex internmentKardex = new Kardex();
+            internmentKardex.setAlmacen(almacenes.get(jComboBox1.getSelectedIndex()));
+            internmentKardex.setProducto(internmentApplication.getProdOrder(ordenAInternar).getProducto());
+            internmentKardex.setTipoMovimiento("Ingreso");
+            internmentKardex.setCantidad(aux);
+            
+            internmentKardex.setFecha(Calendar.getInstance().getTime());
+            if(kardex.size()==0){
+                internmentKardex.setStockInicial(0);
+            }else{
+                internmentKardex.setStockInicial(kardex.get(0).getStockFinal());
+            }
+            internmentKardex.setStockFinal(internmentKardex.getStockInicial() + aux);
+            
+            KardexId kId = new KardexId();
+            kId.setIdAlmacen(almacenes.get(jComboBox1.getSelectedIndex()).getId());
+            kId.setIdProducto(internmentApplication.getProdOrder(ordenAInternar).getProducto().getId());
+            
+            internmentKardex.setId(kId);
             
             
+            kardexApplication.insert(internmentKardex);
+            //kardexApplication.insertKardexID(kId);
             
         }
         fillTable();
@@ -554,6 +603,7 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
         jButton2.setEnabled(false);
         jButton3.setEnabled(false);    
         jComboBox1.removeAllItems();
+        jTextField2.setText("");
         }
     }
     
@@ -595,6 +645,7 @@ public class InternmentSelectView extends javax.swing.JInternalFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
         //Asignar auto
+            fillFreeSpots();
             int cont = cantAInternar - Integer.parseInt(jTextField3.getText());
             int aux=0;
             if(table.getRowCount()>0){

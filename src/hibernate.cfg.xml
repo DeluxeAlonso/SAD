@@ -8,6 +8,7 @@
     <property name="hibernate.connection.username">root</property>
     <property name="hibernate.current_session_context_class">thread</property>
     <property name="hibernate.enable_lazy_load_no_trans">true</property>
+    <property name="hibernate.connection.password">root</property>
     <mapping resource="entity/GuiaRemision.hbm.xml"/>
     <mapping resource="entity/Pallet.hbm.xml"/>
     <mapping resource="entity/PedidoParcial.hbm.xml"/>
