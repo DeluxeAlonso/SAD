@@ -11,11 +11,13 @@ import application.product.ProductApplication;
 import application.rack.RackApplication;
 import application.spot.SpotApplication;
 import application.warehouse.WarehouseApplication;
+import client.base.BaseView;
 import entity.Almacen;
 import entity.Condicion;
 import entity.Kardex;
 import entity.Producto;
 import entity.Rack;
+import entity.Ubicacion;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.FileWriter;
@@ -31,6 +33,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import util.EntityState;
 import util.EntityType;
 import static util.EntityType.CONDITIONS;
 import static util.EntityType.CONDITIONS_NAMES;
@@ -41,7 +44,7 @@ import util.Strings;
  *
  * @author prote_000
  */
-public class AvailabilityReport extends javax.swing.JInternalFrame {
+public class AvailabilityReport extends BaseView {
     WarehouseApplication warehouseApplication = InstanceFactory.Instance.getInstance("warehouseApplicaiton", WarehouseApplication.class);
     RackApplication rackApplication = InstanceFactory.Instance.getInstance("rackApplicaiton", RackApplication.class);
     SpotApplication spotApplication = InstanceFactory.Instance.getInstance("spotApplicaiton", SpotApplication.class);
@@ -52,7 +55,9 @@ public class AvailabilityReport extends javax.swing.JInternalFrame {
     public ArrayList<Condicion> conditions;
     public ArrayList<Kardex> kardex;
     public ArrayList<Rack> racks;
+    public ArrayList<Ubicacion> spots;
     private String [] warehousesNames;
+    private String [] racksNames;
     JFileChooser fc = new JFileChooser();
     File file = null;
     /**
@@ -60,23 +65,43 @@ public class AvailabilityReport extends javax.swing.JInternalFrame {
      */
     public AvailabilityReport() {
         initComponents();
-        condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.CONDITIONS_NAMES));
+        initialize();
         fillWarehouses();
+        condicionTxt.setText(EntityType.getCondition(warehouses.get(0).getCondicion().getId()).getNombre());
         warehouseCombo.setModel(new javax.swing.DefaultComboBoxModel(warehousesNames));
+        fillRacksIni();
+        rackCombo.setModel(new javax.swing.DefaultComboBoxModel(racksNames));
     }
     
     public void fillWarehouses(){
         warehouses = warehouseApplication.queryAll();
-        warehousesNames = new String[warehouses.size() + 1];
-        for (int i = 0; i < warehouses.size()+1; i++) {
-            if (i == 0) {
-                warehousesNames[i] = "";
-            } else {
-                warehousesNames[i] = warehouses.get(i-1).getDescripcion();
-            }
+        warehousesNames = new String[warehouses.size()];
+        for (int i = 0; i < warehouses.size(); i++) {
+            warehousesNames[i] = warehouses.get(i).getDescripcion();
         } 
     }
-    
+    public void fillRacksIni(){
+        racks = rackApplication.queryRacksByWarehouse(warehouses.get(0).getId());
+        
+        if (racks!=null){
+            racksNames = new String[racks.size()+1];
+            racksNames[0] = "Todos";
+            for (int i = 0; i < racks.size(); i++) {
+                racksNames[i+1] = racks.get(i).getId().toString();
+            } 
+        }
+    }
+    public void fillRacks(int id){
+        racks = rackApplication.queryRacksByWarehouse(id);
+        
+        if (racks!=null){
+            racksNames = new String[racks.size()+1];
+            racksNames[0] = "Todos";
+            for (int i = 0; i < racks.size(); i++) {
+                racksNames[i+1] = racks.get(i).getId().toString();
+            } 
+        }
+    }
     
     public void clearKardex(){
         DefaultTableModel model = (DefaultTableModel) tblKardex.getModel();
@@ -99,12 +124,13 @@ public class AvailabilityReport extends javax.swing.JInternalFrame {
                         0,
                     };
             model.addRow(row);*/
-            for(Rack rackItem : racks){
+            for(Ubicacion spotItem : spots){
+                String position = spotItem.getFila()+"/" +spotItem.getColumna()+"/"+ spotItem.getLado();
                 row = new Object[]{
-                    rackItem.getAlmacen().getId(),
-                    rackItem.getId(),
-                    rackItem.getAlmacen().getCondicion().getNombre(),
-                    0
+                    warehouses.get(warehouseCombo.getSelectedIndex()).getDescripcion(),
+                    spotItem.getRack().getId(),
+                    position,
+                    EntityState.getSpotsState()[spotItem.getEstado()]
                 };
                 model.addRow(row);
             }
@@ -135,11 +161,13 @@ public class AvailabilityReport extends javax.swing.JInternalFrame {
         warehouseCombo = new javax.swing.JComboBox();
         btnReport = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        condicionCombo = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblKardex = new javax.swing.JTable();
         jSeparator1 = new javax.swing.JSeparator();
         btnExport = new javax.swing.JButton();
+        rackCombo = new javax.swing.JComboBox();
+        jLabel2 = new javax.swing.JLabel();
+        condicionTxt = new javax.swing.JTextField();
 
         setClosable(true);
         setTitle("Reporte de Disponibilidad");
@@ -170,10 +198,24 @@ public class AvailabilityReport extends javax.swing.JInternalFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Almacen", "Rack", "Condicion", "Ubicaciones Libres"
+                "Almacen", "Rack", "Fila/Columna/Lado", "Estado"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                true, false, true, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tblKardex);
+        if (tblKardex.getColumnModel().getColumnCount() > 0) {
+            tblKardex.getColumnModel().getColumn(0).setResizable(false);
+            tblKardex.getColumnModel().getColumn(1).setResizable(false);
+            tblKardex.getColumnModel().getColumn(2).setResizable(false);
+            tblKardex.getColumnModel().getColumn(3).setResizable(false);
+        }
 
         btnExport.setText("Exportar XLS");
         btnExport.setEnabled(false);
@@ -183,6 +225,16 @@ public class AvailabilityReport extends javax.swing.JInternalFrame {
             }
         });
 
+        rackCombo.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                rackComboItemStateChanged(evt);
+            }
+        });
+
+        jLabel2.setText("Rack:");
+
+        condicionTxt.setEnabled(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -191,46 +243,56 @@ public class AvailabilityReport extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(17, 17, 17)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(warehouseCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(50, 50, 50)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnExport))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnReport, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnExport, javax.swing.GroupLayout.Alignment.TRAILING))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(17, 17, 17)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel2))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(rackCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(warehouseCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(32, 32, 32)
+                                        .addComponent(jLabel4)))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(condicionTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnReport)))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 8, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(warehouseCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(condicionTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnReport))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(warehouseCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4))))
-                .addGap(18, 18, 18)
-                .addComponent(btnReport)
+                            .addComponent(rackCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnExport)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         pack();
@@ -247,16 +309,14 @@ public class AvailabilityReport extends javax.swing.JInternalFrame {
             }else{
                 int idWare;
                 int idCon;
-                racks = new ArrayList<Rack>();
-                if (warehouseCombo.getSelectedIndex()==0)
-                    idWare=0;
-                else
-                    idWare=warehouses.get(warehouseCombo.getSelectedIndex()-1).getId();
-                if (condicionCombo.getSelectedIndex()==0)
+                spots = new ArrayList<Ubicacion>();
+                
+                idWare=warehouses.get(warehouseCombo.getSelectedIndex()).getId();
+                if (rackCombo.getSelectedIndex()==0)
                     idCon=0;
                 else
-                    idCon=EntityType.CONDITIONS.get(condicionCombo.getSelectedIndex()-1).getId();                
-                racks = rackApplication.queryByParameters(idWare,idCon);
+                    idCon=racks.get(rackCombo.getSelectedIndex()-1).getId();                
+                spots = spotApplication.queryByParameters(idWare,idCon);
                 System.out.println(racks.size());
                 fillKardex();
                 btnExport.setEnabled(true);
@@ -265,8 +325,12 @@ public class AvailabilityReport extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnReportActionPerformed
 
     private void warehouseComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_warehouseComboItemStateChanged
+        
+        boolean aux = evt.getStateChange() == ItemEvent.SELECTED;
         //if(evt.getStateChange() == ItemEvent.SELECTED)
-            //fillProducts(warehouses.get(comboWarehouseFrom.getSelectedIndex()).getCondicion().getId());
+        fillRacks(warehouses.get(warehouseCombo.getSelectedIndex()).getId());
+        condicionTxt.setText(EntityType.getCondition(warehouses.get(warehouseCombo.getSelectedIndex()).getCondicion().getId()).getNombre());
+        rackCombo.setModel(new javax.swing.DefaultComboBoxModel(racksNames));
     }//GEN-LAST:event_warehouseComboItemStateChanged
 
     private void btnExportMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportMousePressed
@@ -302,16 +366,22 @@ public class AvailabilityReport extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnExportMousePressed
 
+    private void rackComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rackComboItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rackComboItemStateChanged
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnExport;
     private javax.swing.JButton btnReport;
-    private javax.swing.JComboBox condicionCombo;
+    private javax.swing.JTextField condicionTxt;
     private com.toedter.calendar.JCalendar jCalendar1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JComboBox rackCombo;
     private javax.swing.JTable tblKardex;
     private javax.swing.JComboBox warehouseCombo;
     // End of variables declaration//GEN-END:variables

@@ -8,6 +8,7 @@ package base.order;
 import base.IRepository;
 import entity.Cliente;
 import entity.GuiaRemision;
+import entity.Pallet;
 import entity.Pedido;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
@@ -29,4 +30,8 @@ public interface IOrderRepository extends IRepository<Pedido> {
     Boolean createRemissionGuides(ArrayList<PedidoParcial> acceptedOrders, ArrayList<GuiaRemision> remissionGuides);
 
     Boolean createPartialOrders(ArrayList<PedidoParcial> acceptedOrders, ArrayList<PedidoParcialXProducto> acceptedOrdersXProd, ArrayList<PedidoParcial> rejectedOrders, ArrayList<PedidoParcialXProducto> rejectedOrdersXProd);
+
+    ArrayList<Pedido> queryAllOrders();
+
+    Boolean updatePartialOrder(PedidoParcial p, ArrayList<Pallet> pallets);
 }

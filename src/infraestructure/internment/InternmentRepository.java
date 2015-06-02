@@ -106,7 +106,7 @@ public class InternmentRepository implements IInternmentRepository {
 
     @Override
     public int update(OrdenInternamiento object) {
-     Transaction trns = null;
+        Transaction trns = null;
         Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();

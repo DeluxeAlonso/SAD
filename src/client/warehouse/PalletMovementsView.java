@@ -4,6 +4,7 @@ import application.pallet.PalletApplication;
 import application.rack.RackApplication;
 import application.spot.SpotApplication;
 import application.warehouse.WarehouseApplication;
+import client.base.BaseView;
 import entity.Almacen;
 import entity.Pallet;
 import entity.Rack;
@@ -29,7 +30,7 @@ import util.Strings;
  *
  * @author KEVIN BROWN
  */
-public class PalletMovementsView extends javax.swing.JInternalFrame {
+public class PalletMovementsView extends BaseView {
     WarehouseApplication warehouseApplication = InstanceFactory.Instance.getInstance("warehouseApplicaiton", WarehouseApplication.class);
     RackApplication rackApplication = InstanceFactory.Instance.getInstance("rackApplicaiton", RackApplication.class);
     SpotApplication spotApplication = InstanceFactory.Instance.getInstance("spotApplicaiton", SpotApplication.class);
@@ -47,6 +48,7 @@ public class PalletMovementsView extends javax.swing.JInternalFrame {
      */
     public PalletMovementsView() {
         initComponents();
+        super.initialize();
         //Initialize comboWarehouseFrom
         palletMovementsView = this;
         warehousesFrom = warehouseApplication.queryAll();

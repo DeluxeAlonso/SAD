@@ -8,6 +8,7 @@ package application.order;
 import base.order.IOrderRepository;
 import entity.Cliente;
 import entity.GuiaRemision;
+import entity.Pallet;
 import entity.Pedido;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
@@ -31,6 +32,16 @@ public class OrderApplication {
         ArrayList<Pedido> orders=null;
         try{
             orders=orderRepository.queryAll();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return orders;
+    }
+    
+    public ArrayList<Pedido> getAllOrdersWithAllStates(){
+        ArrayList<Pedido> orders=null;
+        try{
+            orders=orderRepository.queryAllOrders();
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -141,6 +152,16 @@ public class OrderApplication {
             e.printStackTrace();
         }
         return order;
+    }
+    
+    public Boolean updatePartialOrder(PedidoParcial p, ArrayList<Pallet>pallets){
+        Boolean response = false;
+        try {
+            response = orderRepository.updatePartialOrder(p, pallets);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
     }
         
 }
