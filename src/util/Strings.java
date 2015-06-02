@@ -139,6 +139,12 @@ public class Strings {
     
     /*END*/
     
+    /*ALGORITHM EXECUTION MESSAGES*/
+    public static final String BAD_PARAMETERS="Debe ingresar solo números en ambos campos horas y minutos.";
+    public static final String BAD_PARAMETERS_TITLE="Parámetros del algoritmo";
+    
+    /*END*/
+    
     /*ORDERS MESSAGES*/
     public static final String MESSAGE_CONFIRM_DELETE_ORDER="¿Está seguro de eliminar el pedido seleccionado?";
     public static final String MESSAGE_DELETE_ORDER_TITLE="Mensaje de anulacion de Pedido";
