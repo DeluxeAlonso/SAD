@@ -8,8 +8,18 @@ package client.delivery;
 import algorithm.AlgorithmExecution;
 import algorithm.AlgorithmReturnValues;
 import algorithm.Solution;
+import application.order.OrderApplication;
+import application.pallet.PalletApplication;
 import client.delivery.GoogleMaps;
 import client.base.BaseView;
+import entity.Despacho;
+import entity.GuiaRemision;
+import entity.Pallet;
+import entity.PedidoParcial;
+import entity.PedidoParcialXProducto;
+import java.util.ArrayList;
+import java.util.Iterator;
+import util.EntityState;
 import util.Icons;
 
 /**
@@ -19,6 +29,8 @@ import util.Icons;
 public class DeliveryView extends BaseView {
     private Solution solution = null;
     private AlgorithmExecution algorithmExecution = null;
+    OrderApplication orderApplication = new OrderApplication();
+    PalletApplication palletApplication = new PalletApplication();
     
     /**
      * Creates new form DispatchView
@@ -136,6 +148,8 @@ public class DeliveryView extends BaseView {
     private void btnProcessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessActionPerformed
         if(solution!=null && algorithmExecution!=null){
             AlgorithmReturnValues returnValues = algorithmExecution.processOrders(solution);
+            assignRemissionGuides(returnValues.getDespachos());
+            createPartialOrders(returnValues.getAcceptedOrders(), returnValues.getRejectedOrders());
         }
     }//GEN-LAST:event_btnProcessActionPerformed
 
@@ -163,7 +177,59 @@ public class DeliveryView extends BaseView {
         } */       
     }//GEN-LAST:event_btnExecuteAlgorithmActionPerformed
 
-
+    public void assignRemissionGuides(ArrayList<Despacho> deliveries){
+        ArrayList<PedidoParcial> acceptedOrders = new ArrayList<>();
+        ArrayList<GuiaRemision> remissionGuides = new ArrayList<>();
+        for(int i=0;i<deliveries.size();i++)
+            for (Iterator<GuiaRemision> remissionGuide = deliveries.get(i).getGuiaRemisions().iterator(); remissionGuide.hasNext(); ) {
+                GuiaRemision g = remissionGuide.next();
+                for(Iterator<PedidoParcial> partialOrder = g.getPedidoParcials().iterator(); partialOrder.hasNext();){
+                    
+                    PedidoParcial p = partialOrder.next();
+                    acceptedOrders.add(p);
+                }
+                remissionGuides.add(g);
+            }
+        orderApplication.CreateRemissionGuides(acceptedOrders, remissionGuides); 
+    }
+    
+    public void createPartialOrders(ArrayList<PedidoParcial>acceptedOrders, ArrayList<PedidoParcial>rejectedOrders){
+        ArrayList<PedidoParcialXProducto> acceptedOrdersXProd = getAcceptedPartialOrderDetail(acceptedOrders);
+        ArrayList<PedidoParcialXProducto> rejectedOrdersXProd = getRejectedPartialOrderDetail(rejectedOrders);
+        
+        orderApplication.createPartialOrders(acceptedOrders, acceptedOrdersXProd, rejectedOrders, rejectedOrdersXProd);
+    }
+    
+    public ArrayList<PedidoParcialXProducto> getAcceptedPartialOrderDetail(ArrayList<PedidoParcial> orders){
+        ArrayList<PedidoParcialXProducto> orderDetails = new ArrayList<>();
+        for(int i=0;i<orders.size();i++)
+            for(Iterator<PedidoParcialXProducto> partialOrderDetail = orders.get(i).getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){
+                    PedidoParcialXProducto p = partialOrderDetail.next();
+                    ArrayList<Pallet> pallets = palletApplication.getAvailablePalletsByProductId(p.getProducto().getId());
+                    ArrayList<Pallet> selectedPallets = new ArrayList<>();
+                    for(int j=0;j<p.getCantidad();j++){
+                        Pallet selectedPallet;
+                        selectedPallet = pallets.get(j);
+                        selectedPallet.setEstado(EntityState.Pallets.DESPACHADO.ordinal());                  
+                        selectedPallet.setPedidoParcial(p.getPedidoParcial());
+                        selectedPallets.add(selectedPallet);
+                    }
+                    palletApplication.updatePallets(selectedPallets);
+                    orderDetails.add(p);
+            }
+        return orderDetails;
+    }
+    
+    public ArrayList<PedidoParcialXProducto> getRejectedPartialOrderDetail(ArrayList<PedidoParcial> orders){
+        ArrayList<PedidoParcialXProducto> orderDetails = new ArrayList<>();
+        for(int i=0;i<orders.size();i++)
+            for(Iterator<PedidoParcialXProducto> partialOrderDetail = orders.get(i).getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){
+                    PedidoParcialXProducto p = partialOrderDetail.next();
+                    orderDetails.add(p);
+            }
+        return orderDetails;
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnExecuteAlgorithm;
     private javax.swing.JButton btnProcess;

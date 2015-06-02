@@ -35,8 +35,6 @@ import util.EntityState;
  * @author robert
  */
 public class AlgorithmExecution {
-    OrderApplication orderApplication = new OrderApplication();
-    PalletApplication palletApplication = new PalletApplication();
     Problem problem;
     
     public Solution start(double maxTravelTime){
@@ -293,59 +291,6 @@ public class AlgorithmExecution {
         
         
         return new AlgorithmReturnValues(despachos, acceptedOrders, rejectedOrders);
-    }
-    
-    public void assignRemissionGuides(ArrayList<Despacho> deliveries){
-        ArrayList<PedidoParcial> acceptedOrders = new ArrayList<>();
-        ArrayList<GuiaRemision> remissionGuides = new ArrayList<>();
-        for(int i=0;i<deliveries.size();i++)
-            for (Iterator<GuiaRemision> remissionGuide = deliveries.get(i).getGuiaRemisions().iterator(); remissionGuide.hasNext(); ) {
-                GuiaRemision g = remissionGuide.next();
-                for(Iterator<PedidoParcial> partialOrder = g.getPedidoParcials().iterator(); partialOrder.hasNext();){
-                    
-                    PedidoParcial p = partialOrder.next();
-                    acceptedOrders.add(p);
-                }
-                remissionGuides.add(g);
-            }
-        orderApplication.CreateRemissionGuides(acceptedOrders, remissionGuides); 
-    }
-    
-    public void createPartialOrders(ArrayList<PedidoParcial>acceptedOrders, ArrayList<PedidoParcial>rejectedOrders){
-        ArrayList<PedidoParcialXProducto> acceptedOrdersXProd = getAcceptedPartialOrderDetail(acceptedOrders);
-        ArrayList<PedidoParcialXProducto> rejectedOrdersXProd = getRejectedPartialOrderDetail(rejectedOrders);
-        
-        orderApplication.createPartialOrders(acceptedOrders, acceptedOrdersXProd, rejectedOrders, rejectedOrdersXProd);
-    }
-    
-    public ArrayList<PedidoParcialXProducto> getAcceptedPartialOrderDetail(ArrayList<PedidoParcial> orders){
-        ArrayList<PedidoParcialXProducto> orderDetails = new ArrayList<>();
-        for(int i=0;i<orders.size();i++)
-            for(Iterator<PedidoParcialXProducto> partialOrderDetail = orders.get(i).getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){
-                    PedidoParcialXProducto p = partialOrderDetail.next();
-                    ArrayList<Pallet> pallets = palletApplication.getAvailablePalletsByProductId(p.getProducto().getId());
-                    ArrayList<Pallet> selectedPallets = new ArrayList<>();
-                    for(int j=0;j<p.getCantidad();j++){
-                        Pallet selectedPallet;
-                        selectedPallet = pallets.get(j);
-                        selectedPallet.setEstado(EntityState.Pallets.DESPACHADO.ordinal());                  
-                        selectedPallet.setPedidoParcial(p.getPedidoParcial());
-                        selectedPallets.add(selectedPallet);
-                    }
-                    palletApplication.updatePallets(selectedPallets);
-                    orderDetails.add(p);
-            }
-        return orderDetails;
-    }
-    
-    public ArrayList<PedidoParcialXProducto> getRejectedPartialOrderDetail(ArrayList<PedidoParcial> orders){
-        ArrayList<PedidoParcialXProducto> orderDetails = new ArrayList<>();
-        for(int i=0;i<orders.size();i++)
-            for(Iterator<PedidoParcialXProducto> partialOrderDetail = orders.get(i).getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){
-                    PedidoParcialXProducto p = partialOrderDetail.next();
-                    orderDetails.add(p);
-            }
-        return orderDetails;
     }
 
     public StringBuffer displayRoutes(Solution bestSolution) {
