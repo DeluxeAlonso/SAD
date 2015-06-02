@@ -10,6 +10,7 @@ import application.client.ClientApplication;
 import application.local.LocalApplication;
 import application.product.ProductApplication;
 import application.producttype.ProductTypeApplication;
+import client.base.BaseView;
 import client.personal.NewPersonalView;
 import entity.Cliente;
 import entity.Local;
@@ -46,7 +47,7 @@ import util.Strings;
  *
  * @author Alonso
  */
-public class ProductView extends javax.swing.JInternalFrame implements MouseListener {
+public class ProductView extends BaseView implements MouseListener {
     ClientApplication clientApplication=InstanceFactory.Instance.getInstance("clientApplication", ClientApplication.class);
     LocalApplication localApplication=InstanceFactory.Instance.getInstance("localApplication", LocalApplication.class);
     ProductApplication productApplication=InstanceFactory.Instance.getInstance("productApplication", ProductApplication.class);
@@ -67,6 +68,7 @@ public class ProductView extends javax.swing.JInternalFrame implements MouseList
      */
     public ProductView() {
         initComponents();
+        initialize();
         setupListeners();
         fillClientsTable();
         condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.CONDITIONS_NAMES));
@@ -367,7 +369,7 @@ public class ProductView extends javax.swing.JInternalFrame implements MouseList
             }
         });
 
-        jLabel2.setText("   *Nombre Producto:");
+        jLabel2.setText("   *Nombre  de tipo:");
 
         jLabel3.setText("*Descripcion:");
 
@@ -559,7 +561,7 @@ public class ProductView extends javax.swing.JInternalFrame implements MouseList
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 498, Short.MAX_VALUE)
                             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
