@@ -6,6 +6,7 @@
 package client.user;
 
 import javax.swing.JOptionPane;
+import util.Icons;
 import util.Strings;
 
 /**
@@ -19,6 +20,7 @@ public class ForgotPasswordView extends javax.swing.JFrame {
      */
     public ForgotPasswordView() {
         initComponents();
+        Icons.setMainIcon(this);
     }
 
     /**
