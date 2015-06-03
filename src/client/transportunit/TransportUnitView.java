@@ -193,11 +193,8 @@ public class TransportUnitView extends BaseView implements MouseListener{
      * Table Methods
      */ 
     public void refreshTable(){
-        ArrayList<String> cols = new ArrayList<>();
-        for (int i = 0; i<transportTable.getColumnCount(); i++)
-            cols.add(transportTable.getColumnName(i));
-        DefaultTableModel tableModel = new DefaultTableModel(cols.toArray(), 0);
-        transportTable.setModel(tableModel);
+        DefaultTableModel tableModel = (DefaultTableModel)transportTable.getModel();
+        tableModel.setRowCount(0);
         EntityType.TRANSPORT_UNITS.stream().forEach((_transportUnit) -> {
             Object[] row = {_transportUnit.getId(), _transportUnit.getPlaca(),
                 _transportUnit.getTransportista(), EntityState.getTransportUnitsState()[_transportUnit.getEstado()],
@@ -446,11 +443,12 @@ public class TransportUnitView extends BaseView implements MouseListener{
                     .addComponent(jLabel5)
                     .addComponent(transportistCreateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(typeCreateCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(saveBtn)
-                    .addComponent(editBtn))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(saveBtn, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(editBtn)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel6)
+                        .addComponent(typeCreateCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 

@@ -246,7 +246,7 @@ public class OrderRepository implements IOrderRepository{
     
     public ArrayList<Pedido> searchOrder(Pedido order){
         String hql="from Pedido "
-                + "where (estado=1) and (:id is null or id=:id) and (:id_local is null or id_local=:id_local)"
+                + "where (:id is null or id=:id) and (:id_local is null or id_local=:id_local)"
                 + "and (:status is null or estado=:status) and (:id_cliente is null or id_cliente=:id_cliente) order by id desc";
         ArrayList<Pedido> orders=null;
         

@@ -1,4 +1,4 @@
-/*
+    /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -156,7 +156,7 @@ public class ProductRepository implements IProductRepository {
     
     public ArrayList<Producto> searchProduct(Producto product){
         String hql="from Producto "
-                + "where (:id is null or id=:id) and (nombre like :name)";
+                + "where (:id is null or id=:id) and (nombre like :name) and stock_total>0";
         ArrayList<Producto> products=null;
         
         Transaction trns = null;

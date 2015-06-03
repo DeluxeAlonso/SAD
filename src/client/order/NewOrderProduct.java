@@ -172,11 +172,8 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
      * Table Methods
      */ 
     public void refreshOrderProductsTable(){
-        ArrayList<String> cols = new ArrayList<>();
-        for (int i = 0; i<productTable.getColumnCount(); i++)
-            cols.add(productTable.getColumnName(i));
-        DefaultTableModel tableModel = new DefaultTableModel(cols.toArray(), 0);
-        productTable.setModel(tableModel);
+        DefaultTableModel tableModel = (DefaultTableModel)productTable.getModel();
+        tableModel.setRowCount(0);
         orderProducts.stream().forEach((_product) -> {
             Object[] row = {_product.getId(), _product.getNombre(), _product.getCondicion().getNombre(), productQuantities.get(orderProducts.indexOf(_product))};
             tableModel.addRow(row);
@@ -184,11 +181,8 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
     }
     
     public void refreshProductsToAddTable(){
-        ArrayList<String> cols = new ArrayList<>();
-        for (int i = 0; i<productAddTable.getColumnCount(); i++)
-            cols.add(productAddTable.getColumnName(i));
-        DefaultTableModel tableModel = new DefaultTableModel(cols.toArray(), 0);
-        productAddTable.setModel(tableModel);
+        DefaultTableModel tableModel = (DefaultTableModel)productAddTable.getModel();
+        tableModel.setRowCount(0);
         productsToAdd.stream().forEach((_product) -> {
             Object[] row = {_product.getId(), _product.getNombre(), _product.getCondicion().getNombre(), _product.getStockTotal()};
             tableModel.addRow(row);
@@ -340,6 +334,7 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
 
         jLabel4.setText("Cantidad de Pallets:");
 
+        qtySpinner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
         qtySpinner.setEnabled(false);
 
         jLabel3.setText("*Cliente:");

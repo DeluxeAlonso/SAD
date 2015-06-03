@@ -82,7 +82,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     }
 
     public void setupElements(){
-        currentOrders = orderApplication.getAllOrders();
+        currentOrders = orderApplication.getAllOrdersWithAllStates();
         fillCombos();
         refreshTable();
         Icons.setButton(newBtn, Icons.ICONOS.CREATE.ordinal());
@@ -152,7 +152,8 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
      * Table Methods
      */
     public void refreshTable(){
-        DefaultTableModel tableModel = generateTableModel(orderTable);
+        DefaultTableModel tableModel = (DefaultTableModel) orderTable.getModel();
+        tableModel.setRowCount(0);
         currentOrders.stream().forEach((_order) -> {
             Object[] row = {_order.getId(), _order.getCliente().getNombre()
                     , _order.getLocal().getNombre(),EntityState.getOrdersState()[_order.getEstado()]};
@@ -161,7 +162,8 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     }
     
     public void refreshProductTable(Integer partialId){
-        DefaultTableModel tableModel = generateTableModel(productTable);
+        DefaultTableModel tableModel = (DefaultTableModel) productTable.getModel();
+        tableModel.setRowCount(0);
         ArrayList<PedidoParcialXProducto> products = new ArrayList<>();
         products = orderApplication.queryAllPartialOrderProducts(partialId);
         products.stream().forEach((_product) -> {
@@ -172,7 +174,8 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     }
     
     public void refreshAllProductsTable(Integer orderId){
-        DefaultTableModel tableModel = generateTableModel(productTable);
+        DefaultTableModel tableModel = (DefaultTableModel) productTable.getModel();
+        tableModel.setRowCount(0);
         ArrayList<PedidoParcialXProducto> products = new ArrayList<>();
         products = orderApplication.queryAllProductsByOrderId(orderId);
         products.stream().forEach((_product) -> {
@@ -181,16 +184,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
             tableModel.addRow(row);
         });
     }
-    
-    public DefaultTableModel generateTableModel(JTable table){
-        ArrayList<String> cols = new ArrayList<>();
-        for (int i = 0; i<table.getColumnCount(); i++)
-            cols.add(table.getColumnName(i));
-        DefaultTableModel model = new DefaultTableModel(cols.toArray(), 0);
-        table.setModel(model);
-        return model;
-    }
-    
+
     /*
      * Order Methods
      */
@@ -252,7 +246,8 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         }
         partialCombo.setModel(new javax.swing.DefaultComboBoxModel(partialOrders));
         
-        refreshProductTable(currentPartialOrders.get(0).getId());
+        if(currentPartialOrders.size() > 0)
+            refreshProductTable(currentPartialOrders.get(0).getId());
         
         for(int i=0;i<currentPartialOrders.size();i++){
             ArrayList<PedidoParcialXProducto> products = new ArrayList<>();
@@ -291,7 +286,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     }
     
     public void refreshOrders(){
-        currentOrders = orderApplication.getAllOrders();
+        currentOrders = orderApplication.getAllOrdersWithAllStates();
         refreshTable();
     }
     
@@ -370,8 +365,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                     e.printStackTrace();
                 } finally{
                     if(!has_errors){
-                        currentOrders = orderApplication.getAllOrders();
-                        refreshTable();
+                        refreshOrders();
                         JOptionPane.showMessageDialog(this, Strings.LOAD_ORDER_SUCCESS,
                         Strings.LOAD_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
                     }
@@ -503,10 +497,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
 
         orderTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Codigo", "Cliente", "Local", "Estado"
@@ -912,8 +903,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                     p.getPedido().setEstado(EntityState.Orders.ANULADO.ordinal());
                     orderApplication.updateOrder(p.getPedido());
                 }
-                currentOrders = orderApplication.getAllOrders();
-                refreshTable();
+                refreshOrders();
                 clearDetailFields();
             }
             else
