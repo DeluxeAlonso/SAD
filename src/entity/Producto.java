@@ -1,5 +1,5 @@
 package entity;
-// Generated 01-jun-2015 18:57:54 by Hibernate Tools 4.3.1
+// Generated Jun 3, 2015 6:36:49 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -16,10 +16,13 @@ public class Producto  implements java.io.Serializable {
      private TipoProducto tipoProducto;
      private String nombre;
      private String descripcion;
-     private Integer stockTotal;
      private String ean13;
      private Integer cantidadProductosEnPallet;
      private Double peso;
+     private Integer palletsUbicados;
+     private Integer palletsRegistrados;
+     private Integer stockLogico;
+     private Integer stockTotal;
      private Set pedidoParcialXProductos = new HashSet(0);
      private Set pallets = new HashSet(0);
      private Set ordenInternamientoXProductos = new HashSet(0);
@@ -33,15 +36,18 @@ public class Producto  implements java.io.Serializable {
         this.condicion = condicion;
         this.tipoProducto = tipoProducto;
     }
-    public Producto(Condicion condicion, TipoProducto tipoProducto, String nombre, String descripcion, Integer stockTotal, String ean13, Integer cantidadProductosEnPallet, Double peso, Set pedidoParcialXProductos, Set pallets, Set ordenInternamientoXProductos, Set kardexes) {
+    public Producto(Condicion condicion, TipoProducto tipoProducto, String nombre, String descripcion, String ean13, Integer cantidadProductosEnPallet, Double peso, Integer palletsUbicados, Integer palletsRegistrados, Integer stockLogico, Integer stockTotal, Set pedidoParcialXProductos, Set pallets, Set ordenInternamientoXProductos, Set kardexes) {
        this.condicion = condicion;
        this.tipoProducto = tipoProducto;
        this.nombre = nombre;
        this.descripcion = descripcion;
-       this.stockTotal = stockTotal;
        this.ean13 = ean13;
        this.cantidadProductosEnPallet = cantidadProductosEnPallet;
        this.peso = peso;
+       this.palletsUbicados = palletsUbicados;
+       this.palletsRegistrados = palletsRegistrados;
+       this.stockLogico = stockLogico;
+       this.stockTotal = stockTotal;
        this.pedidoParcialXProductos = pedidoParcialXProductos;
        this.pallets = pallets;
        this.ordenInternamientoXProductos = ordenInternamientoXProductos;
@@ -83,13 +89,6 @@ public class Producto  implements java.io.Serializable {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
-    public Integer getStockTotal() {
-        return this.stockTotal;
-    }
-    
-    public void setStockTotal(Integer stockTotal) {
-        this.stockTotal = stockTotal;
-    }
     public String getEan13() {
         return this.ean13;
     }
@@ -110,6 +109,34 @@ public class Producto  implements java.io.Serializable {
     
     public void setPeso(Double peso) {
         this.peso = peso;
+    }
+    public Integer getPalletsUbicados() {
+        return this.palletsUbicados;
+    }
+    
+    public void setPalletsUbicados(Integer palletsUbicados) {
+        this.palletsUbicados = palletsUbicados;
+    }
+    public Integer getPalletsRegistrados() {
+        return this.palletsRegistrados;
+    }
+    
+    public void setPalletsRegistrados(Integer palletsRegistrados) {
+        this.palletsRegistrados = palletsRegistrados;
+    }
+    public Integer getStockLogico() {
+        return this.stockLogico;
+    }
+    
+    public void setStockLogico(Integer stockLogico) {
+        this.stockLogico = stockLogico;
+    }
+    public Integer getStockTotal() {
+        return this.stockTotal;
+    }
+    
+    public void setStockTotal(Integer stockTotal) {
+        this.stockTotal = stockTotal;
     }
     public Set getPedidoParcialXProductos() {
         return this.pedidoParcialXProductos;
