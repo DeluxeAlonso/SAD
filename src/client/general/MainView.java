@@ -24,6 +24,7 @@ import client.reports.RemissionGuideReport;
 import client.reports.StockReport;
 import client.reports.ProductCaducityReport;
 import client.reports.SecurityLogView;
+import client.reports.InternmentReport;
 
 import client.transportunit.*;
 import client.user.EditUserView;
@@ -79,6 +80,7 @@ public class MainView extends javax.swing.JFrame {
     private PalletView palletView = null;
     private AvailabilityReport availabilityReport = null;
     private RackView rackView = null;
+    private InternmentReport internmentReport = null;
     private KardexReport kardexReport = null;
     public static Usuario user = null;
     public static JDesktopPane desktopPane = null;
@@ -178,6 +180,7 @@ public class MainView extends javax.swing.JFrame {
         jMenuItem14 = new javax.swing.JMenuItem();
         jMenuItem15 = new javax.swing.JMenuItem();
         jMenuItem16 = new javax.swing.JMenuItem();
+        jMenuItem19 = new javax.swing.JMenuItem();
         menuSec = new javax.swing.JMenu();
         jMenuItem9 = new javax.swing.JMenuItem();
         jMenuItem17 = new javax.swing.JMenuItem();
@@ -357,6 +360,14 @@ public class MainView extends javax.swing.JFrame {
             }
         });
         menuReport.add(jMenuItem16);
+
+        jMenuItem19.setText("Internamientos");
+        jMenuItem19.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem19ActionPerformed(evt);
+            }
+        });
+        menuReport.add(jMenuItem19);
 
         menuBar.add(menuReport);
 
@@ -835,6 +846,23 @@ public class MainView extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
+    private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem19ActionPerformed
+
+            if (internmentReport == null || !internmentReport.isShowing()) {
+            internmentReport = new InternmentReport();
+            internmentReport.setVisible(true);
+            mainPanel.add(internmentReport);
+            try {
+                // TODO add your handling code here:
+                internmentReport.setSelected(true);
+
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem19ActionPerformed
+
     private void jMenuItem15MousePressed(java.awt.event.MouseEvent evt) {
         // TODO add your handling code here:
         if (availabilityReport == null || !availabilityReport.isShowing()) {
@@ -871,6 +899,7 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem16;
     private javax.swing.JMenuItem jMenuItem17;
     private javax.swing.JMenuItem jMenuItem18;
+    private javax.swing.JMenuItem jMenuItem19;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;

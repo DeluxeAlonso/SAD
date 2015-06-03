@@ -140,14 +140,12 @@ public class EditWarehouseView extends BaseDialogView {
 
         jLabel2.setText("Capacidad:");
 
-        saveBtn.setText("Guardar");
         saveBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveBtnActionPerformed(evt);
             }
         });
 
-        cancelBtn.setText("Cancelar");
         cancelBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelBtnActionPerformed(evt);
@@ -248,7 +246,7 @@ public class EditWarehouseView extends BaseDialogView {
                                 .addComponent(deleteBtn)
                                 .addGap(12, 12, 12))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(92, 92, 92)
+                        .addGap(126, 126, 126)
                         .addComponent(saveBtn)
                         .addGap(18, 18, 18)
                         .addComponent(cancelBtn)))
