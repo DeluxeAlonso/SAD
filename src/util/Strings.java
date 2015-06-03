@@ -187,4 +187,10 @@ public class Strings {
     public static final String ERROR_DATE="La fecha inicial debe ser anterior a la final";
     /*END*/
     
+    /*DELIVERY MESSAGES*/
+    public static final String DELIVERY_TITLE="Despacho";
+    public static final String DELIVERY_SUCCESS="Se realizo el despacho de manera correcta.";
+    public static final String DELIVERY_ERROR="Hubo un error al realizar el despacho.";
+    /*END*/
+    
 }

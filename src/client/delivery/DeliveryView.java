@@ -152,11 +152,11 @@ public class DeliveryView extends BaseView {
             AlgorithmReturnValues returnValues = algorithmExecution.processOrders(solution);
             assignRemissionGuides(returnValues.getDespachos());
             if(createPartialOrders(returnValues.getAcceptedOrders(), returnValues.getRejectedOrders()))
-                JOptionPane.showMessageDialog(this, Strings.MESSAGE_DELETE_ORDER,
-                    Strings.MESSAGE_DELETE_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, Strings.DELIVERY_SUCCESS,
+                    Strings.DELIVERY_TITLE,JOptionPane.INFORMATION_MESSAGE);
             else
-                JOptionPane.showMessageDialog(this, Strings.MESSAGE_DELETE_ORDER,
-                    Strings.MESSAGE_DELETE_ORDER_TITLE,JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, Strings.DELIVERY_ERROR,
+                    Strings.DELIVERY_TITLE,JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnProcessActionPerformed
 
