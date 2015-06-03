@@ -154,20 +154,16 @@ public class ClientView extends BaseView implements MouseListener {
                 //Leo un cliente y lo inserto
                 line = br.readLine();
                 line_split = line.split(cvsSplitBy);
-                
                 client = new Cliente();
                 client.setNombre(line_split[0]);
                 client.setRuc(line_split[1]);
                 client.setEstado(Clients.ACTIVO.ordinal());
                 clientApplication.insert(client);
-                
-                //System.out.println(line_split[0]+" - "+line_split[1]+" - "+line_split[2]);
                 //Leo sus locales y los inserto
                 localsNum = Integer.parseInt(line_split[2]);
                 for(int j=0;j<localsNum;j++){
                     line = br.readLine();
                     line_split = line.split(cvsSplitBy);
-                    
                     local = new Local();
                     local.setLatitud(Double.parseDouble(line_split[0]));
                     local.setLongitud(Double.parseDouble(line_split[1]));
@@ -177,9 +173,6 @@ public class ClientView extends BaseView implements MouseListener {
                     local.setCliente(client);
                     local.setEstado(Locals.ACTIVO.ordinal());
                     localApplication.insert(local);
-                    
-                    //System.out.println(line_split[0]+" - "+line_split[1]+" - "+line_split[2]+" - "+line_split[3]+" - "+line_split[4]);
-                    
                 }
             }
 	} catch (FileNotFoundException e) {
