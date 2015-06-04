@@ -44,6 +44,28 @@ public class LocalRepository implements ILocalRepository{
     }
     
     @Override
+    public ArrayList<Local> queryAll() {
+        String hql="FROM Local l WHERE l.estado=:state";
+        ArrayList<Local> locals=null;
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("state", Locals.ACTIVO.ordinal());
+            locals = (ArrayList<Local>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return locals; //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
     public int insert(Local object) {
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
@@ -86,11 +108,6 @@ public class LocalRepository implements ILocalRepository{
 
     @Override
     public int delete(Local object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public ArrayList<Local> queryAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

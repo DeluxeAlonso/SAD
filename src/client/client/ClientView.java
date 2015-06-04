@@ -705,7 +705,9 @@ public class ClientView extends BaseView implements MouseListener {
         solution.setNodes(node);
         
         
-        GoogleMaps map = new GoogleMaps(solution);
+        //GoogleMaps map = new GoogleMaps(solution);
+        ArrayList<Local> locals = localApplication.queryAll();
+        GoogleMapsLocals map = new GoogleMapsLocals(locals);
     }//GEN-LAST:event_jButton1MousePressed
 
     private void btnFileUploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFileUploadActionPerformed

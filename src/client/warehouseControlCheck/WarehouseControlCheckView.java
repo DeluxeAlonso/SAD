@@ -6,6 +6,7 @@
 
 package client.warehouseControlCheck;
 
+import application.pallet.PalletApplication;
 import application.spot.SpotApplication;
 import application.warehouse.WarehouseApplication;
 import client.base.BaseView;
@@ -34,6 +35,7 @@ import util.Strings;
 public class WarehouseControlCheckView extends BaseView {
     WarehouseApplication warehouseApplication = InstanceFactory.Instance.getInstance("warehouseApplicaiton", WarehouseApplication.class);
     SpotApplication spotApplication = InstanceFactory.Instance.getInstance("spotApplicaiton", SpotApplication.class);
+    PalletApplication palletApplication = InstanceFactory.Instance.getInstance("palletApplicaiton", PalletApplication.class);
     public static WarehouseControlCheckView warehouseControlCheckView;
     public ArrayList<Almacen> warehousesFrom;
     public ArrayList<Ubicacion> spots;
@@ -92,8 +94,8 @@ public class WarehouseControlCheckView extends BaseView {
             // Leo la cantidad de clientes que hay en el archivo
             line = br.readLine();
             String[] line_split = line.split(cvsSplitBy);
-            int spots = Integer.parseInt(line_split[0]);
-            for(int i=0;i<spots;i++){
+            int spotsInFile = Integer.parseInt(line_split[0]);
+            for(int i=0;i<spotsInFile;i++){
                 // Leo una ubicacion
                 line = br.readLine();
                 line_split = line.split(cvsSplitBy);
@@ -108,6 +110,11 @@ public class WarehouseControlCheckView extends BaseView {
                         
                     }else{
                         // En sistema ocupado y en fisico libre, debo eliminar el pallet
+                        // Eliminar el pallet de la ubicacion
+                        palletApplication.deletePalletBySpot(spots.get(i).getId());
+                        // Actualizo el estado de la ubicacion a libre
+                        spotApplication.updateSpotOccupancy(spots.get(i).getId(), EntityState.Spots.LIBRE.ordinal());
+                        // Registro el kardex
                         
                     }
                 }
