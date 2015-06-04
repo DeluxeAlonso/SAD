@@ -42,7 +42,7 @@ public class AlgorithmExecution {
         
         Algorithm algorithm = new Algorithm();
         algorithm.setNumberOfGenerations(0);
-        algorithm.setPopulationSize(1000);
+        algorithm.setPopulationSize(1);
         algorithm.setTournamentSelectionKValue(50);
         algorithm.setOvercapPenalty(10000);
         algorithm.setOvertimePenalty(10000);
@@ -109,7 +109,16 @@ public class AlgorithmExecution {
         System.out.println("Execution time: " + (end-ini) + "ms");
         
         bestSolution = population.getBestSolution();
-        displayRoutes(bestSolution);
+        System.out.println("");
+        System.out.println(displayRoutes(bestSolution));
+        System.out.println("");
+        System.out.println(displayDemand(bestSolution));
+        //System.out.println("");
+        //System.out.println(displayOrders(bestSolution));
+        
+        /*AlgorithmView algorithmView = new AlgorithmView(bestSolution);
+        algorithmView.setBounds(0, 0, 700, 700);
+        algorithmView.setVisible(true);*/
         
         
         return bestSolution;  
@@ -299,7 +308,38 @@ public class AlgorithmExecution {
         for (int i = 0; i < nodes.length; i++) {            
             buf.append("Ruta ").append(i).append("\n") ;           
             for (int j = 0; j < nodes[i].length; j++) {
-                buf.append(nodes[i][j].getX()).append(" ").append(nodes[i][j].getY());                
+                buf.append(nodes[i][j].getX()).append("/").append(nodes[i][j].getY()).
+                        append("  ");                
+            }
+            buf.append("\n");
+        }
+        return buf;
+    }
+    
+    public StringBuffer displayDemand(Solution bestSolution) {
+        StringBuffer buf = new StringBuffer();
+        Node[][]nodes = bestSolution.getNodes();
+        for (int i = 0; i < nodes.length; i++) {            
+            buf.append("Ruta ").append(i).append("\n") ;           
+            int cap = 0;
+            for (int j = 0; j < nodes[i].length; j++) {
+                buf.append(nodes[i][j].getProduct().getId()).append("/").append(nodes[i][j].getDemand()).
+                        append("/").append(nodes[i][j].getPartialOrder().getPedido().getId()).append("  ");
+                cap += nodes[i][j].getDemand();
+            }
+            buf.append(cap + "\n");
+        }
+        return buf;
+    }
+    
+    public StringBuffer displayOrders(Solution bestSolution) {
+        StringBuffer buf = new StringBuffer();
+        Node[][]nodes = bestSolution.getNodes();
+        for (int i = 0; i < nodes.length; i++) {            
+            buf.append("Ruta ").append(i).append("\n") ;           
+            for (int j = 0; j < nodes[i].length; j++) {
+                buf.append(nodes[i][j].getPartialOrder().getPedido().getId()).
+                        append("  ");                
             }
             buf.append("\n");
         }

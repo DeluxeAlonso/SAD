@@ -5,11 +5,13 @@
  */
 package algorithm;
 
+import client.base.BaseView;
+
 /**
  *
  * @author robert
  */
-public class AlgorithmView extends javax.swing.JInternalFrame {
+public class AlgorithmView extends BaseView {
     private Solution solution;
     
     /**
@@ -17,11 +19,13 @@ public class AlgorithmView extends javax.swing.JInternalFrame {
      */
     public AlgorithmView() {
         initComponents();
+        super.initialize();
     }
 
-    AlgorithmView(Solution solution) {
+    public AlgorithmView(Solution solution) {
         this.solution = solution;        
         initComponents();
+        super.initialize();
     }
 
     /**
@@ -46,7 +50,7 @@ public class AlgorithmView extends javax.swing.JInternalFrame {
         );
         algorithmPanelLayout.setVerticalGroup(
             algorithmPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 256, Short.MAX_VALUE)
+            .addGap(0, 260, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

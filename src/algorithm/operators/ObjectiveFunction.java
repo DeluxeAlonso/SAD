@@ -43,6 +43,8 @@ public class ObjectiveFunction {
         if(overTime>0) System.out.println("overtime " + overTime);
         if(overStock>0) System.out.println("overstock " + overStock);*/
         
+        customerPriority = 1;
+        
         return travelCost/customerPriority + 
                 algorithm.getOvercapPenalty()*overCap +
                 algorithm.getOvertimePenalty()*overTime + 
@@ -53,6 +55,7 @@ public class ObjectiveFunction {
             Algorithm algorithm, HashMap<Integer,Integer> currentStock){
         double routeCost = 0; int currentCap = 0; double currentTime = 0;
         if(route==null) return routeCost;  
+        if(route.length==0) return routeCost;
         double speed = vehicle.getTipoUnidadTransporte().getVelocidadPromedio();
         for (int i = 0; i < route.length+1; i++) {
             double travelCost = 0; int extraCap = 0, productId = 0, newStock = 0;
@@ -69,6 +72,9 @@ public class ObjectiveFunction {
                 travelCost = Point2D.distance(Constants.WAREHOUSE_LONGITUDE, Constants.WAREHOUSE_LATITUDE,
                     route[i].getX(), route[i].getY())/
                     speed;            
+            
+            //System.out.println("travelCost: " + travelCost + 
+            //        "  distance: " + travelCost*speed + " speed: " + speed);
             
             if(i < route.length && currentStock!=null) {                
                 extraCap = route[i].getDemand();

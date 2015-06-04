@@ -49,18 +49,23 @@ public class AlgorithmPanel extends javax.swing.JPanel {
             }            
         }
         
-        minX = minXa - 10;
-        maxX = maxXa + 10;
-        minY = minYa - 10;
-        maxY = maxYa + 10;
+        minX = minXa - 0.01;// - 10;
+        maxX = maxXa + 0.01;// + 10;
+        minY = minYa - 0.01;// - 10;
+        maxY = maxYa + 0.01;// + 10;
 
+        //System.out.println("min/max " + minX + " " + maxX + " " + minY + " " + maxY);
+        
         this.solution = solution;
 
         setBackground(new java.awt.Color(255, 255, 255));
         initComponents();
-
+        
+        
+        //System.out.println("constructor");
     }
 
+    
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -82,6 +87,8 @@ public class AlgorithmPanel extends javax.swing.JPanel {
                 int x2 = (int) (totX * (posX2 - minX) / (maxX - minX));
                 int y2 = (int) (totY * (posY2 - minY) / (maxY - minY));
                 g.drawLine(x1, y1, x2, y2);
+                
+                //System.out.println(x1 + " " + y1 + " / " + x2 + " " + y2);
 
                 g.setColor(Color.blue);
                 g.drawString(((Integer) nodes[i][j].getIdx()).toString(), x2, y2);
@@ -100,6 +107,8 @@ public class AlgorithmPanel extends javax.swing.JPanel {
                 int y2 = (int) (totY * (posY2 - minY) / (maxY - minY));
                 g.drawLine(x1, y1, x2, y2);
 
+                //System.out.println(x1 + " " + y1 + " / " + x2 + " " + y2);
+                
                 g.setColor(Color.blue);
                 g.drawString(((Integer) nodes[i][1].getIdx()).toString(), x2, y2);
                 g.drawString("0", x1, y1);
@@ -116,12 +125,16 @@ public class AlgorithmPanel extends javax.swing.JPanel {
                 y2 = (int) (totY * (posY2 - minY) / (maxY - minY));
                 g.drawLine(x1, y1, x2, y2);
 
+                //System.out.println(x1 + " " + y1 + " / " + x2 + " " + y2);
+                
                 g.setColor(Color.blue);
                 g.drawString(((Integer) nodes[i][nodes[i].length - 1].getIdx()).toString(), x1, y1);
                 g.setColor(Color.black);
                 //g2.drawString("0", x2, y2);
             }
         }
+        
+        System.out.println("painted");
     }    
 
     /**

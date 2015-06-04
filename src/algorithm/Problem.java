@@ -68,15 +68,15 @@ public class Problem {
                     Node node = new Node();
                     
                     
-                    node.setX(pedido.getLocal().getLatitud());
-                    node.setY(pedido.getLocal().getLongitud());   
+                    node.setX(pedido.getLocal().getLongitud());
+                    node.setY(pedido.getLocal().getLatitud());   
                     
                     long diff = pedido.getFecha().getTime() - today.getTime();
                     node.setDaysDifference(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS));
                     
-                    if(i<batchNumber) node.setDemand(vehicleCapacity);
+                    if(i<batchNumber-1) node.setDemand(vehicleCapacity);
                     else node.setDemand(demand);
-                    demand -= batchNumber*vehicleCapacity;
+                    demand -= vehicleCapacity;
                     
                     node.setPartialOrder(order);
                     node.setProduct(partialOrderProduct.getProducto());
@@ -94,9 +94,13 @@ public class Problem {
             System.out.println("Product id: " + key + "  Stock: " + value);
 
         }
+        
+        System.out.println("nodes size: " + nodes.size());
+        
         for (int i = 0; i < nodes.size(); i++) {
             System.out.println("Product id: " + nodes.get(i).getProduct().getId() + 
-                    "  Demand: " + nodes.get(i).getDemand());
+                    "  Demand: " + nodes.get(i).getDemand() + 
+                    "  Order id: " + nodes.get(i).getPartialOrder().getPedido().getId());
             
         }
         

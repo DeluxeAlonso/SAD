@@ -32,7 +32,7 @@ public class Grasp {
         HashMap<Integer,Integer> currentStock = new HashMap<> (problem.getProductsStock());        
         
         for (int i = 0; i < routesNo; i++) {
-            //System.out.println("vehicle " + i);
+            System.out.println("vehicle " + i);
             
             UnidadTransporte vehicle = problem.getVehicles().get(i);
             
@@ -40,8 +40,16 @@ public class Grasp {
             
             routes[i] = new Node[route.size()];
             routes[i] = route.toArray(routes[i]);
-            if(routes[i].length == 0) throw new AssertionError(i + " is a bad route");
+            //if(routes[i].length == 0) throw new AssertionError(i + " is a bad route");
         }
+        
+        
+        int vis = 0;
+        for (int i = 0; i < visited.length; i++) {
+            if(visited[i]) vis++;            
+        }
+        System.out.println("visited nodes: " + vis);
+        
         return routes;
     }
 
@@ -149,8 +157,9 @@ public class Grasp {
                         algorithm, currentTime, currentStock, visited);
             }
             
+            
             //System.out.println(param.getBeta() + " " + param.getTau());
-            if(idx==0 && RCL.isEmpty()) throw new AssertionError("bad RCL");            
+            //if(idx==0 && RCL.isEmpty()) throw new AssertionError("bad RCL");            
             
             if (RCL.isEmpty()) {
                 break; //if there are no more nodes to add
@@ -162,7 +171,7 @@ public class Grasp {
             }
             
             //System.out.println(currentCapacity + " " + RCL.get(chosen).getDemand() + " " + vehicleCapacity );
-            if(idx==0 && !canBeAdded) throw new AssertionError("bad demand");
+            //if(idx==0 && !canBeAdded) throw new AssertionError("bad demand");
             
             if (canBeAdded) {
                 nextNode = RCL.get(chosen);
