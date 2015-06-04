@@ -450,6 +450,11 @@ public class InternmentSelectView extends BaseView {
             ordenXProducto.setCantidadIngresada(0);
             ordenXProducto.setId(id);
             internmentApplication.insertOrdenXProducto(ordenXProducto);
+            //stocks en producto
+            Producto prod = internmentApplication.getProdOrder(orden).getProducto();
+            prod.setPalletsRegistrados(prod.getPalletsRegistrados()+b.cantidad);
+            prod.setStockLogico(prod.getStockLogico()+b.cantidad);
+            productApplication.update(prod);
             //Pallets
             for (int i=0;i<b.cantidad;i++){
                 Pallet pallet = new Pallet();
@@ -551,20 +556,23 @@ public class InternmentSelectView extends BaseView {
                     spotApplication.updateSpotOccupancy(ubicaciones.get(i).getId(), EntityState.Spots.OCUPADO.ordinal());
                                     
                     //actualizar cant a internar en ordeninteramientoXproducto
-                    OrdenInternamientoXProducto ordenXProd = internmentApplication.getProdOrder(ordenAInternar);
+                    /*OrdenInternamientoXProducto ordenXProd = internmentApplication.getProdOrder(ordenAInternar);
                     ordenXProd.setCantidadIngresada(ordenXProd.getCantidadIngresada()+1);
                     internmentApplication.incCantOrderXProd(ordenXProd);
-
+                    */
+                    
+                    
                     // actualizar stock total del producto
-                    Producto prod = internmentApplication.getProdOrder(ordenAInternar).getProducto();
+                    /*Producto prod = internmentApplication.getProdOrder(ordenAInternar).getProducto();
                     prod.setStockTotal(prod.getStockTotal()+1);
                     productApplication.update(prod);
+                    */
                     
                     //disminuir ubicaciones libres en racks y almacen
-                    Almacen alm = almacenes.get(jComboBox1.getSelectedIndex());
+                    /*Almacen alm = almacenes.get(jComboBox1.getSelectedIndex());
                     alm.setUbicLibres(alm.getUbicLibres()-1);
                     warehouseApplication.update(alm);
-                    //historial mov
+                    */
                     
                     cant++;
                     aux = cant;
@@ -579,8 +587,25 @@ public class InternmentSelectView extends BaseView {
                 }
             }
             
+            // actualizar pallets registrados y ubicados del producto
+            Producto prod = internmentApplication.getProdOrder(ordenAInternar).getProducto();
+            prod.setPalletsUbicados(prod.getPalletsUbicados()+aux);
+            prod.setPalletsRegistrados(prod.getPalletsRegistrados()-aux);
+            productApplication.update(prod);
             
-            //ingresar algo en kardex
+            //actualizar cant a internar en ordeninteramientoXproducto
+            OrdenInternamientoXProducto ordenXProd = internmentApplication.getProdOrder(ordenAInternar);
+            ordenXProd.setCantidadIngresada(ordenXProd.getCantidadIngresada()+aux);
+            internmentApplication.incCantOrderXProd(ordenXProd);
+            
+            //disminuir ubicaciones libres en racks y almacen
+            Almacen alm = almacenes.get(jComboBox1.getSelectedIndex());
+            alm.setUbicLibres(alm.getUbicLibres()-aux);
+            warehouseApplication.update(alm);
+            
+            
+            
+            //ingresar entrada en kardex
             ArrayList<Kardex> kardex = kardexApplication.queryByParameters(almacenes.get(jComboBox1.getSelectedIndex()).getId(), internmentApplication.getProdOrder(ordenAInternar).getProducto().getId());
             Kardex internmentKardex = new Kardex();
             internmentKardex.setAlmacen(almacenes.get(jComboBox1.getSelectedIndex()));
@@ -601,7 +626,6 @@ public class InternmentSelectView extends BaseView {
             kId.setIdProducto(internmentApplication.getProdOrder(ordenAInternar).getProducto().getId());
             
             internmentKardex.setId(kId);
-            
             
             kardexApplication.insert(internmentKardex);
             //kardexApplication.insertKardexID(kId);
