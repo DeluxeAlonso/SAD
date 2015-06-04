@@ -134,7 +134,7 @@ public class AlgorithmPanel extends javax.swing.JPanel {
             }
         }
         
-        System.out.println("painted");
+        //System.out.println("painted");
     }    
 
     /**

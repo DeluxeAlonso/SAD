@@ -9,8 +9,8 @@ import algorithm.Algorithm;
 import algorithm.Node;
 import algorithm.Problem;
 import algorithm.operators.ObjectiveFunction;
+import static algorithm.operators.ObjectiveFunction.distance;
 import entity.UnidadTransporte;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import util.Constants;
@@ -62,15 +62,15 @@ public class Grasp {
         for (int i = 0; i < nodes.size(); i++) {
             if(!visited[i]){
                 //Time to return to warehouse
-                double travelCost = Point2D.distance(nodes.get(i).getX(), nodes.get(i).getY(),
+                double travelCost = distance(nodes.get(i).getX(), nodes.get(i).getY(),
                         Constants.WAREHOUSE_LONGITUDE, Constants.WAREHOUSE_LATITUDE)/speed;
                 //Time to go to baseNode
                 if (baseNode == null) {
-                    travelCost += Point2D.distance(Constants.WAREHOUSE_LONGITUDE, 
+                    travelCost += distance(Constants.WAREHOUSE_LONGITUDE, 
                             Constants.WAREHOUSE_LATITUDE,
                         nodes.get(i).getX(), nodes.get(i).getY())/speed;                    
                 } else {
-                    travelCost += Point2D.distance(baseNode.getX(), baseNode.getY(),
+                    travelCost += distance(baseNode.getX(), baseNode.getY(),
                         nodes.get(i).getX(), nodes.get(i).getY())/speed;
                 }
                 int productId = nodes.get(i).getProduct().getId();
@@ -107,15 +107,15 @@ public class Grasp {
         for (int i = 0; i < nodes.size(); i++) {
             if(!visited[i]){
                 //Time to return to warehouse
-                double travelCost = Point2D.distance(nodes.get(i).getX(), nodes.get(i).getY(),
+                double travelCost = distance(nodes.get(i).getX(), nodes.get(i).getY(),
                         Constants.WAREHOUSE_LONGITUDE, Constants.WAREHOUSE_LATITUDE)/speed;
                 //Time to go to baseNode
                 if (baseNode == null) {
-                    travelCost += Point2D.distance(Constants.WAREHOUSE_LONGITUDE,
+                    travelCost += distance(Constants.WAREHOUSE_LONGITUDE,
                             Constants.WAREHOUSE_LATITUDE,
                             nodes.get(i).getX(), nodes.get(i).getY()) / speed;
                 } else {
-                    travelCost += Point2D.distance(baseNode.getX(), baseNode.getY(),
+                    travelCost += distance(baseNode.getX(), baseNode.getY(),
                             nodes.get(i).getX(), nodes.get(i).getY()) / speed;
                 }
                 
@@ -181,12 +181,12 @@ public class Grasp {
 
                 double travelCost;
                 if (node == null) {
-                    travelCost = Point2D.distance(Constants.WAREHOUSE_LONGITUDE,
+                    travelCost = distance(Constants.WAREHOUSE_LONGITUDE,
                             Constants.WAREHOUSE_LATITUDE,
                             nextNode.getX(), nextNode.getY())
                             / vehicle.getTipoUnidadTransporte().getVelocidadPromedio();
                 } else {
-                    travelCost = Point2D.distance(node.getX(), node.getY(),
+                    travelCost = distance(node.getX(), node.getY(),
                             nextNode.getX(), nextNode.getY())
                             / vehicle.getTipoUnidadTransporte().getVelocidadPromedio();
                 }

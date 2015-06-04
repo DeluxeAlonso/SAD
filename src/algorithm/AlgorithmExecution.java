@@ -239,7 +239,7 @@ public class AlgorithmExecution {
         
         HashMap<PedidoParcial, PedidoParcial> toPedidoParcial = new HashMap<>();
         for (int i = 0; i < orders.size(); i++) {
-            PedidoParcial pedido = new PedidoParcial();
+            PedidoParcial pedido = new PedidoParcial();            
             pedido.setPedido(orders.get(i).getPedido());
             pedido.setEstado(EntityState.PartialOrders.NO_ATENDIDO.ordinal());              
             pedido.setPedidoParcialXProductos(new HashSet<>());

@@ -9,8 +9,8 @@ import algorithm.Algorithm;
 import algorithm.Node;
 import algorithm.Problem;
 import algorithm.Solution;
+import static algorithm.operators.ObjectiveFunction.distance;
 import entity.UnidadTransporte;
-import java.awt.geom.Point2D;
 import util.Constants;
 import util.Randomizer;
 
@@ -56,17 +56,17 @@ public class Mutation {
             for (int j = 0; j < nodes[i].length; j++) {
                 double travelCost, toNode, fromNode;
                 if (j > 0) {
-                    travelCost = Point2D.distance(nodes[i][j - 1].getX(), nodes[i][j - 1].getY(),
+                    travelCost = distance(nodes[i][j - 1].getX(), nodes[i][j - 1].getY(),
                             nodes[i][j].getX(), nodes[i][j].getY()) / speed;
-                    toNode = Point2D.distance(nodes[i][j - 1].getX(), nodes[i][j - 1].getY(),
+                    toNode = distance(nodes[i][j - 1].getX(), nodes[i][j - 1].getY(),
                             node.getX(), node.getY()) / speed;
                 } else {
-                    travelCost = Point2D.distance(Constants.WAREHOUSE_LONGITUDE, Constants.WAREHOUSE_LATITUDE,
+                    travelCost = distance(Constants.WAREHOUSE_LONGITUDE, Constants.WAREHOUSE_LATITUDE,
                             nodes[i][j].getX(), nodes[i][j].getY()) / speed;
-                    toNode = Point2D.distance(Constants.WAREHOUSE_LONGITUDE, Constants.WAREHOUSE_LATITUDE,
+                    toNode = distance(Constants.WAREHOUSE_LONGITUDE, Constants.WAREHOUSE_LATITUDE,
                             node.getX(), node.getY()) / speed;
                 }                
-                fromNode = Point2D.distance(node.getX(), node.getY(),
+                fromNode = distance(node.getX(), node.getY(),
                             nodes[i][j].getX(), nodes[i][j].getY()) / speed;
                 double payoff = ObjectiveFunction.objectiveFunction(vehicle, nodes[i][j],
                         algorithm, 0, 0, 0, travelCost, 0)
