@@ -408,53 +408,55 @@ public class PalletMovementsView extends BaseView {
                 palletApplication.updatePalletSpot(palletsFrom.get(i).getId(), selectedSpots.get(i));
                 spotApplication.updateSpotOccupancy(selectedSpots.get(i), Spots.OCUPADO.ordinal());
             }
-            //Ingreso kardex por cada producto movido
-            ArrayList<Kardex> previousKardex;
-            Iterator<Producto> keySetIterator = kardexCount.keySet().iterator();
-            Producto key;
-            Kardex kardex;
-            KardexId kardexId;
-            Date date = new Date();
-            while(keySetIterator.hasNext()){
-                key = keySetIterator.next();
-                // Para las salidas
-                previousKardex = kardexApplication.queryByParameters(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId(), key.getId());
-                kardexId = new KardexId();
-                kardexId.setIdAlmacen(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId());
-                kardexId.setIdProducto(key.getId());
-                kardex = new Kardex();
-                kardex.setId(kardexId);
-                kardex.setAlmacen(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()));
-                kardex.setProducto(key);
-                kardex.setFecha(date);
-                kardex.setCantidad(kardexCount.get(key).intValue());
-                kardex.setTipoMovimiento("Salida");
-                if(previousKardex.size()==0){
-                    kardex.setStockInicial(0);
-                }else{
-                    kardex.setStockInicial(previousKardex.get(0).getStockFinal());
+            if(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId() != warehousesTo.get(comboWarehouseTo.getSelectedIndex()).getId()){
+                //Ingreso kardex por cada producto movido, solo si se mueven los pallets a un almacen diferente
+                ArrayList<Kardex> previousKardex;
+                Iterator<Producto> keySetIterator = kardexCount.keySet().iterator();
+                Producto key;
+                Kardex kardex;
+                KardexId kardexId;
+                Date date = new Date();
+                while(keySetIterator.hasNext()){
+                    key = keySetIterator.next();
+                    // Para las salidas
+                    previousKardex = kardexApplication.queryByParameters(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId(), key.getId());
+                    kardexId = new KardexId();
+                    kardexId.setIdAlmacen(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId());
+                    kardexId.setIdProducto(key.getId());
+                    kardex = new Kardex();
+                    kardex.setId(kardexId);
+                    kardex.setAlmacen(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()));
+                    kardex.setProducto(key);
+                    kardex.setFecha(date);
+                    kardex.setCantidad(kardexCount.get(key).intValue());
+                    kardex.setTipoMovimiento("Salida");
+                    if(previousKardex.size()==0){
+                        kardex.setStockInicial(0);
+                    }else{
+                        kardex.setStockInicial(previousKardex.get(0).getStockFinal());
+                    }
+                    kardex.setStockFinal(kardex.getStockInicial() + kardex.getCantidad());
+                    kardexApplication.insert(kardex);
+                    // Para los ingresos
+                    previousKardex = kardexApplication.queryByParameters(warehousesTo.get(comboWarehouseTo.getSelectedIndex()).getId(), key.getId());
+                    kardexId = new KardexId();
+                    kardexId.setIdAlmacen(warehousesTo.get(comboWarehouseTo.getSelectedIndex()).getId());
+                    kardexId.setIdProducto(key.getId());
+                    kardex = new Kardex();
+                    kardex.setId(kardexId);
+                    kardex.setAlmacen(warehousesTo.get(comboWarehouseTo.getSelectedIndex()));
+                    kardex.setProducto(key);
+                    kardex.setFecha(date);
+                    kardex.setCantidad(kardexCount.get(key).intValue());
+                    kardex.setTipoMovimiento("Ingreso");
+                    if(previousKardex.size()==0){
+                        kardex.setStockInicial(0);
+                    }else{
+                        kardex.setStockInicial(previousKardex.get(0).getStockFinal());
+                    }
+                    kardex.setStockFinal(kardex.getStockInicial() + kardex.getCantidad());
+                    kardexApplication.insert(kardex);
                 }
-                kardex.setStockFinal(kardex.getStockInicial() + kardex.getCantidad());
-                kardexApplication.insert(kardex);
-                // Para los ingresos
-                previousKardex = kardexApplication.queryByParameters(warehousesTo.get(comboWarehouseTo.getSelectedIndex()).getId(), key.getId());
-                kardexId = new KardexId();
-                kardexId.setIdAlmacen(warehousesTo.get(comboWarehouseTo.getSelectedIndex()).getId());
-                kardexId.setIdProducto(key.getId());
-                kardex = new Kardex();
-                kardex.setId(kardexId);
-                kardex.setAlmacen(warehousesTo.get(comboWarehouseTo.getSelectedIndex()));
-                kardex.setProducto(key);
-                kardex.setFecha(date);
-                kardex.setCantidad(kardexCount.get(key).intValue());
-                kardex.setTipoMovimiento("Ingreso");
-                if(previousKardex.size()==0){
-                    kardex.setStockInicial(0);
-                }else{
-                    kardex.setStockInicial(previousKardex.get(0).getStockFinal());
-                }
-                kardex.setStockFinal(kardex.getStockInicial() + kardex.getCantidad());
-                kardexApplication.insert(kardex);
             }
             fillTableFrom(racksFrom.get(comboRackFrom.getSelectedIndex()).getId());
             fillTableTo(racksTo.get(comboRackTo.getSelectedIndex()).getId());

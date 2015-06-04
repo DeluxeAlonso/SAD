@@ -25,6 +25,18 @@ public class EntityState {
          String[] spotState={"Inactivo","Libre","Ocupado"};
          return spotState;
     }
+    public static String getSpotStateLiteral(int state){
+        String response = "";
+        switch(state){
+            case 0: response = "Inactivo";
+                    break;
+            case 1: response = "Libre";
+                    break;
+            case 2: response = "Ocupado";
+                    break;
+        }
+        return response;
+    }
     
     public static enum Warehouses { INACTIVO, ACTIVO, EN_REVISION};
     public static String[] getWarehousesState(){
