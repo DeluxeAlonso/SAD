@@ -41,7 +41,6 @@ public class GoogleMaps {
 "   <script type='text/javascript' src='https://maps.googleapis.com/maps/api/js?v=3.exp'></script>\n" +
 "   <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js'></script>\n" +
 "   <script type='text/javascript'>\n" +
-"  var waypts = [];\n" +
 "  var splitWayptsArray = [];\n";
     for(int i=0;i<nodes.length;i++){
 html += " var waypts"+i+" = [];\n" +
@@ -63,22 +62,18 @@ html += "function initialize() {\n" +
 "      map: map,\n" +
 "      icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',\n" +
 "      title: 'Centro de distribucion'\n" +
-" });\n" +
-"waypts.push({location:distributionCenter,stopover:false});\n";
+" });\n";
     for(int i=0;i<nodes.length;i++){
-html += "waypts"+i+".push({location:distributionCenter,stopover:false});\n";
         for(int j=0;j<nodes[i].length;j++){
 html += " var newLatlng = new google.maps.LatLng("+nodes[i][j].getY()+","+nodes[i][j].getX()+");\n" +
-"waypts.push({location:newLatlng,stopover:true});\n" +
 "waypts"+i+".push({location:newLatlng,stopover:true});";
         }
-html += "waypts"+i+".push({location:distributionCenter,stopover:false});\n"; 
     }
-html += "createRoute(waypts);" +
+html += "createRoute(waypts0);" +
 "function createRoute(waypts){\n" +
 "var request = {\n" +
-"    origin: new google.maps.LatLng(-11.9959406,-77.0816826),\n" +
-"    destination: new google.maps.LatLng(-12.0910106,-77.0632183),\n" +
+"    origin: new google.maps.LatLng("+Constants.WAREHOUSE_LATITUDE+","+Constants.WAREHOUSE_LONGITUDE+"),\n" +
+"    destination: new google.maps.LatLng("+Constants.WAREHOUSE_LATITUDE+","+Constants.WAREHOUSE_LONGITUDE+"),\n" +
 "    waypoints: waypts,\n" +
 "    travelMode: google.maps.TravelMode.DRIVING\n" +
 "};\n" +
@@ -88,10 +83,6 @@ html += "createRoute(waypts);" +
 "    }\n" +
 "  });" +
 "}\n" +
-"$('button').click(function(e){\n" +
-"   e.preventDefault();\n" +
-"   createRoute(waypts);\n" +
-"});\n" +
 
 "$('select').change(function(e){\n" +
 "   e.preventDefault();\n" +
@@ -105,7 +96,6 @@ html += "createRoute(waypts);" +
 "   </script>\n" +
 "</head>\n" +
 "<body>\n" +
-"<button type='button'>Todas las rutas</button>" +
 "<select>\n";
 for(int i=0; i<nodes.length;i++){
     html += "<option value="+i+">Ruta del camión "+i+"</option>";
