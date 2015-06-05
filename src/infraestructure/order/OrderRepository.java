@@ -95,7 +95,8 @@ public class OrderRepository implements IOrderRepository{
                 }
                 Integer partialOrderId = (Integer)session.save(acceptedOrders.get(i));
                 for(Iterator<PedidoParcialXProducto> partialOrderDetail = acceptedOrders.get(i).getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){
-                    PedidoParcialXProducto p = partialOrderDetail.next();          
+                    PedidoParcialXProducto p = partialOrderDetail.next();         
+                    
                     PedidoParcialXProductoId id = new PedidoParcialXProductoId();
                     id.setIdPedidoParcial(partialOrderId);
                     id.setIdProducto(p.getProducto().getId());
@@ -122,8 +123,10 @@ public class OrderRepository implements IOrderRepository{
             for(int i=0;i<rejectedOrders.size();i++){
                 if(!previousRejectedOrdersId.contains(rejectedOrders.get(i).getPedido().getId())){
                     previousRejectedOrdersId.add(rejectedOrders.get(i).getPedido().getId());
+                    System.out.println("Eliminar pedidos parciales del pedido " + rejectedOrders.get(i).getPedido().getId());
                     ArrayList<PedidoParcial> oldOrders = queryAllLocalPendingPartialOrdersById(rejectedOrders.get(i).getPedido().getId(),session, trns);
-                    for(int j=0;i<oldOrders.size();i++){
+                    for(int j=0;j<oldOrders.size();j++){
+                        System.out.println("Pedido parcial anulado " + oldOrders.get(j));
                         oldOrders.get(j).setEstado(EntityState.PartialOrders.ANULADO.ordinal());
                         session.update(oldOrders.get(j));
                     }
@@ -219,7 +222,7 @@ public class OrderRepository implements IOrderRepository{
     @Override
     public ArrayList<PedidoParcialXProducto> queryAllProductsByOrderId(Integer id){
         Session session = Tools.getSessionInstance();
-        String hql = "from PedidoParcialXProducto where id_pedido_parcial in (select id from PedidoParcial where id_pedido=:id)";
+        String hql = "from PedidoParcialXProducto where id_pedido_parcial in (select id from PedidoParcial where id_pedido=:id and (estado=0 or estado=1) )";
         ArrayList<PedidoParcialXProducto> partialOrders = new ArrayList<>();
         Transaction trns = null;
         try{
