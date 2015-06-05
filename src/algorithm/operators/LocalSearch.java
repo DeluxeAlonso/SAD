@@ -27,6 +27,7 @@ public class LocalSearch {
             warehouse.setX(Constants.WAREHOUSE_LONGITUDE);
             warehouse.setY(Constants.WAREHOUSE_LATITUDE);
             warehouse.setDaysDifference(0);
+            warehouse.setIdx(Problem.getLastNode());
             route[0] = warehouse;
             for (int j = 1; j < route.length; j++) {
                 route[j] = node[j-1];                
@@ -80,8 +81,7 @@ public class LocalSearch {
         double customerPriority = b.getDaysDifference()<=0 ? 
                 algorithm.getMaxPriority() :
                 Math.exp(-b.getDaysDifference()*Math.log(algorithm.getBasePriority()));
-        double travelCost = distance(a.getX(), a.getY(),
-                            b.getX(), b.getY());
+        double travelCost = distance(a.getIdx(), b.getIdx());
         return travelCost/customerPriority;
     }
     

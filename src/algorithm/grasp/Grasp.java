@@ -32,7 +32,9 @@ public class Grasp {
         HashMap<Integer,Integer> currentStock = new HashMap<> (problem.getProductsStock());        
         
         for (int i = 0; i < routesNo; i++) {
+           /* System.out.println("");
             System.out.println("vehicle " + i);
+            System.out.println("");*/
             
             UnidadTransporte vehicle = problem.getVehicles().get(i);
             
@@ -40,15 +42,22 @@ public class Grasp {
             
             routes[i] = new Node[route.size()];
             routes[i] = route.toArray(routes[i]);
-            //if(routes[i].length == 0) throw new AssertionError(i + " is a bad route");
+            
+            
         }
         
+        currentStock = new HashMap<> (problem.getProductsStock());   
+        for (int i = 0; i < routesNo; i++) {
+            UnidadTransporte vehicle = problem.getVehicles().get(i);
+            System.out.println("costo ruta " + i + " " + ObjectiveFunction.getRouteCost(vehicle, routes[i], algorithm, currentStock));            
+            
+        }
         
         int vis = 0;
         for (int i = 0; i < visited.length; i++) {
             if(visited[i]) vis++;            
         }
-        System.out.println("visited nodes: " + vis);
+        //System.out.println("visited nodes: " + vis);
         
         return routes;
     }
@@ -62,28 +71,25 @@ public class Grasp {
         for (int i = 0; i < nodes.size(); i++) {
             if(!visited[i]){
                 //Time to return to warehouse
-                double travelCost = distance(nodes.get(i).getX(), nodes.get(i).getY(),
-                        Constants.WAREHOUSE_LONGITUDE, Constants.WAREHOUSE_LATITUDE)/speed;
+                double travelCost = distance(nodes.get(i).getIdx(), Problem.getLastNode())/speed;
+                //System.out.println("first toWarehouse: " + travelCost);
                 //Time to go to baseNode
                 if (baseNode == null) {
-                    travelCost += distance(Constants.WAREHOUSE_LONGITUDE, 
-                            Constants.WAREHOUSE_LATITUDE,
-                        nodes.get(i).getX(), nodes.get(i).getY())/speed;                    
+                    travelCost += distance(Problem.getLastNode(), nodes.get(i).getIdx())/speed;                    
                 } else {
-                    travelCost += distance(baseNode.getX(), baseNode.getY(),
-                        nodes.get(i).getX(), nodes.get(i).getY())/speed;
+                    travelCost += distance(baseNode.getIdx(), nodes.get(i).getIdx())/speed;
                 }
                 int productId = nodes.get(i).getProduct().getId();
-                int newStock = currentStock.get(productId)
-                        - nodes.get(i).getDemand();
+                int newStock = currentStock.get(productId) - nodes.get(i).getDemand();
                 
                 double cost = ObjectiveFunction.objectiveFunction(vehicle, 
                         nodes.get(i), algorithm, 0, currentTime, 0, travelCost, newStock);
                 
-                //System.out.println(i + " travelCost: " + travelCost + "   cost: " + cost);
+                //System.out.println(i + "currentTime: " + currentTime + "   travelCost: " + travelCost + "   cost: " + cost);
                 
-                if(cost>algorithm.getOvertimePenalty() || cost>algorithm.getOverstockPenalty())
+                if(cost>2*travelCost/* || cost>algorithm.getOverstockPenalty()*/)
                     continue;
+                //System.out.println("chosen");
                 if(!alreadyInit){
                     tau = cost;
                     beta = cost;
@@ -107,27 +113,24 @@ public class Grasp {
         for (int i = 0; i < nodes.size(); i++) {
             if(!visited[i]){
                 //Time to return to warehouse
-                double travelCost = distance(nodes.get(i).getX(), nodes.get(i).getY(),
-                        Constants.WAREHOUSE_LONGITUDE, Constants.WAREHOUSE_LATITUDE)/speed;
+                double travelCost = distance(nodes.get(i).getIdx(), Problem.getLastNode())/speed;
                 //Time to go to baseNode
                 if (baseNode == null) {
-                    travelCost += distance(Constants.WAREHOUSE_LONGITUDE,
-                            Constants.WAREHOUSE_LATITUDE,
-                            nodes.get(i).getX(), nodes.get(i).getY()) / speed;
+                    travelCost += distance(Problem.getLastNode(), nodes.get(i).getIdx()) / speed;
                 } else {
-                    travelCost += distance(baseNode.getX(), baseNode.getY(),
-                            nodes.get(i).getX(), nodes.get(i).getY()) / speed;
+                    travelCost += distance(baseNode.getIdx(), nodes.get(i).getIdx()) / speed;
                 }
                 
                 int productId = nodes.get(i).getProduct().getId();
-                int newStock = currentStock.get(productId)
-                        - nodes.get(i).getDemand();
+                int newStock = currentStock.get(productId) - nodes.get(i).getDemand();
                 
                 double cost = ObjectiveFunction.objectiveFunction(vehicle, 
                         nodes.get(i), algorithm, 0, currentTime, 0, travelCost, newStock);
                 
-                if(cost <= beta + alpha*(tau-beta))
+                if(cost <= beta + alpha*(tau-beta)){
+                   // System.out.println("RCL added: " + travelCost);
                     RCL.add(nodes.get(i));
+                }
             }            
         }        
         return RCL;
@@ -157,8 +160,8 @@ public class Grasp {
                         algorithm, currentTime, currentStock, visited);
             }
             
-            
-            //System.out.println(param.getBeta() + " " + param.getTau());
+            /*System.out.println("");
+            System.out.println("Beta and Tau: " + param.getBeta() + " " + param.getTau());*/
             //if(idx==0 && RCL.isEmpty()) throw new AssertionError("bad RCL");            
             
             if (RCL.isEmpty()) {
@@ -177,17 +180,15 @@ public class Grasp {
                 nextNode = RCL.get(chosen);
                 visited[nextNode.getIdx()] = true;                
                 route.add(nextNode);
+                //System.out.println("added " + idx + " node");
                 currentCapacity += nextNode.getDemand();
 
                 double travelCost;
                 if (node == null) {
-                    travelCost = distance(Constants.WAREHOUSE_LONGITUDE,
-                            Constants.WAREHOUSE_LATITUDE,
-                            nextNode.getX(), nextNode.getY())
+                    travelCost = distance(Problem.getLastNode(), nextNode.getIdx())
                             / vehicle.getTipoUnidadTransporte().getVelocidadPromedio();
                 } else {
-                    travelCost = distance(node.getX(), node.getY(),
-                            nextNode.getX(), nextNode.getY())
+                    travelCost = distance(node.getIdx(), nextNode.getIdx())
                             / vehicle.getTipoUnidadTransporte().getVelocidadPromedio();
                 }
 
@@ -196,6 +197,13 @@ public class Grasp {
 
                 currentTime += travelCost;
                 currentStock.put(productId, newStock);
+                
+                double returnCost = distance(nextNode.getIdx(), Problem.getLastNode())/                        
+                         vehicle.getTipoUnidadTransporte().getVelocidadPromedio();
+                /*System.out.println("RCL added: " + travelCost + " giving a total of: " + 
+                        currentTime + " and to return, we need " + returnCost + " so we need " + 
+                        (currentTime + returnCost));*/
+                node = nextNode;
             } else {
                 break; //if the vehicle is full
             }

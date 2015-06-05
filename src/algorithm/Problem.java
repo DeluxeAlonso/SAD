@@ -5,6 +5,7 @@
  */
 package algorithm;
 
+import algorithm.operators.ObjectiveFunction;
 import application.order.OrderApplication;
 import application.product.ProductApplication;
 import application.transportunit.TransportUnitApplication;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
+import util.Constants;
 
 /**
  *
@@ -28,6 +30,15 @@ public class Problem {
     private ArrayList<UnidadTransporte> vehicles;  
     private HashMap<Integer,Integer> productsStock;
     private ArrayList<Node> nodes;
+    private static int lastNode;
+
+    public static int getLastNode() {
+        return lastNode;
+    }
+
+    public static void setLastNode(int lastNode) {
+        Problem.lastNode = lastNode;
+    }
     
     public Problem(){        
         OrderApplication orderApplication = new OrderApplication();
@@ -45,6 +56,8 @@ public class Problem {
         for (int i = 0; i < products.size(); i++) {
             productsStock.put(products.get(i).getId(), products.get(i).getStockTotal());
         }
+        
+        
         
         
         nodes = new ArrayList<>();        
@@ -104,7 +117,26 @@ public class Problem {
             
         }
         
-        
+        double[][] distMatrix = new double[nodes.size()+1][nodes.size()+1];
+        for (int i = 0; i < nodes.size(); i++) {
+            for (int j = 0; j < nodes.size(); j++) {
+                distMatrix[i][j] = ObjectiveFunction.geographicalDist(nodes.get(i).getX(), 
+                        nodes.get(i).getY(), nodes.get(j).getX(), nodes.get(j).getY());
+                
+            }            
+        }
+        for (int i = 0; i < nodes.size(); i++) {
+            distMatrix[i][nodes.size()] = ObjectiveFunction.geographicalDist(nodes.get(i).getX(), 
+                    nodes.get(i).getY(), Constants.WAREHOUSE_LONGITUDE, Constants.WAREHOUSE_LATITUDE);            
+        }
+        for (int i = 0; i < nodes.size(); i++) {
+            distMatrix[nodes.size()][i] = ObjectiveFunction.geographicalDist(
+                    Constants.WAREHOUSE_LONGITUDE, Constants.WAREHOUSE_LATITUDE, 
+                    nodes.get(i).getX(), nodes.get(i).getY());            
+        }
+        distMatrix[nodes.size()][nodes.size()] = 0;
+        ObjectiveFunction.setDistMatrix(distMatrix);
+        lastNode = nodes.size();
     }    
 
     public ArrayList<ArrayList<PedidoParcialXProducto>> getPartialOrdersXProducts() {

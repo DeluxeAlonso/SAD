@@ -110,7 +110,7 @@ public class AlgorithmPanel extends javax.swing.JPanel {
                 //System.out.println(x1 + " " + y1 + " / " + x2 + " " + y2);
                 
                 g.setColor(Color.blue);
-                g.drawString(((Integer) nodes[i][1].getIdx()).toString(), x2, y2);
+                g.drawString(((Integer) nodes[i][0].getIdx()).toString(), x2, y2);
                 g.drawString("0", x1, y1);
                 g.setColor(Color.black);
 

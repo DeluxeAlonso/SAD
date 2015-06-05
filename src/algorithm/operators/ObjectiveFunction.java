@@ -19,6 +19,16 @@ import util.Constants;
  * @author robert
  */
 public class ObjectiveFunction {
+    public static double[][] distMatrix;
+    
+    public static double[][] getDistMatrix() {
+        return distMatrix;
+    }
+
+    public static void setDistMatrix(double[][] distMatrix) {
+        ObjectiveFunction.distMatrix = distMatrix;
+    }
+    
     public static double objectiveFunction(UnidadTransporte t, Node b, 
             Algorithm algorithm, int currentCap, double currentTime, 
             int extraCap, double travelCost, int remainingStock){
@@ -38,11 +48,11 @@ public class ObjectiveFunction {
         
         double overStock = Math.max(0, -remainingStock);
         
-        /**if(overCap>0) System.out.println("overcap " + overCap);
+        /*if(overCap>0) System.out.println("overcap " + overCap);
         if(overTime>0) System.out.println("overtime " + overTime);
         if(overStock>0) System.out.println("overstock " + overStock);*/
         
-        customerPriority = 1;
+        //customerPriority = 1;
         
         return travelCost/customerPriority + 
                 algorithm.getOvercapPenalty()*overCap +
@@ -60,20 +70,15 @@ public class ObjectiveFunction {
             double travelCost = 0; int extraCap = 0, productId = 0, newStock = 0;
             
             if(i>0 && i==route.length)
-                travelCost = distance(route[i-1].getX(), route[i-1].getY(), 
-                    Constants.WAREHOUSE_LONGITUDE, Constants.WAREHOUSE_LATITUDE)/
-                    speed;
+                travelCost = distance(route[i-1].getIdx(), Problem.getLastNode())/speed;
             else if(i>0)
-                travelCost = distance(route[i-1].getX(), route[i-1].getY(), 
-                    route[i].getX(), route[i].getY())/
+                travelCost = distance(route[i-1].getIdx(), route[i].getIdx())/
                     speed;
             else if(i<route.length)
-                travelCost = distance(Constants.WAREHOUSE_LONGITUDE, Constants.WAREHOUSE_LATITUDE,
-                    route[i].getX(), route[i].getY())/
-                    speed;            
+                travelCost = distance(Problem.getLastNode(), route[i].getIdx())/speed;            
             
-            System.out.println("travelCost: " + travelCost + 
-                    "  distance: " + travelCost*speed + " speed: " + speed);
+            //System.out.println("travelCost: " + travelCost + 
+            //        "  distance: " + travelCost*speed + " speed: " + speed);
             
             if(i < route.length && currentStock!=null) {                
                 extraCap = route[i].getDemand();
@@ -93,7 +98,10 @@ public class ObjectiveFunction {
                         currentCap, currentTime, extraCap, travelCost, newStock);
             }
             currentTime += travelCost;
+            //System.out.println("tiempo actual por visitar nodo: " + i + " : " + currentTime);
         }
+        /*System.out.println("numero de nodos: " + route.length);
+        System.out.println("tiempo total: " + currentTime);*/
         return routeCost;
     }
     
@@ -107,13 +115,13 @@ public class ObjectiveFunction {
             double routeCost = getRouteCost(vehicles.get(i), routes[i], algorithm,
                     currentStock);
             solutionCost += routeCost; 
-            System.out.println("costo de ruta: " + routeCost);
+            //System.out.println("costo de ruta: " + routeCost);
         }        
         return solutionCost;
     }   
     
     
-    public static double distance(double long1, double lat1, double long2, double lat2){
+    public static double geographicalDist(double long1, double lat1, double long2, double lat2){
         long1 = Math.PI/180*long1;
         long2 = Math.PI/180*long2;
         lat1 = Math.PI/180*lat1;
@@ -125,13 +133,13 @@ public class ObjectiveFunction {
         double sinlong = Math.sin(diflong/2);
         double a = sinlat*sinlat + Math.cos(lat1)*Math.cos(lat2)*
                    sinlong*sinlong;
-        double b = 2*6378.0*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        //double b = 2*6378*Math.asin(Math.min(1,Math.sqrt(a)));    
-        
-        //if(b > 30)
-        //    System.out.println(long1 + "/" + lat1 + " " + long2 + "/" + lat2 + " " + b);
+        double b = 2*6378.0*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));       
         
         return b;
+    }
+    
+    public static double distance(int idx1, int idx2){
+        return distMatrix[idx1][idx2];
     }
 
 }
