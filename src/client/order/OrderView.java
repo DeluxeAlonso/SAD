@@ -311,6 +311,8 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                 line = br.readLine();
                 line_split = line.split(cvsSplitBy);
                 
+                Boolean noStockError = false;
+                
                 ArrayList<PedidoParcialXProducto> partialProducts = new ArrayList<>();
                 
                 order = new Pedido();
@@ -343,16 +345,20 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                     
                     partial.setId(id);
                     partial.setPedidoParcial(pp);
-
-                    partial.setProducto(productApplication.searchProduct(product).get(0));
+                    
+                    if(productApplication.searchProduct(product).isEmpty())
+                       noStockError = true;
+                    else
+                        partial.setProducto(productApplication.searchProduct(product).get(0));
                     partial.setCantidad(Integer.parseInt(line_split[1]));
                     partialProducts.add(partial);
                 }
-                if (!orderApplication.CreateOrder(order, pp, partialProducts)){
-                    JOptionPane.showMessageDialog(this, Strings.LOAD_ORDER_ERROR,Strings.LOAD_ORDER_TITLE,JOptionPane.ERROR_MESSAGE);
-                    has_errors = true;
-                    break;
-                }
+                if(!noStockError)
+                    if (!orderApplication.CreateOrder(order, pp, partialProducts)){
+                        JOptionPane.showMessageDialog(this, Strings.LOAD_ORDER_ERROR,Strings.LOAD_ORDER_TITLE,JOptionPane.ERROR_MESSAGE);
+                        has_errors = true;
+                        break;
+                    }
             }
 	} catch (Exception e) {
             has_errors = true;

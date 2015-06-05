@@ -230,40 +230,7 @@ public class DeliveryView extends BaseView {
     }
     
     public Boolean createPartialOrders(ArrayList<PedidoParcial>acceptedOrders, ArrayList<PedidoParcial>rejectedOrders){
-        ArrayList<PedidoParcialXProducto> acceptedOrdersXProd = getAcceptedPartialOrderDetail(acceptedOrders);
-        ArrayList<PedidoParcialXProducto> rejectedOrdersXProd = getRejectedPartialOrderDetail(rejectedOrders);
-        
-        return orderApplication.createPartialOrders(acceptedOrders, acceptedOrdersXProd, rejectedOrders, rejectedOrdersXProd);
-    }
-    
-    public ArrayList<PedidoParcialXProducto> getAcceptedPartialOrderDetail(ArrayList<PedidoParcial> orders){
-        ArrayList<PedidoParcialXProducto> orderDetails = new ArrayList<>();
-        for(int i=0;i<orders.size();i++)
-            for(Iterator<PedidoParcialXProducto> partialOrderDetail = orders.get(i).getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){
-                    PedidoParcialXProducto p = partialOrderDetail.next();
-                    ArrayList<Pallet> pallets = palletApplication.getAvailablePalletsByProductId(p.getProducto().getId());
-                    ArrayList<Pallet> selectedPallets = new ArrayList<>();
-                    for(int j=0;j<p.getCantidad();j++){
-                        Pallet selectedPallet;
-                        selectedPallet = pallets.get(j);
-                        selectedPallet.setEstado(EntityState.Pallets.DESPACHADO.ordinal());                  
-                        selectedPallet.setPedidoParcial(p.getPedidoParcial());
-                        selectedPallets.add(selectedPallet);
-                    }
-                    palletApplication.updatePallets(selectedPallets);
-                    orderDetails.add(p);
-            }
-        return orderDetails;
-    }
-    
-    public ArrayList<PedidoParcialXProducto> getRejectedPartialOrderDetail(ArrayList<PedidoParcial> orders){
-        ArrayList<PedidoParcialXProducto> orderDetails = new ArrayList<>();
-        for(int i=0;i<orders.size();i++)
-            for(Iterator<PedidoParcialXProducto> partialOrderDetail = orders.get(i).getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){
-                    PedidoParcialXProducto p = partialOrderDetail.next();
-                    orderDetails.add(p);
-            }
-        return orderDetails;
+        return orderApplication.createPartialOrders(acceptedOrders, rejectedOrders);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

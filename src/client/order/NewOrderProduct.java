@@ -132,13 +132,13 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
         if(orderProducts.contains(p)){
             int index = orderProducts.indexOf(p);
             productQuantities.set(index, q + productQuantities.get(index));
-            if (productQuantities.get(index) > p.getStockTotal())
-                productQuantities.set(index, p.getStockTotal());
+            if (productQuantities.get(index) > p.getStockLogico())
+                productQuantities.set(index, p.getStockLogico());
         }
         else{
             orderProducts.add(p);
-            if (q > p.getStockTotal()){
-                productQuantities.add(p.getStockTotal()); 
+            if (q > p.getStockLogico()){
+                productQuantities.add(p.getStockLogico()); 
             }else{
                 productQuantities.add(q); 
             }
@@ -163,7 +163,7 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
     public ArrayList<Producto> getAvailableProducts(){
         ArrayList<Producto> products = new ArrayList<>();
         for(int i=0;i<EntityType.PRODUCTS.size();i++)
-            if(EntityType.PRODUCTS.get(i).getStockTotal()>0)
+            if(EntityType.PRODUCTS.get(i).getStockLogico()>0)
                 products.add(EntityType.PRODUCTS.get(i));
         return products;
     }
@@ -184,7 +184,7 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
         DefaultTableModel tableModel = (DefaultTableModel)productAddTable.getModel();
         tableModel.setRowCount(0);
         productsToAdd.stream().forEach((_product) -> {
-            Object[] row = {_product.getId(), _product.getNombre(), _product.getCondicion().getNombre(), _product.getStockTotal()};
+            Object[] row = {_product.getId(), _product.getNombre(), _product.getCondicion().getNombre(), _product.getStockLogico()};
             tableModel.addRow(row);
         });
     }

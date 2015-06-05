@@ -132,7 +132,6 @@ public class ProductRepository implements IProductRepository {
         return products;
     }
     
-    
     public ArrayList<Producto> queryByCondition(int idType) {
         Session session = Tools.getSessionInstance();
         String hql = "FROM Producto p WHERE p.condicion.id=:idType";
@@ -156,7 +155,7 @@ public class ProductRepository implements IProductRepository {
     
     public ArrayList<Producto> searchProduct(Producto product){
         String hql="from Producto "
-                + "where (:id is null or id=:id) and (nombre like :name) and stock_total>0";
+                + "where (:id is null or id=:id) and (nombre like :name) and stock_logico>0";
         ArrayList<Producto> products=null;
         
         Transaction trns = null;

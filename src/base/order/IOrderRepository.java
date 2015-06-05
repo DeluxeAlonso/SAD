@@ -29,7 +29,7 @@ public interface IOrderRepository extends IRepository<Pedido> {
     ArrayList<PedidoParcialXProducto> queryAllProductsByOrderId(Integer id);
     Boolean createRemissionGuides(ArrayList<PedidoParcial> acceptedOrders, ArrayList<GuiaRemision> remissionGuides);
 
-    Boolean createPartialOrders(ArrayList<PedidoParcial> acceptedOrders, ArrayList<PedidoParcialXProducto> acceptedOrdersXProd, ArrayList<PedidoParcial> rejectedOrders, ArrayList<PedidoParcialXProducto> rejectedOrdersXProd);
+    Boolean createPartialOrders(ArrayList<PedidoParcial> acceptedOrders, ArrayList<PedidoParcial> rejectedOrders);
 
     ArrayList<Pedido> queryAllOrders();
 
