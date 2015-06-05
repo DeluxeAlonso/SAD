@@ -319,12 +319,6 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
             }
         });
         jScrollPane1.setViewportView(productAddTable);
-        if (productAddTable.getColumnModel().getColumnCount() > 0) {
-            productAddTable.getColumnModel().getColumn(0).setResizable(false);
-            productAddTable.getColumnModel().getColumn(1).setResizable(false);
-            productAddTable.getColumnModel().getColumn(2).setResizable(false);
-            productAddTable.getColumnModel().getColumn(3).setResizable(false);
-        }
 
         saveBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -361,12 +355,6 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
         });
         productTable.setName("productTable"); // NOI18N
         productContainer.setViewportView(productTable);
-        if (productTable.getColumnModel().getColumnCount() > 0) {
-            productTable.getColumnModel().getColumn(0).setResizable(false);
-            productTable.getColumnModel().getColumn(1).setResizable(false);
-            productTable.getColumnModel().getColumn(2).setResizable(false);
-            productTable.getColumnModel().getColumn(3).setResizable(false);
-        }
 
         addBtn.setText("<<Agregar");
         addBtn.setEnabled(false);
@@ -612,7 +600,6 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
             qtySpinner.setEnabled(true);
             addBtn.setEnabled(true); 
         }
-        System.out.println(productTable.getSelectedRow());
         if(productTable.getSelectedRow() != -1){
             removeBtn.setEnabled(true); 
         }

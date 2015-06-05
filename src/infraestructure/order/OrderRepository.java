@@ -83,11 +83,15 @@ public class OrderRepository implements IOrderRepository{
         try {            
             trns=session.beginTransaction();
             System.out.println("Cantidad de Acepted Orders " + acceptedOrders.size());
+            ArrayList<Integer>previousAcceptedOrdersId = new ArrayList<>();
             for(int i=0;i<acceptedOrders.size();i++){
-                ArrayList<PedidoParcial> oldOrders = queryAllLocalPendingPartialOrdersById(acceptedOrders.get(i).getPedido().getId(),session, trns);
-                for(int j=0;j<oldOrders.size();j++){
-                    oldOrders.get(j).setEstado(EntityState.PartialOrders.ANULADO.ordinal());
-                    session.update(oldOrders.get(j));
+                if(!previousAcceptedOrdersId.contains(acceptedOrders.get(i).getPedido().getId())){
+                    previousAcceptedOrdersId.add(acceptedOrders.get(i).getPedido().getId());
+                    ArrayList<PedidoParcial> oldOrders = queryAllLocalPendingPartialOrdersById(acceptedOrders.get(i).getPedido().getId(),session, trns);
+                    for(int j=0;j<oldOrders.size();j++){
+                        oldOrders.get(j).setEstado(EntityState.PartialOrders.ANULADO.ordinal());
+                        session.update(oldOrders.get(j));
+                    }
                 }
                 Integer partialOrderId = (Integer)session.save(acceptedOrders.get(i));
                 for(Iterator<PedidoParcialXProducto> partialOrderDetail = acceptedOrders.get(i).getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){
@@ -114,11 +118,15 @@ public class OrderRepository implements IOrderRepository{
                 }
             }
             System.out.println("Cantidad de Rejected Orders " + rejectedOrders.size());
+            ArrayList<Integer>previousRejectedOrdersId = new ArrayList<>();
             for(int i=0;i<rejectedOrders.size();i++){
-                ArrayList<PedidoParcial> oldOrders = queryAllLocalPendingPartialOrdersById(rejectedOrders.get(i).getPedido().getId(),session, trns);
-                for(int j=0;i<oldOrders.size();i++){
-                    oldOrders.get(j).setEstado(EntityState.PartialOrders.ANULADO.ordinal());
-                    session.update(oldOrders.get(j));
+                if(!previousRejectedOrdersId.contains(rejectedOrders.get(i).getPedido().getId())){
+                    previousRejectedOrdersId.add(rejectedOrders.get(i).getPedido().getId());
+                    ArrayList<PedidoParcial> oldOrders = queryAllLocalPendingPartialOrdersById(rejectedOrders.get(i).getPedido().getId(),session, trns);
+                    for(int j=0;i<oldOrders.size();i++){
+                        oldOrders.get(j).setEstado(EntityState.PartialOrders.ANULADO.ordinal());
+                        session.update(oldOrders.get(j));
+                    }
                 }
                 Integer partialOrderId = (Integer)session.save(rejectedOrders.get(i));
                 for(Iterator<PedidoParcialXProducto> partialOrderDetail = rejectedOrders.get(i).getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){

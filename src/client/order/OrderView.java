@@ -177,7 +177,9 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         DefaultTableModel tableModel = (DefaultTableModel) productTable.getModel();
         tableModel.setRowCount(0);
         ArrayList<PedidoParcialXProducto> products = new ArrayList<>();
+        System.out.println("OrderID " + orderId);
         products = orderApplication.queryAllProductsByOrderId(orderId);
+        System.out.println("Cantidad de productos " + products.size());
         products.stream().forEach((_product) -> {
             Object[] row = {_product.getProducto().getId(), _product.getProducto().getNombre(),
                 _product.getProducto().getCondicion().getNombre(), _product.getCantidad()};
@@ -246,15 +248,17 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         }
         partialCombo.setModel(new javax.swing.DefaultComboBoxModel(partialOrders));
         
-        if(currentPartialOrders.size() > 0)
-            refreshProductTable(currentPartialOrders.get(0).getId());
+        if(partialCombo.getSelectedIndex()==0){
+                refreshAllProductsTable(currentOrders.get(orderTable.getSelectedRow()).getId());
+                partialStatusTxt.setText("");
+        }
+        else
+            if(currentPartialOrders.size() > 0)
+                refreshProductTable(currentPartialOrders.get(0).getId());
         
         for(int i=0;i<currentPartialOrders.size();i++){
             ArrayList<PedidoParcialXProducto> products = new ArrayList<>();
-            products = orderApplication.queryAllPartialOrderProducts(currentPartialOrders.get(i).getId());
-            for(int j=0; j<products.size(); j++){
-                System.out.println(products.get(j).getProducto().getNombre());
-            }
+            products = orderApplication.queryAllPartialOrderProducts(currentPartialOrders.get(i).getId()); 
         }
     }
         
@@ -269,7 +273,10 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         partialCombo.setEditable(false);
         reasonCombo.setEnabled(false);
         deletePartialBtn.setEnabled(false);
-        refreshAllProductsTable(0);
+        if(orderTable.getSelectedRow() == -1)
+            refreshAllProductsTable(0);
+        else
+            refreshAllProductsTable(currentOrders.get(orderTable.getSelectedRow()).getId());
     }
     
     /*
@@ -281,7 +288,6 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     }
     
     public int currentProductIndex(){
-        System.out.println(productTable.getSelectedRow());
         return productTable.getSelectedRow();
     }
     
@@ -518,12 +524,6 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
             }
         });
         jScrollPane2.setViewportView(orderTable);
-        if (orderTable.getColumnModel().getColumnCount() > 0) {
-            orderTable.getColumnModel().getColumn(0).setResizable(false);
-            orderTable.getColumnModel().getColumn(1).setResizable(false);
-            orderTable.getColumnModel().getColumn(2).setResizable(false);
-            orderTable.getColumnModel().getColumn(3).setResizable(false);
-        }
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtros"));
 
@@ -624,14 +624,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                 return canEdit [columnIndex];
             }
         });
-        productTable.setEnabled(false);
         jScrollPane1.setViewportView(productTable);
-        if (productTable.getColumnModel().getColumnCount() > 0) {
-            productTable.getColumnModel().getColumn(0).setResizable(false);
-            productTable.getColumnModel().getColumn(1).setResizable(false);
-            productTable.getColumnModel().getColumn(2).setResizable(false);
-            productTable.getColumnModel().getColumn(3).setResizable(false);
-        }
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Detalle Pedido"));
 
@@ -869,6 +862,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         else
             order.setEstado(statusCombo.getSelectedIndex()-1);
         currentOrders = orderApplication.searchOrders(order);
+        partialCombo.setEnabled(false);
         refreshTable();
         clearDetailFields();
     }//GEN-LAST:event_searchBtnActionPerformed
@@ -970,7 +964,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     @Override
     public void mousePressed(MouseEvent e) {
         JTable target = (JTable)e.getSource();
-        if(orderTable.getSelectedRow() != -1){
+        if(orderTable.getSelectedRow() != -1 && target.getColumnName(3).equals("Estado")){
             fileTextField.setText("");
             fillDetailFields();
             if(currentOrders.get(currentOrderIndex()).getEstado() == 1){
