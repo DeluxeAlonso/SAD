@@ -13,6 +13,7 @@ import entity.Pallet;
 import entity.Pedido;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
+import entity.PedidoParcialXProductoId;
 import entity.Producto;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -38,9 +39,9 @@ public class OrderRepository implements IOrderRepository{
             int partialId = (int)session.save(partialOrder);
             for(int i=0;i<products.size();i++){
                 products.get(i).getId().setIdPedidoParcial(partialId);
-                Integer stock = products.get(i).getProducto().getStockTotal();
-                //products.get(i).getProducto().setStockTotal(stock - products.get(i).getCantidad());
-                //session.update(products.get(i).getProducto());
+                Integer stock = products.get(i).getProducto().getStockLogico();
+                products.get(i).getProducto().setStockLogico(stock - products.get(i).getCantidad());
+                session.update(products.get(i).getProducto());
                 session.save(products.get(i));
             }
             session.getTransaction().commit();
@@ -76,29 +77,69 @@ public class OrderRepository implements IOrderRepository{
     }
     
     @Override
-    public Boolean createPartialOrders(ArrayList<PedidoParcial> acceptedOrders, ArrayList<PedidoParcialXProducto> acceptedOrdersXProd, ArrayList<PedidoParcial> rejectedOrders, ArrayList<PedidoParcialXProducto> rejectedOrdersXProd) {
+    public Boolean createPartialOrders(ArrayList<PedidoParcial> acceptedOrders, ArrayList<PedidoParcial> rejectedOrders) {
         Session session = Tools.getSessionInstance();
         Transaction trns = null; 
         try {            
             trns=session.beginTransaction();
+            System.out.println("Cantidad de Acepted Orders " + acceptedOrders.size());
+            ArrayList<Integer>previousAcceptedOrdersId = new ArrayList<>();
             for(int i=0;i<acceptedOrders.size();i++){
-                ArrayList<PedidoParcial> oldOrders = queryAllPendingPartialOrdersById(acceptedOrders.get(i).getPedido().getId());
-                for(int j=0;j<oldOrders.size();j++){
-                    oldOrders.get(j).setEstado(EntityState.PartialOrders.ANULADO.ordinal());
-                    session.update(oldOrders.get(j));
+                if(!previousAcceptedOrdersId.contains(acceptedOrders.get(i).getPedido().getId())){
+                    previousAcceptedOrdersId.add(acceptedOrders.get(i).getPedido().getId());
+                    ArrayList<PedidoParcial> oldOrders = queryAllLocalPendingPartialOrdersById(acceptedOrders.get(i).getPedido().getId(),session, trns);
+                    for(int j=0;j<oldOrders.size();j++){
+                        oldOrders.get(j).setEstado(EntityState.PartialOrders.ANULADO.ordinal());
+                        session.update(oldOrders.get(j));
+                    }
                 }
-                for(int k=0;k<acceptedOrdersXProd.size();k++)
-                    session.save(acceptedOrdersXProd.get(k));
+                Integer partialOrderId = (Integer)session.save(acceptedOrders.get(i));
+                for(Iterator<PedidoParcialXProducto> partialOrderDetail = acceptedOrders.get(i).getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){
+                    PedidoParcialXProducto p = partialOrderDetail.next();         
+                    
+                    PedidoParcialXProductoId id = new PedidoParcialXProductoId();
+                    id.setIdPedidoParcial(partialOrderId);
+                    id.setIdProducto(p.getProducto().getId());
+                    p.setId(id);
+                    session.save(p);
+                                               
+                    ArrayList<Pallet> pallets = getAvailablePalletsByProductId(p.getProducto().getId(), session, trns);
+                    ArrayList<Pallet> selectedPallets = new ArrayList<>();
+                    System.out.println("CODIGO PEDIDO " + p.getPedidoParcial().getPedido().getId());
+                    System.out.println("PRODUCTOS PEDIDO  " + p.getProducto().getId() + " " + p.getProducto().getNombre());
+                    System.out.println("CANTIDAD DE PALLETSPEDIDOS " + p.getCantidad());
+                    for(int j=0;j<p.getCantidad();j++){
+                        Pallet selectedPallet;
+                        selectedPallet = pallets.get(j);
+                        selectedPallet.setEstado(EntityState.Pallets.DESPACHADO.ordinal());                  
+                        selectedPallet.setPedidoParcial(p.getPedidoParcial());
+                        selectedPallets.add(selectedPallet);
+                    }
+                    updatePallets(selectedPallets, session, trns);
+                }
             }
+            System.out.println("Cantidad de Rejected Orders " + rejectedOrders.size());
+            ArrayList<Integer>previousRejectedOrdersId = new ArrayList<>();
             for(int i=0;i<rejectedOrders.size();i++){
-                session.save(rejectedOrders.get(i));
-                ArrayList<PedidoParcial> oldOrders = queryAllPendingPartialOrdersById(acceptedOrders.get(i).getPedido().getId());
-                for(int j=0;i<oldOrders.size();i++){
-                    oldOrders.get(j).setEstado(EntityState.PartialOrders.ANULADO.ordinal());
-                    session.update(oldOrders.get(j));
+                if(!previousRejectedOrdersId.contains(rejectedOrders.get(i).getPedido().getId())){
+                    previousRejectedOrdersId.add(rejectedOrders.get(i).getPedido().getId());
+                    System.out.println("Eliminar pedidos parciales del pedido " + rejectedOrders.get(i).getPedido().getId());
+                    ArrayList<PedidoParcial> oldOrders = queryAllLocalPendingPartialOrdersById(rejectedOrders.get(i).getPedido().getId(),session, trns);
+                    for(int j=0;j<oldOrders.size();j++){
+                        System.out.println("Pedido parcial anulado " + oldOrders.get(j));
+                        oldOrders.get(j).setEstado(EntityState.PartialOrders.ANULADO.ordinal());
+                        session.update(oldOrders.get(j));
+                    }
                 }
-                for(int k=0;k<rejectedOrdersXProd.size();k++)
-                    session.save(rejectedOrdersXProd.get(k));
+                Integer partialOrderId = (Integer)session.save(rejectedOrders.get(i));
+                for(Iterator<PedidoParcialXProducto> partialOrderDetail = rejectedOrders.get(i).getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){
+                    PedidoParcialXProducto p = partialOrderDetail.next();          
+                    PedidoParcialXProductoId id = new PedidoParcialXProductoId();
+                    id.setIdPedidoParcial(partialOrderId);
+                    id.setIdProducto(p.getProducto().getId());
+                    p.setId(id);
+                    session.save(p);
+                }
             }
             session.getTransaction().commit();
             return true;
@@ -181,7 +222,7 @@ public class OrderRepository implements IOrderRepository{
     @Override
     public ArrayList<PedidoParcialXProducto> queryAllProductsByOrderId(Integer id){
         Session session = Tools.getSessionInstance();
-        String hql = "from PedidoParcialXProducto where id_pedido_parcial in (select id from PedidoParcial where id_pedido=:id)";
+        String hql = "from PedidoParcialXProducto where id_pedido_parcial in (select id from PedidoParcial where id_pedido=:id and (estado=0 or estado=1) )";
         ArrayList<PedidoParcialXProducto> partialOrders = new ArrayList<>();
         Transaction trns = null;
         try{
@@ -200,9 +241,30 @@ public class OrderRepository implements IOrderRepository{
         return partialOrders;
     }
     
+    public ArrayList<PedidoParcial> queryAllLocalPendingPartialOrdersById(Integer id, Session session,Transaction trns){
+        //Session session = Tools.getSessionInstance();
+        String hql = "from PedidoParcial where (estado=1 or estado=0) and id_pedido=:id";
+        ArrayList<PedidoParcial> partialOrders = new ArrayList<>();
+        //Transaction trns = null;
+        try{
+            //trns = session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("id", id);
+            partialOrders = (ArrayList<PedidoParcial>) q.list();
+            //session.getTransaction().commit();
+        }
+        catch (RuntimeException e){
+            if(trns != null){
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return partialOrders;
+    }
+    
     @Override
     public ArrayList<PedidoParcial> queryAllPendingPartialOrdersById(Integer id){
-                Session session = Tools.getSessionInstance();
+        Session session = Tools.getSessionInstance();
         String hql = "from PedidoParcial where (estado=1 or estado=0) and id_pedido=:id";
         ArrayList<PedidoParcial> partialOrders = new ArrayList<>();
         Transaction trns = null;
@@ -358,6 +420,37 @@ public class OrderRepository implements IOrderRepository{
             e.printStackTrace();
             return false;
         }  
+    }
+    
+    public ArrayList<Pallet> getAvailablePalletsByProductId(Integer productId, Session session, Transaction trns){
+        String hql="FROM Pallet WHERE id_producto=:productId and estado=1";
+        ArrayList<Pallet> pallets= new ArrayList<>();  
+        try {            
+            Query q = session.createQuery(hql);
+            q.setParameter("productId", productId);
+            pallets = (ArrayList<Pallet>) q.list();          
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return pallets;  
+    }
+    
+    public Boolean updatePallets(ArrayList<Pallet> pallets, Session session, Transaction trns) {
+        try {            
+            for(int i=0;i<pallets.size();i++){
+                session.update(pallets.get(i));
+            }                  
+            return true;
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }
