@@ -184,14 +184,16 @@ public class DeliveryView extends BaseView {
 
     private void btnExecuteAlgorithmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExecuteAlgorithmActionPerformed
         algorithmExecution = new AlgorithmExecution();
-        //solution = algorithmExecution.start(60);
-        
+        solution = algorithmExecution.start(3);
+        StringBuffer buf = algorithmExecution.displayDemand(solution);
+        txtResult.setText(buf.toString());
+        /*
         try{
             double hours, minutes;
-            /*if(txtHours.getText()==null) hours = 0;
+            if(txtHours.getText()==null) hours = 0;
             if(txtMinutes.getText()==null) minutes = 0;
             hours = Double.parseDouble(txtHours.getText());
-            minutes = Double.parseDouble(txtMinutes.getText());*/
+            minutes = Double.parseDouble(txtMinutes.getText());
             solution = algorithmExecution.start(3);
             StringBuffer buf = algorithmExecution.displayDemand(solution);
             txtResult.setText(buf.toString());
@@ -199,7 +201,7 @@ public class DeliveryView extends BaseView {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, Strings.BAD_PARAMETERS,
                     Strings.BAD_PARAMETERS_TITLE,JOptionPane.INFORMATION_MESSAGE);
-        }        
+        }   */     
     }//GEN-LAST:event_btnExecuteAlgorithmActionPerformed
 
     private void btnDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisplayActionPerformed
