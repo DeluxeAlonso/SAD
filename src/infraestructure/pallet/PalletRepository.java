@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import util.EntityState;
+import util.EntityState.Pallets;
 import util.Tools;
 
 /**
@@ -54,6 +56,29 @@ public class PalletRepository implements IPalletRepository{
             q.setParameter("spotId", spotId);
             q.setParameter("palletId", palletId);   
             q.executeUpdate();      
+            session.getTransaction().commit();
+            return true;
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    @Override
+    public Boolean deletePalletBySpot(int spotId) {
+        String hql="UPDATE Pallet p SET p.estado=:state WHERE p.ubicacion.id=:spotId";
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createSQLQuery(hql);
+            q.setParameter("spotId", spotId);
+            q.setParameter("state", Pallets.ELIMINADO.ordinal());
+            q.executeUpdate();
             session.getTransaction().commit();
             return true;
         } catch (RuntimeException e) {

@@ -57,11 +57,20 @@ public class SpotApplication {
         }
     }
     
-    
     public ArrayList<Ubicacion> queryEmptySpotsByRack(int rackId){
         ArrayList<Ubicacion> spots = null;
         try {
             spots = spotRepository.queryEmptySpotsByRack(rackId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return spots;
+    }
+    
+    public ArrayList<Ubicacion> querySpotsByWarehouse(int warehouseId){
+        ArrayList<Ubicacion> spots = null;
+        try {
+            spots = spotRepository.querySpotsByWarehouse(warehouseId);
         } catch (Exception e) {
             e.printStackTrace();
         }

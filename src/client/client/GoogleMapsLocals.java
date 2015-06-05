@@ -1,6 +1,5 @@
-package client.delivery;
+package client.client;
 
-import client.client.*;
 import algorithm.Node;
 import algorithm.Solution;
 import com.teamdev.jxbrowser.chromium.Browser;
@@ -10,19 +9,21 @@ import com.teamdev.jxbrowser.chromium.dom.events.DOMEvent;
 import com.teamdev.jxbrowser.chromium.dom.events.DOMEventListener;
 import com.teamdev.jxbrowser.chromium.dom.events.DOMEventType;
 import com.teamdev.jxbrowser.chromium.swing.BrowserView;
+import entity.Cliente;
+import entity.Local;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import util.Constants;
 
-public class GoogleMaps {
+public class GoogleMapsLocals {
     
-    public GoogleMaps(Solution solution){
-        Node[][] nodes = solution.getNodes();
+    public GoogleMapsLocals(ArrayList<Local> locals){
         final Browser browser = new Browser();
         BrowserView browserView = new BrowserView(browser);
 
-        JFrame frame = new JFrame("Vista en Mapa");
+        JFrame frame = new JFrame("Vista en mapa de los locales");
         frame.add(browserView, BorderLayout.CENTER);
         frame.setSize(900, 500);
         frame.setLocationRelativeTo(null);
@@ -41,11 +42,14 @@ public class GoogleMaps {
 "   <script type='text/javascript' src='https://maps.googleapis.com/maps/api/js?v=3.exp'></script>\n" +
 "   <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js'></script>\n" +
 "   <script type='text/javascript'>\n" +
+"  var waypts = [];\n" +
 "  var splitWayptsArray = [];\n";
-    for(int i=0;i<nodes.length;i++){
+        /*
+    for(int i=0;i<clients.size();i++){
 html += " var waypts"+i+" = [];\n" +
 "         splitWayptsArray.push(waypts"+i+");\n";
     }
+                */
 html += "function initialize() {\n" +
 "  var directionsDisplay = new google.maps.DirectionsRenderer();\n" +
 "  var directionsService = new google.maps.DirectionsService();\n" +
@@ -62,45 +66,21 @@ html += "function initialize() {\n" +
 "      map: map,\n" +
 "      icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',\n" +
 "      title: 'Centro de distribucion'\n" +
-" });\n";
-    for(int i=0;i<nodes.length;i++){
-        for(int j=0;j<nodes[i].length;j++){
-html += " var newLatlng = new google.maps.LatLng("+nodes[i][j].getY()+","+nodes[i][j].getX()+");\n" +
-"waypts"+i+".push({location:newLatlng,stopover:true});";
-        }
+" });\n" +
+"waypts.push(distributionCenter);\n";
+    for(int i=0;i<locals.size();i++){
+html += " var local = new google.maps.LatLng("+locals.get(i).getLatitud()+","+locals.get(i).getLongitud()+"); "+
+" var marker = new google.maps.Marker({\n" +
+"      position: local,\n" +
+"      map: map,\n" +
+"      title: '"+locals.get(i).getNombre()+"'\n" +
+" });\n"; 
     }
-html += "createRoute(waypts0);" +
-"function createRoute(waypts){\n" +
-"var request = {\n" +
-"    origin: new google.maps.LatLng("+Constants.WAREHOUSE_LATITUDE+","+Constants.WAREHOUSE_LONGITUDE+"),\n" +
-"    destination: new google.maps.LatLng("+Constants.WAREHOUSE_LATITUDE+","+Constants.WAREHOUSE_LONGITUDE+"),\n" +
-"    waypoints: waypts,\n" +
-"    travelMode: google.maps.TravelMode.DRIVING\n" +
-"};\n" +
-"  directionsService.route(request, function(result, status) {\n" +
-"    if (status == google.maps.DirectionsStatus.OK) {\n" +
-"      directionsDisplay.setDirections(result);\n" +
-"    }\n" +
-"  });" +
-"}\n" +
-
-"$('select').change(function(e){\n" +
-"   e.preventDefault();\n" +
-"   createRoute(splitWayptsArray[$('select option:selected').val()]);\n" +
-"});\n" + 
-
-"}\n" +
-"\n" +
-"google.maps.event.addDomListener(window, 'load', initialize);\n" +
-            
-"   </script>\n" +
+html += "}\n" +
+"google.maps.event.addDomListener(window, 'load', initialize);\n" +          
+"</script>\n" +
 "</head>\n" +
 "<body>\n" +
-"<select>\n";
-for(int i=0; i<nodes.length;i++){
-    html += "<option value="+i+">Ruta del camión "+i+"</option>";
-}
-html += "</select>\n" +
 "<div id=\"map-canvas\"></div>\n" +
 "</body>\n" +
 "</html>";

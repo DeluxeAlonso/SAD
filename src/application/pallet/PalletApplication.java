@@ -33,6 +33,16 @@ public class PalletApplication {
         return pallets;
     }
     
+    public Boolean deletePalletBySpot(int spotId){
+        Boolean response = false;
+        try {
+            response = palletRepository.deletePalletBySpot(spotId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+    
     public Boolean updatePalletSpot(int palletId, int spotId){
         Boolean response = false;
         try {

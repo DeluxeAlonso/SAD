@@ -9,8 +9,8 @@ import algorithm.Algorithm;
 import algorithm.Node;
 import algorithm.Problem;
 import algorithm.Solution;
+import static algorithm.operators.ObjectiveFunction.distance;
 import entity.UnidadTransporte;
-import java.awt.geom.Point2D;
 import util.Constants;
 import util.Randomizer;
 
@@ -56,18 +56,13 @@ public class Mutation {
             for (int j = 0; j < nodes[i].length; j++) {
                 double travelCost, toNode, fromNode;
                 if (j > 0) {
-                    travelCost = Point2D.distance(nodes[i][j - 1].getX(), nodes[i][j - 1].getY(),
-                            nodes[i][j].getX(), nodes[i][j].getY()) / speed;
-                    toNode = Point2D.distance(nodes[i][j - 1].getX(), nodes[i][j - 1].getY(),
-                            node.getX(), node.getY()) / speed;
+                    travelCost = distance(nodes[i][j - 1].getIdx(), nodes[i][j].getIdx()) / speed;
+                    toNode = distance(nodes[i][j - 1].getIdx(), node.getIdx()) / speed;
                 } else {
-                    travelCost = Point2D.distance(Constants.WAREHOUSE_LONGITUDE, Constants.WAREHOUSE_LATITUDE,
-                            nodes[i][j].getX(), nodes[i][j].getY()) / speed;
-                    toNode = Point2D.distance(Constants.WAREHOUSE_LONGITUDE, Constants.WAREHOUSE_LATITUDE,
-                            node.getX(), node.getY()) / speed;
+                    travelCost = distance(Problem.getLastNode(), nodes[i][j].getIdx()) / speed;
+                    toNode = distance(Problem.getLastNode(), node.getIdx()) / speed;
                 }                
-                fromNode = Point2D.distance(node.getX(), node.getY(),
-                            nodes[i][j].getX(), nodes[i][j].getY()) / speed;
+                fromNode = distance(node.getIdx(), nodes[i][j].getIdx()) / speed;
                 double payoff = ObjectiveFunction.objectiveFunction(vehicle, nodes[i][j],
                         algorithm, 0, 0, 0, travelCost, 0)
                         - ObjectiveFunction.objectiveFunction(vehicle, node,

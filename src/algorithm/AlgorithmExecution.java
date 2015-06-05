@@ -42,14 +42,14 @@ public class AlgorithmExecution {
         
         Algorithm algorithm = new Algorithm();
         algorithm.setNumberOfGenerations(0);
-        algorithm.setPopulationSize(1000);
+        algorithm.setPopulationSize(1);
         algorithm.setTournamentSelectionKValue(50);
         algorithm.setOvercapPenalty(10000);
         algorithm.setOvertimePenalty(10000);
         algorithm.setOverstockPenalty(10000);
         algorithm.setMutationRate(0.5f);
         algorithm.setMaxPriority(100);
-        algorithm.setBasePriority(1.2);
+        algorithm.setBasePriority(1.09);
         algorithm.setMaxTravelTime(maxTravelTime); 
         algorithm.setGraspAlpha(0.3);
         
@@ -109,7 +109,21 @@ public class AlgorithmExecution {
         System.out.println("Execution time: " + (end-ini) + "ms");
         
         bestSolution = population.getBestSolution();
-        displayRoutes(bestSolution);
+        System.out.println("");
+        System.out.println(displayRoutes(bestSolution));
+        System.out.println("");
+        System.out.println(displayDemand(bestSolution));
+        
+        /*for (int i = 0; i < bestSolution.getNodes().length; i++) {
+            System.out.println("Costo de ruta: " + i + " : " + ObjectiveFunction.getRouteCost(null, route, null, null));            
+        }*/
+        
+        //System.out.println("");
+        //System.out.println(displayOrders(bestSolution));
+        
+        /*AlgorithmView algorithmView = new AlgorithmView(bestSolution);
+        algorithmView.setBounds(0, 0, 700, 700);
+        algorithmView.setVisible(true);*/
         
         
         return bestSolution;  
@@ -230,7 +244,7 @@ public class AlgorithmExecution {
         
         HashMap<PedidoParcial, PedidoParcial> toPedidoParcial = new HashMap<>();
         for (int i = 0; i < orders.size(); i++) {
-            PedidoParcial pedido = new PedidoParcial();
+            PedidoParcial pedido = new PedidoParcial();            
             pedido.setPedido(orders.get(i).getPedido());
             pedido.setEstado(EntityState.PartialOrders.NO_ATENDIDO.ordinal());              
             pedido.setPedidoParcialXProductos(new HashSet<>());
@@ -299,7 +313,44 @@ public class AlgorithmExecution {
         for (int i = 0; i < nodes.length; i++) {            
             buf.append("Ruta ").append(i).append("\n") ;           
             for (int j = 0; j < nodes[i].length; j++) {
-                buf.append(nodes[i][j].getX()).append(" ").append(nodes[i][j].getY());                
+                buf.append(nodes[i][j].getX()).append("/").append(nodes[i][j].getY()).
+                        append("  ");                
+            }
+            buf.append("\n");
+        }
+        return buf;
+    }
+    
+    public StringBuffer displayDemand(Solution bestSolution) {
+        StringBuffer buf = new StringBuffer();
+        Node[][]nodes = bestSolution.getNodes();
+        for (int i = 0; i < nodes.length; i++) {  
+            buf.append("Ruta ").append(i).append("\n") ;           
+            int cap = 0; double time = 0;
+            for (int j = 0; j < nodes[i].length; j++) {
+                buf.append(nodes[i][j].getProduct().getId()).append("/").append(nodes[i][j].getDemand()).
+                        append("/").append(nodes[i][j].getPartialOrder().getPedido().getId()).append("  ");
+                cap += nodes[i][j].getDemand();
+                if(j>0) time += ObjectiveFunction.distance(nodes[i][j-1].getIdx(), nodes[i][j].getIdx());
+            }
+            if(nodes[i].length>0) {
+                time += ObjectiveFunction.distance(Problem.getLastNode(), nodes[i][0].getIdx());
+                time += ObjectiveFunction.distance(nodes[i][nodes[i].length-1].getIdx(), Problem.getLastNode());
+            }
+            time /= 15;
+            buf.append(cap + " " + time + "\n");
+        }
+        return buf;
+    }
+    
+    public StringBuffer displayOrders(Solution bestSolution) {
+        StringBuffer buf = new StringBuffer();
+        Node[][]nodes = bestSolution.getNodes();
+        for (int i = 0; i < nodes.length; i++) {            
+            buf.append("Ruta ").append(i).append("\n") ;           
+            for (int j = 0; j < nodes[i].length; j++) {
+                buf.append(nodes[i][j].getPartialOrder().getPedido().getId()).
+                        append("  ");                
             }
             buf.append("\n");
         }

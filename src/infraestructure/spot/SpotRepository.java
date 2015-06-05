@@ -76,6 +76,29 @@ public class SpotRepository implements ISpotRepository{
     }
     
     @Override
+    public ArrayList<Ubicacion> querySpotsByWarehouse(int warehouseId) {
+        String hql="FROM Ubicacion u WHERE u.rack.id IN (SELECT id FROM Rack r WHERE r.almacen.id=:warehouseId) AND u.estado!=:state ORDER BY u.rack.id, u.lado, u.fila, u.columna";
+        ArrayList<Ubicacion> spots=null;
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("state", Spots.INACTIVO.ordinal());
+            q.setParameter("warehouseId", warehouseId);
+            spots = (ArrayList<Ubicacion>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return spots; //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
     public Boolean updateSpotOccupancy(int spotId,int occupancyState) {
         String hql="UPDATE Ubicacion u SET u.estado=:occupancyState WHERE u.id=:spotId";
         

@@ -132,13 +132,13 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
         if(orderProducts.contains(p)){
             int index = orderProducts.indexOf(p);
             productQuantities.set(index, q + productQuantities.get(index));
-            if (productQuantities.get(index) > p.getStockTotal())
-                productQuantities.set(index, p.getStockTotal());
+            if (productQuantities.get(index) > p.getStockLogico())
+                productQuantities.set(index, p.getStockLogico());
         }
         else{
             orderProducts.add(p);
-            if (q > p.getStockTotal()){
-                productQuantities.add(p.getStockTotal()); 
+            if (q > p.getStockLogico()){
+                productQuantities.add(p.getStockLogico()); 
             }else{
                 productQuantities.add(q); 
             }
@@ -163,7 +163,7 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
     public ArrayList<Producto> getAvailableProducts(){
         ArrayList<Producto> products = new ArrayList<>();
         for(int i=0;i<EntityType.PRODUCTS.size();i++)
-            if(EntityType.PRODUCTS.get(i).getStockTotal()>0)
+            if(EntityType.PRODUCTS.get(i).getStockLogico()>0)
                 products.add(EntityType.PRODUCTS.get(i));
         return products;
     }
@@ -172,11 +172,8 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
      * Table Methods
      */ 
     public void refreshOrderProductsTable(){
-        ArrayList<String> cols = new ArrayList<>();
-        for (int i = 0; i<productTable.getColumnCount(); i++)
-            cols.add(productTable.getColumnName(i));
-        DefaultTableModel tableModel = new DefaultTableModel(cols.toArray(), 0);
-        productTable.setModel(tableModel);
+        DefaultTableModel tableModel = (DefaultTableModel)productTable.getModel();
+        tableModel.setRowCount(0);
         orderProducts.stream().forEach((_product) -> {
             Object[] row = {_product.getId(), _product.getNombre(), _product.getCondicion().getNombre(), productQuantities.get(orderProducts.indexOf(_product))};
             tableModel.addRow(row);
@@ -184,13 +181,10 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
     }
     
     public void refreshProductsToAddTable(){
-        ArrayList<String> cols = new ArrayList<>();
-        for (int i = 0; i<productAddTable.getColumnCount(); i++)
-            cols.add(productAddTable.getColumnName(i));
-        DefaultTableModel tableModel = new DefaultTableModel(cols.toArray(), 0);
-        productAddTable.setModel(tableModel);
+        DefaultTableModel tableModel = (DefaultTableModel)productAddTable.getModel();
+        tableModel.setRowCount(0);
         productsToAdd.stream().forEach((_product) -> {
-            Object[] row = {_product.getId(), _product.getNombre(), _product.getCondicion().getNombre(), _product.getStockTotal()};
+            Object[] row = {_product.getId(), _product.getNombre(), _product.getCondicion().getNombre(), _product.getStockLogico()};
             tableModel.addRow(row);
         });
     }
@@ -325,12 +319,6 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
             }
         });
         jScrollPane1.setViewportView(productAddTable);
-        if (productAddTable.getColumnModel().getColumnCount() > 0) {
-            productAddTable.getColumnModel().getColumn(0).setResizable(false);
-            productAddTable.getColumnModel().getColumn(1).setResizable(false);
-            productAddTable.getColumnModel().getColumn(2).setResizable(false);
-            productAddTable.getColumnModel().getColumn(3).setResizable(false);
-        }
 
         saveBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -340,6 +328,7 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
 
         jLabel4.setText("Cantidad de Pallets:");
 
+        qtySpinner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
         qtySpinner.setEnabled(false);
 
         jLabel3.setText("*Cliente:");
@@ -366,12 +355,6 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
         });
         productTable.setName("productTable"); // NOI18N
         productContainer.setViewportView(productTable);
-        if (productTable.getColumnModel().getColumnCount() > 0) {
-            productTable.getColumnModel().getColumn(0).setResizable(false);
-            productTable.getColumnModel().getColumn(1).setResizable(false);
-            productTable.getColumnModel().getColumn(2).setResizable(false);
-            productTable.getColumnModel().getColumn(3).setResizable(false);
-        }
 
         addBtn.setText("<<Agregar");
         addBtn.setEnabled(false);
@@ -617,7 +600,6 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
             qtySpinner.setEnabled(true);
             addBtn.setEnabled(true); 
         }
-        System.out.println(productTable.getSelectedRow());
         if(productTable.getSelectedRow() != -1){
             removeBtn.setEnabled(true); 
         }

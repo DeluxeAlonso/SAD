@@ -1,5 +1,5 @@
 package entity;
-// Generated 01-jun-2015 18:57:54 by Hibernate Tools 4.3.1
+// Generated Jun 3, 2015 6:36:49 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -23,8 +23,6 @@ public class Almacen  implements java.io.Serializable {
      private Integer numFilas;
      private Integer numColumnas;
      private Set racks = new HashSet(0);
-     private Set historialMovimientosesForIdAlmacenOut = new HashSet(0);
-     private Set historialMovimientosesForIdAlmacenIn = new HashSet(0);
      private Set kardexes = new HashSet(0);
 
     public Almacen() {
@@ -34,7 +32,7 @@ public class Almacen  implements java.io.Serializable {
     public Almacen(Condicion condicion) {
         this.condicion = condicion;
     }
-    public Almacen(Condicion condicion, String descripcion, Integer capacidad, Integer area, Date fechaRegistro, Integer estado, Integer ubicLibres, Integer numFilas, Integer numColumnas, Set racks, Set historialMovimientosesForIdAlmacenOut, Set historialMovimientosesForIdAlmacenIn, Set kardexes) {
+    public Almacen(Condicion condicion, String descripcion, Integer capacidad, Integer area, Date fechaRegistro, Integer estado, Integer ubicLibres, Integer numFilas, Integer numColumnas, Set racks, Set kardexes) {
        this.condicion = condicion;
        this.descripcion = descripcion;
        this.capacidad = capacidad;
@@ -45,8 +43,6 @@ public class Almacen  implements java.io.Serializable {
        this.numFilas = numFilas;
        this.numColumnas = numColumnas;
        this.racks = racks;
-       this.historialMovimientosesForIdAlmacenOut = historialMovimientosesForIdAlmacenOut;
-       this.historialMovimientosesForIdAlmacenIn = historialMovimientosesForIdAlmacenIn;
        this.kardexes = kardexes;
     }
    
@@ -126,20 +122,6 @@ public class Almacen  implements java.io.Serializable {
     
     public void setRacks(Set racks) {
         this.racks = racks;
-    }
-    public Set getHistorialMovimientosesForIdAlmacenOut() {
-        return this.historialMovimientosesForIdAlmacenOut;
-    }
-    
-    public void setHistorialMovimientosesForIdAlmacenOut(Set historialMovimientosesForIdAlmacenOut) {
-        this.historialMovimientosesForIdAlmacenOut = historialMovimientosesForIdAlmacenOut;
-    }
-    public Set getHistorialMovimientosesForIdAlmacenIn() {
-        return this.historialMovimientosesForIdAlmacenIn;
-    }
-    
-    public void setHistorialMovimientosesForIdAlmacenIn(Set historialMovimientosesForIdAlmacenIn) {
-        this.historialMovimientosesForIdAlmacenIn = historialMovimientosesForIdAlmacenIn;
     }
     public Set getKardexes() {
         return this.kardexes;

@@ -9,8 +9,8 @@ import algorithm.Algorithm;
 import algorithm.Node;
 import algorithm.Problem;
 import algorithm.Solution;
+import static algorithm.operators.ObjectiveFunction.distance;
 import entity.UnidadTransporte;
-import java.awt.geom.Point2D;
 import util.Constants;
 
 /**
@@ -27,6 +27,7 @@ public class LocalSearch {
             warehouse.setX(Constants.WAREHOUSE_LONGITUDE);
             warehouse.setY(Constants.WAREHOUSE_LATITUDE);
             warehouse.setDaysDifference(0);
+            warehouse.setIdx(Problem.getLastNode());
             route[0] = warehouse;
             for (int j = 1; j < route.length; j++) {
                 route[j] = node[j-1];                
@@ -73,14 +74,14 @@ public class LocalSearch {
                 reorder(ruta, bestIdx1, bestIdx4);
             }
         }
+        //System.out.println("k " + k);
     }
 
     private static double getCost(Node a, Node b, Algorithm algorithm){
         double customerPriority = b.getDaysDifference()<=0 ? 
                 algorithm.getMaxPriority() :
                 Math.exp(-b.getDaysDifference()*Math.log(algorithm.getBasePriority()));
-        double travelCost = Point2D.distance(a.getX(), a.getY(),
-                            b.getX(), b.getY());
+        double travelCost = distance(a.getIdx(), b.getIdx());
         return travelCost/customerPriority;
     }
     

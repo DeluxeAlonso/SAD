@@ -199,6 +199,9 @@ public class ProductView extends BaseView implements MouseListener {
                     product = new Producto();
                     product.setNombre(line_split[0]);
                     product.setDescripcion(line_split[1]);
+                    product.setPalletsRegistrados(Integer.parseInt(line_split[2]));
+                    product.setPalletsUbicados(Integer.parseInt(line_split[2]));
+                    product.setStockLogico(Integer.parseInt(line_split[2]));
                     product.setStockTotal(Integer.parseInt(line_split[2]));
                     product.setCantidadProductosEnPallet(Integer.parseInt(line_split[3]));
                     product.setPeso(Double.parseDouble(line_split[4]));
@@ -407,6 +410,11 @@ public class ProductView extends BaseView implements MouseListener {
         btnFileUpload.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btnFileUploadMousePressed(evt);
+            }
+        });
+        btnFileUpload.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFileUploadActionPerformed(evt);
             }
         });
 
@@ -715,6 +723,9 @@ public class ProductView extends BaseView implements MouseListener {
             product.setNombre(productNameTxt.getText());
             product.setPeso(Double.parseDouble(pesoTxt.getText()));
             product.setStockTotal(0);
+            product.setStockLogico(0);
+            product.setPalletsRegistrados(0);
+            product.setPalletsUbicados(0);
             product.setTipoProducto(productTypes.get(tblClients.getSelectedRow()));
             
             int aux=productApplication.insert(product);
@@ -783,6 +794,10 @@ public class ProductView extends BaseView implements MouseListener {
     private void btnSaveLocalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveLocalActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnSaveLocalActionPerformed
+
+    private void btnFileUploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFileUploadActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnFileUploadActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

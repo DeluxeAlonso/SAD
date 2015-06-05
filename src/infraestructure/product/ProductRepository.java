@@ -1,4 +1,4 @@
-/*
+    /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -113,7 +113,7 @@ public class ProductRepository implements IProductRepository {
     public ArrayList<Producto> queryByType(int idType) {
         Session session = Tools.getSessionInstance();
         // WHERE p.tipoProducto.id=:idType
-        String hql = "FROM Producto p WHERE p.tipoProducto.id=:idType";
+        String hql = "FROM Producto p WHERE p.condicion.id=:idType";
         ArrayList<Producto> products=null;
         Transaction trns = null;
         try{
@@ -131,7 +131,6 @@ public class ProductRepository implements IProductRepository {
         }
         return products;
     }
-    
     
     public ArrayList<Producto> queryByCondition(int idType) {
         Session session = Tools.getSessionInstance();
@@ -156,7 +155,7 @@ public class ProductRepository implements IProductRepository {
     
     public ArrayList<Producto> searchProduct(Producto product){
         String hql="from Producto "
-                + "where (:id is null or id=:id) and (nombre like :name)";
+                + "where (:id is null or id=:id) and (nombre like :name) and stock_logico>0";
         ArrayList<Producto> products=null;
         
         Transaction trns = null;

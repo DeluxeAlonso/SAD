@@ -38,6 +38,16 @@ public class LocalApplication {
         return locals;
     }
     
+    public ArrayList<Local> queryAll(){
+        ArrayList<Local> locals = null;
+        try {
+            locals = localRepository.queryAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return locals;
+    }
+    
     public Boolean delete(int localId){
         Boolean response = false;
         try {

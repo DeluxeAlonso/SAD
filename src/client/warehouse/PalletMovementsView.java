@@ -1,16 +1,23 @@
 package client.warehouse;
 
+import application.kardex.KardexApplication;
 import application.pallet.PalletApplication;
 import application.rack.RackApplication;
 import application.spot.SpotApplication;
 import application.warehouse.WarehouseApplication;
 import client.base.BaseView;
 import entity.Almacen;
+import entity.Kardex;
+import entity.KardexId;
 import entity.Pallet;
+import entity.Producto;
 import entity.Rack;
 import entity.Ubicacion;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import javax.swing.JOptionPane;
@@ -35,6 +42,7 @@ public class PalletMovementsView extends BaseView {
     RackApplication rackApplication = InstanceFactory.Instance.getInstance("rackApplicaiton", RackApplication.class);
     SpotApplication spotApplication = InstanceFactory.Instance.getInstance("spotApplicaiton", SpotApplication.class);
     PalletApplication palletApplication = InstanceFactory.Instance.getInstance("palletApplicaiton", PalletApplication.class);
+    KardexApplication kardexApplication = InstanceFactory.Instance.getInstance("kardexApplicaiton", KardexApplication.class);
     public static PalletMovementsView palletMovementsView;
     public ArrayList<Almacen> warehousesFrom;
     public ArrayList<Almacen> warehousesTo;
@@ -43,6 +51,7 @@ public class PalletMovementsView extends BaseView {
     public ArrayList<Ubicacion> spotsTo;
     public ArrayList<Pallet> palletsFrom;
     public int warehouseSelected;
+    HashMap<Producto,Integer> kardexCount = new HashMap<Producto,Integer>();
     /**
      * Creates new form PalletMovementsView
      */
@@ -132,13 +141,13 @@ public class PalletMovementsView extends BaseView {
             for(Pallet pallet : palletsFrom){
                 model.addRow(new Object[]{
                     pallet.getEan128(),
+                    pallet.getProducto().getNombre(),
                     pallet.getUbicacion().getLado(),
                     pallet.getUbicacion().getFila(),
                     pallet.getUbicacion().getColumna(),
                 });
             }
         }
-        
     }
     
     public void fillTableTo(int rackId){
@@ -213,11 +222,11 @@ public class PalletMovementsView extends BaseView {
 
             },
             new String [] {
-                "EAN128", "Lado", "Fila", "Columna", "Seleccione"
+                "EAN128", "Producto", "Lado", "Fila", "Columna", "Seleccione"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -268,24 +277,20 @@ public class PalletMovementsView extends BaseView {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(19, Short.MAX_VALUE)
+                    .addComponent(btnSave)
+                    .addComponent(jLabel5)
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel1)
                             .addComponent(jLabel2))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(comboWarehouseFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(comboRackFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(133, 133, 133))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnSave)
-                            .addComponent(jScrollPaneFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(comboRackFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPaneFrom, javax.swing.GroupLayout.DEFAULT_SIZE, 542, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(jScrollPaneTo, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -325,7 +330,7 @@ public class PalletMovementsView extends BaseView {
                     .addComponent(jScrollPaneTo, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(btnSave)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         pack();
@@ -374,9 +379,17 @@ public class PalletMovementsView extends BaseView {
         
         if(tblPalletFrom.getRowCount()>0){
             for (int i = 0; i < tblPalletFrom.getRowCount(); i++) {
-                isChecked = (Boolean)tblPalletFrom.getValueAt(i, 4);
+                isChecked = (Boolean)tblPalletFrom.getValueAt(i, 5);
                 if (isChecked != null && isChecked) {
                     selectedPallets.add(palletsFrom.get(i).getId());
+                    // Agrupo los pallets que se moveran por Producto para ser ingresados al kardex
+                    if(!kardexCount.isEmpty() && kardexCount.containsKey(palletsFrom.get(i).getProducto())){
+                        int productCount = kardexCount.get(palletsFrom.get(i).getProducto()).intValue();
+                        productCount++;
+                        kardexCount.put(palletsFrom.get(i).getProducto(), productCount);
+                    }else{
+                        kardexCount.put(palletsFrom.get(i).getProducto(), 1);
+                    }   
                 }
             }
         }
@@ -394,6 +407,56 @@ public class PalletMovementsView extends BaseView {
                 spotApplication.updateSpotOccupancy(palletsFrom.get(i).getUbicacion().getId(), Spots.LIBRE.ordinal());
                 palletApplication.updatePalletSpot(palletsFrom.get(i).getId(), selectedSpots.get(i));
                 spotApplication.updateSpotOccupancy(selectedSpots.get(i), Spots.OCUPADO.ordinal());
+            }
+            if(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId() != warehousesTo.get(comboWarehouseTo.getSelectedIndex()).getId()){
+                //Ingreso kardex por cada producto movido, solo si se mueven los pallets a un almacen diferente
+                ArrayList<Kardex> previousKardex;
+                Iterator<Producto> keySetIterator = kardexCount.keySet().iterator();
+                Producto key;
+                Kardex kardex;
+                KardexId kardexId;
+                Date date = new Date();
+                while(keySetIterator.hasNext()){
+                    key = keySetIterator.next();
+                    // Para las salidas
+                    previousKardex = kardexApplication.queryByParameters(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId(), key.getId());
+                    kardexId = new KardexId();
+                    kardexId.setIdAlmacen(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId());
+                    kardexId.setIdProducto(key.getId());
+                    kardex = new Kardex();
+                    kardex.setId(kardexId);
+                    kardex.setAlmacen(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()));
+                    kardex.setProducto(key);
+                    kardex.setFecha(date);
+                    kardex.setCantidad(kardexCount.get(key).intValue());
+                    kardex.setTipoMovimiento("Salida");
+                    if(previousKardex.size()==0){
+                        kardex.setStockInicial(0);
+                    }else{
+                        kardex.setStockInicial(previousKardex.get(0).getStockFinal());
+                    }
+                    kardex.setStockFinal(kardex.getStockInicial() + kardex.getCantidad());
+                    kardexApplication.insert(kardex);
+                    // Para los ingresos
+                    previousKardex = kardexApplication.queryByParameters(warehousesTo.get(comboWarehouseTo.getSelectedIndex()).getId(), key.getId());
+                    kardexId = new KardexId();
+                    kardexId.setIdAlmacen(warehousesTo.get(comboWarehouseTo.getSelectedIndex()).getId());
+                    kardexId.setIdProducto(key.getId());
+                    kardex = new Kardex();
+                    kardex.setId(kardexId);
+                    kardex.setAlmacen(warehousesTo.get(comboWarehouseTo.getSelectedIndex()));
+                    kardex.setProducto(key);
+                    kardex.setFecha(date);
+                    kardex.setCantidad(kardexCount.get(key).intValue());
+                    kardex.setTipoMovimiento("Ingreso");
+                    if(previousKardex.size()==0){
+                        kardex.setStockInicial(0);
+                    }else{
+                        kardex.setStockInicial(previousKardex.get(0).getStockFinal());
+                    }
+                    kardex.setStockFinal(kardex.getStockInicial() + kardex.getCantidad());
+                    kardexApplication.insert(kardex);
+                }
             }
             fillTableFrom(racksFrom.get(comboRackFrom.getSelectedIndex()).getId());
             fillTableTo(racksTo.get(comboRackTo.getSelectedIndex()).getId());
