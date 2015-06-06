@@ -42,7 +42,7 @@ public class AlgorithmExecution {
         
         Algorithm algorithm = new Algorithm();
         algorithm.setNumberOfGenerations(0);
-        algorithm.setPopulationSize(1);
+        algorithm.setPopulationSize(3);
         algorithm.setTournamentSelectionKValue(50);
         algorithm.setOvercapPenalty(10000);
         algorithm.setOvertimePenalty(10000);
@@ -109,10 +109,22 @@ public class AlgorithmExecution {
         System.out.println("Execution time: " + (end-ini) + "ms");
         
         bestSolution = population.getBestSolution();
+        
         System.out.println("");
-        System.out.println(displayRoutes(bestSolution));
+        System.out.println(displayRoutes(population.getSolutions()[0]));
         System.out.println("");
-        System.out.println(displayDemand(bestSolution));
+        System.out.println(displayDemand(population.getSolutions()[0]));
+        
+        System.out.println("");
+        System.out.println(displayRoutes(population.getSolutions()[1]));
+        System.out.println("");
+        System.out.println(displayDemand(population.getSolutions()[1]));
+        
+        System.out.println("");
+        System.out.println(displayRoutes(population.getSolutions()[2]));
+        System.out.println("");
+        System.out.println(displayDemand(population.getSolutions()[2]));
+        
         
         /*for (int i = 0; i < bestSolution.getNodes().length; i++) {
             System.out.println("Costo de ruta: " + i + " : " + ObjectiveFunction.getRouteCost(null, route, null, null));            

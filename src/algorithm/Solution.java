@@ -27,12 +27,15 @@ public class Solution implements Comparable<Solution>{
         this.problem = problem;
     }
     
-    public Solution(Algorithm algorithm, Problem problem) {
+    public Solution(Algorithm algorithm, Problem problem, int idx) {
         this.algorithm = algorithm;
         this.problem = problem;        
-        this.nodes = Grasp.construction(algorithm, problem);
-        //this.cost = ObjectiveFunction.getSolutionCost(this, algorithm, 
-        //        problem.getProductsStock());        
+        if(idx%3==0)
+            this.nodes = Grasp.construction(algorithm, problem);
+        else if(idx%3==1)
+            this.nodes = Grasp.construction2(algorithm, problem);
+        else if(idx%3==2)
+            this.nodes = Grasp.construction3(algorithm, problem);              
     }
     
     @Override

@@ -13,7 +13,6 @@ import static algorithm.operators.ObjectiveFunction.distance;
 import entity.UnidadTransporte;
 import java.util.ArrayList;
 import java.util.HashMap;
-import util.Constants;
 import util.Randomizer;
 
 /**
@@ -46,21 +45,131 @@ public class Grasp {
             
         }
         
-        currentStock = new HashMap<> (problem.getProductsStock());   
+        /*currentStock = new HashMap<> (problem.getProductsStock());   
         for (int i = 0; i < routesNo; i++) {
             UnidadTransporte vehicle = problem.getVehicles().get(i);
             System.out.println("costo ruta " + i + " " + ObjectiveFunction.getRouteCost(vehicle, routes[i], algorithm, currentStock));            
             
-        }
+        }*/
         
-        int vis = 0;
+        /*int vis = 0;
         for (int i = 0; i < visited.length; i++) {
             if(visited[i]) vis++;            
-        }
+        }*/
         //System.out.println("visited nodes: " + vis);
         
         return routes;
     }
+    
+    
+    public static Node[][] construction2(Algorithm algorithm, Problem problem) {
+        int routesNo = problem.getVehicles().size();
+        Node[][] routes = new Node[routesNo][];
+        nodes = problem.getNodes();
+        boolean[] visited = new boolean[nodes.size()];
+
+        HashMap<Integer, Integer> currentStock = new HashMap<>(problem.getProductsStock());
+
+        for (int i = routesNo-1; i >= 0; i--) {
+            UnidadTransporte vehicle = problem.getVehicles().get(i);
+
+            ArrayList<Node> route = createRoute(vehicle, algorithm, currentStock, visited);
+
+            routes[i] = new Node[route.size()];
+            routes[i] = route.toArray(routes[i]);
+
+        }
+        return routes;
+    }
+    
+    
+    public static Node[][] construction3(Algorithm algorithm, Problem problem) {
+        int routesNo = problem.getVehicles().size();
+        
+        nodes = problem.getNodes();
+        boolean[] visited = new boolean[nodes.size()];
+
+        HashMap<Integer, Integer> currentStock = new HashMap<>(problem.getProductsStock());   
+        
+        UnidadTransporte vehicle = problem.getVehicles().get(0);
+        int[] currentCapacity = new int[routesNo];
+        int vehicleCapacity = vehicle.getTipoUnidadTransporte().getCapacidadPallets();
+        double[] currentTime = new double[routesNo];
+        Node[] node = new Node[routesNo];
+        boolean[] alreadyInit = new boolean[routesNo];
+        
+        ArrayList<ArrayList<Node>>arrRoutes = new ArrayList<>();
+        for (int i = 0; i < routesNo; i++) {
+            ArrayList<Node> arrRoutes2 = new ArrayList<>();
+            arrRoutes.add(arrRoutes2); 
+        }
+               
+        int idx = 0, noInsertion = 0;
+        
+        while(true){
+            noInsertion++;
+            GraspParameters param = initializeBetaAndTau(node[idx], vehicle, algorithm, currentTime[idx], currentStock,
+                    visited);
+            ArrayList<Node> RCL;
+            if (!alreadyInit[idx]) {
+                RCL = generateRCL(node[idx], param.getBeta(), param.getTau(), 1, vehicle, algorithm, currentTime[idx],
+                        currentStock, visited);
+                alreadyInit[idx] = true;
+            } else {
+                RCL = generateRCL(node[idx], param.getBeta(), param.getTau(), algorithm.getGraspAlpha(), vehicle,
+                        algorithm, currentTime[idx], currentStock, visited);
+            }
+            if (!RCL.isEmpty()) {
+                int chosen = Randomizer.randomInt(RCL.size());
+                boolean canBeAdded = true;
+                if (currentCapacity[idx] + RCL.get(chosen).getDemand() > vehicleCapacity) {
+                    canBeAdded = false;
+                }
+                if (canBeAdded) {
+                    Node nextNode = RCL.get(chosen);
+                    visited[nextNode.getIdx()] = true;
+                    arrRoutes.get(idx).add(nextNode);
+                    noInsertion = 0;
+                    //System.out.println("added " + idx + " node");
+                    currentCapacity[idx] += nextNode.getDemand();
+
+                    double travelCost;
+                    if (node[idx] == null) {
+                        travelCost = distance(Problem.getLastNode(), nextNode.getIdx())
+                                / vehicle.getTipoUnidadTransporte().getVelocidadPromedio();
+                    } else {
+                        travelCost = distance(node[idx].getIdx(), nextNode.getIdx())
+                                / vehicle.getTipoUnidadTransporte().getVelocidadPromedio();
+                    }
+
+                    int productId = nextNode.getProduct().getId();
+                    int newStock = currentStock.get(productId) - nextNode.getDemand();
+
+                    currentTime[idx] += travelCost;
+                    currentStock.put(productId, newStock);
+
+                    /*double returnCost = distance(nextNode.getIdx(), Problem.getLastNode())
+                            / vehicle.getTipoUnidadTransporte().getVelocidadPromedio();*/
+                    /*System.out.println("RCL added: " + travelCost + " giving a total of: " + 
+                     currentTime + " and to return, we need " + returnCost + " so we need " + 
+                     (currentTime + returnCost));*/
+                    node[idx] = nextNode;
+                }
+            }
+            
+            if(noInsertion==routesNo) break;
+            idx = (idx+1)%routesNo;
+        }
+        
+        Node[][] routes = new Node[routesNo][];
+        
+        for (int i = 0; i<routesNo; i++) {            
+            routes[i] = new Node[arrRoutes.get(i).size()];
+            routes[i] = arrRoutes.get(i).toArray(routes[i]);
+        }
+        return routes;
+    }
+    
 
     private static GraspParameters initializeBetaAndTau(Node baseNode, UnidadTransporte vehicle,
             Algorithm algorithm, double currentTime, HashMap<Integer,Integer> currentStock,
