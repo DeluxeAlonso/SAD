@@ -70,7 +70,8 @@ public class PalletView extends BaseView {
     
     private void fillWarehouseCombo(){
         warehouses = warehouseApplication.queryAll();
-        if (warehouses!=null){
+        if (warehouses!=null && warehouses.size()!=0){
+            
             String[] whNames = new String[warehouses.size()];
             for (int i=0; i < warehouses.size();i++){
                 whNames[i]=warehouses.get(i).getDescripcion();

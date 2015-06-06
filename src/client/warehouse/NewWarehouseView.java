@@ -391,6 +391,11 @@ public class NewWarehouseView extends BaseDialogView {
                 error_message += "La capacidad de un almacen no debe ser mayor a 50."+"\n";
                 capacityTxt.setBorder(errorBorder);
                 errorFlag = true;                
+            }else 
+                if (capA > 0){
+                error_message += "La capacidad de un almacen debe ser mayor que 0 racks."+"\n";
+                capacityTxt.setBorder(errorBorder);
+                errorFlag = true;                
             }
         }
         if (racksTxt.getText().isEmpty()){
@@ -402,12 +407,17 @@ public class NewWarehouseView extends BaseDialogView {
             racksTxt.setBorder(errorBorder);
             errorFlag = true;
         } else if (isInteger(racksTxt.getText())){
-            int rackA =Integer.parseInt(nColTxt.getText());
+            int rackA =Integer.parseInt(racksTxt.getText());
             if (rackA > 50){
                 error_message += "El numero de racks debe ser menor o igual que 50."+"\n";
                 racksTxt.setBorder(errorBorder);
                 errorFlag = true;                
+            }else if (rackA < 1){
+                error_message += "El numero de racks debe ser mayor o igual a 1."+"\n";
+                racksTxt.setBorder(errorBorder);
+                errorFlag = true;                
             }
+                
         }
         
         
@@ -420,9 +430,13 @@ public class NewWarehouseView extends BaseDialogView {
             nFilTxt.setBorder(errorBorder);
             errorFlag = true;
         }else if (isInteger(nFilTxt.getText())){
-            int filA =Integer.parseInt(nColTxt.getText());
+            int filA =Integer.parseInt(nFilTxt.getText());
             if (filA > 15){
                 error_message += "El numero de filas debe ser menor que 15."+"\n";
+                nFilTxt.setBorder(errorBorder);
+                errorFlag = true;                
+            }else if (filA < 1){
+                error_message += "El numero de filas debe ser mayor que 0."+"\n";
                 nFilTxt.setBorder(errorBorder);
                 errorFlag = true;                
             }
@@ -439,6 +453,10 @@ public class NewWarehouseView extends BaseDialogView {
             int colA =Integer.parseInt(nColTxt.getText());
             if (colA > 20){
                 error_message += "El numero de columnas debe ser menor que 20"+"\n";
+                nColTxt.setBorder(errorBorder);
+                errorFlag = true;                
+            } else if (colA < 1){
+                error_message += "El numero de columnas debe ser mayor que 0"+"\n";
                 nColTxt.setBorder(errorBorder);
                 errorFlag = true;                
             }

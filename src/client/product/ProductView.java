@@ -638,7 +638,7 @@ public class ProductView extends BaseView implements MouseListener {
 
     private void btnDeleteClientMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteClientMousePressed
         JOptionPane.setDefaultLocale(new Locale("es", "ES"));
-        int response = JOptionPane.showConfirmDialog(this, Strings.MESSAGE_DELETE_CLIENT,Strings.MESSAGE_DELETE_CLIENT_TITLE,JOptionPane.WARNING_MESSAGE);
+        int response = JOptionPane.showConfirmDialog(this, "¿Esta seguro que desea borrar el tipo de producto?","Mensaje de error producto",JOptionPane.WARNING_MESSAGE);
         if(JOptionPane.OK_OPTION == response){
             productTypeApplication.delete(productTypes.get(tblClients.getSelectedRow()));            
             productTypeApplication.delete(productTypes.get(tblClients.getSelectedRow()));
@@ -672,6 +672,13 @@ public class ProductView extends BaseView implements MouseListener {
             error_message += Strings.ERROR_CANTIDADXPALLET_INT+"\n";
             cantidadXPalletTxt.setBorder(errorBorder);
             hasErrors = true;
+        }else  if(isInteger(cantidadXPalletTxt.getText())){
+            int cant = Integer.parseInt(cantidadXPalletTxt.getText());
+            if (cant <1 || cant>10000){
+                error_message += "El numero de pallets debe ser entre 1 y 1000"+"\n";
+                cantidadXPalletTxt.setBorder(errorBorder);
+                hasErrors = true;
+            }
         }
         if(productNameTxt.getText().length()<1){
             error_message += Strings.ERROR_PRODUCT_NAME_LESS_2+"\n";
@@ -696,7 +703,15 @@ public class ProductView extends BaseView implements MouseListener {
             error_message += Strings.ERROR_PESO_PROD_DOUBLE+"\n";
             pesoTxt.setBorder(errorBorder);
             hasErrors = true;            
+        }else if (isDouble(pesoTxt.getText())){
+            double peso = Double.parseDouble(pesoTxt.getText());
+                if (peso<=0 || peso >1000000){
+                error_message += "El peso debe ser mayor que 0 y menor que 1,000,000."+"\n";
+                pesoTxt.setBorder(errorBorder);
+                hasErrors = true;            
+            }
         }
+        
         
         if(hasErrors){
             JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_NEW_LOCAL_TITLE,JOptionPane.ERROR_MESSAGE);
@@ -759,7 +774,7 @@ public class ProductView extends BaseView implements MouseListener {
     
     private void btnDeleteLocalMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteLocalMousePressed
         JOptionPane.setDefaultLocale(new Locale("es", "ES"));
-        int response = JOptionPane.showConfirmDialog(this, Strings.MESSAGE_DELETE_LOCAL,Strings.MESSAGE_DELETE_LOCAL_TITLE,JOptionPane.WARNING_MESSAGE);
+        int response = JOptionPane.showConfirmDialog(this, "¿Esta seguro que desea eliminar este producto?","Mensaje mantenimiento Producto",JOptionPane.WARNING_MESSAGE);
         if(JOptionPane.OK_OPTION == response){
             productApplication.delete(products.get(tblLocals.getSelectedRow()));
             fillProductsTable();

@@ -435,7 +435,7 @@ public class PalletMovementsView extends BaseView {
                     }else{
                         kardex.setStockInicial(previousKardex.get(0).getStockFinal());
                     }
-                    kardex.setStockFinal(kardex.getStockInicial() + kardex.getCantidad());
+                    kardex.setStockFinal(kardex.getStockInicial() - kardex.getCantidad());
                     kardexApplication.insert(kardex);
                     // Para los ingresos
                     previousKardex = kardexApplication.queryByParameters(warehousesTo.get(comboWarehouseTo.getSelectedIndex()).getId(), key.getId());
