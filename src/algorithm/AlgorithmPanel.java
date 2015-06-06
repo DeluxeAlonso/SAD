@@ -91,8 +91,8 @@ public class AlgorithmPanel extends javax.swing.JPanel {
                 //System.out.println(x1 + " " + y1 + " / " + x2 + " " + y2);
 
                 g.setColor(Color.blue);
-                g.drawString(((Integer) nodes[i][j].getIdx()).toString(), x2, y2);
-                g.drawString(((Integer) nodes[i][j - 1].getIdx()).toString(), x1, y1);
+                g.drawString((nodes[i][j].getPartialOrder().getPedido().getId()).toString(), x2, y2);
+                g.drawString((nodes[i][j - 1].getPartialOrder().getPedido().getId()).toString(), x1, y1);
                 g.setColor(Color.black);
             }
             if (nodes[i].length > 0) { //si la ruta contiene al menos un cliente
@@ -110,8 +110,8 @@ public class AlgorithmPanel extends javax.swing.JPanel {
                 //System.out.println(x1 + " " + y1 + " / " + x2 + " " + y2);
                 
                 g.setColor(Color.blue);
-                g.drawString(((Integer) nodes[i][0].getIdx()).toString(), x2, y2);
-                g.drawString("0", x1, y1);
+                g.drawString((nodes[i][0].getPartialOrder().getPedido().getId()).toString(), x2, y2);
+                g.drawString("-1", x1, y1);
                 g.setColor(Color.black);
 
                 //dibujar camino hacia el centro de distribucion
@@ -128,7 +128,7 @@ public class AlgorithmPanel extends javax.swing.JPanel {
                 //System.out.println(x1 + " " + y1 + " / " + x2 + " " + y2);
                 
                 g.setColor(Color.blue);
-                g.drawString(((Integer) nodes[i][nodes[i].length - 1].getIdx()).toString(), x1, y1);
+                g.drawString((nodes[i][nodes[i].length - 1].getPartialOrder().getPedido().getId()).toString(), x1, y1);
                 g.setColor(Color.black);
                 //g2.drawString("0", x2, y2);
             }
