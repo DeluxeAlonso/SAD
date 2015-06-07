@@ -7,6 +7,7 @@ package client.user;
 
 import application.profile.ProfileApplication;
 import application.user.UserApplication;
+import client.base.BaseDialogView;
 import entity.Usuario;
 import java.awt.Color;
 import java.awt.event.WindowEvent;
@@ -24,7 +25,7 @@ import util.Strings;
  *
  * @author Nevermade
  */
-public class EditUserAdmin extends javax.swing.JDialog {
+public class EditUserAdmin extends BaseDialogView {
 
     /**
      * Creates new form EditUserAdmin
@@ -38,6 +39,7 @@ public class EditUserAdmin extends javax.swing.JDialog {
     public EditUserAdmin(java.awt.Frame parent, boolean modal, Usuario user) {
         super(parent, modal);
         initComponents();
+        super.initialize();
         Icons.setMainIcon(this);
         addImagesToButton();
         this.user = user;

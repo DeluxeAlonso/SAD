@@ -1,13 +1,16 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 06/06/2015 08:19:12 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 06/06/2015 09:17:53 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entity.Log" table="log" catalog="saddb" optimistic-lock="version">
         <id name="id" type="int">
             <column name="id" />
             <generator class="assigned" />
         </id>
+        <many-to-one name="usuario" class="entity.Usuario" fetch="select">
+            <column name="usuario_id" length="40" not-null="true" />
+        </many-to-one>
         <property name="operacion" type="java.lang.Integer">
             <column name="operacion" />
         </property>

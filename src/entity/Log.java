@@ -1,5 +1,5 @@
 package entity;
-// Generated 06/06/2015 08:19:10 PM by Hibernate Tools 4.3.1
+// Generated 06/06/2015 09:17:52 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -11,6 +11,7 @@ public class Log  implements java.io.Serializable {
 
 
      private int id;
+     private Usuario usuario;
      private Integer operacion;
      private Integer tipo;
      private Date fecha;
@@ -19,11 +20,13 @@ public class Log  implements java.io.Serializable {
     }
 
 	
-    public Log(int id) {
+    public Log(int id, Usuario usuario) {
         this.id = id;
+        this.usuario = usuario;
     }
-    public Log(int id, Integer operacion, Integer tipo, Date fecha) {
+    public Log(int id, Usuario usuario, Integer operacion, Integer tipo, Date fecha) {
        this.id = id;
+       this.usuario = usuario;
        this.operacion = operacion;
        this.tipo = tipo;
        this.fecha = fecha;
@@ -35,6 +38,13 @@ public class Log  implements java.io.Serializable {
     
     public void setId(int id) {
         this.id = id;
+    }
+    public Usuario getUsuario() {
+        return this.usuario;
+    }
+    
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
     public Integer getOperacion() {
         return this.operacion;

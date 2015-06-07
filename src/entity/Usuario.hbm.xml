@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 06/06/2015 08:19:12 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 06/06/2015 09:17:53 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entity.Usuario" table="usuario" catalog="saddb" optimistic-lock="version">
         <id name="id" type="string">
@@ -35,5 +35,11 @@
         <property name="estado" type="java.lang.Integer">
             <column name="estado" />
         </property>
+        <set name="logs" table="log" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="usuario_id" length="40" not-null="true" />
+            </key>
+            <one-to-many class="entity.Log" />
+        </set>
     </class>
 </hibernate-mapping>

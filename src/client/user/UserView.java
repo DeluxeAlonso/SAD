@@ -8,6 +8,7 @@ package client.user;
 import application.action.ActionApplication;
 import application.profile.ProfileApplication;
 import application.user.UserApplication;
+import client.base.BaseView;
 import entity.Accion;
 import entity.Perfil;
 import entity.Usuario;
@@ -37,7 +38,7 @@ import util.Strings;
  *
  * @author dabarca
  */
-public class UserView extends javax.swing.JInternalFrame {
+public class UserView extends BaseView {
 
     UserApplication userApplication = InstanceFactory.Instance.getInstance("userApplicaiton", UserApplication.class);
     ProfileApplication profileApplication = InstanceFactory.Instance.getInstance("profileApplication", ProfileApplication.class);
@@ -52,7 +53,9 @@ public class UserView extends javax.swing.JInternalFrame {
      * Creates new form UserForm
      */
     public UserView(int tab) {
+        super();
         initComponents();
+        super.initialize();
         Icons.setMainIcon(this);
         addImagesToButton();
         tabbedUP.setSelectedIndex(tab);

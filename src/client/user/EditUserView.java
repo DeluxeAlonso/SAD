@@ -5,6 +5,7 @@
  */
 package client.user;
 
+import client.base.BaseView;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import util.Icons;
@@ -13,13 +14,15 @@ import util.Icons;
  *
  * @author Nevermade
  */
-public class EditUserView extends javax.swing.JInternalFrame {
+public class EditUserView extends BaseView {
 
     /**
      * Creates new form EditUser
      */
     public EditUserView() {
+        super();
         initComponents();
+        super.initialize();
         Icons.setMainIcon(this);
     }
 
