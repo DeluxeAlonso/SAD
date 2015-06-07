@@ -57,7 +57,7 @@ public class Problem {
             productsStock.put(products.get(i).getId(), products.get(i).getStockTotal());
         }
         
-        
+        if(vehicles.isEmpty()) throw new AssertionError("There are no inserted vehicles");
         
         
         nodes = new ArrayList<>();        

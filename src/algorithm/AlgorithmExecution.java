@@ -42,7 +42,7 @@ public class AlgorithmExecution {
         
         Algorithm algorithm = new Algorithm();
         algorithm.setNumberOfGenerations(0);
-        algorithm.setPopulationSize(1);
+        algorithm.setPopulationSize(3);
         algorithm.setTournamentSelectionKValue(50);
         algorithm.setOvercapPenalty(10000);
         algorithm.setOvertimePenalty(10000);
@@ -109,10 +109,22 @@ public class AlgorithmExecution {
         System.out.println("Execution time: " + (end-ini) + "ms");
         
         bestSolution = population.getBestSolution();
+        
         System.out.println("");
-        System.out.println(displayRoutes(bestSolution));
+        System.out.println(displayRoutes(population.getSolutions()[0]));
         System.out.println("");
-        System.out.println(displayDemand(bestSolution));
+        System.out.println(displayDemand(population.getSolutions()[0]));
+        
+        System.out.println("");
+        System.out.println(displayRoutes(population.getSolutions()[1]));
+        System.out.println("");
+        System.out.println(displayDemand(population.getSolutions()[1]));
+        
+        System.out.println("");
+        System.out.println(displayRoutes(population.getSolutions()[2]));
+        System.out.println("");
+        System.out.println(displayDemand(population.getSolutions()[2]));
+        
         
         /*for (int i = 0; i < bestSolution.getNodes().length; i++) {
             System.out.println("Costo de ruta: " + i + " : " + ObjectiveFunction.getRouteCost(null, route, null, null));            
@@ -298,11 +310,19 @@ public class AlgorithmExecution {
             PedidoParcial rejectedOrder = it.next();
             HashSet<PedidoParcialXProducto> rejectedOrdersXProdOfOrder
                     = (HashSet<PedidoParcialXProducto>) rejectedOrder.getPedidoParcialXProductos();
-            if (rejectedOrdersXProdOfOrder.isEmpty()) {
-                it.remove();
+            
+            if (rejectedOrdersXProdOfOrder.isEmpty()) it.remove();
+            else{
+                Iterator<PedidoParcialXProducto> it2 = rejectedOrdersXProdOfOrder.iterator();
+                while(it2.hasNext()){
+                    PedidoParcialXProducto pedXProd = it2.next();
+                    if(pedXProd.getCantidad()==0) it2.remove();                    
+                }
+                if (rejectedOrdersXProdOfOrder.isEmpty()) it.remove();
             }
         }
         
+        displayStructures(despachos, acceptedOrders, rejectedOrders);
         
         return new AlgorithmReturnValues(despachos, acceptedOrders, rejectedOrders);
     }
@@ -355,6 +375,48 @@ public class AlgorithmExecution {
             buf.append("\n");
         }
         return buf;
+    }
+
+    private void displayStructures(ArrayList<Despacho> despachos, ArrayList<PedidoParcial> acceptedOrders, ArrayList<PedidoParcial> rejectedOrders) {
+        
+        System.out.println("Despachos");
+        for(Despacho despacho: despachos){
+            System.out.println("  Despacho No: " + despacho.getId() + " vehiculo: " + despacho.getUnidadTransporte().getId());
+            for (Iterator it = despacho.getGuiaRemisions().iterator(); it.hasNext();) {
+                GuiaRemision guia = (GuiaRemision) it.next();
+                System.out.println("    Guia No: " + guia.getId() + " cliente: " + guia.getCliente().getId());
+                for (Iterator it2 = guia.getPedidoParcials().iterator(); it2.hasNext();) {
+                    PedidoParcial pedidoParcial = (PedidoParcial) it2.next();
+                    System.out.println("      Pedido No: " + pedidoParcial.getPedido().getId());
+                    for (Iterator it3 = pedidoParcial.getPedidoParcialXProductos().iterator(); it3.hasNext();) {
+                        PedidoParcialXProducto pedXProd = (PedidoParcialXProducto) it3.next();
+                        System.out.println("        Producto No: " + pedXProd.getProducto().getId() + " cantidad: " + pedXProd.getCantidad());
+                    }
+                }
+            }
+        }
+        
+        System.out.println("");
+        System.out.println("Ordenes aceptadas");
+        for(PedidoParcial pedidoParcial: acceptedOrders){
+            System.out.println("      Pedido No: " + pedidoParcial.getPedido().getId());
+            for (Iterator it3 = pedidoParcial.getPedidoParcialXProductos().iterator(); it3.hasNext();) {
+                PedidoParcialXProducto pedXProd = (PedidoParcialXProducto) it3.next();
+                System.out.println("        Producto No: " + pedXProd.getProducto().getId() + " cantidad: " + pedXProd.getCantidad());
+            }
+        }
+              
+        System.out.println("");
+        System.out.println("Ordenes rechazadas");
+        for(PedidoParcial pedidoParcial: rejectedOrders){
+            System.out.println("      Pedido No: " + pedidoParcial.getPedido().getId());
+            for (Iterator it3 = pedidoParcial.getPedidoParcialXProductos().iterator(); it3.hasNext();) {
+                PedidoParcialXProducto pedXProd = (PedidoParcialXProducto) it3.next();
+                System.out.println("        Producto No: " + pedXProd.getProducto().getId() + " cantidad: " + pedXProd.getCantidad());
+            }
+        }
+        
+        
     }
     
 }

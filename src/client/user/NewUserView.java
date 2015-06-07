@@ -7,6 +7,7 @@ package client.user;
 
 import application.profile.ProfileApplication;
 import application.user.UserApplication;
+import client.base.BaseDialogView;
 import entity.Usuario;
 import java.awt.Color;
 import java.util.UUID;
@@ -25,7 +26,7 @@ import util.Tools;
  *
  * @author Nevermade
  */
-public class NewUserView extends javax.swing.JDialog {
+public class NewUserView extends BaseDialogView {
 
     UserApplication userApplication = InstanceFactory.Instance.getInstance("userApplication", UserApplication.class);
     ProfileApplication profileApplication = InstanceFactory.Instance.getInstance("profileApplication", ProfileApplication.class);
@@ -36,9 +37,10 @@ public class NewUserView extends javax.swing.JDialog {
      * Creates new form NewUser
      */
     public NewUserView(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
-        Icons.setMainIcon(this);
+        super(parent, modal);       
         initComponents();
+        Icons.setMainIcon(this);
+        super.initialize();
         addImagesToButton();
         //initialize user states combo
         fillCombos();

@@ -6,11 +6,17 @@
 
 package client.warehouseControlCheck;
 
+import application.kardex.KardexApplication;
 import application.pallet.PalletApplication;
+import application.product.ProductApplication;
 import application.spot.SpotApplication;
 import application.warehouse.WarehouseApplication;
 import client.base.BaseView;
 import entity.Almacen;
+import entity.Kardex;
+import entity.KardexId;
+import entity.Pallet;
+import entity.Producto;
 import entity.Ubicacion;
 import java.awt.event.ItemEvent;
 import java.io.BufferedReader;
@@ -19,6 +25,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
@@ -36,12 +45,16 @@ public class WarehouseControlCheckView extends BaseView {
     WarehouseApplication warehouseApplication = InstanceFactory.Instance.getInstance("warehouseApplicaiton", WarehouseApplication.class);
     SpotApplication spotApplication = InstanceFactory.Instance.getInstance("spotApplicaiton", SpotApplication.class);
     PalletApplication palletApplication = InstanceFactory.Instance.getInstance("palletApplicaiton", PalletApplication.class);
+    KardexApplication kardexApplication = InstanceFactory.Instance.getInstance("kardexApplicaiton", KardexApplication.class);
+    ProductApplication productApplication = InstanceFactory.Instance.getInstance("productApplicaiton", ProductApplication.class);
     public static WarehouseControlCheckView warehouseControlCheckView;
     public ArrayList<Almacen> warehousesFrom;
     public ArrayList<Ubicacion> spots;
     //private JDesktopPane mainPanel;
     JFileChooser fc = new JFileChooser();
     File file = null;
+    HashMap<Producto,Integer> kardexCountIn = new HashMap<Producto,Integer>();
+    HashMap<Producto,Integer> kardexCountOut = new HashMap<Producto,Integer>();
     
     /**
      * Creates new form WarehouseControlCheckView
@@ -107,18 +120,88 @@ public class WarehouseControlCheckView extends BaseView {
                 }else{
                     if(line_split[4].equals("Ocupado")){
                         // En sistema libre y en fisico ocupado, debo insertar el pallet
+                        // Agrupo los pallets que se moveran por Producto para ser ingresados al kardex
+                        Producto product = productApplication.queryById(Integer.parseInt(line_split[5]));
+                        if(!kardexCountIn.isEmpty() && kardexCountIn.containsKey(product)){
+                            int productCount = kardexCountIn.get(product).intValue();
+                            productCount++;
+                            kardexCountIn.put(product, productCount);
+                        }else{
+                            kardexCountIn.put(product, 1);
+                        }
+                        // Inserto el pallet
                         
                     }else{
                         // En sistema ocupado y en fisico libre, debo eliminar el pallet
+                        // Agrupo los pallets que se moveran por Producto para ser ingresados al kardex
+                        ArrayList<Pallet> pallets = palletApplication.queryPalletsBySpot(spots.get(i).getId());
+                        if(!kardexCountOut.isEmpty() && kardexCountOut.containsKey(pallets.get(0).getProducto())){
+                            int productCount = kardexCountOut.get(pallets.get(0).getProducto()).intValue();
+                            productCount++;
+                            kardexCountOut.put(pallets.get(0).getProducto(), productCount);
+                        }else{
+                            kardexCountOut.put(pallets.get(0).getProducto(), 1);
+                        }
                         // Eliminar el pallet de la ubicacion
                         palletApplication.deletePalletBySpot(spots.get(i).getId());
                         // Actualizo el estado de la ubicacion a libre
                         spotApplication.updateSpotOccupancy(spots.get(i).getId(), EntityState.Spots.LIBRE.ordinal());
-                        // Registro el kardex
-                        
                     }
                 }
             }
+            // Ingreso los registros de kardex
+            ArrayList<Kardex> previousKardex;
+            Producto key;
+            Kardex kardex;
+            KardexId kardexId;
+            Date date = new Date();
+            // Para el kardex de salida
+            Iterator<Producto> keySetIterator = kardexCountOut.keySet().iterator();
+            while(keySetIterator.hasNext()){
+                key = keySetIterator.next();
+                previousKardex = kardexApplication.queryByParameters(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId(), key.getId());
+                kardexId = new KardexId();
+                kardexId.setIdAlmacen(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId());
+                kardexId.setIdProducto(key.getId());
+                kardex = new Kardex();
+                kardex.setId(kardexId);
+                kardex.setAlmacen(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()));
+                kardex.setProducto(key);
+                kardex.setFecha(date);
+                kardex.setCantidad(kardexCountOut.get(key).intValue());
+                kardex.setTipoMovimiento("Salida");
+                if(previousKardex.size()==0){
+                    kardex.setStockInicial(0);
+                }else{
+                    kardex.setStockInicial(previousKardex.get(0).getStockFinal());
+                }
+                kardex.setStockFinal(kardex.getStockInicial() - kardex.getCantidad());
+                kardexApplication.insert(kardex);
+            }
+            // Para el kardex de ingreso
+            keySetIterator = kardexCountIn.keySet().iterator();
+            while(keySetIterator.hasNext()){
+                key = keySetIterator.next();
+                previousKardex = kardexApplication.queryByParameters(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId(), key.getId());
+                kardexId = new KardexId();
+                kardexId.setIdAlmacen(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId());
+                kardexId.setIdProducto(key.getId());
+                kardex = new Kardex();
+                kardex.setId(kardexId);
+                kardex.setAlmacen(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()));
+                kardex.setProducto(key);
+                kardex.setFecha(date);
+                kardex.setCantidad(kardexCountIn.get(key).intValue());
+                kardex.setTipoMovimiento("Ingreso");
+                if(previousKardex.size()==0){
+                    kardex.setStockInicial(0);
+                }else{
+                    kardex.setStockInicial(previousKardex.get(0).getStockFinal());
+                }
+                kardex.setStockFinal(kardex.getStockInicial() + kardex.getCantidad());
+                kardexApplication.insert(kardex);
+            }           
+            
 	} catch (FileNotFoundException e) {
             e.printStackTrace();
 	} catch (IOException e) {

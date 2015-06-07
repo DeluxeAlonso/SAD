@@ -5,6 +5,7 @@
  */
 package client.user;
 
+import client.base.BaseDialogView;
 import javax.swing.JOptionPane;
 import util.Icons;
 import util.Strings;
@@ -13,7 +14,7 @@ import util.Strings;
  *
  * @author Nevermade
  */
-public class ChangePasswordView extends javax.swing.JDialog {
+public class ChangePasswordView extends BaseDialogView {
 
     /**
      * Creates new form ChangePasswordForm
@@ -21,6 +22,7 @@ public class ChangePasswordView extends javax.swing.JDialog {
     public ChangePasswordView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        super.initialize();
         Icons.setMainIcon(this);
     }
 
