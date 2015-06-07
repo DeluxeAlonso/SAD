@@ -133,5 +133,15 @@ public class PalletApplication {
         }
         return response;
     }
+    
+    public List<Object[]> queryByReport(int almacen, int condicion, int tipo, int reporte){
+        List<Object[]> pallets = null;
+        try {
+            pallets = palletRepository.queryByReport(almacen,condicion,tipo,reporte);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pallets;
+    }
 
 }

@@ -97,7 +97,15 @@ public class SpotApplication {
         return spots;
     }    
     
-    
+    public ArrayList<Ubicacion> queryByPosition(int rackId, int fil, int col, int lado){
+        ArrayList<Ubicacion> spots = null;
+        try {
+            spots = spotRepository.querySpotsByPosition(rackId,fil,col,lado);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return spots;
+    }    
     public Boolean updateSpotOccupancy(int spotId,int occupancyState){
         Boolean response = false;
         try {

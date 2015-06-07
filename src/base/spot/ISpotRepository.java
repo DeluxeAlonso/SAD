@@ -21,4 +21,5 @@ public interface ISpotRepository extends IRepository<Ubicacion>{
     ArrayList<Ubicacion> querySpotsByRack(int rackId);
     ArrayList<Ubicacion> querySpotsByParameters(int wareId, int rackId);
     ArrayList<Ubicacion> querySpotsByWarehouse(int warehouseId);
+    ArrayList<Ubicacion> querySpotsByPosition(int rackId, int fil, int col, int lado);
 }

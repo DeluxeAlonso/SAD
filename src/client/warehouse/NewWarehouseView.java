@@ -245,6 +245,22 @@ public class NewWarehouseView extends BaseDialogView {
     private void saveTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveTxtActionPerformed
         // TODO add your handling code here:
         clearBorders();
+        /*
+        Almacen al = new Almacen();
+        Calendar cal = Calendar.getInstance();
+        al = warehouseApplication.queryById(7);
+        
+        Rack r = new Rack();
+        r.setAlmacen(al);
+        r.setEstado(1);
+        r.setFechaRegistro(cal.getTime());
+        r.setNumCol(1);
+        r.setNumFil(1);
+        r.setUbicLibres(100);
+        al.getRacks().add(r);
+        warehouseApplication.insert(al);
+        */
+        
         if (!hasErrors()){
         Almacen al = new Almacen();
         Calendar cal = Calendar.getInstance();
@@ -270,7 +286,7 @@ public class NewWarehouseView extends BaseDialogView {
         al.setUbicLibres(fil*col*uLibres*2);
         al.setNumFilas(fil);
         al.setNumColumnas(col);
-        warehouseApplication.insert(al);
+        //warehouseApplication.insert(al);
         
         for (int i=0;i<uLibres;i++){
             Rack r = new Rack();
@@ -282,7 +298,7 @@ public class NewWarehouseView extends BaseDialogView {
             r.setUbicLibres(col*fil);
             al.getRacks().add(r);
             
-            rackApplication.insert(r);
+            
             for (int j=0;j<col;j++){
                 for (int k=0;k<fil;k++){
                     Ubicacion u1 = new Ubicacion();
@@ -297,18 +313,17 @@ public class NewWarehouseView extends BaseDialogView {
                     u2.setColumna(j+1);
                     u2.setFila(k+1);
                     u2.setLado("B");
-                    spotApplication.insert(u1);
-                    spotApplication.insert(u2);
                     r.getUbicacions().add(u1);
                     r.getUbicacions().add(u2);
                 }
             }
         }
-        //warehouseApplication.insert(al);
+        warehouseApplication.insert(al);
         JOptionPane.showMessageDialog(this, Strings.MESSAGE_WAREHOUSE_CREATED);
         clearFields();
         clearBorders();
         }
+        
     }//GEN-LAST:event_saveTxtActionPerformed
     
     public void clearBorders()
@@ -392,7 +407,7 @@ public class NewWarehouseView extends BaseDialogView {
                 capacityTxt.setBorder(errorBorder);
                 errorFlag = true;                
             }else 
-                if (capA <= 0){
+                if (capA < 1){
                 error_message += "La capacidad de un almacen debe ser mayor que 0 racks."+"\n";
                 capacityTxt.setBorder(errorBorder);
                 errorFlag = true;                
