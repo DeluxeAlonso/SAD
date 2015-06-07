@@ -36,37 +36,42 @@ import util.EntityState;
  */
 public class AlgorithmExecution {
     Problem problem;
+    public static boolean bad = false;
     
     public Solution start(double maxTravelTime){
         long ini = System.currentTimeMillis();
         
         Algorithm algorithm = new Algorithm();
+        //condicion de parada puede mejorar        
         algorithm.setNumberOfGenerations(0);
-        algorithm.setPopulationSize(3);
+        algorithm.setPopulationSize(1000);
         algorithm.setTournamentSelectionKValue(50);
         algorithm.setOvercapPenalty(10000);
         algorithm.setOvertimePenalty(10000);
         algorithm.setOverstockPenalty(10000);
         algorithm.setMutationRate(0.5f);
         algorithm.setMaxPriority(100);
-        algorithm.setBasePriority(1.09);
+        algorithm.setBasePriority(1.09f);
         algorithm.setMaxTravelTime(maxTravelTime); 
-        algorithm.setGraspAlpha(0.3);
+        algorithm.setGraspAlpha(0.3f);
         
         problem = new Problem();
         
         Population population = new Population(algorithm, problem);
         System.out.println("Se creo la población");
         
-        Solution bestSolution = population.getBestSolution();
-        System.out.println("bestSolution: " + bestSolution.getCost());
+        Solution bestSolution;// = population.getBestSolution();
+        //System.out.println("bestSolution: " + bestSolution.getCost());
         
         //displayRoutes(bestSolution);
         
+        long popTime = System.currentTimeMillis() - ini;
+        ini = System.currentTimeMillis();
         
+        bad = false;
         
         for (int i = 0; i < algorithm.getNumberOfGenerations(); i++) {
-            System.out.println("Generación: " + i);
+            
             Solution[] parents = new Solution[2];
             parents[0] = population.getSolutions()[Selection.tournamentSelection(
                         algorithm.getTournamentSelectionKValue(), population, 
@@ -78,77 +83,71 @@ public class AlgorithmExecution {
             
             Solution child = Crossover.uniformCrossover(parents, algorithm, problem);
             
-            //displayRoute(child);
+            //System.out.println("crossover");
+            //System.out.println(displayDemand(child));
             
-            //child = Mutation.mutation(child, algorithm, problem);            
+            child = Mutation.mutation(child, algorithm, problem);  
+            
+            //System.out.println("mutation");
+            //System.out.println(displayDemand(child));            
+            
             child = LocalSearch.opt2Improvement(child, algorithm, problem);  
             
-            
+            //System.out.println("2opt");
+            //System.out.println(displayDemand(child));
             
             double cost = ObjectiveFunction.getSolutionCost(child, algorithm, problem,
                 problem.getProductsStock());
-            if(cost>algorithm.getOvercapPenalty() || cost>algorithm.getOvertimePenalty() ||
-                    cost>algorithm.getOverstockPenalty()){
-                //child = Repair.repair(child, algorithm, problem);
-                child.setCost(ObjectiveFunction.getSolutionCost(child, algorithm, problem, 
+            if(bad){
+                Solution sol = Repair.repair(child, algorithm, problem);
+                if(sol!=null){
+                    child = sol;
+                    child.setCost(ObjectiveFunction.getSolutionCost(child, algorithm, problem, 
                         problem.getProductsStock()));
+                }
             }
             else
                 child.setCost(cost);
             
+            bad = false;
             
             int replacedSolution = Selection.tournamentSelection(
                     algorithm.getTournamentSelectionKValue(), population, 
                     Selection.Options.WORST);
             
-            System.out.println(child.getCost());
+            bestSolution = population.getBestSolution();
+            System.out.println("Generación: " + i + " child: " + child.getCost() + " best: " + bestSolution.getCost());
             
             population.getSolutions()[replacedSolution] = child;
         }
         long end = System.currentTimeMillis();
-        System.out.println("Execution time: " + (end-ini) + "ms");
+        System.out.println("Grasp algorithm time: " + popTime);
+        System.out.println("Genetic algorithm time: " + (end-ini) + "ms");
         
         bestSolution = population.getBestSolution();
         
+        System.out.println("bestSolution cost: " + bestSolution.getCost());
         System.out.println("");
-        System.out.println(displayRoutes(population.getSolutions()[0]));
-        System.out.println("");
-        System.out.println(displayDemand(population.getSolutions()[0]));
-        
-        System.out.println("");
-        System.out.println(displayRoutes(population.getSolutions()[1]));
-        System.out.println("");
-        System.out.println(displayDemand(population.getSolutions()[1]));
-        
-        System.out.println("");
-        System.out.println(displayRoutes(population.getSolutions()[2]));
-        System.out.println("");
-        System.out.println(displayDemand(population.getSolutions()[2]));
-        
-        
-        /*for (int i = 0; i < bestSolution.getNodes().length; i++) {
-            System.out.println("Costo de ruta: " + i + " : " + ObjectiveFunction.getRouteCost(null, route, null, null));            
-        }*/
-        
+        //System.out.println(displayRoutes(bestSolution));
         //System.out.println("");
-        //System.out.println(displayOrders(bestSolution));
+        System.out.println(displayDemand(bestSolution));
         
-        /*AlgorithmView algorithmView = new AlgorithmView(bestSolution);
-        algorithmView.setBounds(0, 0, 700, 700);
-        algorithmView.setVisible(true);*/
+//        System.out.println("");
+        //System.out.println(displayRoutes(population.getSolutions()[0]));
+        //System.out.println("");
+//        System.out.println(displayDemand(population.getSolutions()[0]));
         
+//        System.out.println("");
+        //System.out.println(displayRoutes(population.getSolutions()[1]));
+//        System.out.println("");
+//        System.out.println(displayDemand(population.getSolutions()[1]));
+        
+//        System.out.println("");
+//        System.out.println(displayRoutes(population.getSolutions()[2]));
+//        System.out.println("");
+//        System.out.println(displayDemand(population.getSolutions()[2]));
         
         return bestSolution;  
-        
-        
-        
-        //Here we can show the solution and the user can decide to run again the algorithm
-        /*AlgorithmView window = new AlgorithmView(bestSolution);
-        window.setBounds(0, 0, 700, 700);
-        window.setVisible(true);*/
-        
-        //processOrders(bestSolution, problem);
-        
     }
     
     public AlgorithmReturnValues processOrders(Solution solution){
@@ -348,10 +347,14 @@ public class AlgorithmExecution {
             buf.append("Ruta ").append(i).append("\n") ;           
             int cap = 0; double time = 0;
             for (int j = 0; j < nodes[i].length; j++) {
+                try{
                 buf.append(nodes[i][j].getProduct().getId()).append("/").append(nodes[i][j].getDemand()).
                         append("/").append(nodes[i][j].getPartialOrder().getPedido().getId()).append("  ");
                 cap += nodes[i][j].getDemand();
                 if(j>0) time += ObjectiveFunction.distance(nodes[i][j-1].getIdx(), nodes[i][j].getIdx());
+                }catch(Exception ex){
+                    System.out.println("exception: " + i + " " + j);
+                }
             }
             if(nodes[i].length>0) {
                 time += ObjectiveFunction.distance(Problem.getLastNode(), nodes[i][0].getIdx());
@@ -377,7 +380,7 @@ public class AlgorithmExecution {
         return buf;
     }
 
-    private void displayStructures(ArrayList<Despacho> despachos, ArrayList<PedidoParcial> acceptedOrders, ArrayList<PedidoParcial> rejectedOrders) {
+    public void displayStructures(ArrayList<Despacho> despachos, ArrayList<PedidoParcial> acceptedOrders, ArrayList<PedidoParcial> rejectedOrders) {
         
         System.out.println("Despachos");
         for(Despacho despacho: despachos){

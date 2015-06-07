@@ -224,7 +224,7 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
             partialProducts.add(partialProduct);
         }
         
-        return orderApplication.CreateOrder(p, pp, partialProducts);
+        return orderApplication.CreateOrder(p, pp, partialProducts, false);
     }
     
     /*

@@ -23,26 +23,38 @@ public class Repair {
         Node[][] routes = s.getNodes();
         ArrayList<UnidadTransporte> vehicles = problem.getVehicles();
         int highestCostIdx = 0, lowestCostIdx = 0;
-        double highestCost = -Double.MAX_VALUE, lowestCost = Double.MAX_VALUE;
+        //double highestCost = -Double.MAX_VALUE, lowestCost = Double.MAX_VALUE;
+        int highestNodes = -Integer.MAX_VALUE, lowestNodes = Integer.MAX_VALUE;
         for (int i = 0; i < routes.length; i++) {
-            double routeCost = getRouteCost(vehicles.get(i), routes[i], algorithm,
-                    null);
-            if(routeCost < lowestCost){
-                lowestCost = routeCost;
+            //double routeCost = getRouteCost(vehicles.get(i), routes[i], algorithm,
+            //        null);
+            int nodesNo = routes[i].length;
+            if(nodesNo < lowestNodes){
+                lowestNodes = nodesNo;
                 lowestCostIdx = i;
             }
-            if(routeCost < highestCost){
-                highestCost = routeCost;
+            if(nodesNo < highestNodes){
+                highestNodes = nodesNo;
                 highestCostIdx = i;
             }
         }      
+        
         Node[] highest = routes[highestCostIdx];
         Node[] lowest = routes[lowestCostIdx];
+        
+        if(highest.length==0){
+            System.out.println("bad highest");
+            return null;
+        }
+        
         Node out = highest[highest.length-1];
         Node[] newHighest = new Node[highest.length-1];
         Node[] newLowest = new Node[lowest.length+1];
-        System.arraycopy(highest, 0, newHighest, 0, newHighest.length-1);
-        System.arraycopy(lowest, 0, newLowest, 0, newLowest.length);
+        System.arraycopy(highest, 0, newHighest, 0, highest.length-1);
+        System.arraycopy(lowest, 0, newLowest, 0, lowest.length);
+        
+        //System.arraycopy(highest, 0, newHighest, 0, newHighest.length-1);
+        //System.arraycopy(lowest, 0, newLowest, 0, newLowest.length);
         newLowest[lowest.length] = out;
         routes[highestCostIdx] = newHighest;
         routes[lowestCostIdx] = newLowest;

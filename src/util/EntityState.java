@@ -10,86 +10,168 @@ package util;
  * @author dabarca
  */
 public class EntityState {
-    
-    public EntityState(){}
-    
-    
-    public static enum Users { ACTIVO , INACTIVO };
-    public static String[] getUsersState(){
-         String[] userState={" ","Activo","Inactivo"};
-         return userState;
+
+    public EntityState() {
+    }
+
+    public static enum Users {
+
+        ACTIVO, INACTIVO
+    };
+
+    public static String[] getUsersState() {
+        
+        return userState;
     }
     
-    public static enum Spots { INACTIVO, LIBRE, OCUPADO};
-    public static String[] getSpotsState(){
-         String[] spotState={"Inactivo","Libre","Ocupado"};
-         return spotState;
-    }
-    public static String getSpotStateLiteral(int state){
-        String response = "";
-        switch(state){
-            case 0: response = "Inactivo";
-                    break;
-            case 1: response = "Libre";
-                    break;
-            case 2: response = "Ocupado";
-                    break;
-        }
-        return response;
+    public static enum Spots {
+
+        INACTIVO, LIBRE, OCUPADO
+    };
+
+    public static String[] getSpotsState() {
+        
+        return spotState;
     }
     
-    public static enum Warehouses { INACTIVO, ACTIVO, EN_REVISION};
-    public static String[] getWarehousesState(){
-         String[] warehousesState={"Inactivo","Activo","En_revision"};
-         return warehousesState;
+    public static String getSpotStateLiteral(int state) {
+        
+        return spotStateLiteral[state];
     }
     
-    public static enum Racks { INACTIVO, ACTIVO, EN_REVISION, LLENO};
-    public static String[] getRacksState(){
-         String[] racksState={"Inactivo","Activo","En_revision","Lleno"};
-         return racksState;
+    public static enum Warehouses {
+
+        INACTIVO, ACTIVO, EN_REVISION
+    };
+
+    public static String[] getWarehousesState() {
+        
+        return warehousesState;
     }
     
-    public static enum Clients { INACTIVO, ACTIVO};
-    public static String[] getClientsState(){
-         String[] clientsState={"Inactivo","Activo"};
-         return clientsState;
+    public static enum Racks {
+
+        INACTIVO, ACTIVO, EN_REVISION, LLENO
+    };
+
+    public static String[] getRacksState() {
+        
+        return racksState;
     }
     
-    public static enum Locals { INACTIVO, ACTIVO};
-    public static String[] getLocalsState(){
-         String[] localsState={"Inactivo","Activo"};
-         return localsState;
+    public static enum Clients {
+
+        INACTIVO, ACTIVO
+    };
+
+    public static String[] getClientsState() {
+        
+        return clientsState;
     }
     
-    public static enum TransportUnits { INACTIVO, ACTIVO};
-    public static String[] getTransportUnitsState(){
-         String[] transportUnitsState={"Inactivo","Activo"};
-         return transportUnitsState;
+    public static enum Locals {
+
+        INACTIVO, ACTIVO
+    };
+
+    public static String[] getLocalsState() {
+        
+        return localsState;
+    }
+   
+    public static enum TransportUnits {
+
+        INACTIVO, ACTIVO
+    };
+
+    public static String[] getTransportUnitsState() {
+        
+        return transportUnitsState;
     }
     
-    public static enum InternmentOrders { REGISTRADA, INTERNADA, PENDIENTE};
-    public static String[] getInternmentOrdersState(){
-        String[] internmentOrdersState={"Registrada","Internada", "Pendiente"};
+    public static enum InternmentOrders {
+
+        REGISTRADA, INTERNADA, PENDIENTE
+    };
+
+    public static String[] getInternmentOrdersState() {
+        
         return internmentOrdersState;
     }
     
-    public static enum Pallets {CREADO, UBICADO, DESPACHADO, ELIMINADO}
-    public static String[] getPalletsState(){
-        String[] palletsState={"Creado","Ubicado","Despachado","Eliminado"};
+    public static enum Pallets {
+
+        CREADO, UBICADO, DESPACHADO, ELIMINADO
+    }
+
+    public static String[] getPalletsState() {
+        
         return palletsState;
     }
     
-    public static enum Orders { ANULADO, REGISTRADO, EN_CURSO, FINALIZADO};
-    public static String[] getOrdersState(){
-         String[] ordersState={"Anulado","Registrado", "En Curso", "Finalizado"};
-         return ordersState;
+    public static enum Orders {
+
+        ANULADO, REGISTRADO, EN_CURSO, FINALIZADO
+    };
+
+    public static String[] getOrdersState() {
+        
+        return ordersState;
     }
     
-    public static enum PartialOrders { ATENDIDO, NO_ATENDIDO, ANULADO};
-    public static String[] getPartialOrdersState(){
-         String[] partialOrdersState={"Atendido","No Atendido", "Anulado"};
-         return partialOrdersState;
-    }
+    public static enum PartialOrders {
 
+        ATENDIDO, NO_ATENDIDO, ANULADO
+    };
+
+    public static String[] getPartialOrdersState() {
+        
+        return partialOrdersState;
+    }
+    
+    /*
+     almacen
+     guia remision
+     orden internamiento
+     pedido
+     perfil
+     usuario
+     despacho
+     kardex
+     */
+
+    public static enum Master {
+
+        Dumb,Almacen, Guia_Remision, Orden_Internamiento, Pedido, Perfil, Usuario, Despacho, Kardex
+    };
+
+    public static String[] getMasters() {
+        
+        return masters;
+    }
+    
+    public static enum Operation{
+      
+        Dumb,Insert,Delete,Update
+        
+    };
+    
+    public static String[] getOperations(){
+         
+         return operation;
+    }
+    private static String[] operation={"","Creación","Actualización", "Eliminación"};
+    private static String[] masters = {"","Almacén", "Guía de Remisión", "Orden de Internamiento", "Pedido", "Perfil", "Usuario", "Despacho", "Kardex"};
+    private static String[] partialOrdersState = {"Atendido", "No Atendido", "Anulado"};
+    private static String[] ordersState = {"Anulado", "Registrado", "En Curso", "Finalizado"};
+    private static String[] palletsState = {"Creado", "Ubicado", "Despachado", "Eliminado"};
+    private static String[] internmentOrdersState = {"Registrada", "Internada", "Pendiente"};
+    private static String[] transportUnitsState = {"Inactivo", "Activo"};
+    private static String[] localsState = {"Inactivo", "Activo"};
+    private static String[] racksState = {"Inactivo", "Activo", "En_revision", "Lleno"};
+    private static String[] clientsState = {"Inactivo", "Activo"};
+    private static String[] warehousesState = {"Inactivo", "Activo", "En_revision"};
+    private static String[] spotState = {"Inactivo", "Libre", "Ocupado"};
+    private static String[] userState = {" ", "Activo", "Inactivo"};
+    private static String[] spotStateLiteral={"Inactivo","Libre","Ocupado"};
 }

@@ -54,7 +54,7 @@ public class Problem {
         productsStock = new HashMap<>();
         
         for (int i = 0; i < products.size(); i++) {
-            productsStock.put(products.get(i).getId(), products.get(i).getStockTotal());
+            productsStock.put(products.get(i).getId(), products.get(i).getPalletsUbicados());
         }
         
         if(vehicles.isEmpty()) throw new AssertionError("There are no inserted vehicles");

@@ -17,6 +17,7 @@ import entity.Condicion;
 import entity.Rack;
 import entity.Ubicacion;
 import java.util.ArrayList;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -43,19 +44,20 @@ public class RackView extends BaseView {
     ArrayList<Ubicacion> spots = null;
     Rack rack =new Rack();
     int idRack;
-    //JCheckBox checkBox = new JCheckBox();
     public RackView() {
         initComponents();
         clearGridRack();
         clearGridSpot();
         initialize();
+        //this.add(checkBox);
+        
         String [] s = {"Todos"};
         filaCombo.setModel(new javax.swing.DefaultComboBoxModel(s));
         columnaCombo.setModel(new javax.swing.DefaultComboBoxModel(s));
         ladoCombo.setModel(new javax.swing.DefaultComboBoxModel(s));
         //fillTable();
-        checkBox.setAlignmentX(100);
-        checkBox.setAlignmentX(100);
+        
+        
     }
 
     /**
@@ -146,9 +148,10 @@ public class RackView extends BaseView {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        checkBox = new javax.swing.JCheckBox();
+        jLabel4 = new javax.swing.JLabel();
         WarehouseGrid = new javax.swing.JScrollPane();
         usersGrid = new javax.swing.JTable();
-        jLabel4 = new javax.swing.JLabel();
         WarehouseGrid1 = new javax.swing.JScrollPane();
         rackGrid = new javax.swing.JTable();
         inactivoBtn = new javax.swing.JButton();
@@ -164,10 +167,26 @@ public class RackView extends BaseView {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        checkBox = new javax.swing.JCheckBox();
 
         setClosable(true);
         setTitle("Rack");
+        setPreferredSize(new java.awt.Dimension(896, 326));
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        checkBox.setContentAreaFilled(false);
+        checkBox.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        checkBox.setEnabled(false);
+        checkBox.setOpaque(true);
+        checkBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                checkBoxItemStateChanged(evt);
+            }
+        });
+        getContentPane().add(checkBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 110, -1, -1));
+        checkBox.getAccessibleContext().setAccessibleDescription("");
+
+        jLabel4.setText("Ubicaciones:");
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(487, 11, -1, -1));
 
         usersGrid.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -177,7 +196,7 @@ public class RackView extends BaseView {
                 {null, null, null, null, null}
             },
             new String [] {
-                "Fila", "Columna", "Lado", "Estado", ""
+                "Fila", "Columna", "Lado", "Estado", "."
             }
         ) {
             Class[] types = new Class [] {
@@ -195,6 +214,10 @@ public class RackView extends BaseView {
                 return canEdit [columnIndex];
             }
         });
+        usersGrid.setRequestFocusEnabled(false);
+        usersGrid.getTableHeader().setResizingAllowed(false);
+        usersGrid.getTableHeader().setReorderingAllowed(false);
+        usersGrid.setVerifyInputWhenFocusTarget(false);
         WarehouseGrid.setViewportView(usersGrid);
         if (usersGrid.getColumnModel().getColumnCount() > 0) {
             usersGrid.getColumnModel().getColumn(0).setResizable(false);
@@ -203,8 +226,10 @@ public class RackView extends BaseView {
             usersGrid.getColumnModel().getColumn(3).setResizable(false);
             usersGrid.getColumnModel().getColumn(4).setResizable(false);
         }
+        usersGrid.getAccessibleContext().setAccessibleName("");
+        usersGrid.getColumn(".").setCellEditor(new DefaultCellEditor(checkBox));
 
-        jLabel4.setText("Ubicaciones:");
+        getContentPane().add(WarehouseGrid, new org.netbeans.lib.awtextra.AbsoluteConstraints(483, 108, 380, 166));
 
         rackGrid.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -246,7 +271,10 @@ public class RackView extends BaseView {
             rackGrid.getColumnModel().getColumn(4).setResizable(false);
         }
 
+        getContentPane().add(WarehouseGrid1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 108, -1, 166));
+
         inactivoBtn.setText("Inactivo");
+        inactivoBtn.setEnabled(false);
         inactivoBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 inactivoBtnMouseClicked(evt);
@@ -257,15 +285,19 @@ public class RackView extends BaseView {
                 inactivoBtnActionPerformed(evt);
             }
         });
+        getContentPane().add(inactivoBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(792, 79, -1, -1));
 
         jLabel5.setText("Racks:");
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 88, -1, -1));
 
         activoBtn.setText("Activo");
+        activoBtn.setEnabled(false);
         activoBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 activoBtnActionPerformed(evt);
             }
         });
+        getContentPane().add(activoBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(719, 79, -1, -1));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Busqueda de Rack por Almacen"));
 
@@ -287,7 +319,7 @@ public class RackView extends BaseView {
                 .addComponent(jLabel1)
                 .addGap(4, 4, 4)
                 .addComponent(idTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 140, Short.MAX_VALUE)
                 .addComponent(searchBtn)
                 .addGap(27, 27, 27))
         );
@@ -305,113 +337,43 @@ public class RackView extends BaseView {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, 452, -1));
+
         filaCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        filaCombo.setEnabled(false);
         filaCombo.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 filaComboItemStateChanged(evt);
             }
         });
+        getContentPane().add(filaCombo, new org.netbeans.lib.awtextra.AbsoluteConstraints(546, 43, -1, -1));
 
         ladoCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        ladoCombo.setEnabled(false);
         ladoCombo.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 ladoComboItemStateChanged(evt);
             }
         });
+        getContentPane().add(ladoCombo, new org.netbeans.lib.awtextra.AbsoluteConstraints(718, 43, -1, -1));
 
         columnaCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        columnaCombo.setEnabled(false);
         columnaCombo.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 columnaComboItemStateChanged(evt);
             }
         });
+        getContentPane().add(columnaCombo, new org.netbeans.lib.awtextra.AbsoluteConstraints(546, 74, -1, -1));
 
         jLabel6.setText("Fila:");
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(516, 46, -1, -1));
 
         jLabel7.setText("Columna:");
+        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(491, 77, -1, -1));
 
         jLabel8.setText("Lado");
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel5))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(WarehouseGrid1))))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(activoBtn)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(inactivoBtn))
-                            .addComponent(WarehouseGrid, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(34, 34, 34)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(filaCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(columnaCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(83, 83, 83)
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(ladoCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(checkBox)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(9, 9, 9)
-                        .addComponent(jLabel5))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(checkBox)
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(inactivoBtn)
-                            .addComponent(activoBtn)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(filaCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(ladoCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel6))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(columnaCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(WarehouseGrid1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(WarehouseGrid, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(15, Short.MAX_VALUE))
-        );
+        getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(685, 46, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -439,6 +401,14 @@ public class RackView extends BaseView {
         
     }//GEN-LAST:event_activoBtnActionPerformed
 
+    private void enableFields(){
+        filaCombo.setEnabled(true);
+        columnaCombo.setEnabled(true);
+        ladoCombo.setEnabled(true);
+        checkBox.setEnabled(true);
+    }
+    
+    
     private void inactivoBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inactivoBtnMouseClicked
         // TODO add your handling code here:
         int sr = usersGrid.getSelectedRow();
@@ -463,8 +433,7 @@ public class RackView extends BaseView {
 
     private void searchBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchBtnMouseClicked
         // TODO add your handling code here:
-                checkBox.setAlignmentX(100);
-        checkBox.setAlignmentX(100);
+               
         clearGridRack();
         int idS;
         if (idTxt.getText().equals(""))
@@ -490,6 +459,7 @@ public class RackView extends BaseView {
         fillColumnaCombo();
         fillFilaCombo();
         fillLadoCombo();
+        enableFields();
     }//GEN-LAST:event_rackGridMouseClicked
 
     private void filaComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filaComboItemStateChanged
@@ -527,6 +497,14 @@ public class RackView extends BaseView {
         clearGridSpot();
         fillTableSpot();
     }//GEN-LAST:event_ladoComboItemStateChanged
+
+    private void checkBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_checkBoxItemStateChanged
+        // TODO add your handling code here:
+        checkBox.repaint();
+        if (checkBox.isSelected()){
+            //
+        }
+    }//GEN-LAST:event_checkBoxItemStateChanged
 
     private void fillColumnaCombo(){
         int ncol = rack.getNumCol();

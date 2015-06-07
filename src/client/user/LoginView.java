@@ -11,8 +11,6 @@ import client.general.MainView;
 import entity.Usuario;
 import java.awt.Color;
 import java.awt.Image;
-import java.net.URL;
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.border.Border;
@@ -192,7 +190,9 @@ public class LoginView extends javax.swing.JFrame {
                     pwTxt.setText("");
                 }
             } else {
-                new MainView().setVisible(true);
+                user = new Usuario();
+                user.setId("root");
+                new MainView(user).setVisible(true);
                 dispose();
             }
         }

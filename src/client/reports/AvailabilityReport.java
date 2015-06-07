@@ -8,6 +8,7 @@ package client.reports;
 import application.kardex.KardexApplication;
 import application.pallet.PalletApplication;
 import application.product.ProductApplication;
+import application.producttype.ProductTypeApplication;
 import application.rack.RackApplication;
 import application.spot.SpotApplication;
 import application.warehouse.WarehouseApplication;
@@ -15,8 +16,10 @@ import client.base.BaseView;
 import entity.Almacen;
 import entity.Condicion;
 import entity.Kardex;
+import entity.Pallet;
 import entity.Producto;
 import entity.Rack;
+import entity.TipoProducto;
 import entity.Ubicacion;
 import java.awt.event.ItemEvent;
 import java.io.File;
@@ -26,6 +29,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,14 +54,20 @@ public class AvailabilityReport extends BaseView {
     SpotApplication spotApplication = InstanceFactory.Instance.getInstance("spotApplicaiton", SpotApplication.class);
     PalletApplication palletApplication = InstanceFactory.Instance.getInstance("palletApplicaiton", PalletApplication.class);
     ProductApplication productApplication = InstanceFactory.Instance.getInstance("productApplicaiton", ProductApplication.class);
+    ProductTypeApplication productTypeApplication = InstanceFactory.Instance.getInstance("productTypeApplicaiton", ProductTypeApplication.class);
     KardexApplication kardexApplication = InstanceFactory.Instance.getInstance("kardexApplicaiton", KardexApplication.class);
     public ArrayList<Almacen> warehouses;
     public ArrayList<Condicion> conditions;
     public ArrayList<Kardex> kardex;
     public ArrayList<Rack> racks;
     public ArrayList<Ubicacion> spots;
+    public ArrayList<Pallet> pallets;
+    public ArrayList<TipoProducto> productTypes;
     private String [] warehousesNames;
+    private String [] conditionNames;
     private String [] racksNames;
+    private String [] typeNames;
+    private List<Object[]> listReport;
     JFileChooser fc = new JFileChooser();
     File file = null;
     /**
@@ -67,30 +77,44 @@ public class AvailabilityReport extends BaseView {
         initComponents();
         initialize();
         fillWarehouses();
-        condicionTxt.setText(EntityType.getCondition(warehouses.get(0).getCondicion().getId()).getNombre());
+        //condicionTxt.setText(EntityType.getCondition(warehouses.get(0).getCondicion().getId()).getNombre());
         warehouseCombo.setModel(new javax.swing.DefaultComboBoxModel(warehousesNames));
         fillRacksIni();
-        rackCombo.setModel(new javax.swing.DefaultComboBoxModel(racksNames));
+        tipoCombo.setModel(new javax.swing.DefaultComboBoxModel(typeNames));
+        fillConditionsIni();
+        condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(conditionNames));
     }
     
     public void fillWarehouses(){
         warehouses = warehouseApplication.queryAll();
-        warehousesNames = new String[warehouses.size()];
+        warehousesNames = new String[warehouses.size()+1];
+        warehousesNames[0]="Todos";
         for (int i = 0; i < warehouses.size(); i++) {
-            warehousesNames[i] = warehouses.get(i).getDescripcion();
+            warehousesNames[i+1] = warehouses.get(i).getDescripcion();
         } 
     }
     public void fillRacksIni(){
-        racks = rackApplication.queryRacksByWarehouse(warehouses.get(0).getId());
+        productTypes = productTypeApplication.queryAll();
         
-        if (racks!=null){
-            racksNames = new String[racks.size()+1];
-            racksNames[0] = "Todos";
-            for (int i = 0; i < racks.size(); i++) {
-                racksNames[i+1] = racks.get(i).getId().toString();
+        if (productTypes!=null){
+            typeNames = new String[productTypes.size()+1];
+            typeNames[0] = "Todos";
+            for (int i = 0; i < productTypes.size(); i++) {
+                typeNames[i+1] = productTypes.get(i).getNombre();
             } 
         }
     }
+    
+    public void fillConditionsIni(){
+        conditions = EntityType.CONDITIONS;
+        if (conditions!=null){
+            conditionNames = new String[conditions.size()+1];
+            conditionNames[0] = "Todos";
+            for (int i = 0; i < conditions.size(); i++) {
+                conditionNames[i+1] = conditions.get(i).getNombre();
+            } 
+        }
+    }    
     public void fillRacks(int id){
         racks = rackApplication.queryRacksByWarehouse(id);
         
@@ -165,9 +189,11 @@ public class AvailabilityReport extends BaseView {
         tblKardex = new javax.swing.JTable();
         jSeparator1 = new javax.swing.JSeparator();
         btnExport = new javax.swing.JButton();
-        rackCombo = new javax.swing.JComboBox();
+        tipoCombo = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
-        condicionTxt = new javax.swing.JTextField();
+        condicionCombo = new javax.swing.JComboBox();
+        condicionCombo1 = new javax.swing.JComboBox();
+        jLabel5 = new javax.swing.JLabel();
 
         setClosable(true);
         setTitle("Reporte de Disponibilidad");
@@ -225,15 +251,19 @@ public class AvailabilityReport extends BaseView {
             }
         });
 
-        rackCombo.addItemListener(new java.awt.event.ItemListener() {
+        tipoCombo.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                rackComboItemStateChanged(evt);
+                tipoComboItemStateChanged(evt);
             }
         });
 
-        jLabel2.setText("Rack:");
+        jLabel2.setText("Tipo de producto:");
 
-        condicionTxt.setEnabled(false);
+        condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        condicionCombo1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel5.setText("Tipo:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -242,30 +272,36 @@ public class AvailabilityReport extends BaseView {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnExport))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 2, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnExport, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnReport, javax.swing.GroupLayout.Alignment.TRAILING)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(tipoCombo, 0, 128, Short.MAX_VALUE)
+                            .addComponent(warehouseCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(17, 17, 17)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel1)
-                                    .addComponent(jLabel2))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(rackCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(warehouseCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(32, 32, 32)
-                                        .addComponent(jLabel4)))
+                                .addComponent(jLabel4)
                                 .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(condicionTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnReport)))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 8, Short.MAX_VALUE)))
+                                .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jLabel5)
+                                .addGap(18, 18, 18)
+                                .addComponent(condicionCombo1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -276,23 +312,22 @@ public class AvailabilityReport extends BaseView {
                     .addComponent(jLabel1)
                     .addComponent(warehouseCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
-                    .addComponent(condicionTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(btnReport))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(rackCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))))
+                    .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tipoCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(condicionCombo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addComponent(btnReport)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnExport)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addGap(20, 20, 20))
         );
 
         pack();
@@ -308,16 +343,28 @@ public class AvailabilityReport extends BaseView {
                 btnExport.setEnabled(false);
             }else{
                 int idWare;
+                int idTipo;
                 int idCon;
                 spots = new ArrayList<Ubicacion>();
                 
-                idWare=warehouses.get(warehouseCombo.getSelectedIndex()).getId();
-                if (rackCombo.getSelectedIndex()==0)
-                    idCon=0;
+                if (warehouseCombo.getSelectedIndex()==0){
+                    idWare=0;
+                }else{
+                    idWare=warehouses.get(warehouseCombo.getSelectedIndex()-1).getId();
+                }
+                
+                if (tipoCombo.getSelectedIndex()==0)
+                    idTipo=-1;
                 else
-                    idCon=racks.get(rackCombo.getSelectedIndex()-1).getId();                
-                spots = spotApplication.queryByParameters(idWare,idCon);
-                System.out.println(racks.size());
+                    idTipo=racks.get(tipoCombo.getSelectedIndex()-1).getId();
+                
+                if (tipoCombo.getSelectedIndex()==0)
+                    idCon=-1;
+                else
+                    idCon=racks.get(tipoCombo.getSelectedIndex()-1).getId();
+                
+                listReport = palletApplication.queryByReport(idWare,idCon,idTipo,0);
+                //System.out.println(racks.size());
                 fillKardex();
                 btnExport.setEnabled(true);
             }
@@ -326,11 +373,7 @@ public class AvailabilityReport extends BaseView {
 
     private void warehouseComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_warehouseComboItemStateChanged
         
-        boolean aux = evt.getStateChange() == ItemEvent.SELECTED;
-        //if(evt.getStateChange() == ItemEvent.SELECTED)
-        fillRacks(warehouses.get(warehouseCombo.getSelectedIndex()).getId());
-        condicionTxt.setText(EntityType.getCondition(warehouses.get(warehouseCombo.getSelectedIndex()).getCondicion().getId()).getNombre());
-        rackCombo.setModel(new javax.swing.DefaultComboBoxModel(racksNames));
+
     }//GEN-LAST:event_warehouseComboItemStateChanged
 
     private void btnExportMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportMousePressed
@@ -366,23 +409,25 @@ public class AvailabilityReport extends BaseView {
         }
     }//GEN-LAST:event_btnExportMousePressed
 
-    private void rackComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rackComboItemStateChanged
+    private void tipoComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_tipoComboItemStateChanged
         // TODO add your handling code here:
-    }//GEN-LAST:event_rackComboItemStateChanged
+    }//GEN-LAST:event_tipoComboItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnExport;
     private javax.swing.JButton btnReport;
-    private javax.swing.JTextField condicionTxt;
+    private javax.swing.JComboBox condicionCombo;
+    private javax.swing.JComboBox condicionCombo1;
     private com.toedter.calendar.JCalendar jCalendar1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JComboBox rackCombo;
     private javax.swing.JTable tblKardex;
+    private javax.swing.JComboBox tipoCombo;
     private javax.swing.JComboBox warehouseCombo;
     // End of variables declaration//GEN-END:variables
 }

@@ -6,13 +6,13 @@
 package algorithm.operators;
 
 import algorithm.Algorithm;
+import algorithm.AlgorithmExecution;
 import algorithm.Node;
 import algorithm.Problem;
 import algorithm.Solution;
 import entity.UnidadTransporte;
 import java.util.ArrayList;
 import java.util.HashMap;
-import util.Constants;
 
 /**
  *
@@ -53,6 +53,8 @@ public class ObjectiveFunction {
         if(overStock>0) System.out.println("overstock " + overStock);*/
         
         //customerPriority = 1;
+        
+        if(overCap>0 || overTime>0 || overStock>0) AlgorithmExecution.bad = true;
         
         return travelCost/customerPriority + 
                 algorithm.getOvercapPenalty()*overCap +

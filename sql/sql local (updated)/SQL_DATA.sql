@@ -13,14 +13,14 @@ insert into saddb.accion values (12,"Devoluciones",2);
 insert into saddb.accion values (13,"Almacén",3);
 insert into saddb.accion values (14,"Rack",3);
 insert into saddb.accion values (15,"Pallet",3);
-insert into saddb.accion values (16,"Kardex",4);
-insert into saddb.accion values (17,"Stock",4);
-insert into saddb.accion values (18,"Guías de remisión",4);
-insert into saddb.accion values (19,"Disponibilidad de almacén",4);
-insert into saddb.accion values (20,"Caducidad de productos",4);
-insert into saddb.accion values (21,"Usuarios y Perfiles",5);
-insert into saddb.accion values (22,"Log",5);
-insert into saddb.accion values (23,"Personal",6);
+insert into saddb.accion values (16,"Unidad de transporte",3);
+insert into saddb.accion values (17,"Kardex",4);
+insert into saddb.accion values (18,"Stock",4);
+insert into saddb.accion values (19,"Guías de remisión",4);
+insert into saddb.accion values (20,"Disponibilidad de almacén",4);
+insert into saddb.accion values (21,"Caducidad de productos",4);
+insert into saddb.accion values (22,"Usuarios y Perfiles",5);
+insert into saddb.accion values (23,"Log",5);
 insert into saddb.accion values (24,"Clientes",6);
 insert into saddb.accion values (25,"Productos",6);
 
@@ -31,7 +31,7 @@ insert into saddb.perfil value (3,"Administrador","");
 insert into saddb.condicion value (1, "Normal", "Condicion normal");
 insert into saddb.condicion value (2, "Refrigerado", "Condicion Refrigerado");
 
-insert into saddb.Tipo_Unidad_Transporte (id, descripcion, id_condicion, capacidad_pallets, velocidad_promedio) value (1, "Carga Liviana", 1, 15, 5.00);
-insert into saddb.Tipo_Unidad_Transporte (id, descripcion, id_condicion, capacidad_pallets, velocidad_promedio) value (2, "Carga Mediana", 2,10,5.00);
-insert into saddb.Tipo_Unidad_Transporte (id, descripcion, id_condicion, capacidad_pallets, velocidad_promedio) value (3, "Carga Pesada", 1,12,6.00);
+insert into saddb.Tipo_Unidad_Transporte (id, descripcion, id_condicion, capacidad_pallets, velocidad_promedio) value (1, "Carga Liviana", 1, 40, 30);
+insert into saddb.Tipo_Unidad_Transporte (id, descripcion, id_condicion, capacidad_pallets, velocidad_promedio) value (2, "Carga Mediana", 2,60,25);
+insert into saddb.Tipo_Unidad_Transporte (id, descripcion, id_condicion, capacidad_pallets, velocidad_promedio) value (3, "Carga Pesada", 1,80,20);
 

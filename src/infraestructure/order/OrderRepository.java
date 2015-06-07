@@ -8,6 +8,7 @@ package infraestructure.order;
 import application.order.OrderApplication;
 import base.order.IOrderRepository;
 import entity.Cliente;
+import entity.Despacho;
 import entity.GuiaRemision;
 import entity.Pallet;
 import entity.Pedido;
@@ -16,6 +17,7 @@ import entity.PedidoParcialXProducto;
 import entity.PedidoParcialXProductoId;
 import entity.Producto;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -30,7 +32,7 @@ import util.Tools;
 public class OrderRepository implements IOrderRepository{
     
     @Override
-    public Boolean createOrder(Pedido order, PedidoParcial partialOrder, ArrayList<PedidoParcialXProducto> products){
+    public Boolean createOrder(Pedido order, PedidoParcial partialOrder, ArrayList<PedidoParcialXProducto> products, Boolean uploaded){
         Session session = Tools.getSessionInstance();
         Transaction trns = null; 
         try {            
@@ -40,8 +42,10 @@ public class OrderRepository implements IOrderRepository{
             for(int i=0;i<products.size();i++){
                 products.get(i).getId().setIdPedidoParcial(partialId);
                 Integer stock = products.get(i).getProducto().getStockLogico();
-                products.get(i).getProducto().setStockLogico(stock - products.get(i).getCantidad());
-                session.update(products.get(i).getProducto());
+                if(!uploaded){
+                    products.get(i).getProducto().setStockLogico(stock - products.get(i).getCantidad());
+                    session.update(products.get(i).getProducto());
+                }
                 session.save(products.get(i));
             }
             session.getTransaction().commit();
@@ -56,14 +60,25 @@ public class OrderRepository implements IOrderRepository{
     }
     
     @Override
-    public Boolean createRemissionGuides(ArrayList<PedidoParcial> acceptedOrders, ArrayList<GuiaRemision> remissionGuides) {
+    public Boolean createRemissionGuides(ArrayList<Despacho> deliveries) {
         Session session = Tools.getSessionInstance();
         Transaction trns = null; 
         try {            
             trns=session.beginTransaction();
-            for(int i=0;i<acceptedOrders.size();i++){
-                session.save(acceptedOrders.get(i));
-                session.save(remissionGuides.get(i));
+            for(int i=0;i<deliveries.size();i++){
+                Boolean deliveryCreated = false;
+                Integer deliveryId = 0;
+                for (Iterator<GuiaRemision> remissionGuide = deliveries.get(i).getGuiaRemisions().iterator(); remissionGuide.hasNext(); ) {
+                    GuiaRemision g = remissionGuide.next();
+                    if(!g.getPedidoParcials().isEmpty() && !deliveryCreated){
+                        deliveryId = (Integer)session.save(deliveries.get(i));
+                        deliveryCreated = true;
+                    }
+                    if(!g.getPedidoParcials().isEmpty()){                     
+                        g.setDespacho(queryDeliveryById(deliveryId, session, trns));
+                        session.save(g);
+                    }
+                }
             }
             session.getTransaction().commit();
             return true;
@@ -74,6 +89,23 @@ public class OrderRepository implements IOrderRepository{
             e.printStackTrace();
             return false;
         }
+    }
+    
+    public Despacho queryDeliveryById(int id,Session session, Transaction trns) {
+        Despacho delivery = null;
+        String hql
+                = "from Despacho where id=:id";
+        try {
+            Query q = session.createQuery(hql);
+            q.setParameter("id", id);
+            delivery = (Despacho) q.uniqueResult();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return delivery;
     }
     
     @Override

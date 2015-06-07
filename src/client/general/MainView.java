@@ -87,7 +87,8 @@ public class MainView extends javax.swing.JFrame {
     public static Icons icons = new Icons();
     private BufferedImage img = null;
     private Image icon = null;
-    private SecurityLogView securiryLog=null;
+    private SecurityLogView securiryLog = null;
+
     /**
      * Creates new form MainForm
      */
@@ -109,35 +110,37 @@ public class MainView extends javax.swing.JFrame {
     }
 
     private void renderUserMenu() {
-        Set actions = profileApplication.getProfileByName(user.getPerfil().getNombrePerfil()).getAccions();
-        int numActions = actionApplication.getParents().size();
+        if (!user.getId().equals("root")) {
+            Set actions = profileApplication.getProfileByName(user.getPerfil().getNombrePerfil()).getAccions();
+            int numActions = actionApplication.getParents().size();
 
-        MenuElement[] topLevelElements = menuBar.getSubElements();
-        for (int i = 0; i < numActions; i++) {
-            
-            if (!(((JMenu) topLevelElements[i]).getText().equals("Sesión"))) {
-                
-                int numMenuItem = 0;
-                MenuElement popItem= topLevelElements[i].getSubElements()[0];
-                MenuElement[] lowLevelElements = popItem.getSubElements();
-                for (int j = 0; j < lowLevelElements.length; j++) {
-                    boolean found = false;
-                    for (Accion a : (Set<Accion>) actions) {
-                        String menuApp=((JMenuItem) lowLevelElements[j]).getText().toLowerCase();
-                        String menuBD=a.getNombre().toLowerCase();
-                        if (menuApp.equals(menuBD)) {
-                            found = true;
-                            actions.remove(a);
-                            numMenuItem++;
-                            break;
+            MenuElement[] topLevelElements = menuBar.getSubElements();
+            for (int i = 0; i < numActions; i++) {
+
+                if (!(((JMenu) topLevelElements[i]).getText().equals("Sesión"))) {
+
+                    int numMenuItem = 0;
+                    MenuElement popItem = topLevelElements[i].getSubElements()[0];
+                    MenuElement[] lowLevelElements = popItem.getSubElements();
+                    for (int j = 0; j < lowLevelElements.length; j++) {
+                        boolean found = false;
+                        for (Accion a : (Set<Accion>) actions) {
+                            String menuApp = ((JMenuItem) lowLevelElements[j]).getText().toLowerCase();
+                            String menuBD = a.getNombre().toLowerCase();
+                            if (menuApp.equals(menuBD)) {
+                                found = true;
+                                actions.remove(a);
+                                numMenuItem++;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            ((JPopupMenu) popItem).remove(((JMenuItem) lowLevelElements[j]));
                         }
                     }
-                    if (!found) {
-                        ((JPopupMenu)popItem).remove(((JMenuItem) lowLevelElements[j]));
+                    if (numMenuItem == 0) {
+                        menuBar.remove(((JMenu) topLevelElements[i]));
                     }
-                }
-                if (numMenuItem == 0) {
-                    menuBar.remove(((JMenu) topLevelElements[i]));
                 }
             }
         }
@@ -173,6 +176,7 @@ public class MainView extends javax.swing.JFrame {
         WarehouseMenu = new javax.swing.JMenuItem();
         RackItem = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem20 = new javax.swing.JMenuItem();
         menuReport = new javax.swing.JMenu();
         jMenuItem12 = new javax.swing.JMenuItem();
         jMenuItem13 = new javax.swing.JMenuItem();
@@ -184,7 +188,6 @@ public class MainView extends javax.swing.JFrame {
         jMenuItem9 = new javax.swing.JMenuItem();
         jMenuItem17 = new javax.swing.JMenuItem();
         menuInter = new javax.swing.JMenu();
-        jMenuItem7 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenuItem10 = new javax.swing.JMenuItem();
         menuSession = new javax.swing.JMenu();
@@ -300,6 +303,14 @@ public class MainView extends javax.swing.JFrame {
         });
         menuMaint.add(jMenuItem3);
 
+        jMenuItem20.setText("Unidad de Transporte");
+        jMenuItem20.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TUFrameMousePressed(evt);
+            }
+        });
+        menuMaint.add(jMenuItem20);
+
         menuBar.add(menuMaint);
 
         menuReport.setText("Reportes");
@@ -381,14 +392,6 @@ public class MainView extends javax.swing.JFrame {
 
         menuInter.setText("Interfaces");
 
-        jMenuItem7.setText("Personal");
-        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem7ActionPerformed(evt);
-            }
-        });
-        menuInter.add(jMenuItem7);
-
         jMenuItem8.setText("Clientes");
         jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -458,23 +461,25 @@ public class MainView extends javax.swing.JFrame {
     private void menuMaintMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuMaintMouseClicked
     }//GEN-LAST:event_menuMaintMouseClicked
 
+
     private void WarehouseMenuMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WarehouseMenuMousePressed
         // TODO add your handling code here:
-        try{
-        if (warehouseView == null || !warehouseView.isShowing()) {
-            warehouseView = new WarehouseView();
-            warehouseView.setVisible(true);
-            mainPanel.add(warehouseView);
-            try {
-                // TODO add your handling code here:
-                warehouseView.setSelected(true);
+        try {
+            if (warehouseView == null || !warehouseView.isShowing()) {
+                warehouseView = new WarehouseView();
+                warehouseView.setVisible(true);
+                mainPanel.add(warehouseView);
+                try {
+                    // TODO add your handling code here:
+                    warehouseView.setSelected(true);
 
-            } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class
-                        .getName()).log(Level.SEVERE, null, ex);
+                } catch (PropertyVetoException ex) {
+                    Logger.getLogger(MainView.class
+                            .getName()).log(Level.SEVERE, null, ex);
+                }
             }
+        } catch (Exception e) {
         }
-        }catch(Exception e){}
 
     }//GEN-LAST:event_WarehouseMenuMousePressed
 
@@ -578,22 +583,6 @@ public class MainView extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jMenuItem13ActionPerformed
-
-    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
-        if (personalView == null || !personalView.isShowing()) {
-            personalView = new PersonalView();
-            personalView.setVisible(true);
-            mainPanel.add(personalView);
-            try {
-                // TODO add your handling code here:
-                personalView.setSelected(true);
-
-            } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class
-                        .getName()).log(Level.SEVERE, null, ex);
-            }
-        }        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
         if (clientView == null || !clientView.isShowing()) {
@@ -753,8 +742,8 @@ public class MainView extends javax.swing.JFrame {
             } catch (PropertyVetoException ex) {
                 Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }        
-        
+        }
+
     }//GEN-LAST:event_jMenuItem10MousePressed
 
     private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
@@ -813,7 +802,7 @@ public class MainView extends javax.swing.JFrame {
 
     private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem19ActionPerformed
 
-            if (internmentReport == null || !internmentReport.isShowing()) {
+        if (internmentReport == null || !internmentReport.isShowing()) {
             internmentReport = new InternmentReport();
             internmentReport.setVisible(true);
             mainPanel.add(internmentReport);
@@ -827,6 +816,27 @@ public class MainView extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jMenuItem19ActionPerformed
+
+    private void TUFrameMousePressed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TUFrameMousePressed
+        // TODO add your handling code here:
+
+        // TODO add your handling code here:
+        if (transportUnitView == null || !transportUnitView.isShowing()) {
+            transportUnitView = new TransportUnitView();
+            transportUnitView.setVisible(true);
+            mainPanel.add(transportUnitView);
+            try {
+                // TODO add your handling code here:
+                transportUnitView.setSelected(true);
+
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+
+    }//GEN-LAST:event_TUFrameMousePressed
 
     private void jMenuItem15MousePressed(java.awt.event.MouseEvent evt) {
         // TODO add your handling code here:
@@ -865,11 +875,11 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem18;
     private javax.swing.JMenuItem jMenuItem19;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem20;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JDesktopPane mainPanel;
