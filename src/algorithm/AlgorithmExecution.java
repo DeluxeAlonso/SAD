@@ -43,8 +43,8 @@ public class AlgorithmExecution {
         
         Algorithm algorithm = new Algorithm();
         //condicion de parada puede mejorar        
-        algorithm.setNumberOfGenerations(10000);
-        algorithm.setPopulationSize(10000);
+        algorithm.setNumberOfGenerations(0);
+        algorithm.setPopulationSize(1000);
         algorithm.setTournamentSelectionKValue(50);
         algorithm.setOvercapPenalty(10000);
         algorithm.setOvertimePenalty(10000);
@@ -128,25 +128,25 @@ public class AlgorithmExecution {
         
         System.out.println("bestSolution cost: " + bestSolution.getCost());
         System.out.println("");
-        System.out.println(displayRoutes(bestSolution));
-        System.out.println("");
+        //System.out.println(displayRoutes(bestSolution));
+        //System.out.println("");
         System.out.println(displayDemand(bestSolution));
         
-        /*System.out.println("");
-        System.out.println(displayRoutes(population.getSolutions()[0]));
-        System.out.println("");
-        System.out.println(displayDemand(population.getSolutions()[0]));
+//        System.out.println("");
+        //System.out.println(displayRoutes(population.getSolutions()[0]));
+        //System.out.println("");
+//        System.out.println(displayDemand(population.getSolutions()[0]));
         
-        System.out.println("");
-        System.out.println(displayRoutes(population.getSolutions()[1]));
-        System.out.println("");
-        System.out.println(displayDemand(population.getSolutions()[1]));
+//        System.out.println("");
+        //System.out.println(displayRoutes(population.getSolutions()[1]));
+//        System.out.println("");
+//        System.out.println(displayDemand(population.getSolutions()[1]));
         
-        System.out.println("");
-        System.out.println(displayRoutes(population.getSolutions()[2]));
-        System.out.println("");
-        System.out.println(displayDemand(population.getSolutions()[2]));
-        */
+//        System.out.println("");
+//        System.out.println(displayRoutes(population.getSolutions()[2]));
+//        System.out.println("");
+//        System.out.println(displayDemand(population.getSolutions()[2]));
+        
         return bestSolution;  
     }
     

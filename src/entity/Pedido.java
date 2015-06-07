@@ -1,5 +1,5 @@
 package entity;
-// Generated 06/06/2015 09:17:52 PM by Hibernate Tools 4.3.1
+// Generated Jun 7, 2015 10:23:55 AM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -17,6 +17,7 @@ public class Pedido  implements java.io.Serializable {
      private Local local;
      private Integer estado;
      private Date fecha;
+     private Date fechaVencimiento;
      private Set pedidoParcials = new HashSet(0);
 
     public Pedido() {
@@ -27,11 +28,12 @@ public class Pedido  implements java.io.Serializable {
         this.cliente = cliente;
         this.local = local;
     }
-    public Pedido(Cliente cliente, Local local, Integer estado, Date fecha, Set pedidoParcials) {
+    public Pedido(Cliente cliente, Local local, Integer estado, Date fecha, Date fechaVencimiento, Set pedidoParcials) {
        this.cliente = cliente;
        this.local = local;
        this.estado = estado;
        this.fecha = fecha;
+       this.fechaVencimiento = fechaVencimiento;
        this.pedidoParcials = pedidoParcials;
     }
    
@@ -69,6 +71,13 @@ public class Pedido  implements java.io.Serializable {
     
     public void setFecha(Date fecha) {
         this.fecha = fecha;
+    }
+    public Date getFechaVencimiento() {
+        return this.fechaVencimiento;
+    }
+    
+    public void setFechaVencimiento(Date fechaVencimiento) {
+        this.fechaVencimiento = fechaVencimiento;
     }
     public Set getPedidoParcials() {
         return this.pedidoParcials;
