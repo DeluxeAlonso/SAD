@@ -32,10 +32,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.TimeZone;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -43,6 +46,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
+import org.eclipse.persistence.jpa.jpql.parser.DateTime;
 import util.EntityState;
 import util.EntityType;
 import util.Icons;
@@ -350,11 +354,16 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                 order.setEstado(Integer.parseInt(line_split[2]));
                 Date date = new Date();
                 order.setFecha(date);
-                
+
                 PedidoParcial pp = new PedidoParcial();
                 pp.setEstado(1);
                 pp.setPedido(order);
                 productsNum = Integer.parseInt(line_split[3]);
+               
+                DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                Date endDate = df.parse(line_split[4]);
+                order.setFechaVencimiento(endDate);
+                
                 for(int j=0;j<productsNum;j++){
                     line = br.readLine();
                     line_split = line.split(cvsSplitBy);
