@@ -392,7 +392,7 @@ public class NewWarehouseView extends BaseDialogView {
                 capacityTxt.setBorder(errorBorder);
                 errorFlag = true;                
             }else 
-                if (capA > 0){
+                if (capA <= 0){
                 error_message += "La capacidad de un almacen debe ser mayor que 0 racks."+"\n";
                 capacityTxt.setBorder(errorBorder);
                 errorFlag = true;                

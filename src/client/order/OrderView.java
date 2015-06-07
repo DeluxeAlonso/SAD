@@ -192,12 +192,31 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
      */
     public void deleteOrder(){
         Pedido currentOrder = currentOrders.get(currentOrderIndex());
+        Boolean deleteEnable = true;
+        ArrayList<PedidoParcial> partialOrders = orderApplication.getPendingPartialOrdersById(currentOrder.getId());
         currentOrder.setEstado(0);
-        if(orderApplication.updateOrder(currentOrder)){
-            refreshOrders();
-            JOptionPane.showMessageDialog(this, Strings.MESSAGE_DELETE_ORDER,
-                    Strings.MESSAGE_DELETE_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
-            deleteBtn.setEnabled(false);
+        for(int i=0;i<partialOrders.size();i++){
+            if(partialOrders.get(i).getEstado() == EntityState.PartialOrders.ATENDIDO.ordinal())
+                deleteEnable = false;
+           for (Iterator<PedidoParcialXProducto> partialXProduct = partialOrders.get(i).getPedidoParcialXProductos().iterator(); partialXProduct.hasNext(); ) {
+                PedidoParcialXProducto pxp = partialXProduct.next();
+                Producto product = pxp.getProducto();
+                product.setStockLogico(product.getStockLogico() + pxp.getCantidad());
+                productApplication.update(product);
+            }
+        }
+        if(deleteEnable){
+            if(orderApplication.updateOrder(currentOrder)){
+                refreshOrders();
+                JOptionPane.showMessageDialog(this, Strings.MESSAGE_DELETE_ORDER,
+                        Strings.MESSAGE_DELETE_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
+                deleteBtn.setEnabled(false);
+            }
+        }
+        else{
+                JOptionPane.showMessageDialog(this, "No se pudo eliminar el pedido debido a que cuenta con pedidos parciales pendientes",
+                        Strings.MESSAGE_DELETE_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
+                deleteBtn.setEnabled(false);
         }
     }
     
@@ -335,7 +354,6 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                 PedidoParcial pp = new PedidoParcial();
                 pp.setEstado(1);
                 pp.setPedido(order);
-                
                 productsNum = Integer.parseInt(line_split[3]);
                 for(int j=0;j<productsNum;j++){
                     line = br.readLine();
@@ -352,18 +370,25 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                     partial.setId(id);
                     partial.setPedidoParcial(pp);
                     
-                    if(productApplication.searchProduct(product).isEmpty())
-                       noStockError = true;
-                    else
-                        partial.setProducto(productApplication.searchProduct(product).get(0));
-                    partial.setCantidad(Integer.parseInt(line_split[1]));
-                    partialProducts.add(partial);
+                    Producto selectedProduct = productApplication.queryById(product.getId());
+                    Integer requiredQuantity = Integer.parseInt(line_split[1]);
+                    Integer difference = selectedProduct.getStockLogico() - requiredQuantity;
+                    if(difference < 0){
+                       System.out.println("No se inserto pedido" + i);
+                    }
+                    else{
+                        selectedProduct.setStockLogico(difference);
+                        productApplication.update(selectedProduct);
+                        partial.setProducto(selectedProduct);
+                        partial.setCantidad(requiredQuantity);
+                        partialProducts.add(partial);
+                    }          
                 }
-                if(!noStockError)
-                    if (!orderApplication.CreateOrder(order, pp, partialProducts)){
-                        JOptionPane.showMessageDialog(this, Strings.LOAD_ORDER_ERROR,Strings.LOAD_ORDER_TITLE,JOptionPane.ERROR_MESSAGE);
-                        has_errors = true;
-                        break;
+                if(!partialProducts.isEmpty())
+                    if (!orderApplication.CreateOrder(order, pp, partialProducts, true)){
+                        //JOptionPane.showMessageDialog(this, Strings.LOAD_ORDER_ERROR,Strings.LOAD_ORDER_TITLE,JOptionPane.ERROR_MESSAGE);
+                        //has_errors = true;
+                        //break;
                     }
             }
 	} catch (Exception e) {
@@ -886,15 +911,21 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     if(reasonCombo.getSelectedIndex() != 0){
             PedidoParcial p = currentPartialOrders.get(partialCombo.getSelectedIndex() -1);
             ArrayList<Pallet> pallets = palletApplication.getPalletsByPartialOrder(p.getId());
-            for(int i=0;i<pallets.size();i++){
-                pallets.get(i).setEstado(EntityState.Pallets.UBICADO.ordinal());
-                pallets.get(i).setPedidoParcial(null);
-            }
-            if(reasonCombo.getSelectedIndex() == 1)//PRODUCTOS VENCIDOS 
+            if(reasonCombo.getSelectedIndex() == 1){//PRODUCTOS VENCIDOS 
                 p.setEstado(EntityState.PartialOrders.NO_ATENDIDO.ordinal());
+                for(int i=0;i<pallets.size();i++){
+                    pallets.get(i).setEstado(EntityState.Pallets.ELIMINADO.ordinal());
+                    pallets.get(i).setPedidoParcial(null);
+                }
+            }
             else{//CLIENTE INSATISFECHO
                 p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
+                for(int i=0;i<pallets.size();i++){
+                    pallets.get(i).setEstado(EntityState.Pallets.CREADO.ordinal());
+                    pallets.get(i).setPedidoParcial(null);
+                }
             }
+            //Verificamos si al pedido le quedana un pedidos parciales
             if(orderApplication.updatePartialOrder(p, pallets)){
                 JOptionPane.showMessageDialog(this, Strings.DEVOLUTION_ORDER_SUCCESS,Strings.DEVOLUTION_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
                 ArrayList<PedidoParcial> availablePartialOrders = orderApplication.getPendingPartialOrdersById(p.getPedido().getId());
