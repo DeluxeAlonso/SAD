@@ -17,6 +17,7 @@ import entity.Condicion;
 import entity.Rack;
 import entity.Ubicacion;
 import java.util.ArrayList;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -38,15 +39,23 @@ public class RackView extends BaseView {
     /**
      * Creates new form WarehouseForm
      */
+    ArrayList<Rack> racks = null;
+    ArrayList<Ubicacion> spots = null;
     Rack rack =new Rack();
     int idRack;
+    //JCheckBox checkBox = new JCheckBox();
     public RackView() {
         initComponents();
         clearGridRack();
         clearGridSpot();
         initialize();
-        
+        String [] s = {"Todos"};
+        filaCombo.setModel(new javax.swing.DefaultComboBoxModel(s));
+        columnaCombo.setModel(new javax.swing.DefaultComboBoxModel(s));
+        ladoCombo.setModel(new javax.swing.DefaultComboBoxModel(s));
         //fillTable();
+        checkBox.setAlignmentX(100);
+        checkBox.setAlignmentX(100);
     }
 
     /**
@@ -73,7 +82,7 @@ public class RackView extends BaseView {
 
     public void fillTableRack(int id) {
         DefaultTableModel model = (DefaultTableModel) rackGrid.getModel();
-        ArrayList<Rack> racks = rackApplication.queryRacksByWarehouse(id);
+        racks = rackApplication.queryRacksByWarehouse(id);
 
         for (Rack r : racks) {
             String estado = "Desconocido";
@@ -95,11 +104,11 @@ public class RackView extends BaseView {
     
     
     
-    public void fillTableSpot(int id) {
+    public void fillTableSpot() {
         DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();
-        ArrayList<Ubicacion> ubicaciones = spotApplication.querySpotsByRack(id);
+        
 
-        for (Ubicacion u : ubicaciones) {
+        for (Ubicacion u : spots) {
             String estado = "Desconocido";
             if (u.getEstado()==0) estado= "Inactivo";
             else
@@ -107,7 +116,7 @@ public class RackView extends BaseView {
             else
                     if (u.getEstado()==2) estado= "Ocupado";
             model.addRow(new Object[]{
-                Integer.toString(u.getId()),
+                //Integer.toString(u.getId()),
                 u.getFila().toString(),
                 u.getColumna().toString(),
                 u.getLado(),
@@ -149,6 +158,13 @@ public class RackView extends BaseView {
         jLabel1 = new javax.swing.JLabel();
         idTxt = new javax.swing.JTextField();
         searchBtn = new javax.swing.JButton();
+        filaCombo = new javax.swing.JComboBox();
+        ladoCombo = new javax.swing.JComboBox();
+        columnaCombo = new javax.swing.JComboBox();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        checkBox = new javax.swing.JCheckBox();
 
         setClosable(true);
         setTitle("Rack");
@@ -161,14 +177,14 @@ public class RackView extends BaseView {
                 {null, null, null, null, null}
             },
             new String [] {
-                "ID", "Fila", "Columna", "Lado", "Estado"
+                "Fila", "Columna", "Lado", "Estado", ""
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -289,6 +305,33 @@ public class RackView extends BaseView {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        filaCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        filaCombo.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                filaComboItemStateChanged(evt);
+            }
+        });
+
+        ladoCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        ladoCombo.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                ladoComboItemStateChanged(evt);
+            }
+        });
+
+        columnaCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        columnaCombo.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                columnaComboItemStateChanged(evt);
+            }
+        });
+
+        jLabel6.setText("Fila:");
+
+        jLabel7.setText("Columna:");
+
+        jLabel8.setText("Lado");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -297,24 +340,44 @@ public class RackView extends BaseView {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jLabel5))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(10, 10, 10)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(WarehouseGrid1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)))
-                .addGap(20, 20, 20)
+                            .addComponent(WarehouseGrid1))))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
-                        .addComponent(activoBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(activoBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(inactivoBtn))
+                            .addComponent(WarehouseGrid, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(filaCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(columnaCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(83, 83, 83)
+                        .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(inactivoBtn))
-                    .addComponent(WarehouseGrid, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap())
+                        .addComponent(ladoCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(checkBox)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -325,15 +388,29 @@ public class RackView extends BaseView {
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(9, 9, 9)
                         .addComponent(jLabel5))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(inactivoBtn)
-                        .addComponent(activoBtn)
-                        .addComponent(jLabel4)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(checkBox)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(inactivoBtn)
+                            .addComponent(activoBtn)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(filaCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ladoCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel6))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(columnaCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(WarehouseGrid1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(WarehouseGrid, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         pack();
@@ -343,29 +420,31 @@ public class RackView extends BaseView {
         // TODO add your handling code here:
         
         int sr = usersGrid.getSelectedRow();
-        String idString = usersGrid.getModel().getValueAt(sr, 0).toString();
-        int idSpot = Integer.parseInt(idString);
-        Ubicacion   u =spotApplication.queryById(idSpot);
+        Ubicacion   u =spots.get(sr);
         if (u.getEstado()==EntityState.Spots.LIBRE.ordinal()){
         
         }else if (u.getEstado()==EntityState.Spots.INACTIVO.ordinal()){
             rack.setUbicLibres(rack.getUbicLibres()+1);
-            spotApplication.updateSpotOccupancy(idSpot,EntityState.Spots.LIBRE.ordinal());
+            spotApplication.updateSpotOccupancy(u.getId(),EntityState.Spots.LIBRE.ordinal());
         }
        
         clearGridSpot();
-        fillTableSpot(idRack);        
+       
+        int col=columnaCombo.getSelectedIndex();
+        int fil=filaCombo.getSelectedIndex();
+        int lado=ladoCombo.getSelectedIndex();
+        
+        spots=spotApplication.queryByPosition(idRack,fil ,col ,lado );
+        fillTableSpot();        
         
     }//GEN-LAST:event_activoBtnActionPerformed
 
     private void inactivoBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inactivoBtnMouseClicked
         // TODO add your handling code here:
         int sr = usersGrid.getSelectedRow();
-        String idString = usersGrid.getModel().getValueAt(sr, 0).toString();
-        int idSpot = Integer.parseInt(idString);
-        Ubicacion   u =spotApplication.queryById(idSpot);
+        Ubicacion   u =spots.get(sr);
         if (u.getEstado()==EntityState.Spots.LIBRE.ordinal()){
-            spotApplication.updateSpotOccupancy(idSpot,EntityState.Spots.INACTIVO.ordinal());
+            spotApplication.updateSpotOccupancy(u.getId(),EntityState.Spots.INACTIVO.ordinal());
             rack.setUbicLibres(rack.getUbicLibres()-1);
         }else if (u.getEstado()==EntityState.Spots.INACTIVO.ordinal()){
             //spotApplication.updateSpotOccupancy(idSpot,EntityState.Spots.LIBRE.ordinal());
@@ -374,11 +453,18 @@ public class RackView extends BaseView {
         }
        
         clearGridSpot();
-        fillTableSpot(idRack);    
+        int col=columnaCombo.getSelectedIndex();
+        int fil=filaCombo.getSelectedIndex();
+        int lado=ladoCombo.getSelectedIndex();
+        
+        spots=spotApplication.queryByPosition(idRack,fil ,col ,lado );
+        fillTableSpot();    
     }//GEN-LAST:event_inactivoBtnMouseClicked
 
     private void searchBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchBtnMouseClicked
         // TODO add your handling code here:
+                checkBox.setAlignmentX(100);
+        checkBox.setAlignmentX(100);
         clearGridRack();
         int idS;
         if (idTxt.getText().equals(""))
@@ -399,20 +485,98 @@ public class RackView extends BaseView {
         idRack=id;
         rack = rackApplication.queryById(id);
         clearGridSpot();
-        fillTableSpot(id);
+        spots = spotApplication.querySpotsByRack(id);
+        fillTableSpot();
+        fillColumnaCombo();
+        fillFilaCombo();
+        fillLadoCombo();
     }//GEN-LAST:event_rackGridMouseClicked
 
+    private void filaComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filaComboItemStateChanged
+        // TODO add your handling code here:
+        int col=columnaCombo.getSelectedIndex();
+        int fil=filaCombo.getSelectedIndex();
+        int lado=ladoCombo.getSelectedIndex();
+        
+        spots=spotApplication.queryByPosition(idRack,fil ,col ,lado );
+        clearGridSpot();
+        fillTableSpot();
+        
+        
+        
+    }//GEN-LAST:event_filaComboItemStateChanged
+
+    private void columnaComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_columnaComboItemStateChanged
+        // TODO add your handling code here:
+        int col=columnaCombo.getSelectedIndex();
+        int fil=filaCombo.getSelectedIndex();
+        int lado=ladoCombo.getSelectedIndex();
+        
+        spots=spotApplication.queryByPosition(idRack,fil ,col ,lado );
+        clearGridSpot();
+        fillTableSpot();
+    }//GEN-LAST:event_columnaComboItemStateChanged
+
+    private void ladoComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_ladoComboItemStateChanged
+        // TODO add your handling code here:
+        int col=columnaCombo.getSelectedIndex();
+        int fil=filaCombo.getSelectedIndex();
+        int lado=ladoCombo.getSelectedIndex();
+        
+        spots=spotApplication.queryByPosition(idRack,fil ,col ,lado );
+        clearGridSpot();
+        fillTableSpot();
+    }//GEN-LAST:event_ladoComboItemStateChanged
+
+    private void fillColumnaCombo(){
+        int ncol = rack.getNumCol();
+        String[] columnas = new String [ncol+1];
+        columnas[0]="Todos";
+        for (int i=0;i<ncol;i++){
+            columnas[i+1]=(i+1)+"";
+        }
+        columnaCombo.setModel(new javax.swing.DefaultComboBoxModel(columnas));
+    }
+    private void fillFilaCombo(){
+        int nfil = rack.getNumFil();
+        String[] filas = new String [nfil+1];
+        filas[0]="Todos";
+        for (int i=0;i<nfil;i++){
+            filas[i+1]=(i+1)+"";
+        }
+
+        filaCombo.setModel(new javax.swing.DefaultComboBoxModel(filas));
+        
+        
+    }
+    private void fillLadoCombo(){
+
+        String[] columnas = new String [3];
+        columnas[0]="Todos";
+        columnas[1]="A";
+        columnas[2]="B";
+        ladoCombo.setModel(new javax.swing.DefaultComboBoxModel(columnas));
+    }
+    
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane WarehouseGrid;
     private javax.swing.JScrollPane WarehouseGrid1;
     private javax.swing.JButton activoBtn;
+    private javax.swing.JCheckBox checkBox;
+    private javax.swing.JComboBox columnaCombo;
+    private javax.swing.JComboBox filaCombo;
     private javax.swing.JTextField idTxt;
     private javax.swing.JButton inactivoBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JComboBox ladoCombo;
     private javax.swing.JTable rackGrid;
     private javax.swing.JButton searchBtn;
     private javax.swing.JTable usersGrid;

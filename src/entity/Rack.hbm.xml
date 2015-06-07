@@ -26,7 +26,7 @@
         <property name="ubicLibres" type="java.lang.Integer">
             <column name="ubic_libres" />
         </property>
-        <set name="ubicacions" table="ubicacion" inverse="true" lazy="true" fetch="select">
+        <set name="ubicacions" cascade="save-update" table="ubicacion" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="id_rack" not-null="true" />
             </key>

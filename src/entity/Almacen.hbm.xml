@@ -35,7 +35,7 @@
         <property name="numColumnas" type="java.lang.Integer">
             <column name="num_columnas" />
         </property>
-        <set name="racks" table="rack" inverse="true" lazy="true" fetch="select">
+        <set name="racks" cascade="save-update" table="rack" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="id_almacen" not-null="true" />
             </key>
