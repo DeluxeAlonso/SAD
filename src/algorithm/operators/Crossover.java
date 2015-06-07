@@ -102,6 +102,11 @@ public class Crossover {
             childRoutes[i] = route.toArray(childRoutes[i]);            
         }
         
+        
+        /*for (int i = 0; i < nRoutes; i++) {
+            if(childRoutes[i]==null) throw new AssertionError("bad crossover");
+        }*/
+        
         return new Solution(childRoutes, algorithm, problem);                
     }
 

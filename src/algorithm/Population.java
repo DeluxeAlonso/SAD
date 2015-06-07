@@ -27,6 +27,7 @@ public class Population {
     private void generatePopulation() {
         solutions = new Solution[algorithm.getPopulationSize()];
         for (int i = 0; i < solutions.length; i++) {
+            System.out.println("Creando solucion: " + i);
             solutions[i] = new Solution(algorithm, problem, i); 
             solutions[i] = LocalSearch.opt2Improvement(solutions[i], algorithm, problem);
             solutions[i].setCost(ObjectiveFunction.getSolutionCost(solutions[i], 
