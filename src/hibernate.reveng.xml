@@ -26,4 +26,5 @@
   <table-filter match-name="pregunta_secreta"/>
   <table-filter match-name="orden_internamiento"/>
   <table-filter match-name="pallet"/>
+  <table-filter match-name="log"/>
 </hibernate-reverse-engineering>

@@ -171,7 +171,6 @@ public class MainView extends javax.swing.JFrame {
         jMenuItem11 = new javax.swing.JMenuItem();
         menuMaint = new javax.swing.JMenu();
         WarehouseMenu = new javax.swing.JMenuItem();
-        TUFrame = new javax.swing.JMenuItem();
         RackItem = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         menuReport = new javax.swing.JMenu();
@@ -284,17 +283,6 @@ public class MainView extends javax.swing.JFrame {
             }
         });
         menuMaint.add(WarehouseMenu);
-
-        TUFrame.setText("Unidad de Transporte");
-        TUFrame.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                TUFrameMouseClicked(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                TUFrameMousePressed(evt);
-            }
-        });
-        menuMaint.add(TUFrame);
 
         RackItem.setText("Rack");
         RackItem.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -469,29 +457,6 @@ public class MainView extends javax.swing.JFrame {
     }
     private void menuMaintMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuMaintMouseClicked
     }//GEN-LAST:event_menuMaintMouseClicked
-
-    private void TUFrameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TUFrameMouseClicked
-        // TODO add your handling code here:
-        // TODO add your handling code here:
-
-    }//GEN-LAST:event_TUFrameMouseClicked
-
-    private void TUFrameMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TUFrameMousePressed
-        // TODO add your handling code here:
-        if (transportUnitView == null || !transportUnitView.isShowing()) {
-            transportUnitView = new TransportUnitView();
-            transportUnitView.setVisible(true);
-            mainPanel.add(transportUnitView);
-            try {
-                // TODO add your handling code here:
-                transportUnitView.setSelected(true);
-
-            } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class
-                        .getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }//GEN-LAST:event_TUFrameMousePressed
 
     private void WarehouseMenuMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WarehouseMenuMousePressed
         // TODO add your handling code here:
@@ -887,7 +852,6 @@ public class MainView extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem Pedidos;
     private javax.swing.JMenuItem RackItem;
-    private javax.swing.JMenuItem TUFrame;
     private javax.swing.JMenuItem WarehouseMenu;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
