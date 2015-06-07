@@ -31,6 +31,13 @@ public abstract class BaseDialogView extends javax.swing.JDialog{
         this.setLocation((desktopSize.width - jInternalFrameSize.width)/2,
         (desktopSize.height- jInternalFrameSize.height)/2);
         Icons.setMainIcon(this);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
     }
-    
+    private void formWindowClosing(java.awt.event.WindowEvent evt){
+        this.dispose();
+    }
 }
