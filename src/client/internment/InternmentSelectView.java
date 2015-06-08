@@ -65,7 +65,7 @@ public class InternmentSelectView extends BaseView {
     RackApplication rackApplication=InstanceFactory.Instance.getInstance("rackApplication", RackApplication.class);
     SpotApplication spotApplication = InstanceFactory.Instance.getInstance("spotApplicaiton", SpotApplication.class);
     KardexApplication kardexApplication = InstanceFactory.Instance.getInstance("kardexApplication",KardexApplication.class);
-    
+    public static InternmentSelectView internmentSelectView;
     /**
      * Creates new form InternmentSelectView
      */
@@ -73,9 +73,9 @@ public class InternmentSelectView extends BaseView {
     ArrayList<Buffer> ordenListada = new ArrayList<Buffer>();
     ArrayList<Almacen> almacenes = new ArrayList<Almacen>();
     public static class Buffer{
-        int id_item;
-        String fecha;
-        int cantidad;
+        public int id_item;
+        public String fecha;
+        public int cantidad;
     }
     JTable table = null;
     public int cantAInternar;
@@ -85,6 +85,7 @@ public class InternmentSelectView extends BaseView {
     
     public InternmentSelectView() {
         initComponents();
+        internmentSelectView = this;
         initialize();
         setTitle("Internamiento");
         jButton2.setEnabled(false);
@@ -143,6 +144,7 @@ public class InternmentSelectView extends BaseView {
         jButton3 = new javax.swing.JButton();
 
         setClosable(true);
+        setTitle("Crear Pedido");
 
         lblFileChooser.setText(" Ingrese la orden de internamiento desde un archivo:");
 
@@ -430,7 +432,7 @@ public class InternmentSelectView extends BaseView {
         
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void createInternmentOrders(ArrayList<Buffer> listaBuff){
+    public void createInternmentOrders(ArrayList<Buffer> listaBuff){
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         for (Buffer b : listaBuff){
@@ -647,10 +649,13 @@ public class InternmentSelectView extends BaseView {
             ArrayList<Ubicacion> ubi = new ArrayList<Ubicacion>();
             Almacen alm = almacenes.get(jComboBox1.getSelectedIndex());
             jTextField2.setText(alm.getUbicLibres().toString());
+            System.out.println("Almacen id  " + alm.getId());
             ArrayList<Rack> racks = rackApplication.queryRacksByWarehouse(alm.getId());
+            System.out.println("Racks " + racks.size());
             for (Rack r : racks){
                 //r.getUbicacions().
                 ubi = (ArrayList<Ubicacion>) spotApplication.queryEmptySpotsByRack(r.getId());
+                System.out.println("Ubicaciones " + ubi.size());
                 ubicaciones.addAll(ubi);
                 for (Ubicacion ub : ubi){
                     model.addRow(new Object[]{

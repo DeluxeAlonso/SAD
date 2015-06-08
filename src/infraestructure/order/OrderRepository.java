@@ -116,6 +116,9 @@ public class OrderRepository implements IOrderRepository{
             trns=session.beginTransaction();
             System.out.println("Cantidad de Acepted Orders " + acceptedOrders.size());
             ArrayList<Integer>previousAcceptedOrdersId = new ArrayList<>();
+            ArrayList<Producto>productsToRemove = new ArrayList<>();
+            ArrayList<String>productNamesToRemove = new ArrayList<>();
+            ArrayList<Integer>quantityToRemove = new ArrayList<>();
             for(int i=0;i<acceptedOrders.size();i++){
                 if(!previousAcceptedOrdersId.contains(acceptedOrders.get(i).getPedido().getId())){
                     previousAcceptedOrdersId.add(acceptedOrders.get(i).getPedido().getId());
@@ -125,21 +128,37 @@ public class OrderRepository implements IOrderRepository{
                         session.update(oldOrders.get(j));
                     }
                 }
+                acceptedOrders.get(i).getPedido().setEstado(EntityState.Orders.EN_CURSO.ordinal());
+                session.update(acceptedOrders.get(i).getPedido());
                 Integer partialOrderId = (Integer)session.save(acceptedOrders.get(i));
                 for(Iterator<PedidoParcialXProducto> partialOrderDetail = acceptedOrders.get(i).getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){
-                    PedidoParcialXProducto p = partialOrderDetail.next();         
-                    
+                    PedidoParcialXProducto p = partialOrderDetail.next();          
                     PedidoParcialXProductoId id = new PedidoParcialXProductoId();
                     id.setIdPedidoParcial(partialOrderId);
                     id.setIdProducto(p.getProducto().getId());
                     p.setId(id);
                     session.save(p);
-                                               
+                    System.out.println("Producto " +p.getProducto().getNombre() + " Pallets ubicados:"+p.getProducto().getPalletsUbicados() + " Cantidad a quitar" +p.getCantidad());
+                    System.out.println("PREVIO CONTIENE? " +productsToRemove.contains(p.getProducto()));
+                    System.out.println("TAMAHO " +productsToRemove);
+                    if(!productNamesToRemove.contains(p.getProducto().getNombre())){
+                        System.out.println("CONTIENE " +p.getProducto().getNombre());
+                        productsToRemove.add(p.getProducto());
+                        productNamesToRemove.add(p.getProducto().getNombre());
+                        System.out.println("CONTIENE? " +productsToRemove.contains(p.getProducto()));
+                        quantityToRemove.add(p.getCantidad());
+                    }else{
+                        System.out.println("ACUMULAR");
+                        Integer index = productNamesToRemove.indexOf(p.getProducto().getNombre());
+                        System.out.println("iNDEXOBETNIDO");
+                        quantityToRemove.set(index, quantityToRemove.get(index) + p.getCantidad());
+                        System.out.println("Acumluado "+productsToRemove.get(index).getNombre()+" "+quantityToRemove.get(index));
+                    }
+
+                    //p.getProducto().setPalletsUbicados(p.getProducto().getPalletsUbicados() - p.getCantidad());
+                    //session.merge(p.getProducto());                    
                     ArrayList<Pallet> pallets = getAvailablePalletsByProductId(p.getProducto().getId(), session, trns);
                     ArrayList<Pallet> selectedPallets = new ArrayList<>();
-                    System.out.println("CODIGO PEDIDO " + p.getPedidoParcial().getPedido().getId());
-                    System.out.println("PRODUCTOS PEDIDO  " + p.getProducto().getId() + " " + p.getProducto().getNombre());
-                    System.out.println("CANTIDAD DE PALLETSPEDIDOS " + p.getCantidad());
                     for(int j=0;j<p.getCantidad();j++){
                         Pallet selectedPallet;
                         selectedPallet = pallets.get(j);
@@ -149,6 +168,10 @@ public class OrderRepository implements IOrderRepository{
                     }
                     updatePallets(selectedPallets, session, trns);
                 }
+            }
+            for(int i=0;i<productNamesToRemove.size();i++){
+                productsToRemove.get(i).setPalletsUbicados(productsToRemove.get(i).getPalletsUbicados() - quantityToRemove.get(i));
+                session.merge(productsToRemove.get(i));
             }
             System.out.println("Cantidad de Rejected Orders " + rejectedOrders.size());
             ArrayList<Integer>previousRejectedOrdersId = new ArrayList<>();
@@ -184,6 +207,8 @@ public class OrderRepository implements IOrderRepository{
         }
     }
     
+
+    
     
     @Override
     public Boolean updateOrder(Pedido order){
@@ -191,11 +216,12 @@ public class OrderRepository implements IOrderRepository{
         Transaction trns = null;
         try {            
             trns=session.beginTransaction();
-            for(Iterator<PedidoParcial> partialOrder = order.getPedidoParcials().iterator(); partialOrder.hasNext();){
-                PedidoParcial p = partialOrder.next();
-                p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
-                session.update(p);
-            }
+            if(order.getEstado() == EntityState.Orders.ANULADO.ordinal())
+                for(Iterator<PedidoParcial> partialOrder = order.getPedidoParcials().iterator(); partialOrder.hasNext();){
+                    PedidoParcial p = partialOrder.next();
+                    p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
+                    session.update(p);
+                }
             session.update(order);                      
             session.getTransaction().commit();
             return true;

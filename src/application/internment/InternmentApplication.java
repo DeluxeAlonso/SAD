@@ -10,6 +10,7 @@ import entity.Almacen;
 import entity.OrdenInternamiento;
 import entity.OrdenInternamientoXProductoId;
 import entity.OrdenInternamientoXProducto;
+import entity.Producto;
 import infraestructure.internment.InternmentRepository;
 import java.util.ArrayList;
 
@@ -89,6 +90,15 @@ public class InternmentApplication {
         return products;
     }
     
+    public OrdenInternamientoXProducto getOrderProduct(Producto product){
+        OrdenInternamientoXProducto products=null;
+        try{
+            products = internmentRepository.getOrderProd(product);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return products;
+    }
     
     
     public void insertOrdenXProducto(OrdenInternamientoXProducto object){
@@ -103,6 +113,19 @@ public class InternmentApplication {
         }
             
         }
+    
+    public void updateOrdenXProducto(OrdenInternamientoXProducto object){
+            try{
+            InternmentRepository w = new InternmentRepository();
+            w.updateOrdenXProducto(object);
+            //return object.getId();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            //return -1;
+        }
+            
+    }
     
     public int update(OrdenInternamiento object) {
         try{

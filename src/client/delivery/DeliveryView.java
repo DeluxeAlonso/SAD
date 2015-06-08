@@ -12,6 +12,7 @@ import algorithm.Solution;
 import application.order.OrderApplication;
 import application.pallet.PalletApplication;
 import client.base.BaseView;
+import client.order.OrderView;
 import entity.Despacho;
 import entity.GuiaRemision;
 import entity.Pallet;
@@ -168,9 +169,11 @@ public class DeliveryView extends BaseView {
         if(solution!=null && algorithmExecution!=null){
             AlgorithmReturnValues returnValues = algorithmExecution.processOrders(solution);
             assignRemissionGuides(returnValues.getDespachos());
-            if(createPartialOrders(returnValues.getAcceptedOrders(), returnValues.getRejectedOrders()))
+            if(createPartialOrders(returnValues.getAcceptedOrders(), returnValues.getRejectedOrders())){
+                OrderView.orderView.verifyOrders();
                 JOptionPane.showMessageDialog(this, Strings.DELIVERY_SUCCESS,
                     Strings.DELIVERY_TITLE,JOptionPane.INFORMATION_MESSAGE);
+            }
             else
                 JOptionPane.showMessageDialog(this, Strings.DELIVERY_ERROR,
                     Strings.DELIVERY_TITLE,JOptionPane.ERROR_MESSAGE);
