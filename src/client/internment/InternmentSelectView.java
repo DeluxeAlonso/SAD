@@ -470,9 +470,6 @@ public class InternmentSelectView extends BaseView {
                 pallet.setEan128(crearEAN128(pallet));
                 palletApplication.insert(pallet);
             }
-            
-            
-            
         }
         
     }

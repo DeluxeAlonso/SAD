@@ -9,6 +9,7 @@ import base.pallet.IPalletRepository;
 import entity.OrdenInternamiento;
 import entity.Pallet;
 import java.util.ArrayList;
+import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -280,6 +281,41 @@ public class PalletRepository implements IPalletRepository{
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public List<Object[]> queryByReport(int almacen, int condicion, int tipo, int reporte) {
+        String hql="SELECT p.producto.nombre, p.producto.tipoProducto.nombre, p.producto.condicion.nombre, "
+                + "count(1) "
+                + "FROM Pallet p WHERE (p.ubicacion.rack.almacen.id = :wareId OR :wareId=0) AND " + 
+                "(p.producto.condicion.id=:conId  OR :conId=-1) AND "+
+                "(p.producto.tipoProducto.id =:tipoId OR :tipoId=-1) " +
+                "  ORDER BY p.ubicacion.rack.almacen.id";
+        
+        
+        List<Object[]> list=null;
+        //gracias baldeon por enseniarme a usar DAO
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("wareId", almacen);
+            q.setParameter("conId", condicion);
+            q.setParameter("tipoId", tipo);
+            //q.setParameter("lado",l);
+            list = q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return list; //To change body of generated methods, choose Tools | Templates.
+        
+        
+        
     }
     
 }

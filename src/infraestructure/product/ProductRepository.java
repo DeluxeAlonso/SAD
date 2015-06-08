@@ -182,7 +182,7 @@ public class ProductRepository implements IProductRepository {
         Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
-            session.saveOrUpdate(object);                      
+            session.update(object);                      
             session.getTransaction().commit();
             return object.getId();
         } catch (RuntimeException e) {

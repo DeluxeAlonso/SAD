@@ -1,5 +1,5 @@
 package entity;
-// Generated 06/06/2015 09:17:52 PM by Hibernate Tools 4.3.1
+// Generated Jun 7, 2015 10:23:55 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -19,6 +19,7 @@ public class Producto  implements java.io.Serializable {
      private String ean13;
      private Integer cantidadProductosEnPallet;
      private Double peso;
+     private String unidad;
      private Integer palletsUbicados;
      private Integer palletsRegistrados;
      private Integer stockLogico;
@@ -36,7 +37,7 @@ public class Producto  implements java.io.Serializable {
         this.condicion = condicion;
         this.tipoProducto = tipoProducto;
     }
-    public Producto(Condicion condicion, TipoProducto tipoProducto, String nombre, String descripcion, String ean13, Integer cantidadProductosEnPallet, Double peso, Integer palletsUbicados, Integer palletsRegistrados, Integer stockLogico, Integer stockTotal, Set pedidoParcialXProductos, Set pallets, Set ordenInternamientoXProductos, Set kardexes) {
+    public Producto(Condicion condicion, TipoProducto tipoProducto, String nombre, String descripcion, String ean13, Integer cantidadProductosEnPallet, Double peso, String unidad, Integer palletsUbicados, Integer palletsRegistrados, Integer stockLogico, Integer stockTotal, Set pedidoParcialXProductos, Set pallets, Set ordenInternamientoXProductos, Set kardexes) {
        this.condicion = condicion;
        this.tipoProducto = tipoProducto;
        this.nombre = nombre;
@@ -44,6 +45,7 @@ public class Producto  implements java.io.Serializable {
        this.ean13 = ean13;
        this.cantidadProductosEnPallet = cantidadProductosEnPallet;
        this.peso = peso;
+       this.unidad = unidad;
        this.palletsUbicados = palletsUbicados;
        this.palletsRegistrados = palletsRegistrados;
        this.stockLogico = stockLogico;
@@ -109,6 +111,13 @@ public class Producto  implements java.io.Serializable {
     
     public void setPeso(Double peso) {
         this.peso = peso;
+    }
+    public String getUnidad() {
+        return this.unidad;
+    }
+    
+    public void setUnidad(String unidad) {
+        this.unidad = unidad;
     }
     public Integer getPalletsUbicados() {
         return this.palletsUbicados;

@@ -229,4 +229,40 @@ public class SpotRepository implements ISpotRepository{
         return spots; //To change body of generated methods, choose Tools | Templates.
     }
     
+    public ArrayList<Ubicacion> querySpotsByPosition(int rackId, 
+                                int fil, int col, int lado) {
+        String hql="FROM Ubicacion u WHERE (u.rack.id = :rackId OR :rackId=0) AND " + 
+                "(u.fila=:fil  OR :fil=0) AND (u.columna=:col  OR :col=0) AND "+
+                "((u.lado like :lado)  OR (:lado like 'todos')) " +
+                "AND u.rack.estado!=:estado"+
+                "  ORDER BY u.rack.id, u.fila, u.columna";
+        String l = null;
+        if (lado ==0) l="todos";
+        else if (lado==1) l="A";
+        else l ="B";
+        
+        ArrayList<Ubicacion> spots=null;
+        //gracias baldeon por enseniarme a usar DAO
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("rackId", rackId);
+            q.setParameter("fil", fil);
+            q.setParameter("col", col);
+            q.setParameter("lado",l);
+            q.setParameter("estado", EntityState.Racks.INACTIVO.ordinal());
+            spots = (ArrayList<Ubicacion>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return spots; //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
 }

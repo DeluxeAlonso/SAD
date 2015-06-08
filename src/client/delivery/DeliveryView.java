@@ -18,6 +18,7 @@ import entity.Pallet;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
@@ -220,17 +221,8 @@ public class DeliveryView extends BaseView {
     public void assignRemissionGuides(ArrayList<Despacho> deliveries){
         ArrayList<PedidoParcial> acceptedOrders = new ArrayList<>();
         ArrayList<GuiaRemision> remissionGuides = new ArrayList<>();
-        for(int i=0;i<deliveries.size();i++)
-            for (Iterator<GuiaRemision> remissionGuide = deliveries.get(i).getGuiaRemisions().iterator(); remissionGuide.hasNext(); ) {
-                GuiaRemision g = remissionGuide.next();
-                for(Iterator<PedidoParcial> partialOrder = g.getPedidoParcials().iterator(); partialOrder.hasNext();){
-                    
-                    PedidoParcial p = partialOrder.next();
-                    acceptedOrders.add(p);
-                }
-                remissionGuides.add(g);
-            }
-        orderApplication.CreateRemissionGuides(acceptedOrders, remissionGuides); 
+        
+        orderApplication.CreateRemissionGuides(deliveries); 
     }
     
     public Boolean createPartialOrders(ArrayList<PedidoParcial>acceptedOrders, ArrayList<PedidoParcial>rejectedOrders){

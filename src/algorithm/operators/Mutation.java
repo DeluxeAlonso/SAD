@@ -11,7 +11,6 @@ import algorithm.Problem;
 import algorithm.Solution;
 import static algorithm.operators.ObjectiveFunction.distance;
 import entity.UnidadTransporte;
-import util.Constants;
 import util.Randomizer;
 
 /**
@@ -69,26 +68,57 @@ public class Mutation {
                         algorithm, 0, 0, 0, toNode, 0)
                         - ObjectiveFunction.objectiveFunction(vehicle, nodes[i][j],
                         algorithm, 0, 0, 0, fromNode, 0);
-                if(payoff > bestPayoff){
+                if(payoff > bestPayoff && i!=idxI){
                     bestPayoff = payoff;
                     iRoute = i;
                     jRoute = j;
                 }
             }            
         }
+        
+//        System.out.println("node1: " + node.getProduct().getId());
+//        System.out.println("moving " + idxI + "/" + idxJ + " to " +iRoute + "/" + jRoute);
+        
         Node[] fromRoute = nodes[idxI];
         Node[] toRoute = nodes[iRoute];
         Node[] newFromRoute = new Node[fromRoute.length-1];
         Node[] newToRoute = new Node[toRoute.length+1];        
         System.arraycopy(fromRoute, 0, newFromRoute, 0, idxJ);
+//        if(node==null) throw new AssertionError("there is a null node");
+//        System.out.println("node2: " + node.getProduct().getId());
         for (int i = idxJ+1; i < fromRoute.length; i++) {
             newFromRoute[i-1] = fromRoute[i];            
         }
         System.arraycopy(toRoute, 0, newToRoute, 0, jRoute);
-        toRoute[jRoute] = node;
-        System.arraycopy(toRoute, jRoute, newToRoute, jRoute + 1, toRoute.length - jRoute);
+        newToRoute[jRoute] = node;
+        for (int i = jRoute; i < toRoute.length; i++) {
+            newToRoute[i+1] = toRoute[i];
+        }
+        //System.arraycopy(toRoute, jRoute, newToRoute, jRoute + 1, toRoute.length - jRoute); //here could be the error
         nodes[idxI] = newFromRoute;
         nodes[iRoute] = newToRoute;        
+        
+//        System.out.println("");
+//        System.out.println("newFromRoute");
+        /*for (int i = 0; i < newFromRoute.length; i++) {
+            try{
+            System.out.print(newFromRoute[i].getProduct().getId() + "/" + newFromRoute[i].getDemand() + 
+                    "/" + newFromRoute[i].getPartialOrder().getPedido().getId() +"  ");            
+            }catch(Exception ex){
+                System.out.println("exception from : " + i + " " + newFromRoute.length);
+            }
+        }
+        
+        System.out.println("newToRoute");
+        for (int i = 0; i < newToRoute.length; i++) {
+            try{
+            System.out.print(newToRoute[i].getProduct().getId() + "/" + newToRoute[i].getDemand() + 
+                    "/" + newToRoute[i].getPartialOrder().getPedido().getId() +"  ");            
+            }catch(Exception ex){
+                System.out.println("exception to : " + i + " " + newToRoute.length);
+            }
+        }        
+        */
     }
     
 }
