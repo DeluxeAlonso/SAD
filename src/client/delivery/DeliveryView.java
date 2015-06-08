@@ -8,7 +8,10 @@ package client.delivery;
 import algorithm.AlgorithmExecution;
 import algorithm.AlgorithmReturnValues;
 import algorithm.AlgorithmView;
+import algorithm.Node;
+import algorithm.Problem;
 import algorithm.Solution;
+import algorithm.operators.ObjectiveFunction;
 import application.order.OrderApplication;
 import application.pallet.PalletApplication;
 import client.base.BaseView;
@@ -17,11 +20,17 @@ import entity.GuiaRemision;
 import entity.Pallet;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
+import entity.UnidadTransporte;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
+import javax.swing.JTextArea;
+import javax.swing.table.DefaultTableModel;
 import util.EntityState;
 import util.Icons;
 import util.Strings;
@@ -45,8 +54,75 @@ public class DeliveryView extends BaseView {
         Icons.setButton(btnProcess, Icons.ICONOS.APPLY.ordinal());
         Icons.setButton(btnExecuteAlgorithm, Icons.ICONOS.PLAY.ordinal());
         Icons.setButton(btnViewSolution, Icons.ICONOS.DELIVERY.ordinal());
+        tblRoutes.addMouseListener(new MouseAdapter(){
+            public void mouseClicked(MouseEvent e){
+                fillRouteDetailTable();                
+            }    
+        });
     }
 
+    private void fillRouteDetailTable() {
+        clearRouteDetailTable();
+        DefaultTableModel model = (DefaultTableModel) tblRouteDetail.getModel();
+        int idx = tblRoutes.getSelectedRow();
+        if(idx==-1) return;
+        Node[] route = solution.getNodes()[idx];
+        for (int j = 0; j < route.length; j++) {
+            model.addRow(new Object[]{
+                j,
+                route[j].getPartialOrder().getPedido().getCliente().getNombre(),
+                route[j].getPartialOrder().getPedido().getLocal().getDireccion(),
+                route[j].getProduct().getNombre(),
+                route[j].getDemand()                
+            });            
+        }        
+    }
+
+    private void fillRoutesTable() {
+        clearRoutesTable();
+        DefaultTableModel model = (DefaultTableModel) tblRoutes.getModel();
+        ArrayList<UnidadTransporte> vehiculos = AlgorithmExecution.problem.getVehicles();
+
+        Node[][] nodes = solution.getNodes();
+        for (int i = 0; i < nodes.length; i++) {
+            int cap = 0;
+            double time = 0;
+            for (int j = 0; j < nodes[i].length; j++) {
+                cap += nodes[i][j].getDemand();
+                if (j > 0) {
+                    time += ObjectiveFunction.distance(nodes[i][j - 1].getIdx(), nodes[i][j].getIdx());
+                }
+            }
+            if (nodes[i].length > 0) {
+                time += ObjectiveFunction.distance(Problem.getLastNode(), nodes[i][0].getIdx());
+                time += ObjectiveFunction.distance(nodes[i][nodes[i].length - 1].getIdx(), Problem.getLastNode());
+            }
+            time /= vehiculos.get(0).getTipoUnidadTransporte().getVelocidadPromedio();
+            int seconds = (int) (time * 3600);
+            int hours = seconds / 3600;
+            int minutes = (seconds - hours * 3600) / 60;
+            String totalTime = "" + hours + "h " + minutes + "m";
+            model.addRow(new Object[]{
+                i,
+                vehiculos.get(i).getPlaca(),
+                vehiculos.get(i).getTransportista(),
+                totalTime,
+                cap
+            });
+        }
+
+    }
+
+    private void clearRoutesTable() {
+        DefaultTableModel model = (DefaultTableModel) tblRoutes.getModel();
+        model.setRowCount(0);
+    }
+    
+    private void clearRouteDetailTable() {
+        DefaultTableModel model = (DefaultTableModel) tblRouteDetail.getModel();
+        model.setRowCount(0);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -56,25 +132,39 @@ public class DeliveryView extends BaseView {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnProcess = new javax.swing.JButton();
-        btnExecuteAlgorithm = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtResult = new javax.swing.JTextArea();
         btnViewSolution = new javax.swing.JButton();
+        btnExecuteAlgorithm = new javax.swing.JButton();
+        btnProcess = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         txtHours = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txtMinutes = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txtResult = new javax.swing.JTextArea();
         btnDisplay = new javax.swing.JButton();
+        jProgressBar = new javax.swing.JProgressBar();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblRoutes = new javax.swing.JTable();
+        jPanel3 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tblRouteDetail = new javax.swing.JTable();
 
         setClosable(true);
-        setTitle(Strings.BAD_PARAMETERS_TITLE);
+        setTitle(Strings.ALGORITHM_TITLE);
 
-        btnProcess.setText("Escoger Solución");
-        btnProcess.addActionListener(new java.awt.event.ActionListener() {
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Ejecución"));
+
+        txtResult.setColumns(20);
+        txtResult.setRows(5);
+        jScrollPane1.setViewportView(txtResult);
+
+        btnViewSolution.setText("Ver Solución");
+        btnViewSolution.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnProcessActionPerformed(evt);
+                btnViewSolutionActionPerformed(evt);
             }
         });
 
@@ -85,10 +175,10 @@ public class DeliveryView extends BaseView {
             }
         });
 
-        btnViewSolution.setText("Ver Solución");
-        btnViewSolution.addActionListener(new java.awt.event.ActionListener() {
+        btnProcess.setText("Escoger Solución");
+        btnProcess.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnViewSolutionActionPerformed(evt);
+                btnProcessActionPerformed(evt);
             }
         });
 
@@ -98,10 +188,6 @@ public class DeliveryView extends BaseView {
 
         jLabel3.setText("minutos");
 
-        txtResult.setColumns(20);
-        txtResult.setRows(5);
-        jScrollPane1.setViewportView(txtResult);
-
         btnDisplay.setText("Ver...");
         btnDisplay.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -109,42 +195,44 @@ public class DeliveryView extends BaseView {
             }
         });
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnProcess)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnExecuteAlgorithm)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnViewSolution))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtHours, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel2)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtMinutes, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnDisplay, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(0, 492, Short.MAX_VALUE)))
-                .addContainerGap())
+        jProgressBar.setMinimum(0);
+        jProgressBar.setMaximum(100);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jScrollPane1)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(btnProcess)
+                            .addGap(18, 18, 18)
+                            .addComponent(btnExecuteAlgorithm)
+                            .addGap(18, 18, 18)
+                            .addComponent(btnViewSolution))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel1)
+                            .addGap(18, 18, 18)
+                            .addComponent(txtHours, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabel2)
+                            .addGap(18, 18, 18)
+                            .addComponent(txtMinutes, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabel3)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(btnDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(txtHours, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
@@ -152,12 +240,128 @@ public class DeliveryView extends BaseView {
                     .addComponent(jLabel3)
                     .addComponent(btnDisplay))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnProcess)
                     .addComponent(btnExecuteAlgorithm)
                     .addComponent(btnViewSolution))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Rutas asignadas"));
+
+        tblRoutes.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Ruta No.", "Vehículo", "Conductor", "Tiempo estimado", "Capacidad"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(tblRoutes);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Detalle de la ruta"));
+
+        tblRouteDetail.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Nodo No.", "Cliente", "Dirección", "Producto", "Demanda"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(tblRouteDetail);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(62, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -184,30 +388,38 @@ public class DeliveryView extends BaseView {
     }//GEN-LAST:event_btnViewSolutionActionPerformed
 
     private void btnExecuteAlgorithmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExecuteAlgorithmActionPerformed
-        algorithmExecution = new AlgorithmExecution();
+        algorithmExecution = new AlgorithmExecution(this);
         /*solution = algorithmExecution.start(3);
         StringBuffer buf = algorithmExecution.displayDemand(solution);
         txtResult.setText(buf.toString());*/
-        
+        double hours = 3, minutes = 0;
         try{
-            double hours, minutes;
-            /*if(txtHours.getText()==null) hours = 0;
-            if(txtMinutes.getText()==null) minutes = 0;
             hours = Double.parseDouble(txtHours.getText());
-            minutes = Double.parseDouble(txtMinutes.getText());*/
-            solution = algorithmExecution.start(3);
-            StringBuffer buf = algorithmExecution.displayDemand(solution);
-            txtResult.setText(buf.toString());
+            minutes = Double.parseDouble(txtMinutes.getText());
+            
+            try {
+                solution = algorithmExecution.start(hours + minutes/60);
+                //StringBuffer buf = algorithmExecution.displayDemand(solution);
+                //txtResult.setText(buf.toString());
+                fillRoutesTable();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, Strings.ALGORITHM_ERROR,
+                        Strings.ALGORITHM_ERROR_TITLE, JOptionPane.INFORMATION_MESSAGE);
+            }
+            
         }catch(Exception ex){
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, Strings.BAD_PARAMETERS,
                     Strings.BAD_PARAMETERS_TITLE,JOptionPane.INFORMATION_MESSAGE);
         }      
+        
+        
     }//GEN-LAST:event_btnExecuteAlgorithmActionPerformed
 
     private void btnDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisplayActionPerformed
         if(solution!=null){
-            System.out.println("got here");
+            //System.out.println("got here");
             JDesktopPane desktopPane = getDesktopPane();
             AlgorithmView view = new AlgorithmView(solution);            
             desktopPane.add(view);
@@ -228,7 +440,7 @@ public class DeliveryView extends BaseView {
     public Boolean createPartialOrders(ArrayList<PedidoParcial>acceptedOrders, ArrayList<PedidoParcial>rejectedOrders){
         return orderApplication.createPartialOrders(acceptedOrders, rejectedOrders);
     }
-    
+        
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDisplay;
     private javax.swing.JButton btnExecuteAlgorithm;
@@ -237,9 +449,25 @@ public class DeliveryView extends BaseView {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JProgressBar jProgressBar;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable tblRouteDetail;
+    private javax.swing.JTable tblRoutes;
     private javax.swing.JTextField txtHours;
     private javax.swing.JTextField txtMinutes;
     private javax.swing.JTextArea txtResult;
     // End of variables declaration//GEN-END:variables
+
+    public JProgressBar getjProgressBar() {
+        return jProgressBar;
+    }
+
+    public JTextArea getTxtResult() {
+        return txtResult;
+    }
 }

@@ -141,7 +141,12 @@ public class Strings {
     
     /*ALGORITHM EXECUTION MESSAGES*/
     public static final String BAD_PARAMETERS="Debe ingresar solo números en ambos campos horas y minutos.";
-    public static final String BAD_PARAMETERS_TITLE="Parámetros del algoritmo";
+    public static final String BAD_PARAMETERS_TITLE="Parámetros del algoritmo";   
+    public static final String ALGORITHM_TITLE="Ejecución del Algoritmo";
+    public static final String ALGORITHM_ERROR="Asegúrese de tener pallets, unidades de transporte y pedidos registrados antes de ejecutar el algoritmo.";
+    public static final String ALGORITHM_ERROR_TITLE="Error en la ejecución";
+    
+    
     
     /*END*/
     
