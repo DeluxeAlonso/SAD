@@ -52,7 +52,7 @@ public class HInterceptor extends EmptyInterceptor implements ILogRepository {
             Object[] state,
             String[] propertyNames,
             Type[] types) {
-        handleAuditInsert(entity);
+        handleAuditInsert(entity,1);
 
         return false;
     }
@@ -65,7 +65,7 @@ public class HInterceptor extends EmptyInterceptor implements ILogRepository {
             String[] propertyNames,
             Type[] types) {
 
-        handleAuditInsert(entity);
+        handleAuditInsert(entity,2);
         return false;
     }
 
@@ -76,10 +76,10 @@ public class HInterceptor extends EmptyInterceptor implements ILogRepository {
             String[] propertyNames,
             Type[] types) {
 
-        handleAuditInsert(entity);
+        handleAuditInsert(entity,3);
     }
 
-    private void handleAuditInsert(Object entity) {
+    private void handleAuditInsert(Object entity,int mode) {
         Log log = new Log();        
         Calendar cal=Calendar.getInstance();
         log.setFecha(cal.getTime());
@@ -118,7 +118,18 @@ public class HInterceptor extends EmptyInterceptor implements ILogRepository {
 
         }
         if (log.getIdObjeto() != null) {
-            log.setOperacion(EntityState.Operation.Delete.ordinal());
+            switch (mode){
+                case 1:
+                    log.setOperacion(EntityState.Operation.Insert.ordinal());
+                    break;
+                case 2:
+                    log.setOperacion(EntityState.Operation.Update.ordinal());
+                    break;
+                case 3:
+                    log.setOperacion(EntityState.Operation.Delete.ordinal());
+                    break;
+            }      
+            
             log.setUsuario(user);
             insert(log);
         }

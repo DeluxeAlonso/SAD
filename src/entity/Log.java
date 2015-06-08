@@ -1,5 +1,5 @@
 package entity;
-// Generated Jun 7, 2015 10:23:55 AM by Hibernate Tools 4.3.1
+// Generated 07/06/2015 09:17:33 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -15,21 +15,26 @@ public class Log  implements java.io.Serializable {
      private Integer operacion;
      private Integer tipo;
      private Date fecha;
+     private String idObjeto;
+     private String ip;
+     private String mac;
 
     public Log() {
     }
 
 	
-    public Log(int id, Usuario usuario) {
+    public Log(int id) {
         this.id = id;
-        this.usuario = usuario;
     }
-    public Log(int id, Usuario usuario, Integer operacion, Integer tipo, Date fecha) {
+    public Log(int id, Usuario usuario, Integer operacion, Integer tipo, Date fecha, String idObjeto, String ip, String mac) {
        this.id = id;
        this.usuario = usuario;
        this.operacion = operacion;
        this.tipo = tipo;
        this.fecha = fecha;
+       this.idObjeto = idObjeto;
+       this.ip = ip;
+       this.mac = mac;
     }
    
     public int getId() {
@@ -66,6 +71,27 @@ public class Log  implements java.io.Serializable {
     
     public void setFecha(Date fecha) {
         this.fecha = fecha;
+    }
+    public String getIdObjeto() {
+        return this.idObjeto;
+    }
+    
+    public void setIdObjeto(String idObjeto) {
+        this.idObjeto = idObjeto;
+    }
+    public String getIp() {
+        return this.ip;
+    }
+    
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+    public String getMac() {
+        return this.mac;
+    }
+    
+    public void setMac(String mac) {
+        this.mac = mac;
     }
 
 

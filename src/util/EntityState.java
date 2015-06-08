@@ -152,7 +152,7 @@ public class EntityState {
     
     public static enum Operation{
       
-        Dumb,Insert,Delete,Update
+        Insert,Update,Delete
         
     };
     
