@@ -138,21 +138,13 @@ public class OrderRepository implements IOrderRepository{
                     id.setIdProducto(p.getProducto().getId());
                     p.setId(id);
                     session.save(p);
-                    System.out.println("Producto " +p.getProducto().getNombre() + " Pallets ubicados:"+p.getProducto().getPalletsUbicados() + " Cantidad a quitar" +p.getCantidad());
-                    System.out.println("PREVIO CONTIENE? " +productsToRemove.contains(p.getProducto()));
-                    System.out.println("TAMAHO " +productsToRemove);
                     if(!productNamesToRemove.contains(p.getProducto().getNombre())){
-                        System.out.println("CONTIENE " +p.getProducto().getNombre());
                         productsToRemove.add(p.getProducto());
                         productNamesToRemove.add(p.getProducto().getNombre());
-                        System.out.println("CONTIENE? " +productsToRemove.contains(p.getProducto()));
                         quantityToRemove.add(p.getCantidad());
                     }else{
-                        System.out.println("ACUMULAR");
                         Integer index = productNamesToRemove.indexOf(p.getProducto().getNombre());
-                        System.out.println("iNDEXOBETNIDO");
                         quantityToRemove.set(index, quantityToRemove.get(index) + p.getCantidad());
-                        System.out.println("Acumluado "+productsToRemove.get(index).getNombre()+" "+quantityToRemove.get(index));
                     }
 
                     //p.getProducto().setPalletsUbicados(p.getProducto().getPalletsUbicados() - p.getCantidad());
@@ -403,7 +395,7 @@ public class OrderRepository implements IOrderRepository{
     @Override
     public ArrayList<Pedido> queryAll() {
         Session session = Tools.getSessionInstance();
-        String hql = "from Pedido where estado=1 order by id desc";
+        String hql = "from Pedido where (estado=1 or estado=2) order by id desc";
         ArrayList<Pedido> orders = new ArrayList<>();
         Transaction trns = null;
         try{
@@ -466,7 +458,6 @@ public class OrderRepository implements IOrderRepository{
             for(int i=0;i<pallets.size();i++){
                 session.update(pallets.get(i));
             }
-            System.out.println(p.getPedido().getEstado());
             session.update(p.getPedido());
             session.update(p);                      
             session.getTransaction().commit();

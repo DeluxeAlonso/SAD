@@ -51,7 +51,7 @@ public class AlgorithmExecution {
         this.view = view;
     }
     
-    public Solution start(double maxTravelTime){
+    public Solution start(double maxTravelTime, ArrayList<PedidoParcial>partialOrders){
         long ini = System.currentTimeMillis();
         
         String cad = "Inicializando parámetros...";
@@ -74,7 +74,7 @@ public class AlgorithmExecution {
         String cad2 = "\nIniciando primera fase del algoritmo...";
         view.getTxtResult().setText(cad+cad2);
         
-        problem = new Problem();
+        problem = new Problem(partialOrders);
         
         Population population = new Population(algorithm, problem);
         System.out.println("Se creo la población");

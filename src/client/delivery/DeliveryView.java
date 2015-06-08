@@ -19,6 +19,7 @@ import client.order.OrderView;
 import entity.Despacho;
 import entity.GuiaRemision;
 import entity.Pallet;
+import entity.Pedido;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
 import entity.UnidadTransporte;
@@ -43,6 +44,7 @@ import util.Strings;
 public class DeliveryView extends BaseView {
     private Solution solution = null;
     private AlgorithmExecution algorithmExecution = null;
+    ArrayList<Pedido> currentOrders = new ArrayList<>();
     OrderApplication orderApplication = new OrderApplication();
     PalletApplication palletApplication = new PalletApplication();
     
@@ -55,11 +57,31 @@ public class DeliveryView extends BaseView {
         Icons.setButton(btnProcess, Icons.ICONOS.APPLY.ordinal());
         Icons.setButton(btnExecuteAlgorithm, Icons.ICONOS.PLAY.ordinal());
         Icons.setButton(btnViewSolution, Icons.ICONOS.DELIVERY.ordinal());
+        setupElements();
         tblRoutes.addMouseListener(new MouseAdapter(){
             public void mouseClicked(MouseEvent e){
                 fillRouteDetailTable();                
             }    
         });
+    }
+    
+    private void setupElements(){
+        refreshOrders();
+    }
+    
+    private void fillOrderTable(){
+        DefaultTableModel tableModel = (DefaultTableModel) orderTable.getModel();
+        tableModel.setRowCount(0);
+        currentOrders.stream().forEach((_order) -> {
+            Object[] row = {_order.getId(), _order.getCliente().getNombre()
+                    , _order.getLocal().getNombre(),EntityState.getOrdersState()[_order.getEstado()], false};
+            tableModel.addRow(row);
+        });
+    }
+    
+    private void refreshOrders(){
+        currentOrders = orderApplication.getAllOrders();
+        fillOrderTable();
     }
 
     private void fillRouteDetailTable() {
@@ -124,6 +146,23 @@ public class DeliveryView extends BaseView {
         model.setRowCount(0);
     }
     
+    private ArrayList<PedidoParcial> getCheckedOrders(){
+        DefaultTableModel tableModel = (DefaultTableModel) orderTable.getModel();
+        ArrayList<PedidoParcial> partials = new ArrayList<>();
+        for(int i=0;i<currentOrders.size();i++){
+            if((Boolean)tableModel.getValueAt(i, 4)){
+                ArrayList<PedidoParcial> tempPartials = 
+                        orderApplication.getPendingPartialOrdersById(currentOrders.get(i).getId());
+                for(int j=0;j<tempPartials.size();j++)
+                    partials.add(tempPartials.get(j));
+            }
+        }
+        if(partials.isEmpty())
+            return orderApplication.getPendingPartialOrders();
+        else
+            return partials;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -152,6 +191,10 @@ public class DeliveryView extends BaseView {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblRouteDetail = new javax.swing.JTable();
+        jPanel4 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        orderTable = new javax.swing.JTable();
+        allCheckbox = new javax.swing.JCheckBox();
 
         setClosable(true);
         setTitle(Strings.ALGORITHM_TITLE);
@@ -207,26 +250,25 @@ public class DeliveryView extends BaseView {
                 .addGap(24, 24, 24)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jScrollPane1)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(btnProcess)
-                            .addGap(18, 18, 18)
-                            .addComponent(btnExecuteAlgorithm)
-                            .addGap(18, 18, 18)
-                            .addComponent(btnViewSolution))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jLabel1)
-                            .addGap(18, 18, 18)
-                            .addComponent(txtHours, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jLabel2)
-                            .addGap(18, 18, 18)
-                            .addComponent(txtMinutes, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jLabel3)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(btnDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jScrollPane1)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnProcess)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnExecuteAlgorithm)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnViewSolution))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtHours, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtMinutes, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(25, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -285,14 +327,14 @@ public class DeliveryView extends BaseView {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane2)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -329,15 +371,77 @@ public class DeliveryView extends BaseView {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 507, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Lista de Pedidos"));
+
+        orderTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Codigo", "Cliente", "Local", "Estado", "Seleccione"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane4.setViewportView(orderTable);
+
+        allCheckbox.setText("Marcar Todos");
+        allCheckbox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                allCheckboxItemStateChanged(evt);
+            }
+        });
+        allCheckbox.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                allCheckboxStateChanged(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane4)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(allCheckbox)))
                 .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(allCheckbox, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -348,21 +452,24 @@ public class DeliveryView extends BaseView {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -374,7 +481,10 @@ public class DeliveryView extends BaseView {
             AlgorithmReturnValues returnValues = algorithmExecution.processOrders(solution);
             assignRemissionGuides(returnValues.getDespachos());
             if(createPartialOrders(returnValues.getAcceptedOrders(), returnValues.getRejectedOrders())){
-                OrderView.orderView.verifyOrders();
+                if(OrderView.orderView != null)
+                    OrderView.orderView.verifyOrders();
+                refreshOrders();
+                allCheckbox.setSelected(false);
                 JOptionPane.showMessageDialog(this, Strings.DELIVERY_SUCCESS,
                     Strings.DELIVERY_TITLE,JOptionPane.INFORMATION_MESSAGE);
             }
@@ -395,13 +505,14 @@ public class DeliveryView extends BaseView {
         /*solution = algorithmExecution.start(3);
         StringBuffer buf = algorithmExecution.displayDemand(solution);
         txtResult.setText(buf.toString());*/
+        ArrayList<PedidoParcial> selectedPartialOrders = getCheckedOrders();
         double hours = 3, minutes = 0;
         try{
             hours = Double.parseDouble(txtHours.getText());
             minutes = Double.parseDouble(txtMinutes.getText());
             
             try {
-                solution = algorithmExecution.start(hours + minutes/60);
+                solution = algorithmExecution.start(hours + minutes/60, selectedPartialOrders);
                 //StringBuffer buf = algorithmExecution.displayDemand(solution);
                 //txtResult.setText(buf.toString());
                 fillRoutesTable();
@@ -433,6 +544,20 @@ public class DeliveryView extends BaseView {
         }
     }//GEN-LAST:event_btnDisplayActionPerformed
 
+    private void allCheckboxStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_allCheckboxStateChanged
+
+    }//GEN-LAST:event_allCheckboxStateChanged
+
+    private void allCheckboxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_allCheckboxItemStateChanged
+        DefaultTableModel tableModel = (DefaultTableModel) orderTable.getModel();
+        if(allCheckbox.isSelected())
+            for(int i=0;i<currentOrders.size();i++)
+               tableModel.setValueAt(true, i, 4); 
+        else
+           for(int i=0;i<currentOrders.size();i++)
+               tableModel.setValueAt(false, i, 4);
+    }//GEN-LAST:event_allCheckboxItemStateChanged
+
     public void assignRemissionGuides(ArrayList<Despacho> deliveries){
         ArrayList<PedidoParcial> acceptedOrders = new ArrayList<>();
         ArrayList<GuiaRemision> remissionGuides = new ArrayList<>();
@@ -445,6 +570,7 @@ public class DeliveryView extends BaseView {
     }
         
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox allCheckbox;
     private javax.swing.JButton btnDisplay;
     private javax.swing.JButton btnExecuteAlgorithm;
     private javax.swing.JButton btnProcess;
@@ -455,10 +581,13 @@ public class DeliveryView extends BaseView {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JProgressBar jProgressBar;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JTable orderTable;
     private javax.swing.JTable tblRouteDetail;
     private javax.swing.JTable tblRoutes;
     private javax.swing.JTextField txtHours;

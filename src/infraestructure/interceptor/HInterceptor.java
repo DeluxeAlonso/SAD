@@ -94,8 +94,8 @@ public class HInterceptor extends EmptyInterceptor implements ILogRepository {
 
         } else if (entity instanceof Pedido) {
             Pedido p = (Pedido) entity;
-            log.setIdObjeto(p.getId().toString());
-            log.setTipo(EntityState.Master.Pedido.ordinal());
+            //log.setIdObjeto(p.getId().toString());
+            //log.setTipo(EntityState.Master.Pedido.ordinal());
 
         } else if (entity instanceof Perfil) {
             Perfil p = (Perfil) entity;
@@ -109,8 +109,8 @@ public class HInterceptor extends EmptyInterceptor implements ILogRepository {
 
         } else if (entity instanceof Despacho) {
             Despacho d = (Despacho) entity;
-            log.setIdObjeto(d.getId().toString());
-            log.setTipo(EntityState.Master.Despacho.ordinal());
+            //log.setIdObjeto(d.getId().toString());
+            //log.setTipo(EntityState.Master.Despacho.ordinal());
 
         } else if (entity instanceof Kardex) {
             Kardex k = (Kardex) entity;
@@ -129,7 +129,6 @@ public class HInterceptor extends EmptyInterceptor implements ILogRepository {
                     log.setOperacion(EntityState.Operation.Delete.ordinal());
                     break;
             }      
-            
             log.setUsuario(user);
             insert(log);
         }
@@ -137,7 +136,6 @@ public class HInterceptor extends EmptyInterceptor implements ILogRepository {
 
     @Override
     public int insert(Log object) {
-
         Session session = Tools.getSessionInstance();
         session.save(object);
         return 1;

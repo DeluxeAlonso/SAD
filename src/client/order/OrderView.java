@@ -237,11 +237,9 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                 int attendedCount = 0;
                 ArrayList<PedidoParcial> partialOrders = orderApplication.getPendingPartialOrdersById(currentOrders.get(i).getId());        
                 for(int j=0;j<partialOrders.size();j++){
-                    System.out.println("Estaod de partial order "+ partialOrders.get(j).getEstado());
                     if(partialOrders.get(j).getEstado() == EntityState.PartialOrders.ATENDIDO.ordinal())
                         attendedCount++;
                 }
-                System.out.println("attended vs partialsize "+ attendedCount + " "+ partialOrders.size());
                 if(attendedCount == partialOrders.size()){
                     currentOrders.get(i).setEstado(EntityState.Orders.FINALIZADO.ordinal());
                     orderApplication.updateOrder(currentOrders.get(i));
