@@ -13,6 +13,7 @@ import algorithm.operators.ObjectiveFunction;
 import algorithm.operators.Repair;
 import application.order.OrderApplication;
 import application.pallet.PalletApplication;
+import client.delivery.DeliveryView;
 import entity.Cliente;
 import entity.Despacho;
 import entity.GuiaRemision;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import javax.swing.SwingUtilities;
 import util.EntityState;
 
 /**
@@ -35,25 +37,42 @@ import util.EntityState;
  * @author robert
  */
 public class AlgorithmExecution {
-    Problem problem;
+    public static Problem problem;
     public static boolean bad = false;
+    public static boolean overCap = false;
+    public static boolean overTime = false;
+    public static boolean overStock = false;
+    public DeliveryView view = null;
+    
+    public AlgorithmExecution() {        
+    }
+    
+    public AlgorithmExecution(DeliveryView view) {
+        this.view = view;
+    }
     
     public Solution start(double maxTravelTime){
         long ini = System.currentTimeMillis();
         
+        String cad = "Inicializando parámetros...";
+        view.getTxtResult().setText(cad);
+        
         Algorithm algorithm = new Algorithm();
         //condicion de parada puede mejorar        
-        algorithm.setNumberOfGenerations(0);
-        algorithm.setPopulationSize(1000);
+        algorithm.setNumberOfGenerations(10000);
+        algorithm.setPopulationSize(10000);
         algorithm.setTournamentSelectionKValue(50);
-        algorithm.setOvercapPenalty(10000);
-        algorithm.setOvertimePenalty(10000);
-        algorithm.setOverstockPenalty(10000);
+        algorithm.setOvercapPenalty(100000);
+        algorithm.setOvertimePenalty(100000);
+        algorithm.setOverstockPenalty(100000);
         algorithm.setMutationRate(0.5f);
         algorithm.setMaxPriority(100);
         algorithm.setBasePriority(1.09f);
         algorithm.setMaxTravelTime(maxTravelTime); 
         algorithm.setGraspAlpha(0.3f);
+        
+        String cad2 = "\nIniciando primera fase del algoritmo...";
+        view.getTxtResult().setText(cad+cad2);
         
         problem = new Problem();
         
@@ -68,9 +87,25 @@ public class AlgorithmExecution {
         long popTime = System.currentTimeMillis() - ini;
         ini = System.currentTimeMillis();
         
-        bad = false;
+        overCap = overTime = overStock = bad = false;
+        
+        String cad3 = "\nIniciando segunda fase del algoritmo...";
+        view.getTxtResult().setText(cad+cad2+cad3);
+        
+        int nGen = algorithm.getNumberOfGenerations();
         
         for (int i = 0; i < algorithm.getNumberOfGenerations(); i++) {
+           /*int iFinal = i; 
+            try {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        view.getjProgressBar().setValue(iFinal*100/nGen);
+                    }
+                });
+                java.lang.Thread.sleep(100);
+            } catch (InterruptedException e) {
+                ;
+            }*/
             
             Solution[] parents = new Solution[2];
             parents[0] = population.getSolutions()[Selection.tournamentSelection(
@@ -109,19 +144,37 @@ public class AlgorithmExecution {
             else
                 child.setCost(cost);
             
-            bad = false;
+            /*overCap = overTime = overStock = bad = false;
+            double cost2 = ObjectiveFunction.getSolutionCost(child, algorithm, problem, problem.getProductsStock());
+            if(overCap) System.out.println("overCap");
+            if(overTime) System.out.println("overTime");
+            if(overStock) System.out.println("overStock");
+            
+            /*
+            if(bad){
+                System.out.println("parent1");
+                System.out.println(displayDemand(parents[0]));
+                System.out.println("parent2");
+                System.out.println(displayDemand(parents[1]));
+                System.out.println("child");
+                System.out.println(displayDemand(child));
+            }*/
+            
+            
+            overCap = overTime = overStock = bad = false;
             
             int replacedSolution = Selection.tournamentSelection(
                     algorithm.getTournamentSelectionKValue(), population, 
                     Selection.Options.WORST);
             
             bestSolution = population.getBestSolution();
-            System.out.println("Generación: " + i + " child: " + child.getCost() + " best: " + bestSolution.getCost());
+            System.out.println("Generación: " + i + " child: " + child.getCost() + 
+                    " best: " + bestSolution.getCost() + " worst " + population.getSolutions()[replacedSolution].getCost());
             
             population.getSolutions()[replacedSolution] = child;
         }
         long end = System.currentTimeMillis();
-        System.out.println("Grasp algorithm time: " + popTime);
+        System.out.println("Grasp algorithm time: " + popTime + "ms");
         System.out.println("Genetic algorithm time: " + (end-ini) + "ms");
         
         bestSolution = population.getBestSolution();
@@ -131,21 +184,13 @@ public class AlgorithmExecution {
         //System.out.println(displayRoutes(bestSolution));
         //System.out.println("");
         System.out.println(displayDemand(bestSolution));
-        
-//        System.out.println("");
-        //System.out.println(displayRoutes(population.getSolutions()[0]));
-        //System.out.println("");
-//        System.out.println(displayDemand(population.getSolutions()[0]));
-        
-//        System.out.println("");
-        //System.out.println(displayRoutes(population.getSolutions()[1]));
-//        System.out.println("");
-//        System.out.println(displayDemand(population.getSolutions()[1]));
-        
-//        System.out.println("");
-//        System.out.println(displayRoutes(population.getSolutions()[2]));
-//        System.out.println("");
-//        System.out.println(displayDemand(population.getSolutions()[2]));
+
+        double theTime = (popTime+(end-ini));
+        theTime /= 1000;
+         
+        String cad4 = "\nEjecución finalizada...";
+        String cad5 = "\nTiempo de ejecución: " + String.format( "%.2f", theTime ) + " s";
+        view.getTxtResult().setText(cad+cad2+cad3+cad4+cad5+"\n");
         
         return bestSolution;  
     }
@@ -349,7 +394,8 @@ public class AlgorithmExecution {
             for (int j = 0; j < nodes[i].length; j++) {
                 try{
                 buf.append(nodes[i][j].getProduct().getId()).append("/").append(nodes[i][j].getDemand()).
-                        append("/").append(nodes[i][j].getPartialOrder().getPedido().getId()).append("  ");
+                        append("/").append(nodes[i][j].getPartialOrder().getPedido().getId()).
+                        append("/").append(nodes[i][j].getIdx()).append("  ");
                 cap += nodes[i][j].getDemand();
                 if(j>0) time += ObjectiveFunction.distance(nodes[i][j-1].getIdx(), nodes[i][j].getIdx());
                 }catch(Exception ex){
@@ -360,7 +406,7 @@ public class AlgorithmExecution {
                 time += ObjectiveFunction.distance(Problem.getLastNode(), nodes[i][0].getIdx());
                 time += ObjectiveFunction.distance(nodes[i][nodes[i].length-1].getIdx(), Problem.getLastNode());
             }
-            time /= 15;
+            time /= problem.getVehicles().get(0).getTipoUnidadTransporte().getVelocidadPromedio();
             buf.append(cap + " " + time + "\n");
         }
         return buf;

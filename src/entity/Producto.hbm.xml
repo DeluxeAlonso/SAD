@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated Jun 7, 2015 10:23:57 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated 07/06/2015 09:17:35 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entity.Producto" table="producto" catalog="saddb" optimistic-lock="version">
         <id name="id" type="java.lang.Integer">
@@ -29,9 +29,6 @@
         <property name="peso" type="java.lang.Double">
             <column name="peso" precision="22" scale="0" />
         </property>
-        <property name="unidad" type="string">
-            <column name="unidad" length="60" />
-        </property>
         <property name="palletsUbicados" type="java.lang.Integer">
             <column name="pallets_ubicados" />
         </property>
@@ -43,6 +40,9 @@
         </property>
         <property name="stockTotal" type="java.lang.Integer">
             <column name="stock_total" />
+        </property>
+        <property name="unidad" type="string">
+            <column name="unidad" length="60" />
         </property>
         <set name="pedidoParcialXProductos" table="pedido_parcial_x_producto" inverse="true" lazy="true" fetch="select">
             <key>
