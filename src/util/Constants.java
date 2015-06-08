@@ -10,8 +10,11 @@ package util;
  * @author LUIS
  */
 public class Constants {
+
     public static int FILAS_RACK = 2;
-    public static int COLUMNAS_RACK = 4; 
+    public static int COLUMNAS_RACK = 4;
     public static double WAREHOUSE_LATITUDE = -12.0693885;
     public static double WAREHOUSE_LONGITUDE = -77.0778219;
+    public static String currentIP = "";
+    public static String currentMac = "";
 }

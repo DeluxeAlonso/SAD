@@ -190,8 +190,7 @@ public class LoginView extends javax.swing.JFrame {
                     pwTxt.setText("");
                 }
             } else {
-                user = new Usuario();
-                user.setId("root");
+                
                 new MainView(user).setVisible(true);
                 dispose();
             }

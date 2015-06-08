@@ -361,7 +361,15 @@ public class UserView extends BaseView {
                 return canEdit [columnIndex];
             }
         });
+        usersGrid.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(usersGrid);
+        if (usersGrid.getColumnModel().getColumnCount() > 0) {
+            usersGrid.getColumnModel().getColumn(0).setMinWidth(100);
+            usersGrid.getColumnModel().getColumn(1).setMinWidth(150);
+            usersGrid.getColumnModel().getColumn(2).setMinWidth(150);
+            usersGrid.getColumnModel().getColumn(3).setMinWidth(50);
+            usersGrid.getColumnModel().getColumn(4).setMinWidth(150);
+        }
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
