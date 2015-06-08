@@ -40,7 +40,8 @@ public class Problem {
         Problem.lastNode = lastNode;
     }
     
-    public Problem(ArrayList<PedidoParcial>partialOrders){        
+    public Problem(ArrayList<PedidoParcial>partialOrders){  
+        System.out.println("Pedidos parciales " + partialOrders.size());
         OrderApplication orderApplication = new OrderApplication();
         TransportUnitApplication transportUnitApplication = new TransportUnitApplication();
         ProductApplication productApplication = new ProductApplication();        

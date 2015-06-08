@@ -278,6 +278,7 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Registrar Pedido");
 
         codPorductTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
