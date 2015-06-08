@@ -72,6 +72,8 @@ public class ProductView extends BaseView implements MouseListener {
         setupListeners();
         fillClientsTable();
         condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.CONDITIONS_NAMES));
+        String [] u = {"gr","kg"};
+        unidadCombo.setModel(new javax.swing.DefaultComboBoxModel(u));
         clientView = this;
         tblClients.addMouseListener(new MouseAdapter(){
             public void mouseClicked(MouseEvent e){
@@ -110,6 +112,7 @@ public class ProductView extends BaseView implements MouseListener {
     public void fillProductsTable(){
         clearLocalsTable();
         DefaultTableModel model = (DefaultTableModel) tblLocals.getModel();
+        int a= productTypes.get(tblClients.getSelectedRow()).getId();
         products = (ArrayList<Producto>)productApplication.queryByType(productTypes.get(tblClients.getSelectedRow()).getId());
         if (products !=null){
         if(products.size()>0){
@@ -296,6 +299,7 @@ public class ProductView extends BaseView implements MouseListener {
         pesoTxt = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         condicionCombo = new javax.swing.JComboBox();
+        unidadCombo = new javax.swing.JComboBox();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblLocals = new javax.swing.JTable();
         btnDeleteLocal = new javax.swing.JButton();
@@ -445,7 +449,7 @@ public class ProductView extends BaseView implements MouseListener {
             }
         });
 
-        jLabel8.setText("*Peso (Kg):");
+        jLabel8.setText("*Peso:");
 
         pesoTxt.setEnabled(false);
 
@@ -453,6 +457,8 @@ public class ProductView extends BaseView implements MouseListener {
 
         condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         condicionCombo.setEnabled(false);
+
+        unidadCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -472,9 +478,12 @@ public class ProductView extends BaseView implements MouseListener {
                             .addComponent(productNameTxt)
                             .addComponent(descProdTxt)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(pesoTxt))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(unidadCombo, 0, 1, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(pesoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -502,12 +511,13 @@ public class ProductView extends BaseView implements MouseListener {
                         .addComponent(cantidadXPalletTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(pesoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel8)))
+                        .addComponent(jLabel8)
+                        .addComponent(unidadCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                 .addComponent(btnSaveLocal))
         );
 
@@ -726,6 +736,7 @@ public class ProductView extends BaseView implements MouseListener {
             product.setStockLogico(0);
             product.setPalletsRegistrados(0);
             product.setPalletsUbicados(0);
+            product.setUnidad(unidadCombo.getSelectedItem().toString());
             product.setTipoProducto(productTypes.get(tblClients.getSelectedRow()));
             
             int aux=productApplication.insert(product);
@@ -829,6 +840,7 @@ public class ProductView extends BaseView implements MouseListener {
     private javax.swing.JTextField productTypeName;
     private javax.swing.JTable tblClients;
     private javax.swing.JTable tblLocals;
+    private javax.swing.JComboBox unidadCombo;
     // End of variables declaration//GEN-END:variables
 
     @Override

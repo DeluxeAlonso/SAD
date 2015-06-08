@@ -161,6 +161,11 @@ public class KardexReport extends BaseView {
         jLabel3.setText("Fecha final:");
 
         btnReport.setText("Generar Reporte");
+        btnReport.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnReportMouseClicked(evt);
+            }
+        });
         btnReport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnReportActionPerformed(evt);
@@ -333,6 +338,40 @@ public class KardexReport extends BaseView {
             //JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir el archivo",Strings.ERROR_KARDEX_TITLE,JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnExportMousePressed
+
+    private void btnReportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReportMouseClicked
+        // TODO add your handling code here:
+        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+        boolean hasErrors=false;
+        String error_message = "Errores:\n";
+        if(warehouses.size()>0 && products.size()>0){
+            if(dtcInitDate.getDate()==null){
+                hasErrors=true;
+                //error_message += Strings.ERROR_DATE_INI+"\n";
+            }
+            if(dtcEndDate.getDate()==null){
+                hasErrors=true;
+                //error_message += Strings.ERROR_DATE_END+"\n";
+            }
+            if(dtcInitDate.getDate()!=null && dtcEndDate.getDate()!=null){
+                if(dtcInitDate.getDate().getTime() > dtcEndDate.getDate().getTime()){
+                    hasErrors=true;
+                    //error_message += Strings.ERROR_DATE+"\n";
+                }
+            }
+            
+            if(hasErrors){
+                //JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_KARDEX_TITLE,JOptionPane.WARNING_MESSAGE);
+                btnExport.setEnabled(false);
+            }else{
+                kardex = new ArrayList<Kardex>();
+                kardex = kardexApplication.queryByParameters(warehouses.get(comboWarehouseFrom.getSelectedIndex()).getId(), products.get(comboProductFrom.getSelectedIndex()).getId(), dtcInitDate.getDate(),dtcEndDate.getDate());
+                System.out.println(kardex.size());
+                fillKardex();
+                btnExport.setEnabled(true);
+            }
+        }
+    }//GEN-LAST:event_btnReportMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
