@@ -28,6 +28,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import javax.swing.BorderFactory;
@@ -204,6 +205,12 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
         
         Date date = new Date();
         p.setFecha(date);
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date()); // Now use today date.
+        c.add(Calendar.DATE, 7); // Adding 5 days
+        p.setFechaVencimiento(c.getTime());
         
         PedidoParcial pp = new PedidoParcial();
         pp.setEstado(1);

@@ -943,12 +943,12 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     if(reasonCombo.getSelectedIndex() != 0){
             PedidoParcial p = currentPartialOrders.get(partialCombo.getSelectedIndex() -1);
             ArrayList<Pallet> pallets = palletApplication.getPalletsByPartialOrder(p.getId());
-            if(reasonCombo.getSelectedIndex() == 1){//PRODUCTOS VENCIDOS 
-                p.setEstado(EntityState.PartialOrders.NO_ATENDIDO.ordinal());
+            if(reasonCombo.getSelectedIndex() == 1){//PRODUCTOS VENCIDOS
+                p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
                 for(int i=0;i<pallets.size();i++){
-                    Producto product = pallets.get(i).getProducto();
-                    product.setStockLogico(product.getStockLogico() - 1);
-                    productApplication.update(product);
+                    //Producto product = pallets.get(i).getProducto();
+                    //product.setStockLogico(product.getStockLogico() - 1);
+                    //productApplication.update(product);
                     pallets.get(i).setEstado(EntityState.Pallets.ELIMINADO.ordinal());
                     pallets.get(i).setPedidoParcial(null);
                     pallets.get(i).setUbicacion(null);

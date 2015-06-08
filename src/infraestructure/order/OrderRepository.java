@@ -211,6 +211,7 @@ public class OrderRepository implements IOrderRepository{
             if(order.getEstado() == EntityState.Orders.ANULADO.ordinal())
                 for(Iterator<PedidoParcial> partialOrder = order.getPedidoParcials().iterator(); partialOrder.hasNext();){
                     PedidoParcial p = partialOrder.next();
+                    p.setGuiaRemision(null);
                     p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
                     session.update(p);
                 }
@@ -459,6 +460,7 @@ public class OrderRepository implements IOrderRepository{
                 session.update(pallets.get(i));
             }
             session.update(p.getPedido());
+            //p.setPedido(null);
             session.update(p);                      
             session.getTransaction().commit();
             return true;
