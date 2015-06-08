@@ -113,7 +113,7 @@ public class ProductRepository implements IProductRepository {
     public ArrayList<Producto> queryByType(int idType) {
         Session session = Tools.getSessionInstance();
         // WHERE p.tipoProducto.id=:idType
-        String hql = "FROM Producto p WHERE p.condicion.id=:idType";
+        String hql = "FROM Producto p WHERE p.tipoProducto.id=:idType";
         ArrayList<Producto> products=null;
         Transaction trns = null;
         try{

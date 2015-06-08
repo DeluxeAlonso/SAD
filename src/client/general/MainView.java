@@ -10,7 +10,7 @@ import application.profile.ProfileApplication;
 import client.internment.InternmentSelectView;
 
 import client.devolution.DevolutionView;
-import client.reports.AvailabilityReport;
+import client.reports.StockReport;
 
 import client.product.ProductView;
 import client.personal.PersonalView;
@@ -21,7 +21,7 @@ import client.pallet.PalletView;
 import client.rack.RackView;
 import client.reports.KardexReport;
 import client.reports.RemissionGuideReport;
-import client.reports.StockReport;
+import client.reports.AvailabilityReport;
 import client.reports.ProductCaducityReport;
 import client.reports.SecurityLogView;
 import client.reports.InternmentReport;

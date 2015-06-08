@@ -37,10 +37,26 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import jxl.Workbook;
+import jxl.format.Colour;
+import jxl.format.UnderlineStyle;
+import jxl.format.VerticalAlignment;
+import jxl.write.DateTime;
+import jxl.write.Label;
+import jxl.write.Boolean;
+import jxl.write.Number;
+import jxl.write.WritableCell;
+import jxl.write.WritableCellFeatures;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
+import jxl.write.WritableImage;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
 import util.EntityState;
 import util.EntityType;
 import static util.EntityType.CONDITIONS;
 import static util.EntityType.CONDITIONS_NAMES;
+import util.Icons;
 import util.InstanceFactory;
 import util.Strings;
 
@@ -73,34 +89,40 @@ public class AvailabilityReport extends BaseView {
     /**
      * Creates new form KardexReport
      */
+    
+    String almacenR;
+    String rackR;
+    String condicionR;
     public AvailabilityReport() {
         initComponents();
         initialize();
         fillWarehouses();
         //condicionTxt.setText(EntityType.getCondition(warehouses.get(0).getCondicion().getId()).getNombre());
+        try{
         warehouseCombo.setModel(new javax.swing.DefaultComboBoxModel(warehousesNames));
         fillRacksIni();
-        tipoCombo.setModel(new javax.swing.DefaultComboBoxModel(typeNames));
-        fillConditionsIni();
-        condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(conditionNames));
+        rackCombo.setModel(new javax.swing.DefaultComboBoxModel(racksNames));
+        condicionTxt.setText(EntityType.getCondition(warehouses.get(0).getCondicion().getId()).getNombre());
+        }catch (Exception e){
+            
+        }
     }
     
     public void fillWarehouses(){
         warehouses = warehouseApplication.queryAll();
-        warehousesNames = new String[warehouses.size()+1];
-        warehousesNames[0]="Todos";
+        warehousesNames = new String[warehouses.size()];
         for (int i = 0; i < warehouses.size(); i++) {
-            warehousesNames[i+1] = warehouses.get(i).getDescripcion();
+            warehousesNames[i] = warehouses.get(i).getDescripcion();
         } 
     }
     public void fillRacksIni(){
-        productTypes = productTypeApplication.queryAll();
+        racks = rackApplication.queryRacksByWarehouse(warehouses.get(0).getId());
         
-        if (productTypes!=null){
-            typeNames = new String[productTypes.size()+1];
-            typeNames[0] = "Todos";
-            for (int i = 0; i < productTypes.size(); i++) {
-                typeNames[i+1] = productTypes.get(i).getNombre();
+        if (racks!=null){
+            racksNames = new String[racks.size()+1];
+            racksNames[0] = "Todos";
+            for (int i = 0; i < racks.size(); i++) {
+                racksNames[i+1] = racks.get(i).getId().toString();
             } 
         }
     }
@@ -135,19 +157,22 @@ public class AvailabilityReport extends BaseView {
     public void fillKardex(){
         clearKardex();
         DefaultTableModel model = (DefaultTableModel) tblKardex.getModel();
-        double precio_unit = 13.19;
-        if(racks.size()>0){
+        if(spots.size()>0){
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM");
             Object[] row;
-            // Inventario inicial
+            
             /*
+            
+            
+            // Inventario inicial
             row = new Object[]{
                         sdf.format(racks.get(0).getFechaRegistro()),
                         "Inventario Inicial",
                         "-",
                         0,
                     };
-            model.addRow(row);*/
+            model.addRow(row);
+            */
             for(Ubicacion spotItem : spots){
                 String position = spotItem.getFila()+"/" +spotItem.getColumna()+"/"+ spotItem.getLado();
                 row = new Object[]{
@@ -189,11 +214,9 @@ public class AvailabilityReport extends BaseView {
         tblKardex = new javax.swing.JTable();
         jSeparator1 = new javax.swing.JSeparator();
         btnExport = new javax.swing.JButton();
-        tipoCombo = new javax.swing.JComboBox();
+        rackCombo = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
-        condicionCombo = new javax.swing.JComboBox();
-        condicionCombo1 = new javax.swing.JComboBox();
-        jLabel5 = new javax.swing.JLabel();
+        condicionTxt = new javax.swing.JTextField();
 
         setClosable(true);
         setTitle("Reporte de Disponibilidad");
@@ -228,13 +251,14 @@ public class AvailabilityReport extends BaseView {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                true, false, true, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
+        tblKardex.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tblKardex);
         if (tblKardex.getColumnModel().getColumnCount() > 0) {
             tblKardex.getColumnModel().getColumn(0).setResizable(false);
@@ -251,19 +275,15 @@ public class AvailabilityReport extends BaseView {
             }
         });
 
-        tipoCombo.addItemListener(new java.awt.event.ItemListener() {
+        rackCombo.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                tipoComboItemStateChanged(evt);
+                rackComboItemStateChanged(evt);
             }
         });
 
-        jLabel2.setText("Tipo de producto:");
+        jLabel2.setText("Rack:");
 
-        condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        condicionCombo1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jLabel5.setText("Tipo:");
+        condicionTxt.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -275,33 +295,25 @@ public class AvailabilityReport extends BaseView {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel1))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(rackCombo, 0, 128, Short.MAX_VALUE)
+                                    .addComponent(warehouseCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(44, 44, 44)
+                                .addComponent(jLabel4)))
                         .addGap(0, 2, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnExport, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnReport, javax.swing.GroupLayout.Alignment.TRAILING)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(tipoCombo, 0, 128, Short.MAX_VALUE)
-                            .addComponent(warehouseCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(18, 18, 18)
-                                .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jLabel5)
-                                .addGap(18, 18, 18)
-                                .addComponent(condicionCombo1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addComponent(condicionTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(btnExport, javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(btnReport, javax.swing.GroupLayout.Alignment.TRAILING)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -312,14 +324,12 @@ public class AvailabilityReport extends BaseView {
                     .addComponent(jLabel1)
                     .addComponent(warehouseCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
-                    .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(condicionTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tipoCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(condicionCombo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                    .addComponent(rackCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                 .addComponent(btnReport)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -347,23 +357,17 @@ public class AvailabilityReport extends BaseView {
                 int idCon;
                 spots = new ArrayList<Ubicacion>();
                 
-                if (warehouseCombo.getSelectedIndex()==0){
-                    idWare=0;
-                }else{
-                    idWare=warehouses.get(warehouseCombo.getSelectedIndex()-1).getId();
-                }
                 
-                if (tipoCombo.getSelectedIndex()==0)
-                    idTipo=-1;
+                idWare=warehouses.get(warehouseCombo.getSelectedIndex()).getId();
+                
+                if (rackCombo.getSelectedIndex()==0)
+                    idCon=0;
                 else
-                    idTipo=racks.get(tipoCombo.getSelectedIndex()-1).getId();
-                
-                if (tipoCombo.getSelectedIndex()==0)
-                    idCon=-1;
-                else
-                    idCon=racks.get(tipoCombo.getSelectedIndex()-1).getId();
-                
-                listReport = palletApplication.queryByReport(idWare,idCon,idTipo,0);
+                    idCon=racks.get(rackCombo.getSelectedIndex()-1).getId();
+                almacenR  =warehouseCombo.getSelectedItem().toString();
+                rackR  =rackCombo.getSelectedItem().toString();
+                condicionR = condicionTxt.getText();
+                spots = spotApplication.queryByParameters(idWare,idCon);
                 //System.out.println(racks.size());
                 fillKardex();
                 btnExport.setEnabled(true);
@@ -372,8 +376,13 @@ public class AvailabilityReport extends BaseView {
     }//GEN-LAST:event_btnReportActionPerformed
 
     private void warehouseComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_warehouseComboItemStateChanged
-        
 
+        
+        fillRacks(warehouses.get(warehouseCombo.getSelectedIndex()).getId());
+        rackCombo.setModel(new javax.swing.DefaultComboBoxModel(racksNames));
+        condicionTxt.setText(EntityType.getCondition(
+                warehouses.get(warehouseCombo.getSelectedIndex()).getCondicion().getId())
+                .getNombre());
     }//GEN-LAST:event_warehouseComboItemStateChanged
 
     private void btnExportMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportMousePressed
@@ -386,6 +395,7 @@ public class AvailabilityReport extends BaseView {
         Date date = new Date();
         /* Export to XSL */
         try {
+            /*
             FileWriter excel = new FileWriter(file);
             DefaultTableModel model = (DefaultTableModel) tblKardex.getModel();
             excel.write("\t\t\tKardex\n");
@@ -403,31 +413,231 @@ public class AvailabilityReport extends BaseView {
                 excel.write("\n");
             }
             excel.close();
-        } catch (IOException ex) {
+                    */
+            File exlFile = file;
+            WritableWorkbook writableWorkbook = Workbook.createWorkbook(exlFile);
+ 
+            WritableSheet writableSheet = writableWorkbook.createSheet(
+                    "Reporte de Disponibilidad", 0);
+            //writableSheet.addImage(new WritableImage());
+            writableSheet.setColumnView(1, 26);
+            writableSheet.setColumnView(2, 10);
+            writableSheet.setColumnView(3, 10);
+            writableSheet.setColumnView(4, 10);
+            writableSheet.setColumnView(5, 10);
+            writableSheet.setColumnView(6, 15);
+            writableSheet.setColumnView(7, 15);
+            writableSheet.setColumnView(8, 15);
+            writableSheet.setColumnView(9, 15);
+            writableSheet.setColumnView(10, 15);
+            //Create Cells with contents of different data types.
+            //Also specify the Cell coordinates in the constructor
+            
+            createHeader(writableSheet,date,dateFormat);
+            
+            fillReport(writableSheet);
+ 
+            //Write and close the workbook
+            writableWorkbook.write();
+            writableWorkbook.close();
+            
+            
+        } catch (Exception ex) {
             Logger.getLogger(AvailabilityReport.class.getName()).log(Level.SEVERE, null, ex);
             //JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir el archivo",Strings.ERROR_KARDEX_TITLE,JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnExportMousePressed
 
-    private void tipoComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_tipoComboItemStateChanged
+    private void rackComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rackComboItemStateChanged
         // TODO add your handling code here:
-    }//GEN-LAST:event_tipoComboItemStateChanged
+    }//GEN-LAST:event_rackComboItemStateChanged
 
-
+    public void createHeader(WritableSheet writableSheet, Date date, DateFormat dateFormat){
+        
+        try{
+            Label label0 = new Label(1, 1, "SAD");
+            Label label1 = new Label(4, 1, "Reporte de Disponibilidad");
+            Label label2 = new Label(7, 1, "Fecha: "+ dateFormat.format(date));
+            Label label3 = new Label(1, 2, "Almacen: "+ almacenR );
+            Label label4 = new Label(1, 3, "Condicion: "+condicionR);
+            Label label5 = new Label(1, 4, "Rack: "+ rackR);
+            WritableFont tittleFont = new WritableFont(WritableFont.createFont("Calibri"),
+             16,
+             WritableFont.BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+             tittleFont.setColour(jxl.format.Colour.RED);
+            
+            WritableCellFormat tittleFormat = new WritableCellFormat(tittleFont);
+             tittleFormat.setWrap(false);
+             tittleFormat.setAlignment(jxl.format.Alignment.CENTRE);
+             tittleFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+             
+             
+             
+             
+             WritableFont headerRFont = new WritableFont(WritableFont.createFont("Calibri"),
+             10,
+             WritableFont.BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+             headerRFont.setColour(jxl.format.Colour.BLACK);
+            
+            WritableCellFormat headerRFormat = new WritableCellFormat(headerRFont);
+             headerRFormat.setWrap(false);
+             headerRFormat.setAlignment(jxl.format.Alignment.RIGHT);
+             headerRFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+             
+             WritableFont headerLFont = new WritableFont(WritableFont.createFont("Calibri"),
+             11,
+             WritableFont.BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+             headerLFont.setColour(jxl.format.Colour.BLACK);
+            
+            WritableCellFormat headerLFormat = new WritableCellFormat(headerLFont);
+             headerLFormat.setWrap(false);
+             headerLFormat.setAlignment(jxl.format.Alignment.LEFT);
+             headerLFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+             
+             
+             
+             //normalFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,
+             //jxl.format.Colour.BLACK);
+            //Add the created Cells to the sheet
+             
+             WritableFont headerTFont = new WritableFont(WritableFont.createFont("Calibri"),
+             WritableFont.DEFAULT_POINT_SIZE,
+             WritableFont.BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+            headerTFont.setColour(jxl.format.Colour.WHITE);
+            
+            WritableCellFormat headerTFormat = new WritableCellFormat(headerTFont);
+             headerTFormat.setWrap(true);
+             headerTFormat.setAlignment(jxl.format.Alignment.CENTRE);
+             headerTFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+             headerTFormat.setWrap(true);
+             headerTFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,
+             jxl.format.Colour.BLACK);
+             headerTFormat.setBackground(Colour.GRAY_80);
+             
+            Label t1 = new Label(1, 6, "Almacen"); 
+            Label t2 = new Label(2, 6, "Rack"); 
+            Label t3 = new Label(3, 6, "Fila"); 
+            Label t4 = new Label(4, 6, "Columna"); 
+            Label t5 = new Label(5, 6, "Lado"); 
+            Label t6 = new Label(6, 6, "Estado"); 
+             
+             t1.setCellFormat(headerTFormat);
+             t2.setCellFormat(headerTFormat);
+             t3.setCellFormat(headerTFormat);
+             t4.setCellFormat(headerTFormat);
+             t5.setCellFormat(headerTFormat);
+             t6.setCellFormat(headerTFormat);
+             
+             label0.setCellFormat(headerLFormat);
+             label1.setCellFormat(tittleFormat);
+             label2.setCellFormat(headerRFormat);
+             label3.setCellFormat(headerLFormat);
+             label4.setCellFormat(headerLFormat);
+             label5.setCellFormat(headerLFormat);
+            writableSheet.addCell(label0);
+            writableSheet.addCell(label1);
+            writableSheet.addCell(label2);
+            writableSheet.addCell(label3);
+            writableSheet.addCell(label4);
+            writableSheet.addCell(label5);
+            writableSheet.addCell(t1);
+            writableSheet.addCell(t2);
+            writableSheet.addCell(t3);
+            writableSheet.addCell(t4);
+            writableSheet.addCell(t5);
+            writableSheet.addCell(t6);
+            
+        }
+            catch(Exception e){
+                
+            }
+    }
+    
+    private void fillReport(WritableSheet writableSheet){
+        try{
+            //Definicion de formatos
+            WritableFont rowFont = new WritableFont(WritableFont.createFont("Calibri"),
+             11,
+             WritableFont.NO_BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+             rowFont.setColour(jxl.format.Colour.BLACK);
+            
+            WritableCellFormat parFormat = new WritableCellFormat(rowFont);
+             parFormat.setWrap(false);
+             parFormat.setBackground(Colour.GREY_25_PERCENT);
+             
+             
+             WritableCellFormat imparFormat = new WritableCellFormat(rowFont);
+             parFormat.setWrap(false);
+             int col=1;
+             int fil=7;
+             int i=0;
+             Object[] row;
+             for(Ubicacion ubi : spots){
+                /*
+                row = new Object[]{
+                    arr[0].toString(),
+                    arr[1].toString(),
+                    arr[2].toString(),
+                    arr[3].toString()
+                };
+                model.addRow(row);
+                        */
+                Label l1 = new Label(1, fil+i, almacenR);
+                Number l2 = new Number(2, fil+i, ubi.getRack().getId());
+                Number l3 = new Number(3, fil+i, ubi.getFila());
+                Number l4 = new Number(4, fil+i, ubi.getColumna());
+                Label l5 = new Label(5, fil+i, ubi.getLado());
+                Label l6 = new Label(6, fil+i, EntityState.getSpotsState()[ubi.getEstado()]); 
+                if (i%2==0){
+                    l1.setCellFormat(imparFormat);
+                    l2.setCellFormat(imparFormat);
+                    l3.setCellFormat(imparFormat);
+                    l4.setCellFormat(imparFormat);
+                    l5.setCellFormat(imparFormat);
+                    l6.setCellFormat(imparFormat);
+                }else{
+                    l1.setCellFormat(parFormat);
+                    l2.setCellFormat(parFormat);
+                    l3.setCellFormat(parFormat);
+                    l4.setCellFormat(parFormat);
+                    l5.setCellFormat(parFormat);
+                    l6.setCellFormat(parFormat);
+                    
+                }
+                writableSheet.addCell(l1);
+                writableSheet.addCell(l2);
+                writableSheet.addCell(l3);
+                writableSheet.addCell(l4);
+                writableSheet.addCell(l5);
+                writableSheet.addCell(l6);
+                i++;
+            }
+                     
+                     
+                     
+            
+        }catch (Exception e){
+            
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnExport;
     private javax.swing.JButton btnReport;
-    private javax.swing.JComboBox condicionCombo;
-    private javax.swing.JComboBox condicionCombo1;
+    private javax.swing.JTextField condicionTxt;
     private com.toedter.calendar.JCalendar jCalendar1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JComboBox rackCombo;
     private javax.swing.JTable tblKardex;
-    private javax.swing.JComboBox tipoCombo;
     private javax.swing.JComboBox warehouseCombo;
     // End of variables declaration//GEN-END:variables
 }
