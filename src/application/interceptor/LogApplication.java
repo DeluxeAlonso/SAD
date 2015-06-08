@@ -9,6 +9,7 @@ import base.interceptor.ILogRepository;
 import entity.Log;
 import infraestructure.interceptor.HInterceptor;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -27,5 +28,15 @@ public class LogApplication {
             e.printStackTrace();
         }
         return log;
+    }
+    
+    public ArrayList<Log> getLog(Log log, Date dateIniMod, Date dateFinMod,Date dateIniCr, Date dateFinCr){
+       ArrayList<Log> logs = null;
+        try {
+            logs = logRepository.queryLog(log,dateIniMod,dateFinMod, dateIniCr, dateFinCr);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return logs;
     }
 }

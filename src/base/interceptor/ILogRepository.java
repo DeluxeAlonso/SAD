@@ -7,11 +7,14 @@ package base.interceptor;
 
 import base.IRepository;
 import entity.Log;
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
  * @author Nevermade
  */
-public interface ILogRepository extends IRepository<Log>{
-    Log queryLog(Log object);
+public interface ILogRepository extends IRepository<Log> {
+
+    ArrayList<Log> queryLog(Log object, Date dateI, Date dateF,Date dateICr ,Date dateFCr);
 }

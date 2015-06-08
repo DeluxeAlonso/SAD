@@ -29,7 +29,8 @@ public class HibernateUtil {
             // config file.
             Configuration configuration = new Configuration();
             Interceptor interceptor= new HInterceptor();
-            configuration.setInterceptor(interceptor);
+            
+            configuration.setInterceptor(interceptor);            
             configuration.configure();
 
             serviceRegistry = new StandardServiceRegistryBuilder().applySettings(

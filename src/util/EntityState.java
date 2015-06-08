@@ -142,7 +142,7 @@ public class EntityState {
 
     public static enum Master {
 
-        Dumb,Almacen, Guia_Remision, Orden_Internamiento, Pedido, Perfil, Usuario, Despacho, Kardex
+        Almacen, Guia_Remision, Orden_Internamiento, Pedido, Perfil, Usuario, Despacho, Kardex
     };
 
     public static String[] getMasters() {

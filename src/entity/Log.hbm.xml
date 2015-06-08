@@ -1,24 +1,27 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 07/06/2015 09:17:35 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 08/06/2015 05:30:02 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="entity.Log" table="log" catalog="saddb" optimistic-lock="version">
-        <id name="id" type="int">
+        <id name="id" type="java.lang.Integer">
             <column name="id" />
             <generator class="identity" />
         </id>
-        <many-to-one name="usuario" class="entity.Usuario" fetch="select">
-            <column name="usuario_id" length="40" />
+        <many-to-one name="usuarioByUsuarioActualizador" class="entity.Usuario" fetch="select">
+            <column name="usuario_actualizador" length="40" />
         </many-to-one>
-        <property name="operacion" type="java.lang.Integer">
-            <column name="operacion" />
+        <many-to-one name="usuarioByUsuarioCreador" class="entity.Usuario" fetch="select">
+            <column name="usuario_creador" length="40" />
+        </many-to-one>
+        <property name="fechaCreacion" type="timestamp">
+            <column name="fecha_creacion" length="19" />
         </property>
         <property name="tipo" type="java.lang.Integer">
             <column name="tipo" />
         </property>
-        <property name="fecha" type="timestamp">
-            <column name="fecha" length="19" />
+        <property name="fechaActualizacion" type="timestamp">
+            <column name="fecha_actualizacion" length="19" />
         </property>
         <property name="idObjeto" type="string">
             <column name="id_objeto" length="45" />
