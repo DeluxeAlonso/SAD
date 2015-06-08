@@ -40,11 +40,11 @@ public class Problem {
         Problem.lastNode = lastNode;
     }
     
-    public Problem(){        
+    public Problem(ArrayList<PedidoParcial>partialOrders){        
         OrderApplication orderApplication = new OrderApplication();
         TransportUnitApplication transportUnitApplication = new TransportUnitApplication();
         ProductApplication productApplication = new ProductApplication();        
-        orders = orderApplication.getPendingPartialOrders();
+        orders = partialOrders;
         vehicles = transportUnitApplication.getAllTransportUnits(); 
         ArrayList<Producto> products = productApplication.getAllProducts();
         

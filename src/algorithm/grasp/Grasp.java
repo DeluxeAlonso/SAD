@@ -6,6 +6,7 @@
 package algorithm.grasp;
 
 import algorithm.Algorithm;
+import algorithm.AlgorithmExecution;
 import algorithm.Node;
 import algorithm.Problem;
 import algorithm.operators.ObjectiveFunction;
@@ -191,12 +192,13 @@ public class Grasp {
                 int productId = nodes.get(i).getProduct().getId();
                 int newStock = currentStock.get(productId) - nodes.get(i).getDemand();
                 
+                AlgorithmExecution.bad = false;
                 double cost = ObjectiveFunction.objectiveFunction(vehicle, 
                         nodes.get(i), algorithm, 0, currentTime, 0, travelCost, newStock);
                 
                 //System.out.println(i + "currentTime: " + currentTime + "   travelCost: " + travelCost + "   cost: " + cost);
                 
-                if(cost>2*travelCost/* || cost>algorithm.getOverstockPenalty()*/)
+                if(AlgorithmExecution.bad)
                     continue;
                 //System.out.println("chosen");
                 if(!alreadyInit){

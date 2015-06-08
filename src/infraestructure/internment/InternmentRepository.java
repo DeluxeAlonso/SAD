@@ -8,6 +8,7 @@ import base.internment.IInternmentRepository;
 import entity.Cliente;
 import entity.OrdenInternamiento;
 import entity.OrdenInternamientoXProducto;
+import entity.Producto;
 import java.util.ArrayList;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -199,10 +200,51 @@ public class InternmentRepository implements IInternmentRepository {
             return orden.get(0); //To change body of generated methods, choose Tools | Templates.
     }
     
-    
+    @Override
+    public OrdenInternamientoXProducto getOrderProd(Producto id) {
+         String hql="FROM OrdenInternamientoXProducto WHERE producto=:id";
+        ArrayList<OrdenInternamientoXProducto> orden= new ArrayList<>();
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("id", id);
+            orden = (ArrayList<OrdenInternamientoXProducto>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        if (orden.size()==0)
+            return null;
+        else
+            return orden.get(0);
+    }
     
     @Override
     public OrdenInternamiento queryById(String id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    public void updateOrdenXProducto(OrdenInternamientoXProducto object) {
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            session.update(object);
+            session.getTransaction().commit();
+            //return object.getId();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+           // return -1;
+        } 
+    }
+
 }

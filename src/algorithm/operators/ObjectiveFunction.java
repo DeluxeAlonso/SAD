@@ -41,7 +41,7 @@ public class ObjectiveFunction {
         else customerPriority = 1;
                 
         int overCap = Math.max(0, currentCap + extraCap - 
-                t.getTipoUnidadTransporte().getCapacidadPallets());
+                t.getTipoUnidadTransporte().getCapacidadPallets());        
         
         double overTime = Math.max(0, currentTime + travelCost -
                 algorithm.getMaxTravelTime());
@@ -55,6 +55,11 @@ public class ObjectiveFunction {
         //customerPriority = 1;
         
         if(overCap>0 || overTime>0 || overStock>0) AlgorithmExecution.bad = true;
+        if(overCap>0) AlgorithmExecution.overCap = true;
+        if(overTime>0) AlgorithmExecution.overTime = true;
+        if(overStock>0) AlgorithmExecution.overStock = true;
+        //if(AlgorithmExecution.overCap) System.out.println("currentCap: " + currentCap + " extraCap: " 
+        //        + extraCap + "maxCap: " + t.getTipoUnidadTransporte().getCapacidadPallets());
         
         return travelCost/customerPriority + 
                 algorithm.getOvercapPenalty()*overCap +
@@ -112,14 +117,17 @@ public class ObjectiveFunction {
         HashMap<Integer,Integer> currentStock = new HashMap<> (productsStock);        
         Node[][] routes = s.getNodes();
         ArrayList<UnidadTransporte> vehicles = problem.getVehicles();
-        double solutionCost = 0;
+        double solutionCost = 0; int nonzero = 0;
         for (int i = 0; i < routes.length; i++) {
             double routeCost = getRouteCost(vehicles.get(i), routes[i], algorithm,
                     currentStock);
+            //if(AlgorithmExecution.overCap) System.out.println("solution overCap at: " + i);
+            if(routeCost>0) nonzero++;
             solutionCost += routeCost; 
             //System.out.println("costo de ruta: " + routeCost);
         }        
-        return solutionCost;
+        if(nonzero==0) nonzero = 1;
+        return solutionCost/nonzero;
     }   
     
     
