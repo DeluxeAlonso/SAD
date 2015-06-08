@@ -1,5 +1,5 @@
 package entity;
-// Generated Jun 7, 2015 10:23:55 AM by Hibernate Tools 4.3.1
+// Generated 08/06/2015 05:30:00 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -21,7 +21,8 @@ public class Usuario  implements java.io.Serializable {
      private String apellidoMaterno;
      private String respuesta;
      private Integer estado;
-     private Set logs = new HashSet(0);
+     private Set logsForUsuarioActualizador = new HashSet(0);
+     private Set logsForUsuarioCreador = new HashSet(0);
 
     public Usuario() {
     }
@@ -32,7 +33,7 @@ public class Usuario  implements java.io.Serializable {
         this.correo = correo;
         this.password = password;
     }
-    public Usuario(String id, Perfil perfil, PreguntaSecreta preguntaSecreta, String correo, String password, String nombre, String apellidoPaterno, String apellidoMaterno, String respuesta, Integer estado, Set logs) {
+    public Usuario(String id, Perfil perfil, PreguntaSecreta preguntaSecreta, String correo, String password, String nombre, String apellidoPaterno, String apellidoMaterno, String respuesta, Integer estado, Set logsForUsuarioActualizador, Set logsForUsuarioCreador) {
        this.id = id;
        this.perfil = perfil;
        this.preguntaSecreta = preguntaSecreta;
@@ -43,7 +44,8 @@ public class Usuario  implements java.io.Serializable {
        this.apellidoMaterno = apellidoMaterno;
        this.respuesta = respuesta;
        this.estado = estado;
-       this.logs = logs;
+       this.logsForUsuarioActualizador = logsForUsuarioActualizador;
+       this.logsForUsuarioCreador = logsForUsuarioCreador;
     }
    
     public String getId() {
@@ -116,12 +118,19 @@ public class Usuario  implements java.io.Serializable {
     public void setEstado(Integer estado) {
         this.estado = estado;
     }
-    public Set getLogs() {
-        return this.logs;
+    public Set getLogsForUsuarioActualizador() {
+        return this.logsForUsuarioActualizador;
     }
     
-    public void setLogs(Set logs) {
-        this.logs = logs;
+    public void setLogsForUsuarioActualizador(Set logsForUsuarioActualizador) {
+        this.logsForUsuarioActualizador = logsForUsuarioActualizador;
+    }
+    public Set getLogsForUsuarioCreador() {
+        return this.logsForUsuarioCreador;
+    }
+    
+    public void setLogsForUsuarioCreador(Set logsForUsuarioCreador) {
+        this.logsForUsuarioCreador = logsForUsuarioCreador;
     }
 
 

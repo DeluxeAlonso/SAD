@@ -7,14 +7,19 @@ package client.order;
 
 import algorithm.AlgorithmExecution;
 import application.client.ClientApplication;
+import application.internment.InternmentApplication;
 import application.local.LocalApplication;
 import application.order.OrderApplication;
 import application.pallet.PalletApplication;
 import application.product.ProductApplication;
 import client.base.BaseView;
+import client.internment.InternmentSelectView;
+import client.internment.InternmentSelectView.Buffer;
 import entity.Cliente;
 import entity.GuiaRemision;
 import entity.Local;
+import entity.OrdenInternamiento;
+import entity.OrdenInternamientoXProducto;
 import entity.Pallet;
 import entity.Pedido;
 import entity.PedidoParcial;
@@ -32,10 +37,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.TimeZone;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -43,6 +51,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
+import org.eclipse.persistence.jpa.jpql.parser.DateTime;
 import util.EntityState;
 import util.EntityType;
 import util.Icons;
@@ -59,6 +68,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     ClientApplication clientApplication = new ClientApplication();
     AlgorithmExecution algorithmExecution = new AlgorithmExecution();
     PalletApplication palletApplication = new PalletApplication();
+    InternmentApplication internmentApplication = new InternmentApplication();
     public static OrderView orderView;
     ArrayList<Local> locals = new ArrayList<>();
     ArrayList<Producto> orderProducts;
@@ -151,7 +161,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     /*
      * Table Methods
      */
-    public void refreshTable(){
+    public void refreshTable(){ 
         DefaultTableModel tableModel = (DefaultTableModel) orderTable.getModel();
         tableModel.setRowCount(0);
         currentOrders.stream().forEach((_order) -> {
@@ -218,6 +228,25 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                         Strings.MESSAGE_DELETE_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
                 deleteBtn.setEnabled(false);
         }
+    }
+    
+    public void verifyOrders(){
+        currentOrders = orderApplication.getAllOrdersWithAllStates();
+        for(int i=0;i<currentOrders.size();i++){
+            if(currentOrders.get(i).getEstado() != EntityState.Orders.ANULADO.ordinal()){
+                int attendedCount = 0;
+                ArrayList<PedidoParcial> partialOrders = orderApplication.getPendingPartialOrdersById(currentOrders.get(i).getId());        
+                for(int j=0;j<partialOrders.size();j++){
+                    if(partialOrders.get(j).getEstado() == EntityState.PartialOrders.ATENDIDO.ordinal())
+                        attendedCount++;
+                }
+                if(attendedCount == partialOrders.size()){
+                    currentOrders.get(i).setEstado(EntityState.Orders.FINALIZADO.ordinal());
+                    orderApplication.updateOrder(currentOrders.get(i));
+                }
+            }
+        }
+        refreshOrders();
     }
     
     /*
@@ -350,11 +379,16 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                 order.setEstado(Integer.parseInt(line_split[2]));
                 Date date = new Date();
                 order.setFecha(date);
-                
+
                 PedidoParcial pp = new PedidoParcial();
                 pp.setEstado(1);
                 pp.setPedido(order);
                 productsNum = Integer.parseInt(line_split[3]);
+               
+                DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                Date endDate = df.parse(line_split[4]);
+                order.setFechaVencimiento(endDate);
+                
                 for(int j=0;j<productsNum;j++){
                     line = br.readLine();
                     line_split = line.split(cvsSplitBy);
@@ -916,13 +950,25 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                 for(int i=0;i<pallets.size();i++){
                     pallets.get(i).setEstado(EntityState.Pallets.ELIMINADO.ordinal());
                     pallets.get(i).setPedidoParcial(null);
+                    pallets.get(i).setUbicacion(null);
                 }
             }
             else{//CLIENTE INSATISFECHO
                 p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
+                for(Iterator<PedidoParcialXProducto> partialOrderDetail = p.getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){
+                    PedidoParcialXProducto partial = partialOrderDetail.next(); 
+                    OrdenInternamientoXProducto o = internmentApplication.getOrderProduct(partial.getProducto());
+                    o.setCantidad(o.getCantidad());
+                    o.setCantidadIngresada(o.getCantidadIngresada() - partial.getCantidad());
+                    o.getProducto().setPalletsRegistrados(o.getProducto().getPalletsRegistrados() + partial.getCantidad());
+                    o.getProducto().setStockLogico(o.getProducto().getStockLogico() + partial.getCantidad());
+                    productApplication.update(o.getProducto());
+                    internmentApplication.updateOrdenXProducto(o);
+                 }
                 for(int i=0;i<pallets.size();i++){
                     pallets.get(i).setEstado(EntityState.Pallets.CREADO.ordinal());
                     pallets.get(i).setPedidoParcial(null);
+                    pallets.get(i).setUbicacion(null);
                 }
             }
             //Verificamos si al pedido le quedana un pedidos parciales
@@ -932,6 +978,15 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                 System.out.println("AVAIALBLE ORDERS " + availablePartialOrders.size());
                 if(availablePartialOrders.isEmpty()){
                     p.getPedido().setEstado(EntityState.Orders.ANULADO.ordinal());
+                    orderApplication.updateOrder(p.getPedido());
+                }else
+                {
+                    p.getPedido().setEstado(EntityState.Orders.REGISTRADO.ordinal());
+                    for(int i=0;i<availablePartialOrders.size();i++)
+                        if(availablePartialOrders.get(i).getEstado() == EntityState.PartialOrders.ATENDIDO.ordinal()){
+                            p.getPedido().setEstado(EntityState.Orders.EN_CURSO.ordinal());
+                            break;
+                        }   
                     orderApplication.updateOrder(p.getPedido());
                 }
                 refreshOrders();

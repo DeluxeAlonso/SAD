@@ -110,7 +110,7 @@ public class MainView extends javax.swing.JFrame {
     }
 
     private void renderUserMenu() {
-        if (!user.getId().equals("root")) {
+        if (user!=null) {
             Set actions = profileApplication.getProfileByName(user.getPerfil().getNombrePerfil()).getAccions();
             int numActions = actionApplication.getParents().size();
 

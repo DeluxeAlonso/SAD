@@ -1,9 +1,12 @@
 package entity;
-// Generated Jun 7, 2015 10:23:55 AM by Hibernate Tools 4.3.1
+// Generated 08/06/2015 05:30:00 AM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import util.EntityState;
 import java.util.Set;
 
 /**
@@ -80,6 +83,7 @@ public class Pedido  implements java.io.Serializable {
         this.fechaVencimiento = fechaVencimiento;
     }
     public Set getPedidoParcials() {
+        
         return this.pedidoParcials;
     }
     
@@ -87,8 +91,22 @@ public class Pedido  implements java.io.Serializable {
         this.pedidoParcials = pedidoParcials;
     }
 
-
-
+    public Pedido getUpdatedOrder(){
+        int attendedPartialOrders = 0;
+        int partialOrdersCount = 0;
+        for(Iterator<PedidoParcial> partialOrders = this.getPedidoParcials().iterator(); partialOrders.hasNext();){
+            PedidoParcial partialOrder = partialOrders.next();
+            if(partialOrder.getEstado()!=EntityState.PartialOrders.ANULADO.ordinal()){
+                partialOrdersCount = partialOrdersCount + 1;
+                if(partialOrder.getEstado() == EntityState.PartialOrders.ATENDIDO.ordinal()){
+                    attendedPartialOrders = attendedPartialOrders + 1;
+                }
+            }
+        }
+        this.setEstado(partialOrdersCount == attendedPartialOrders ? EntityState.Orders.FINALIZADO.ordinal() :
+                EntityState.Orders.EN_CURSO.ordinal());
+        return this;
+    } 
 
 }
 
