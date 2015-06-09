@@ -148,7 +148,7 @@ public class ProductView extends BaseView implements MouseListener {
         btnSaveLocal.setEnabled(state);
         pesoTxt.setEnabled(state);
         condicionCombo.setEnabled(state);
-        
+        unidadCombo.setEnabled(state);
     }
     
     public boolean isDouble( String str ){
@@ -459,6 +459,7 @@ public class ProductView extends BaseView implements MouseListener {
         condicionCombo.setEnabled(false);
 
         unidadCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        unidadCombo.setEnabled(false);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -738,7 +739,6 @@ public class ProductView extends BaseView implements MouseListener {
             product.setPalletsUbicados(0);
             product.setUnidad(unidadCombo.getSelectedItem().toString());
             product.setTipoProducto(productTypes.get(tblClients.getSelectedRow()));
-            
             int aux=productApplication.insert(product);
             product.setEan13(calcularEAN13(aux));
             productApplication.update(product);

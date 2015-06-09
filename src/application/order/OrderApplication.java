@@ -124,6 +124,16 @@ public class OrderApplication {
         return partialOrders;
     }
     
+    public ArrayList<PedidoParcial> getPartialOrdersByDeliveryId(Despacho delivery){
+        ArrayList<PedidoParcial> partialOrders = new ArrayList<>();
+        try{
+            partialOrders = orderRepository.queryAllPartialOrdersByDeliveryId(delivery);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return partialOrders;
+    }
+    
     public ArrayList<PedidoParcialXProducto> queryAllProductsByOrderId(Integer orderId){
         ArrayList<PedidoParcialXProducto> partialProducts = new ArrayList<>();
         try{

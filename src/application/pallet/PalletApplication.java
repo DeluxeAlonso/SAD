@@ -6,8 +6,11 @@
 package application.pallet;
 
 import base.pallet.IPalletRepository;
+import entity.Almacen;
+import entity.Despacho;
 import entity.OrdenInternamiento;
 import entity.Pallet;
+import entity.Producto;
 import infraestructure.pallet.PalletRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -159,6 +162,26 @@ public class PalletApplication {
         ArrayList<Pallet> pallets = new ArrayList<>();
         try {
             pallets = palletRepository.queryByParameters(ean, almacen, producto,internmentOrder, selected);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pallets;
+    }
+    
+    public ArrayList<Pallet> queryByDeliveryParameters(Almacen warehouse, ArrayList<Despacho> delivery,Producto product){
+        ArrayList<Pallet> pallets = new ArrayList<>();
+        try {
+            pallets = palletRepository.queryByDeliveryParameters(warehouse, delivery,product);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pallets;
+    }
+    
+    public ArrayList<Pallet> queryByWarehouseParameters(Almacen warehouse, ArrayList<Despacho> delivery){
+        ArrayList<Pallet> pallets = new ArrayList<>();
+        try {
+            pallets = palletRepository.queryByWarehouseParameters(warehouse, delivery);
         } catch (Exception e) {
             e.printStackTrace();
         }

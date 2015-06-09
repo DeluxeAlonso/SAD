@@ -295,7 +295,7 @@ public class NewWarehouseView extends BaseDialogView {
             r.setAlmacen(al);
             r.setNumCol(col);
             r.setNumFil(fil);
-            r.setUbicLibres(col*fil);
+            r.setUbicLibres(col*fil*2);
             al.getRacks().add(r);
             
             
@@ -387,7 +387,11 @@ public class NewWarehouseView extends BaseDialogView {
         } else if (isDouble(AreaTxt.getText())){
             double areaA = Double.parseDouble(AreaTxt.getText());
             if (areaA>10000){
-                error_message += "El area de un almacen debe ser 10,000 o menor"+"\n";
+                error_message += "El area de un almacen debe ser 10,000 o menor."+"\n";
+                AreaTxt.setBorder(errorBorder);
+                errorFlag = true;
+            }else if (areaA<100){
+                error_message += "El area de un almacen debe ser 100 o mayor."+"\n";
                 AreaTxt.setBorder(errorBorder);
                 errorFlag = true;
             }
