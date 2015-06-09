@@ -12,6 +12,7 @@ import entity.OrdenInternamiento;
 import entity.Pallet;
 import entity.Producto;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
@@ -397,19 +398,12 @@ public class PalletRepository implements IPalletRepository{
                 + dif  
                  + " GROUP BY pro.nombre, pro.tipoProducto.nombre, pro.condicion.nombre" ;
         
-        
-        
-       
-        
-        
         String hql1= "SELECT p.nombre, p.tipoProducto.nombre, p.condicion.nombre, 0 "
                     + "FROM Producto p "
                     + "WHERE (p.condicion.id = :id OR :id =0) ";
         
         String hql2 = "SELECT p.nombre, p.tipoProducto.nombre, p.condicion.nombre, p.stockLogico"
                 + " FROM Producto p";
-        
-        
         List<Object[]> listPall=null;
         List<Object[]> listPro=null;
         //gracias baldeon por enseniarme a usar DAO
@@ -425,14 +419,11 @@ public class PalletRepository implements IPalletRepository{
             else if (reporte==1){
                 q.setParameter("est1", EntityState.Pallets.CREADO.ordinal());
                 q.setParameter("est2",EntityState.Pallets.UBICADO.ordinal());
-            }
-            
-            
+            }    
             listPall = q.list();          
             Query q1 = session.createQuery(hql1);
             q1.setParameter("id", condicion);
             listPro = q1.list();
-            
             session.getTransaction().commit();
             /////////////////////////////////////
             for (Object[] arr: listPro){
@@ -442,18 +433,12 @@ public class PalletRepository implements IPalletRepository{
                     }
                 }
             }
-            
-            
-            
             ////////////////////////////////////////////
-            }else {
-                
+            }else {   
                 Query q = session.createQuery(hql2);
                 listPro = q.list();
-            
                 session.getTransaction().commit();
             }
-            
         } catch (RuntimeException e) {
             if (trns != null) {
                 trns.rollback();
@@ -461,8 +446,6 @@ public class PalletRepository implements IPalletRepository{
             e.printStackTrace();
         }
         return listPro; //To change body of generated methods, choose Tools | Templates.
-        
-        
         
     }
 
@@ -515,6 +498,41 @@ public class PalletRepository implements IPalletRepository{
             e.printStackTrace();
         }
         return pallets; 
+    }
+
+    @Override
+    public List<Object[]> queryByReportInter(int almacen, Date fechaD, Date fechaH, int tipo) {
+        String hql="SELECT p.ordenInternamiento.id, p.ubicacion.rack.almacen.descripcion, pro.nombre, pro.tipoProducto.nombre, pro.condicion.nombre, "
+                + "count(1) , p.fechaRegistro "
+                + "FROM Pallet p "
+                + "JOIN p.producto pro "
+                + "WHERE (p.ubicacion.rack.almacen.id = :wareId OR :wareId=0) AND (p.fechaRegistro BETWEEN :dateIni AND :dateEnd)"
+                 + " GROUP BY p.ordenInternamiento.id,p.ubicacion.rack.almacen.descripcion, "
+                + "pro.nombre, pro.tipoProducto.nombre, pro.condicion.nombre, "
+                + "p.fechaRegistro" ;
+        List<Object[]> list=null;
+        //gracias baldeon por enseniarme a usar DAO
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            
+            Query q = session.createQuery(hql);
+            q.setParameter("wareId", almacen);
+            q.setParameter("dateIni", fechaD);
+            q.setParameter("dateEnd", fechaH);
+            list = q.list();          
+            session.getTransaction().commit();
+            
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return list; //To change body of generated methods, choose Tools | Templates.
+        
+        
     }
     
 }

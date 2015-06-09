@@ -12,6 +12,7 @@ import entity.OrdenInternamiento;
 import entity.Pallet;
 import entity.Producto;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,4 +36,5 @@ public interface IPalletRepository extends IRepository<Pallet>{
     public ArrayList<Pallet> queryByDeliveryParameters(Almacen warehouse, ArrayList<Despacho>delivery, Producto product);
 
     public ArrayList<Pallet> queryByWarehouseParameters(Almacen warehouse, ArrayList<Despacho> delivery);
+    public List<Object[]> queryByReportInter(int almacen, Date fechaD, Date fechaH, int tipo);
 }

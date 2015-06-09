@@ -454,7 +454,7 @@ public class KardexReport extends BaseView {
             }
             
             if(hasErrors){
-                //JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_KARDEX_TITLE,JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_KARDEX_TITLE,JOptionPane.WARNING_MESSAGE);
                 btnExport.setEnabled(false);
             }else{
                 kardex = new ArrayList<Kardex>();
