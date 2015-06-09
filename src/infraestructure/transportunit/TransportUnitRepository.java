@@ -188,6 +188,28 @@ public class TransportUnitRepository implements ITransportUnitRepository{
         return remissionGuides; 
     }
 
+    @Override
+    public ArrayList<UnidadTransporte> queryByPlate(String plate) {
+        Session session = Tools.getSessionInstance();
+        String hql = "from UnidadTransporte where estado=1 and placa=:plate";
+        ArrayList<UnidadTransporte> unitTransports = new ArrayList<>();
+        Transaction trns = null;
+        try{
+            trns = session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("plate", plate);
+            unitTransports = (ArrayList<UnidadTransporte>) q.list();
+            session.getTransaction().commit();
+        }
+        catch (RuntimeException e){
+            if(trns != null){
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return unitTransports;
+    }
+
     
     
 }

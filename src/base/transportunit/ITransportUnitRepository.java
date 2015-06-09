@@ -23,4 +23,6 @@ public interface ITransportUnitRepository extends IRepository<UnidadTransporte>{
     Boolean loadTransportUnit(String filename);
 
     public ArrayList<GuiaRemision> queryRemissionGuides(UnidadTransporte transportUnit, ArrayList<Despacho> deliveries);
+
+    public ArrayList<UnidadTransporte> queryByPlate(String plate);
 }

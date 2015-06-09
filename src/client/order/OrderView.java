@@ -247,7 +247,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                 }
             }
         }
-        refreshOrders();
+         refreshTable();
     }
     
     /*
