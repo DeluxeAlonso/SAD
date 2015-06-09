@@ -199,9 +199,6 @@ public class OrderRepository implements IOrderRepository{
         }
     }
     
-
-    
-    
     @Override
     public Boolean updateOrder(Pedido order){
         Session session = Tools.getSessionInstance();
@@ -502,6 +499,28 @@ public class OrderRepository implements IOrderRepository{
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public ArrayList<PedidoParcial> queryAllPartialOrdersByDeliveryId(Despacho delivery) {
+        Session session = Tools.getSessionInstance();
+        String hql = "from PedidoParcial p where p.guiaRemision.id in (select g.id from GuiaRemission where g.despacho.id = :id)";
+        ArrayList<PedidoParcial> partialOrders = new ArrayList<>();
+        Transaction trns = null;
+        try{
+            trns = session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("id", delivery.getId());
+            partialOrders = (ArrayList<PedidoParcial>) q.list();
+            session.getTransaction().commit();
+        }
+        catch (RuntimeException e){
+            if(trns != null){
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return partialOrders;
     }
 
 }

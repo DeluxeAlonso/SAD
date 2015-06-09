@@ -6,8 +6,11 @@
 package base.pallet;
 
 import base.IRepository;
+import entity.Almacen;
+import entity.Despacho;
 import entity.OrdenInternamiento;
 import entity.Pallet;
+import entity.Producto;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,4 +32,5 @@ public interface IPalletRepository extends IRepository<Pallet>{
     public ArrayList<Pallet> queryPalletsBySpot(int spotId);
     public List<Object[]> queryByReport(int almacen, int condicion, int tipo, int reporte);
     public ArrayList<Pallet> queryByParameters(String ean, int almacen, int producto,int internmentOrder, Boolean selected);
+    public ArrayList<Pallet> queryByDeliveryParameters(Almacen warehouse, ArrayList<Despacho>delivery, Producto product);
 }

@@ -12,20 +12,28 @@ import algorithm.Node;
 import algorithm.Problem;
 import algorithm.Solution;
 import algorithm.operators.ObjectiveFunction;
+import application.kardex.KardexApplication;
 import application.order.OrderApplication;
 import application.pallet.PalletApplication;
+import application.product.ProductApplication;
+import application.warehouse.WarehouseApplication;
 import client.base.BaseView;
 import client.order.OrderView;
+import entity.Almacen;
 import entity.Despacho;
 import entity.GuiaRemision;
+import entity.Kardex;
+import entity.KardexId;
 import entity.Pallet;
 import entity.Pedido;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
+import entity.Producto;
 import entity.UnidadTransporte;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import javax.swing.JDesktopPane;
@@ -47,6 +55,9 @@ public class DeliveryView extends BaseView {
     ArrayList<Pedido> currentOrders = new ArrayList<>();
     OrderApplication orderApplication = new OrderApplication();
     PalletApplication palletApplication = new PalletApplication();
+    ProductApplication productApplication = new ProductApplication();
+    WarehouseApplication warehouseApplication = new WarehouseApplication();
+    KardexApplication kardexApplication = new KardexApplication();
     
     /**
      * Creates new form DispatchView
@@ -66,7 +77,7 @@ public class DeliveryView extends BaseView {
     }
     
     private void setupElements(){
-        refreshOrders();
+        verifyOrders();
     }
     
     private void fillOrderTable(){
@@ -162,6 +173,60 @@ public class DeliveryView extends BaseView {
         else
             return partials;
     }
+         
+    public void verifyOrders(){
+        currentOrders = orderApplication.getAllOrders();
+        for(int i=0;i<currentOrders.size();i++){
+            if(currentOrders.get(i).getEstado() != EntityState.Orders.ANULADO.ordinal()){
+                int attendedCount = 0;
+                ArrayList<PedidoParcial> partialOrders = orderApplication.getPendingPartialOrdersById(currentOrders.get(i).getId());        
+                for(int j=0;j<partialOrders.size();j++){
+                    if(partialOrders.get(j).getEstado() == EntityState.PartialOrders.ATENDIDO.ordinal())
+                        attendedCount++;
+                }
+                if(attendedCount == partialOrders.size()){
+                    currentOrders.get(i).setEstado(EntityState.Orders.FINALIZADO.ordinal());
+                    orderApplication.updateOrder(currentOrders.get(i));
+                }
+            }
+        }
+        refreshOrders();
+    }
+    
+    public void insertKardex(ArrayList<Despacho> deliveries){
+        ArrayList<Almacen> warehouses = warehouseApplication.queryAll();
+        ArrayList<Producto> products = productApplication.getAllProducts();
+        Integer[]warehouseQuantities = new Integer[warehouses.size()];
+        for(int i=0;i<warehouses.size();i++){
+            for(int j=0;j<products.size();j++){
+                ArrayList<Pallet> pallets = palletApplication.queryByDeliveryParameters(warehouses.get(i), deliveries, products.get(j));
+                if(!pallets.isEmpty()){
+                    ArrayList<Kardex> kardex = kardexApplication.queryByParameters(warehouses.get(i).getId(), products.get(j).getId());
+                    Kardex internmentKardex = new Kardex();
+                    internmentKardex.setAlmacen(warehouses.get(i));
+                    internmentKardex.setProducto(products.get(j));
+                    internmentKardex.setTipoMovimiento("Salida");
+                    internmentKardex.setCantidad(pallets.size());
+
+                    internmentKardex.setFecha(Calendar.getInstance().getTime());
+                    if(kardex.size()==0){
+                        internmentKardex.setStockInicial(0);
+                    }else{
+                        internmentKardex.setStockInicial(kardex.get(0).getStockFinal());
+                    }
+                    internmentKardex.setStockFinal(internmentKardex.getStockInicial() - pallets.size());
+
+                    KardexId kId = new KardexId();
+                    kId.setIdAlmacen(warehouses.get(i).getId());
+                    kId.setIdProducto(products.get(j).getId());
+
+                    internmentKardex.setId(kId);
+
+                    kardexApplication.insert(internmentKardex);
+                }
+            }
+        }
+    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -191,6 +256,8 @@ public class DeliveryView extends BaseView {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblRouteDetail = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         orderTable = new javax.swing.JTable();
@@ -365,21 +432,39 @@ public class DeliveryView extends BaseView {
         });
         jScrollPane3.setViewportView(tblRouteDetail);
 
+        jButton1.setText("Exportar Guia de Almacen");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Exportar Guia de Remision");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 507, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 507, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton2)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2)
+                    .addComponent(jButton1))
+                .addContainerGap())
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Lista de Pedidos"));
@@ -485,6 +570,7 @@ public class DeliveryView extends BaseView {
                     OrderView.orderView.verifyOrders();
                 refreshOrders();
                 allCheckbox.setSelected(false);
+                insertKardex(returnValues.getDespachos());
                 JOptionPane.showMessageDialog(this, Strings.DELIVERY_SUCCESS,
                     Strings.DELIVERY_TITLE,JOptionPane.INFORMATION_MESSAGE);
             }
@@ -558,6 +644,10 @@ public class DeliveryView extends BaseView {
                tableModel.setValueAt(false, i, 4);
     }//GEN-LAST:event_allCheckboxItemStateChanged
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     public void assignRemissionGuides(ArrayList<Despacho> deliveries){
         ArrayList<PedidoParcial> acceptedOrders = new ArrayList<>();
         ArrayList<GuiaRemision> remissionGuides = new ArrayList<>();
@@ -575,6 +665,8 @@ public class DeliveryView extends BaseView {
     private javax.swing.JButton btnExecuteAlgorithm;
     private javax.swing.JButton btnProcess;
     private javax.swing.JButton btnViewSolution;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

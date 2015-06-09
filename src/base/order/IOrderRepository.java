@@ -35,4 +35,6 @@ public interface IOrderRepository extends IRepository<Pedido> {
     ArrayList<Pedido> queryAllOrders();
 
     Boolean updatePartialOrder(PedidoParcial p, ArrayList<Pallet> pallets);
+
+    public ArrayList<PedidoParcial> queryAllPartialOrdersByDeliveryId(Despacho delivery);
 }

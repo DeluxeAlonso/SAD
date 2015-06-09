@@ -222,6 +222,11 @@ public class WarehouseView extends BaseView {
                 editBtnMouseClicked(evt);
             }
         });
+        editBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editBtnActionPerformed(evt);
+            }
+        });
 
         deleteBtn.setEnabled(false);
         deleteBtn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -279,7 +284,7 @@ public class WarehouseView extends BaseView {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(newBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(editBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(deleteBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
+                    .addComponent(deleteBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -385,6 +390,10 @@ public class WarehouseView extends BaseView {
         editBtn.setEnabled(true);
         deleteBtn.setEnabled(true);
     }//GEN-LAST:event_usersGridMouseClicked
+
+    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_editBtnActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
