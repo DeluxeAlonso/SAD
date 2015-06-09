@@ -74,6 +74,7 @@ public class EditPalletView extends BaseDialogView {
         Producto prod = p.getProducto();
         fillProductCombo();
         fillEstadoCombo();
+        //fillWarehouseCombo(product.get(0).getId());
         jComboBox3.setVisible(false);
         jLabel5.setVisible(false);
         
@@ -505,9 +506,31 @@ public class EditPalletView extends BaseDialogView {
                     Producto prod = product.get(p.getProducto().getId());
                     prod.setPalletsUbicados(prod.getPalletsUbicados()-1);
                     prod.setPalletsRegistrados(prod.getPalletsRegistrados()+1);
+
+                    ArrayList<Kardex> kardex = kardexApplication.queryByParameters(warehouses.get(jComboBox3.getSelectedIndex()).getId(), prod.getId());
+                        Kardex internmentKardex = new Kardex();
+                        internmentKardex.setAlmacen(warehouses.get(jComboBox3.getSelectedIndex()));
+                        internmentKardex.setProducto(prod);
+                        internmentKardex.setTipoMovimiento("Salida");
+                        internmentKardex.setCantidad(1);
+
+                        internmentKardex.setFecha(Calendar.getInstance().getTime());
+                        if(kardex.size()==0){
+                            internmentKardex.setStockInicial(0);
+                        }else{
+                            internmentKardex.setStockInicial(kardex.get(0).getStockFinal());
+                        }
+                        internmentKardex.setStockFinal(internmentKardex.getStockInicial() - 1);
+                        KardexId kId = new KardexId();
+                        kId.setIdAlmacen(warehouses.get(jComboBox3.getSelectedIndex()).getId());
+                        kId.setIdProducto(prod.getId());
+                        internmentKardex.setId(kId);
+                        kardexApplication.insert(internmentKardex);
+
+                    
                     
                     if (pNuevo.getEstado() == EntityState.Pallets.ELIMINADO.ordinal()){
-                        prod.setStockLogico(prod.getStockLogico()-1);
+                        prod.setStockLogico(prod.getStockLogico()-1);    
                     }
                     
                     productApplication.update(prod);
@@ -553,9 +576,10 @@ public class EditPalletView extends BaseDialogView {
     }
     private void jCheckBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox1ItemStateChanged
      if (jCheckBox1.isSelected()){
-        jComboBox3.setVisible(true);
+        
         jLabel5.setVisible(true);
-        jComboBox2.setSelectedIndex(1);
+        jComboBox1.setSelectedIndex(1);
+        jComboBox3.setVisible(true);
         jComboBox2.setEnabled(false);
      }
      else{
