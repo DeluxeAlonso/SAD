@@ -42,6 +42,19 @@ public class AlgorithmExecution {
     public static boolean overCap = false;
     public static boolean overTime = false;
     public static boolean overStock = false;
+
+    static boolean checkSolution(Solution solution) {
+        Node[][] routes = solution.getNodes();
+        boolean[] visited = new boolean[problem.getNodes().size()];        
+        for (int i = 0; i < routes.length; i++) {
+            for (int j = 0; j < routes[i].length; j++) {
+                if(visited[routes[i][j].getIdx()])
+                    return false;
+                visited[routes[i][j].getIdx()] = true; 
+            }            
+        }
+        return true;
+    }
     public DeliveryView view = null;
     
     public AlgorithmExecution() {        
@@ -118,6 +131,11 @@ public class AlgorithmExecution {
             
             Solution child = Crossover.uniformCrossover(parents, algorithm, problem);
             
+            /*if(!AlgorithmExecution.checkSolution(child)){
+                System.out.println(displayDemand(child));
+                throw new AssertionError("bad solution at GA crossover: " + i);
+            }*/
+            
             //System.out.println("crossover");
             //System.out.println(displayDemand(child));
             
@@ -126,7 +144,17 @@ public class AlgorithmExecution {
             //System.out.println("mutation");
             //System.out.println(displayDemand(child));            
             
+            /*if(!AlgorithmExecution.checkSolution(child)){
+                System.out.println(displayDemand(child));
+                throw new AssertionError("bad solution at GA mutation: " + i);
+            }*/
+            
             child = LocalSearch.opt2Improvement(child, algorithm, problem);  
+            
+            /*if(!AlgorithmExecution.checkSolution(child)){
+                System.out.println(displayDemand(child));
+                throw new AssertionError("bad solution at GA 2opt: " + i);
+            }*/
             
             //System.out.println("2opt");
             //System.out.println(displayDemand(child));
@@ -160,6 +188,10 @@ public class AlgorithmExecution {
                 System.out.println(displayDemand(child));
             }*/
             
+            /*if(!AlgorithmExecution.checkSolution(child)){
+                System.out.println(displayDemand(child));
+                throw new AssertionError("bad solution at GA repair: " + i);
+            }*/
             
             overCap = overTime = overStock = bad = false;
             

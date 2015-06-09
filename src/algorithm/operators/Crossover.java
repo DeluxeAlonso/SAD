@@ -55,6 +55,14 @@ public class Crossover {
         
         HashMap<Integer,Integer> curStock = new HashMap<> (problem.getProductsStock());        
         
+        /*System.out.println("Conflicts between: ");
+        for (int i = 0; i < nRoutes; i++) {
+            for (int j = 0; j < nRoutes; j++) {
+                if(conflicts[i][j])
+                    System.out.println(i + " and " + j);
+            }            
+        }*/
+        
         while(idx1<parentRoutes1.length && idx2<parentRoutes2.length){
             if(idxChild==nRoutes) break;
             boolean found1 = false, found2 = false;
@@ -155,8 +163,8 @@ public class Crossover {
     }
 
     private static boolean thereIsConflict(Node[] rutas1, Node[] rutas2) {
-        for (int i = 1; i < rutas1.length; i++) {
-            for (int j = 1; j < rutas2.length; j++) {
+        for (int i = 0; i < rutas1.length; i++) {
+            for (int j = 0; j < rutas2.length; j++) {
                 if (rutas1[i].getIdx() == rutas2[j].getIdx()) {
                     return true;
                 }
