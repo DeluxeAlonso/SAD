@@ -14,6 +14,7 @@ import entity.Producto;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -165,7 +166,27 @@ public class PalletRepository implements IPalletRepository{
 
     @Override
     public Pallet queryById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        Pallet pallet = null;
+        String hql
+                = "from Pallet where id=:id";
+        try {
+            
+            session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("id", id);
+            pallet = (Pallet) q.uniqueResult();
+            if(pallet!=null)
+                Hibernate.initialize(pallet.getId());
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return pallet;
     }
 
     @Override

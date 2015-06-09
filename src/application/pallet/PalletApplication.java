@@ -37,6 +37,17 @@ public class PalletApplication {
         return pallets;
     }
     
+    public Pallet queryById(int id){
+        Pallet pallets = null;
+        try {
+            pallets = palletRepository.queryById(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pallets;
+    }
+    
+    
     public ArrayList<Pallet> queryPalletsBySpot(int spotId){
         ArrayList<Pallet> pallets = null;
         try {

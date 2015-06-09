@@ -25,7 +25,7 @@ public interface IPalletRepository extends IRepository<Pallet>{
     public Boolean updateSpot(int palletId,int spotId);
     public ArrayList<Pallet> getPalletsFromOrder(int rackId);
     public ArrayList<Pallet> queryPalletsByProduct(Integer productId);
-
+    
     public ArrayList<Pallet> queryPalletsByPartialOrder(Integer partialOrderId);
 
     public Boolean updatePallets(ArrayList<Pallet> pallets);
