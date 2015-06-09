@@ -408,5 +408,30 @@ public class PalletRepository implements IPalletRepository{
         }
         return pallets; 
     }
+
+    @Override
+    public ArrayList<Pallet> queryByWarehouseParameters(Almacen warehouse, ArrayList<Despacho> delivery) {
+        String hql="from Pallet p where (p.pedidoParcial.id in (select pp.id from PedidoParcial pp where pp.guiaRemision.id in (select g.id from GuiaRemision g where g.despacho.id in (:delivery))) and (p.ubicacion.id in (select u.id from Ubicacion u where u.rack.id in (select r.id from Rack r where r.almacen.id=:warehouse))))" ;
+        ArrayList<Pallet> pallets=null;
+        ArrayList idList = new ArrayList();
+        for(int i=0;i<delivery.size();i++)
+            idList.add(delivery.get(i).getId());
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameterList("delivery", idList);
+            q.setParameter("warehouse", warehouse.getId());
+            pallets = (ArrayList<Pallet>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return pallets; 
+    }
     
 }

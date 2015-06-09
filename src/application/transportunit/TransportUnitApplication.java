@@ -6,6 +6,8 @@
 package application.transportunit;
 
 import base.transportunit.ITransportUnitRepository;
+import entity.Despacho;
+import entity.GuiaRemision;
 import entity.TipoUnidadTransporte;
 import entity.UnidadTransporte;
 import infraestructure.transportunit.TransportUnitRepository;
@@ -76,6 +78,16 @@ public class TransportUnitApplication {
             e.printStackTrace();
         }
         return response;
+    }
+    
+    public ArrayList<GuiaRemision> getRemissionGuides(UnidadTransporte transportUnit, ArrayList<Despacho> deliveries){
+        ArrayList<GuiaRemision> remissionGuides= new ArrayList<>();
+        try{
+            remissionGuides=transportUnitRepository.queryRemissionGuides(transportUnit,deliveries);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return remissionGuides;
     }
 
     public ArrayList<UnidadTransporte> getAvailableTransportUnits() {

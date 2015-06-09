@@ -6,6 +6,8 @@
 package infraestructure.transportunit;
 
 import base.transportunit.ITransportUnitRepository;
+import entity.Despacho;
+import entity.GuiaRemision;
 import entity.TipoUnidadTransporte;
 import entity.UnidadTransporte;
 import java.util.ArrayList;
@@ -159,6 +161,31 @@ public class TransportUnitRepository implements ITransportUnitRepository{
     @Override
     public UnidadTransporte queryById(String id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ArrayList<GuiaRemision> queryRemissionGuides(UnidadTransporte transportUnit, ArrayList<Despacho> deliveries) {
+        String hql="from GuiaRemision g where (g.despacho.id in (select d.id from Despacho d where (d.unidadTransporte.id=:unidad) and d.id in (:delivery)))" ;
+        ArrayList<GuiaRemision> remissionGuides= new ArrayList<>();
+        ArrayList idList = new ArrayList();
+        for(int i=0;i<deliveries.size();i++)
+            idList.add(deliveries.get(i).getId());
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameterList("delivery", idList);
+            q.setParameter("unidad", transportUnit.getId());
+            remissionGuides = (ArrayList<GuiaRemision>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return remissionGuides; 
     }
 
     

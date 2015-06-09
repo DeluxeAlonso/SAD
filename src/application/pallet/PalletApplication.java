@@ -167,4 +167,14 @@ public class PalletApplication {
         return pallets;
     }
     
+    public ArrayList<Pallet> queryByWarehouseParameters(Almacen warehouse, ArrayList<Despacho> delivery){
+        ArrayList<Pallet> pallets = new ArrayList<>();
+        try {
+            pallets = palletRepository.queryByWarehouseParameters(warehouse, delivery);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pallets;
+    }
+    
 }

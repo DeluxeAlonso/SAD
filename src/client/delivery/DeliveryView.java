@@ -16,6 +16,7 @@ import application.kardex.KardexApplication;
 import application.order.OrderApplication;
 import application.pallet.PalletApplication;
 import application.product.ProductApplication;
+import application.transportunit.TransportUnitApplication;
 import application.warehouse.WarehouseApplication;
 import client.base.BaseView;
 import client.order.OrderView;
@@ -32,11 +33,16 @@ import entity.Producto;
 import entity.UnidadTransporte;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 import javax.swing.JDesktopPane;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
@@ -58,6 +64,10 @@ public class DeliveryView extends BaseView {
     ProductApplication productApplication = new ProductApplication();
     WarehouseApplication warehouseApplication = new WarehouseApplication();
     KardexApplication kardexApplication = new KardexApplication();
+    TransportUnitApplication transportUnitApplication = new TransportUnitApplication();
+    ArrayList<Despacho> solutionDeliveries = new ArrayList<Despacho>();
+    JFileChooser fc = new JFileChooser();
+    File file = null;
     
     /**
      * Creates new form DispatchView
@@ -196,7 +206,6 @@ public class DeliveryView extends BaseView {
     public void insertKardex(ArrayList<Despacho> deliveries){
         ArrayList<Almacen> warehouses = warehouseApplication.queryAll();
         ArrayList<Producto> products = productApplication.getAllProducts();
-        Integer[]warehouseQuantities = new Integer[warehouses.size()];
         for(int i=0;i<warehouses.size();i++){
             for(int j=0;j<products.size();j++){
                 ArrayList<Pallet> pallets = palletApplication.queryByDeliveryParameters(warehouses.get(i), deliveries, products.get(j));
@@ -433,6 +442,7 @@ public class DeliveryView extends BaseView {
         jScrollPane3.setViewportView(tblRouteDetail);
 
         jButton1.setText("Exportar Guia de Almacen");
+        jButton1.setEnabled(false);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -440,6 +450,12 @@ public class DeliveryView extends BaseView {
         });
 
         jButton2.setText("Exportar Guia de Remision");
+        jButton2.setEnabled(false);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -564,12 +580,15 @@ public class DeliveryView extends BaseView {
     private void btnProcessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessActionPerformed
         if(solution!=null && algorithmExecution!=null){
             AlgorithmReturnValues returnValues = algorithmExecution.processOrders(solution);
+            solutionDeliveries = returnValues.getDespachos();
             assignRemissionGuides(returnValues.getDespachos());
             if(createPartialOrders(returnValues.getAcceptedOrders(), returnValues.getRejectedOrders())){
                 if(OrderView.orderView != null)
                     OrderView.orderView.verifyOrders();
                 refreshOrders();
                 allCheckbox.setSelected(false);
+                jButton1.setEnabled(true);
+                jButton2.setEnabled(true);
                 insertKardex(returnValues.getDespachos());
                 JOptionPane.showMessageDialog(this, Strings.DELIVERY_SUCCESS,
                     Strings.DELIVERY_TITLE,JOptionPane.INFORMATION_MESSAGE);
@@ -645,8 +664,30 @@ public class DeliveryView extends BaseView {
     }//GEN-LAST:event_allCheckboxItemStateChanged
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        fc.setDialogTitle("Seleccione un archivo");
+        fc.showOpenDialog(this);
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        ArrayList<Almacen> warehouse = warehouseApplication.queryAll();
+        for(int i=0;i<warehouse.size();i++){
+            ArrayList<Pallet> pallets = palletApplication.queryByWarehouseParameters(warehouse.get(i), solutionDeliveries);
+            System.out.println(pallets.size());
+        }
+        file = fc.getSelectedFile();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        fc.setDialogTitle("Seleccione un archivo");
+        fc.showOpenDialog(this);
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        ArrayList<UnidadTransporte> transportUnits = transportUnitApplication.getAllTransportUnits();
+        for(int i=0;i<transportUnits.size();i++){
+            ArrayList<GuiaRemision> remissionGuides = transportUnitApplication.getRemissionGuides(transportUnits.get(i), solutionDeliveries);
+            System.out.println(remissionGuides.size());
+        }
+        file = fc.getSelectedFile();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     public void assignRemissionGuides(ArrayList<Despacho> deliveries){
         ArrayList<PedidoParcial> acceptedOrders = new ArrayList<>();
