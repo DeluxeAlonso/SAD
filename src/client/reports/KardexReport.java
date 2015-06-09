@@ -444,12 +444,12 @@ public class KardexReport extends BaseView {
             }
             if(dtcEndDate.getDate()==null){
                 hasErrors=true;
-                //error_message += Strings.ERROR_DATE_END+"\n";
+                error_message += Strings.ERROR_DATE_END+"\n";
             }
             if(dtcInitDate.getDate()!=null && dtcEndDate.getDate()!=null){
                 if(dtcInitDate.getDate().getTime() > dtcEndDate.getDate().getTime()){
                     hasErrors=true;
-                    //error_message += Strings.ERROR_DATE+"\n";
+                    error_message += Strings.ERROR_DATE+"\n";
                 }
             }
             

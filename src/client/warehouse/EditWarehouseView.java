@@ -15,9 +15,12 @@ import entity.Almacen;
 import entity.Condicion;
 import entity.Rack;
 import entity.Ubicacion;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Calendar;
+import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import util.Constants;
 import util.EntityState;
@@ -36,6 +39,7 @@ public class EditWarehouseView extends BaseDialogView {
     RackApplication rackApplication=InstanceFactory.Instance.getInstance("rackApplication", RackApplication.class);
     SpotApplication spotApplication=InstanceFactory.Instance.getInstance("spotApplication", SpotApplication.class);
     Almacen a =null;
+    Border regularBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
     /**
      * Creates new form NewWarehouse
      */
@@ -114,7 +118,10 @@ public class EditWarehouseView extends BaseDialogView {
             return false;
         }
     }
-    
+    private void clearBorders(){
+        capacityTxt.setBorder(regularBorder);
+        descTxt.setBorder(regularBorder);
+    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -304,6 +311,7 @@ public class EditWarehouseView extends BaseDialogView {
 
     private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
         // TODO add your handling code here:
+        clearBorders();
         boolean errorFlag=false;
         String error_message = "Errores:\n";
         if (descTxt.getText().isEmpty()){

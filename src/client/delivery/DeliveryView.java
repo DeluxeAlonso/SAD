@@ -57,6 +57,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import jxl.Workbook;
+import jxl.WorkbookSettings;
 import jxl.format.Alignment;
 import jxl.format.Colour;
 import jxl.format.UnderlineStyle;
@@ -914,13 +915,18 @@ public class DeliveryView extends BaseView {
         Date date = new Date();
         try{
             File exlFile = file;
-            WritableWorkbook writableWorkbook = Workbook.createWorkbook(exlFile);
+            WorkbookSettings ws = new WorkbookSettings();
+            ws.setEncoding("UTF8");
+            WritableWorkbook writableWorkbook = Workbook.createWorkbook(exlFile,ws);
+            
             ArrayList<UnidadTransporte> transportUnits = transportUnitApplication.getAllTransportUnits();
             for(int i=0;i<transportUnits.size();i++){
                 ArrayList<GuiaRemision> remissionGuides = transportUnitApplication.getRemissionGuides(transportUnits.get(i), solutionDeliveries);
                 if(remissionGuides.size()>0){
                     WritableSheet writableSheet = writableWorkbook.createSheet(
+                       
                        transportUnits.get(i).getTransportista(), i);
+                    
                     URL url = getClass().getResource("../../images/warehouse-512-000000.png");
                     java.io.File imageFile = new java.io.File(url.toURI());
                     BufferedImage input = ImageIO.read(imageFile);

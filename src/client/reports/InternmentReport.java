@@ -75,6 +75,7 @@ public class InternmentReport extends BaseView {
         iniDate = new com.toedter.calendar.JDateChooser();
         endDate = new com.toedter.calendar.JDateChooser();
         warehouseCombo = new javax.swing.JComboBox();
+        exportBtn = new javax.swing.JButton();
 
         setClosable(true);
 
@@ -109,6 +110,9 @@ public class InternmentReport extends BaseView {
 
         warehouseCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
+        exportBtn.setText("Exportar XLS");
+        exportBtn.setEnabled(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -127,8 +131,7 @@ public class InternmentReport extends BaseView {
                         .addGap(134, 134, 134)
                         .addComponent(jLabel4)
                         .addGap(18, 18, 18)
-                        .addComponent(endDate, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(endDate, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 489, Short.MAX_VALUE)
                         .addComponent(generateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -137,6 +140,10 @@ public class InternmentReport extends BaseView {
             .addGroup(layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(jScrollPane1)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(exportBtn)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -159,7 +166,9 @@ public class InternmentReport extends BaseView {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(97, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(exportBtn)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -214,10 +223,13 @@ public class InternmentReport extends BaseView {
         
         if (hasErrors){
             JOptionPane.showMessageDialog(this, "Los campos Fecha inicial y Fecha final son Obligatorios.","Error reporte de internamiento",JOptionPane.WARNING_MESSAGE);
+            exportBtn.setEnabled(false);
+        }else{
+            listReport = palletApplication.queryByReportInter(almacen, ini, end, 0);
+            clearTable();
+            fillTable();
+            exportBtn.setEnabled(true);
         }
-        listReport = palletApplication.queryByReportInter(almacen, ini, end, 0);
-        clearTable();
-        fillTable();
         
         
         
@@ -226,6 +238,7 @@ public class InternmentReport extends BaseView {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.toedter.calendar.JDateChooser endDate;
+    private javax.swing.JButton exportBtn;
     private javax.swing.JButton generateButton;
     private com.toedter.calendar.JDateChooser iniDate;
     private javax.swing.JLabel jLabel3;
