@@ -175,7 +175,7 @@ public class Grasp {
     private static GraspParameters initializeBetaAndTau(Node baseNode, UnidadTransporte vehicle,
             Algorithm algorithm, double currentTime, HashMap<Integer,Integer> currentStock,
             boolean[] visited) {
-        double beta=0, tau=0;
+        double beta=-1000, tau=-2000;
         boolean alreadyInit = false;        
         double speed = vehicle.getTipoUnidadTransporte().getVelocidadPromedio();
         for (int i = 0; i < nodes.size(); i++) {
@@ -309,7 +309,7 @@ public class Grasp {
                 currentTime += travelCost;
                 currentStock.put(productId, newStock);
                 
-                double returnCost = distance(nextNode.getIdx(), Problem.getLastNode())/                        
+                /*double returnCost = distance(nextNode.getIdx(), Problem.getLastNode())/                        
                          vehicle.getTipoUnidadTransporte().getVelocidadPromedio();
                 /*System.out.println("RCL added: " + travelCost + " giving a total of: " + 
                         currentTime + " and to return, we need " + returnCost + " so we need " + 
