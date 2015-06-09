@@ -294,7 +294,7 @@ public class PalletView extends BaseView {
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(45, 45, 45)
                 .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(searchBtn)
                 .addContainerGap())
         );
@@ -365,10 +365,12 @@ public class PalletView extends BaseView {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 845, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 21, Short.MAX_VALUE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -387,6 +389,7 @@ public class PalletView extends BaseView {
         // TODO add your handling code here:
         NewPalletView newPallet=new NewPalletView((JFrame)SwingUtilities.getWindowAncestor(this),true);
         newPallet.setVisible(true);
+        clearGrid();
         
     }//GEN-LAST:event_newBtnActionPerformed
 
@@ -394,6 +397,7 @@ public class PalletView extends BaseView {
         if (spotTable.getRowCount()>0){
             EditPalletView editPallet=new EditPalletView((JFrame)SwingUtilities.getWindowAncestor(this),true,palletsGlob.get(spotTable.getSelectedRow()));
             editPallet.setVisible(true);
+            clearGrid();
         }
        
     }//GEN-LAST:event_editBtnMouseClicked

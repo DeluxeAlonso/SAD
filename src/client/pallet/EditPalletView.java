@@ -391,9 +391,11 @@ public class EditPalletView extends BaseDialogView {
             errorFlag=true;
         }*/
         if ((estados.get(jComboBox2.getSelectedIndex())==EntityState.Pallets.UBICADO.ordinal())&&(!jCheckBox1.isSelected())){
-           error_message += "Debe internar primero\n";
-           jCheckBox1.setBorder(errorBorder);
-           errorFlag=true;
+           if (p.getEstado()!= EntityState.Pallets.UBICADO.ordinal()){
+                error_message += "Debe internar primero\n";
+                jCheckBox1.setBorder(errorBorder);
+                errorFlag=true;
+           }
         }
         if (dtcInitDate.getDate().compareTo(date) <0){
             error_message += "Debe seleccionar una Fecha superior\n";
