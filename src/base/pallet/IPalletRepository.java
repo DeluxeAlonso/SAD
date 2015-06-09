@@ -28,5 +28,5 @@ public interface IPalletRepository extends IRepository<Pallet>{
     public Boolean deletePalletBySpot(int spotId);
     public ArrayList<Pallet> queryPalletsBySpot(int spotId);
     public List<Object[]> queryByReport(int almacen, int condicion, int tipo, int reporte);
-
+    public ArrayList<Pallet> queryByParameters(String ean, int almacen, int producto,int internmentOrder, Boolean selected);
 }

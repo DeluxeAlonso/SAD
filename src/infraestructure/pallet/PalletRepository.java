@@ -284,6 +284,68 @@ public class PalletRepository implements IPalletRepository{
     }
 
     @Override
+    public ArrayList<Pallet> queryByParameters(String ean, int almacen, int producto,int internmentOrder, Boolean selected) {
+        String hql1= "FROM Pallet a where (a.ubicacion.id in (select u.id from Ubicacion u where u.rack.id in" +
+                    "(select r.id from Rack r where (r.almacen.id=:almacen OR :almacen=0)))) AND "+
+                    "(a.ean128 like :ean OR :ean = :aux) AND" +
+                    "(a.ordenInternamiento.id = :internmentOrder OR :internmentOrder = 0) AND" +
+                    "(a.producto.id = :producto OR :producto = 0)";
+        
+        String hql2 = "FROM Pallet a where (a.ubicacion is null) AND "+
+                        "(a.ean128 like :ean OR :ean = :aux) AND" +
+                        "(a.ordenInternamiento.id = :internmentOrder OR :internmentOrder = 0) AND" +
+                        "(a.producto.id = :producto OR :producto = 0)";       
+        String hql = null;
+        ArrayList<Pallet> pallets=null;
+        Transaction trns = null;
+        
+        
+        if (selected){
+            hql = hql2;
+            Session session = Tools.getSessionInstance();
+            try {            
+                trns=session.beginTransaction();
+                Query q = session.createQuery(hql);
+                q.setParameter("producto", producto);
+                q.setParameter("ean", ean);
+                q.setParameter("aux","");
+                q.setParameter("internmentOrder",internmentOrder);
+                pallets = (ArrayList<Pallet>) q.list();          
+                session.getTransaction().commit();
+            } catch (RuntimeException e) {
+                if (trns != null) {
+                    trns.rollback();
+                }
+                e.printStackTrace();
+            }      
+        }
+            
+        else{
+            hql = hql1;
+            Session session = Tools.getSessionInstance();
+            try {            
+                trns=session.beginTransaction();
+                Query q = session.createQuery(hql);
+                q.setParameter("ean", ean);
+                q.setParameter("almacen", almacen);
+                q.setParameter("producto", producto);
+                q.setParameter("aux","");
+                q.setParameter("internmentOrder",internmentOrder);
+                pallets = (ArrayList<Pallet>) q.list();          
+                session.getTransaction().commit();
+            } catch (RuntimeException e) {
+                if (trns != null) {
+                    trns.rollback();
+                }
+                e.printStackTrace();
+            }
+        }
+
+        return pallets; //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
+    @Override
     public List<Object[]> queryByReport(int almacen, int condicion, int tipo, int reporte) {
         String hql="SELECT p.producto.nombre, p.producto.tipoProducto.nombre, p.producto.condicion.nombre, "
                 + "count(1) "

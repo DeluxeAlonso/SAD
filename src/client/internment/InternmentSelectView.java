@@ -85,13 +85,13 @@ public class InternmentSelectView extends BaseView {
     
     public InternmentSelectView() {
         initComponents();
-        initialize();
+        super.initialize();
         setTitle("Internamiento");
         jButton2.setEnabled(false);
         jButton3.setEnabled(false);
         jComboBox1.removeAllItems();
         table = jTable2;
-        table.getModel().addTableModelListener(new TableModelListener() {
+        /*table.getModel().addTableModelListener(new TableModelListener() {
         public void tableChanged(TableModelEvent e) {
         Boolean isChecked;
         int count=0;
@@ -109,7 +109,7 @@ public class InternmentSelectView extends BaseView {
         } 
       }
     });
-        
+    */    
         
         fillTable();
     }
@@ -342,6 +342,7 @@ public class InternmentSelectView extends BaseView {
 
     public static String crearEAN128(Pallet pallet){
         String ean = "";
+        //ean += pallet.getId();
         ean += "(02)0" + pallet.getProducto().getEan13();
         ean += "37" + pallet.getProducto().getCantidadProductosEnPallet();
         DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");

@@ -144,4 +144,14 @@ public class PalletApplication {
         return pallets;
     }
 
+    public ArrayList<Pallet> queryByParameters(String ean, int almacen, int producto, int internmentOrder, Boolean selected){
+        ArrayList<Pallet> pallets = new ArrayList<>();
+        try {
+            pallets = palletRepository.queryByParameters(ean, almacen, producto,internmentOrder, selected);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pallets;
+    }
+    
 }
