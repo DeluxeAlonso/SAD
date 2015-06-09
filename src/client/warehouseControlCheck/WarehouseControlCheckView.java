@@ -83,17 +83,31 @@ public class WarehouseControlCheckView extends BaseView {
     
     public void fillSpotsTable(int warehouseId){
         clearSpotsTable();
+        ArrayList<Pallet> p;
         DefaultTableModel model = (DefaultTableModel) tblControlCheck.getModel();
         spots = (ArrayList<Ubicacion>) spotApplication.querySpotsByWarehouse(warehouseId);
         if(spots.size()>0){
             for(Ubicacion spot : spots){
-                model.addRow(new Object[]{
-                    spot.getRack().getId(),
-                    spot.getLado(),
-                    spot.getFila(),
-                    spot.getColumna(),
-                    EntityState.getSpotStateLiteral(spot.getEstado())
-                });
+                p = palletApplication.queryPalletsBySpot(spot.getId());
+                if(p.size()>0){
+                    model.addRow(new Object[]{
+                        spot.getRack().getId(),
+                        spot.getLado(),
+                        spot.getFila(),
+                        spot.getColumna(),
+                        EntityState.getSpotStateLiteral(spot.getEstado()),
+                        p.get(0).getProducto().getNombre()
+                    });
+                }else{
+                    model.addRow(new Object[]{
+                        spot.getRack().getId(),
+                        spot.getLado(),
+                        spot.getFila(),
+                        spot.getColumna(),
+                        EntityState.getSpotStateLiteral(spot.getEstado()),
+                        "-"
+                    });
+                }
             }
         }
     }
@@ -102,6 +116,7 @@ public class WarehouseControlCheckView extends BaseView {
         BufferedReader br = null;
 	String line = "";
 	String cvsSplitBy = ",";
+        Producto prod;
         try {
             br = new BufferedReader(new FileReader(csvFile));
             // Leo la cantidad de clientes que hay en el archivo
@@ -114,8 +129,65 @@ public class WarehouseControlCheckView extends BaseView {
                 line_split = line.split(cvsSplitBy);
                 // 
                 DefaultTableModel model = (DefaultTableModel) tblControlCheck.getModel();
-                model.setValueAt(line_split[4], i, 5);
-                if(line_split[4].equals(model.getValueAt(i, 4).toString())){
+                if(line_split[5].equals("-")){
+                    // En fisico esta libre
+                    model.setValueAt(line_split[4], i, 6);
+                    model.setValueAt("-", i, 7);
+                    if(model.getValueAt(i, 4).toString().equals("Ocupado")){
+                        // Si en fisico esta libre y en el sistema ocupado, tengo que eliminar el pallet
+                        model.setValueAt("Remover pallet del sistema", i, 8);
+                        // Agrupo los pallets que se moveran por Producto para ser ingresados al kardex
+                        ArrayList<Pallet> pallets = palletApplication.queryPalletsBySpot(spots.get(i).getId());
+                        if(!kardexCountOut.isEmpty() && kardexCountOut.containsKey(pallets.get(0).getProducto())){
+                            int productCount = kardexCountOut.get(pallets.get(0).getProducto()).intValue();
+                            productCount++;
+                            kardexCountOut.put(pallets.get(0).getProducto(), productCount);
+                        }else{
+                            kardexCountOut.put(pallets.get(0).getProducto(), 1);
+                        }
+                        // Eliminar el pallet de la ubicacion
+                        palletApplication.deletePalletBySpot(spots.get(i).getId());
+                        // Actualizo el estado de la ubicacion a libre
+                        spotApplication.updateSpotOccupancy(spots.get(i).getId(), EntityState.Spots.LIBRE.ordinal());
+                    }else{
+                        // Si en fisico esta libre y en el sistema libre, todo OK
+                        model.setValueAt("-", i, 8);
+                    }
+                }else{
+                    // En fisico esta ocupado
+                    prod = productApplication.queryById(Integer.parseInt(line_split[5]));
+                    model.setValueAt(line_split[4], i, 6);
+                    model.setValueAt(prod.getNombre(), i, 7);
+                    if(model.getValueAt(i, 4).toString().equals("Libre")){
+                        // Si en fisico esta ocupado y en el sistema libre, tengo que internar el pallet
+                        model.setValueAt("Internar Pallet", i, 8);
+                        // Agrupo los pallets que se moveran por Producto para ser ingresados al kardex
+                        if(!kardexCountIn.isEmpty() && kardexCountIn.containsKey(prod)){
+                            int productCount = kardexCountIn.get(prod).intValue();
+                            productCount++;
+                            kardexCountIn.put(prod, productCount);
+                        }else{
+                            kardexCountIn.put(prod, 1);
+                        }
+                        // Inserto el pallet
+                        /* FALTA */
+                    }else{
+                        // Si en fisico esta ocupado y en el sistema ocupado, tengo que verificar si es el mismo producto
+                        if(prod.getNombre().equals(model.getValueAt(i, 5).toString())){
+                            // Si en fisico y en el sistema tienen el mismo producto
+                            model.setValueAt("-", i, 8);
+                        }else{
+                            // Si en fisico y en el sistema tienen productos diferentes
+                            /* FALTA */
+                        }
+                    }
+                }
+                
+                /*
+                prod = productApplication.queryById(Integer.parseInt(line_split[5]));
+                model.setValueAt(line_split[4], i, 6);
+                model.setValueAt(prod.getNombre(), i, 7);
+                if(prod.getNombre().equals(model.getValueAt(i, 5).toString())){
                     model.setValueAt("-", i, 6);
                 }else{
                     if(line_split[4].equals("Ocupado")){
@@ -133,6 +205,7 @@ public class WarehouseControlCheckView extends BaseView {
                         
                     }else{
                         // En sistema ocupado y en fisico libre, debo eliminar el pallet
+                        
                         // Agrupo los pallets que se moveran por Producto para ser ingresados al kardex
                         ArrayList<Pallet> pallets = palletApplication.queryPalletsBySpot(spots.get(i).getId());
                         if(!kardexCountOut.isEmpty() && kardexCountOut.containsKey(pallets.get(0).getProducto())){
@@ -146,8 +219,10 @@ public class WarehouseControlCheckView extends BaseView {
                         palletApplication.deletePalletBySpot(spots.get(i).getId());
                         // Actualizo el estado de la ubicacion a libre
                         spotApplication.updateSpotOccupancy(spots.get(i).getId(), EntityState.Spots.LIBRE.ordinal());
+                        
                     }
                 }
+                */
             }
             // Ingreso los registros de kardex
             ArrayList<Kardex> previousKardex;
@@ -282,13 +357,13 @@ public class WarehouseControlCheckView extends BaseView {
 
         tblControlCheck.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Rack", "Lado", "Fila", "Columna", "En sistema", "En físico", "Tipo de ajuste"
+                "Rack", "Lado", "Fila", "Columna", "En sistema", "Producto", "En físico", "Producto", "Tipo de ajuste"
             }
         ));
         jScrollPane1.setViewportView(tblControlCheck);
@@ -318,7 +393,7 @@ public class WarehouseControlCheckView extends BaseView {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnFileUpload)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 692, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 894, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(

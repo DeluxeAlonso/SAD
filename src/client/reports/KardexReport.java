@@ -15,6 +15,7 @@ import client.base.BaseView;
 import entity.Almacen;
 import entity.Kardex;
 import entity.Producto;
+import entity.Ubicacion;
 import java.awt.event.ItemEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -44,6 +45,7 @@ import jxl.write.WritableFont;
 import jxl.write.WritableImage;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
+import util.EntityState;
 import util.InstanceFactory;
 import util.Strings;
 
@@ -140,11 +142,12 @@ public class KardexReport extends BaseView {
         
         try{
             Label label0 = new Label(1, 1, "");
-            Label label1 = new Label(4, 1, "Reporte de Disponibilidad");
+            Label label1 = new Label(4, 1, "Kardex");
             Label label2 = new Label(7, 1, "Fecha: "+ dateFormat.format(date));
             Label label3 = new Label(1, 2, "Almacen: "+ warehouses.get(comboWarehouseFrom.getSelectedIndex()).getDescripcion() );
             Label label4 = new Label(1, 3, "Condicion: "+warehouses.get(comboWarehouseFrom.getSelectedIndex()).getCondicion().getNombre());
-            //Label label5 = new Label(1, 4, "Rack: "+ rackR);
+            Label label5 = new Label(1, 4, "Producto: "+products.get(comboProductFrom.getSelectedIndex()).getNombre());
+            Label label6 = new Label(1, 5, "Período: "+dateFormat.format(dtcInitDate.getDate())+" a "+dateFormat.format(dtcEndDate.getDate()));
             WritableFont tittleFont = new WritableFont(WritableFont.createFont("Calibri"),
              16,
              WritableFont.BOLD,  false,
@@ -177,9 +180,6 @@ public class KardexReport extends BaseView {
              headerLFormat.setWrap(false);
              headerLFormat.setAlignment(jxl.format.Alignment.LEFT);
              headerLFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
-             
-             //normalFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,
-             //jxl.format.Colour.BLACK);
             //Add the created Cells to the sheet
              
             WritableFont headerTFont = new WritableFont(WritableFont.createFont("Calibri"),
@@ -197,35 +197,93 @@ public class KardexReport extends BaseView {
              jxl.format.Colour.BLACK);
              headerTFormat.setBackground(Colour.GRAY_80);
              
-            Label t1 = new Label(1, 6, "Fecha"); 
-            Label t2 = new Label(2, 6, "Detalle"); 
-            Label t3 = new Label(3, 6, "Unidades"); 
-            Label t4 = new Label(4, 6, "Stock final"); 
+            Label t1 = new Label(1, 7, "Fecha"); 
+            Label t2 = new Label(2, 7, "Detalle"); 
+            Label t3 = new Label(3, 7, "Stock inicial"); 
+            Label t4 = new Label(4, 7, "Unidades"); 
+            Label t5 = new Label(5, 7, "Stock final"); 
              
              t1.setCellFormat(headerTFormat);
              t2.setCellFormat(headerTFormat);
              t3.setCellFormat(headerTFormat);
              t4.setCellFormat(headerTFormat);
+             t5.setCellFormat(headerTFormat);
              
              label0.setCellFormat(headerLFormat);
              label1.setCellFormat(tittleFormat);
              label2.setCellFormat(headerRFormat);
              label3.setCellFormat(headerLFormat);
              label4.setCellFormat(headerLFormat);
+             label5.setCellFormat(headerLFormat);
+             label6.setCellFormat(headerLFormat);
              
             writableSheet.addCell(label0);
             writableSheet.addCell(label1);
             writableSheet.addCell(label2);
             writableSheet.addCell(label3);
             writableSheet.addCell(label4);
+            writableSheet.addCell(label5);
+            writableSheet.addCell(label6);
             
             writableSheet.addCell(t1);
             writableSheet.addCell(t2);
             writableSheet.addCell(t3);
             writableSheet.addCell(t4);
+            writableSheet.addCell(t5);
             
         }catch(Exception e){
 
+        }
+    }
+    
+    private void fillReport(WritableSheet writableSheet){
+        try{
+            //Definicion de formatos
+            WritableFont rowFont = new WritableFont(WritableFont.createFont("Calibri"),
+             11,
+             WritableFont.NO_BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+             rowFont.setColour(jxl.format.Colour.BLACK);
+            
+            WritableCellFormat parFormat = new WritableCellFormat(rowFont);
+             parFormat.setWrap(false);
+             parFormat.setBackground(Colour.GREY_25_PERCENT);
+             
+             
+             WritableCellFormat imparFormat = new WritableCellFormat(rowFont);
+             parFormat.setWrap(false);
+             int col=1;
+             int fil=8;
+             int i=0;
+             Object[] row;
+             for(Kardex k : kardex){
+                Label l1 = new Label(1, fil+i, dateFormat.format(k.getFecha()));
+                Label l2 = new Label(2, fil+i, k.getTipoMovimiento());
+                jxl.write.Number l3 = new jxl.write.Number(3, fil+i, k.getStockInicial());
+                jxl.write.Number l4 = new jxl.write.Number(4, fil+i, k.getCantidad());
+                jxl.write.Number l5 = new jxl.write.Number(5, fil+i, k.getStockFinal());
+                if (i%2==0){
+                    l1.setCellFormat(imparFormat);
+                    l2.setCellFormat(imparFormat);
+                    l3.setCellFormat(imparFormat);
+                    l4.setCellFormat(imparFormat);
+                    l5.setCellFormat(imparFormat);
+                }else{
+                    l1.setCellFormat(parFormat);
+                    l2.setCellFormat(parFormat);
+                    l3.setCellFormat(parFormat);
+                    l4.setCellFormat(parFormat);
+                    l5.setCellFormat(parFormat);
+                }
+                writableSheet.addCell(l1);
+                writableSheet.addCell(l2);
+                writableSheet.addCell(l3);
+                writableSheet.addCell(l4);
+                writableSheet.addCell(l5);
+                i++;
+            }  
+        }catch (Exception e){
+            
         }
     }
 
@@ -456,8 +514,7 @@ public class KardexReport extends BaseView {
             File exlFile = file;
             WritableWorkbook writableWorkbook = Workbook.createWorkbook(exlFile);
  
-            WritableSheet writableSheet = writableWorkbook.createSheet(
-                    "Reporte de Disponibilidad", 0);
+            WritableSheet writableSheet = writableWorkbook.createSheet("Kardex", 0);
             URL url = getClass().getResource("../../images/warehouse-512-000000.png");
             java.io.File imageFile = new java.io.File(url.toURI());
             BufferedImage input = ImageIO.read(imageFile);
@@ -480,7 +537,7 @@ public class KardexReport extends BaseView {
             
             createHeader(writableSheet,date);
             
-            //fillReport(writableSheet);
+            fillReport(writableSheet);
  
             //Write and close the workbook
             writableWorkbook.write();
