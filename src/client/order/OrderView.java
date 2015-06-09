@@ -94,7 +94,8 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     public void setupElements(){
         currentOrders = orderApplication.getAllOrdersWithAllStates();
         fillCombos();
-        refreshTable();
+        verifyOrders();
+        //refreshTable();
         Icons.setButton(newBtn, Icons.ICONOS.CREATE.ordinal());
         Icons.setButton(searchBtn, Icons.ICONOS.SEARCH.ordinal());
         Icons.setButton(deleteBtn, Icons.ICONOS.DELETE.ordinal());
@@ -246,7 +247,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                 }
             }
         }
-        refreshOrders();
+         refreshTable();
     }
     
     /*

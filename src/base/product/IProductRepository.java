@@ -15,5 +15,6 @@ import java.util.ArrayList;
  */
 public interface IProductRepository extends IRepository<Producto>{
     public ArrayList<Producto> queryByType(int idType);
+    public ArrayList<Producto> queryByCondition(int idType);
     ArrayList<Producto> searchProduct(Producto product);
 }

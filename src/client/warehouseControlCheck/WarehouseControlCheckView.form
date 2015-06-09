@@ -49,7 +49,7 @@
                       <Component id="btnFileUpload" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="jScrollPane1" alignment="1" pref="692" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" alignment="1" pref="894" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -152,13 +152,15 @@
         <Component class="javax.swing.JTable" name="tblControlCheck">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="7" rowCount="4">
+              <Table columnCount="9" rowCount="4">
                 <Column editable="true" title="Rack" type="java.lang.Object"/>
                 <Column editable="true" title="Lado" type="java.lang.Object"/>
                 <Column editable="true" title="Fila" type="java.lang.Object"/>
                 <Column editable="true" title="Columna" type="java.lang.Object"/>
                 <Column editable="true" title="En sistema" type="java.lang.Object"/>
+                <Column editable="true" title="Producto" type="java.lang.Object"/>
                 <Column editable="true" title="En f&#xed;sico" type="java.lang.Object"/>
+                <Column editable="true" title="Producto" type="java.lang.Object"/>
                 <Column editable="true" title="Tipo de ajuste" type="java.lang.Object"/>
               </Table>
             </Property>

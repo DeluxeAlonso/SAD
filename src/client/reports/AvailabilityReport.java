@@ -278,6 +278,11 @@ public class AvailabilityReport extends BaseView {
                 btnExportMousePressed(evt);
             }
         });
+        btnExport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportActionPerformed(evt);
+            }
+        });
 
         rackCombo.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -462,6 +467,10 @@ public class AvailabilityReport extends BaseView {
     private void rackComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rackComboItemStateChanged
         // TODO add your handling code here:
     }//GEN-LAST:event_rackComboItemStateChanged
+
+    private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnExportActionPerformed
 
     public void createHeader(WritableSheet writableSheet, Date date, DateFormat dateFormat){
         
