@@ -85,6 +85,17 @@ public class ProductApplication {
         return products;
     }
     
+    public ArrayList<Producto> queryByCondition(int idType){
+        ArrayList<Producto> products=null;
+        try{
+            products = productRepository.queryByCondition(idType);
+        }catch(Exception e){
+            System.out.println(e.toString());
+            e.printStackTrace();
+        }
+        return products;
+    }
+    
     public void delete(Producto product){
         try{
             productRepository.delete(product);

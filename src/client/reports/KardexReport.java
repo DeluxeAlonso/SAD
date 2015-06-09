@@ -16,9 +16,12 @@ import entity.Almacen;
 import entity.Kardex;
 import entity.Producto;
 import java.awt.event.ItemEvent;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,10 +29,21 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import jxl.Workbook;
+import jxl.format.Colour;
+import jxl.format.UnderlineStyle;
+import jxl.format.VerticalAlignment;
+import jxl.write.Label;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
+import jxl.write.WritableImage;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
 import util.InstanceFactory;
 import util.Strings;
 
@@ -47,6 +61,7 @@ public class KardexReport extends BaseView {
     public ArrayList<Almacen> warehouses;
     public ArrayList<Producto> products;
     public ArrayList<Kardex> kardex;
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     JFileChooser fc = new JFileChooser();
     File file = null;
     /**
@@ -72,7 +87,7 @@ public class KardexReport extends BaseView {
     
     public void fillProducts(int idType){
         comboProductFrom.removeAllItems();
-        products = productApplication.queryByType(idType);
+        products = productApplication.queryByCondition(idType);
         if(products.size()>0){
             String[] productName = new String[products.size()];
             for(int i=0; i<products.size(); i++)
@@ -118,6 +133,99 @@ public class KardexReport extends BaseView {
                         kardex.get(kardex.size()-1).getStockFinal(),
                     };
             model.addRow(row);
+        }
+    }
+    
+    public void createHeader(WritableSheet writableSheet, Date date){
+        
+        try{
+            Label label0 = new Label(1, 1, "");
+            Label label1 = new Label(4, 1, "Reporte de Disponibilidad");
+            Label label2 = new Label(7, 1, "Fecha: "+ dateFormat.format(date));
+            Label label3 = new Label(1, 2, "Almacen: "+ warehouses.get(comboWarehouseFrom.getSelectedIndex()).getDescripcion() );
+            Label label4 = new Label(1, 3, "Condicion: "+warehouses.get(comboWarehouseFrom.getSelectedIndex()).getCondicion().getNombre());
+            //Label label5 = new Label(1, 4, "Rack: "+ rackR);
+            WritableFont tittleFont = new WritableFont(WritableFont.createFont("Calibri"),
+             16,
+             WritableFont.BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+             tittleFont.setColour(jxl.format.Colour.RED);
+            
+            WritableCellFormat tittleFormat = new WritableCellFormat(tittleFont);
+             tittleFormat.setWrap(false);
+             tittleFormat.setAlignment(jxl.format.Alignment.CENTRE);
+             tittleFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+             
+            WritableFont headerRFont = new WritableFont(WritableFont.createFont("Calibri"),
+             10,
+             WritableFont.BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+             headerRFont.setColour(jxl.format.Colour.BLACK);
+            
+            WritableCellFormat headerRFormat = new WritableCellFormat(headerRFont);
+             headerRFormat.setWrap(false);
+             headerRFormat.setAlignment(jxl.format.Alignment.RIGHT);
+             headerRFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+             
+            WritableFont headerLFont = new WritableFont(WritableFont.createFont("Calibri"),
+             11,
+             WritableFont.BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+             headerLFont.setColour(jxl.format.Colour.BLACK);
+            
+            WritableCellFormat headerLFormat = new WritableCellFormat(headerLFont);
+             headerLFormat.setWrap(false);
+             headerLFormat.setAlignment(jxl.format.Alignment.LEFT);
+             headerLFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+             
+             //normalFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,
+             //jxl.format.Colour.BLACK);
+            //Add the created Cells to the sheet
+             
+            WritableFont headerTFont = new WritableFont(WritableFont.createFont("Calibri"),
+             WritableFont.DEFAULT_POINT_SIZE,
+             WritableFont.BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+            headerTFont.setColour(jxl.format.Colour.WHITE);
+            
+            WritableCellFormat headerTFormat = new WritableCellFormat(headerTFont);
+             headerTFormat.setWrap(true);
+             headerTFormat.setAlignment(jxl.format.Alignment.CENTRE);
+             headerTFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+             headerTFormat.setWrap(true);
+             headerTFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,
+             jxl.format.Colour.BLACK);
+             headerTFormat.setBackground(Colour.GRAY_80);
+             
+            Label t1 = new Label(1, 6, "Fecha"); 
+            Label t2 = new Label(2, 6, "Detalle"); 
+            Label t3 = new Label(3, 6, "Unidades"); 
+            Label t4 = new Label(4, 6, "Stock final"); 
+             
+             t1.setCellFormat(headerTFormat);
+             t2.setCellFormat(headerTFormat);
+             t3.setCellFormat(headerTFormat);
+             t4.setCellFormat(headerTFormat);
+             
+             label0.setCellFormat(headerLFormat);
+             label1.setCellFormat(tittleFormat);
+             label2.setCellFormat(headerRFormat);
+             label3.setCellFormat(headerLFormat);
+             label4.setCellFormat(headerLFormat);
+             
+            writableSheet.addCell(label0);
+            writableSheet.addCell(label1);
+            writableSheet.addCell(label2);
+            writableSheet.addCell(label3);
+            writableSheet.addCell(label4);
+            
+            writableSheet.addCell(t1);
+            writableSheet.addCell(t2);
+            writableSheet.addCell(t3);
+            writableSheet.addCell(t4);
+            
+        }catch(Exception e){
+
         }
     }
 
@@ -293,7 +401,6 @@ public class KardexReport extends BaseView {
             }else{
                 kardex = new ArrayList<Kardex>();
                 kardex = kardexApplication.queryByParameters(warehouses.get(comboWarehouseFrom.getSelectedIndex()).getId(), products.get(comboProductFrom.getSelectedIndex()).getId(), dtcInitDate.getDate(),dtcEndDate.getDate());
-                System.out.println(kardex.size());
                 fillKardex();
                 btnExport.setEnabled(true);
             }
@@ -306,6 +413,7 @@ public class KardexReport extends BaseView {
     }//GEN-LAST:event_comboWarehouseFromItemStateChanged
 
     private void btnExportMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportMousePressed
+        /*
         JOptionPane.setDefaultLocale(new Locale("es", "ES"));
         fc.setDialogTitle("Seleccione un archivo");
         fc.showOpenDialog(this);
@@ -313,7 +421,6 @@ public class KardexReport extends BaseView {
         System.out.println(file);
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
-        /* Export to XSL */
         try {
             FileWriter excel = new FileWriter(file);
             DefaultTableModel model = (DefaultTableModel) tblKardex.getModel();
@@ -335,6 +442,51 @@ public class KardexReport extends BaseView {
             excel.close();
         } catch (IOException ex) {
             Logger.getLogger(KardexReport.class.getName()).log(Level.SEVERE, null, ex);
+            //JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir el archivo",Strings.ERROR_KARDEX_TITLE,JOptionPane.ERROR_MESSAGE);
+        }
+        */
+        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+        fc.setDialogTitle("Seleccione un archivo");
+        fc.showOpenDialog(this);
+        file = fc.getSelectedFile();
+        System.out.println(file);
+        Date date = new Date();
+        /* Export to XSL */
+        try {
+            File exlFile = file;
+            WritableWorkbook writableWorkbook = Workbook.createWorkbook(exlFile);
+ 
+            WritableSheet writableSheet = writableWorkbook.createSheet(
+                    "Reporte de Disponibilidad", 0);
+            URL url = getClass().getResource("../../images/warehouse-512-000000.png");
+            java.io.File imageFile = new java.io.File(url.toURI());
+            BufferedImage input = ImageIO.read(imageFile);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(input, "PNG", baos);
+            
+            writableSheet.addImage(new WritableImage(1,1,0.4,1,baos.toByteArray()));
+            writableSheet.setColumnView(1, 26);
+            writableSheet.setColumnView(2, 10);
+            writableSheet.setColumnView(3, 10);
+            writableSheet.setColumnView(4, 10);
+            writableSheet.setColumnView(5, 10);
+            writableSheet.setColumnView(6, 15);
+            writableSheet.setColumnView(7, 15);
+            writableSheet.setColumnView(8, 15);
+            writableSheet.setColumnView(9, 15);
+            writableSheet.setColumnView(10, 15);
+            //Create Cells with contents of different data types.
+            //Also specify the Cell coordinates in the constructor
+            
+            createHeader(writableSheet,date);
+            
+            //fillReport(writableSheet);
+ 
+            //Write and close the workbook
+            writableWorkbook.write();
+            writableWorkbook.close();
+        } catch (Exception ex) {
+            Logger.getLogger(AvailabilityReport.class.getName()).log(Level.SEVERE, null, ex);
             //JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir el archivo",Strings.ERROR_KARDEX_TITLE,JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnExportMousePressed
