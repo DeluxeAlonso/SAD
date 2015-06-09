@@ -61,6 +61,7 @@ public class UserRepository implements IUserRepository {
             return -1;
         } 
         return 1;
+        
     }
 
     @Override
@@ -95,7 +96,7 @@ public class UserRepository implements IUserRepository {
         Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
-            session.saveOrUpdate(object);                      
+            session.update(object);                      
             session.getTransaction().commit();
         } catch (RuntimeException e) {
             if (trns != null) {

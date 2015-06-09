@@ -7,14 +7,19 @@ package client.order;
 
 import algorithm.AlgorithmExecution;
 import application.client.ClientApplication;
+import application.internment.InternmentApplication;
 import application.local.LocalApplication;
 import application.order.OrderApplication;
 import application.pallet.PalletApplication;
 import application.product.ProductApplication;
 import client.base.BaseView;
+import client.internment.InternmentSelectView;
+import client.internment.InternmentSelectView.Buffer;
 import entity.Cliente;
 import entity.GuiaRemision;
 import entity.Local;
+import entity.OrdenInternamiento;
+import entity.OrdenInternamientoXProducto;
 import entity.Pallet;
 import entity.Pedido;
 import entity.PedidoParcial;
@@ -63,6 +68,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     ClientApplication clientApplication = new ClientApplication();
     AlgorithmExecution algorithmExecution = new AlgorithmExecution();
     PalletApplication palletApplication = new PalletApplication();
+    InternmentApplication internmentApplication = new InternmentApplication();
     public static OrderView orderView;
     ArrayList<Local> locals = new ArrayList<>();
     ArrayList<Producto> orderProducts;
@@ -155,7 +161,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     /*
      * Table Methods
      */
-    public void refreshTable(){
+    public void refreshTable(){ 
         DefaultTableModel tableModel = (DefaultTableModel) orderTable.getModel();
         tableModel.setRowCount(0);
         currentOrders.stream().forEach((_order) -> {
@@ -222,6 +228,25 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                         Strings.MESSAGE_DELETE_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
                 deleteBtn.setEnabled(false);
         }
+    }
+    
+    public void verifyOrders(){
+        currentOrders = orderApplication.getAllOrdersWithAllStates();
+        for(int i=0;i<currentOrders.size();i++){
+            if(currentOrders.get(i).getEstado() != EntityState.Orders.ANULADO.ordinal()){
+                int attendedCount = 0;
+                ArrayList<PedidoParcial> partialOrders = orderApplication.getPendingPartialOrdersById(currentOrders.get(i).getId());        
+                for(int j=0;j<partialOrders.size();j++){
+                    if(partialOrders.get(j).getEstado() == EntityState.PartialOrders.ATENDIDO.ordinal())
+                        attendedCount++;
+                }
+                if(attendedCount == partialOrders.size()){
+                    currentOrders.get(i).setEstado(EntityState.Orders.FINALIZADO.ordinal());
+                    orderApplication.updateOrder(currentOrders.get(i));
+                }
+            }
+        }
+        refreshOrders();
     }
     
     /*
@@ -515,7 +540,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jLabel1)
-                        .addGap(0, 186, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(fileTextField)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -795,33 +820,31 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(460, 460, 460)
-                                .addComponent(jLabel14)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(reasonCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(deletePartialBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap())
+                        .addGap(281, 281, 281)
+                        .addComponent(newBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(57, 57, 57)
+                        .addComponent(jLabel14)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(reasonCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(deletePartialBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(newBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                                .addGap(18, 18, 18)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 413, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(10, 10, 10))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -833,15 +856,15 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                         .addGap(3, 3, 3)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(newBtn)
+                    .addComponent(deleteBtn)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(deleteBtn)
                         .addComponent(deletePartialBtn)
                         .addComponent(jLabel14)
                         .addComponent(reasonCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -920,18 +943,33 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     if(reasonCombo.getSelectedIndex() != 0){
             PedidoParcial p = currentPartialOrders.get(partialCombo.getSelectedIndex() -1);
             ArrayList<Pallet> pallets = palletApplication.getPalletsByPartialOrder(p.getId());
-            if(reasonCombo.getSelectedIndex() == 1){//PRODUCTOS VENCIDOS 
-                p.setEstado(EntityState.PartialOrders.NO_ATENDIDO.ordinal());
+            if(reasonCombo.getSelectedIndex() == 1){//PRODUCTOS VENCIDOS
+                p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
                 for(int i=0;i<pallets.size();i++){
+                    //Producto product = pallets.get(i).getProducto();
+                    //product.setStockLogico(product.getStockLogico() - 1);
+                    //productApplication.update(product);
                     pallets.get(i).setEstado(EntityState.Pallets.ELIMINADO.ordinal());
                     pallets.get(i).setPedidoParcial(null);
+                    pallets.get(i).setUbicacion(null);
                 }
             }
             else{//CLIENTE INSATISFECHO
                 p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
+                for(Iterator<PedidoParcialXProducto> partialOrderDetail = p.getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){
+                    PedidoParcialXProducto partial = partialOrderDetail.next(); 
+                    OrdenInternamientoXProducto o = internmentApplication.getOrderProduct(partial.getProducto());
+                    o.setCantidad(o.getCantidad());
+                    o.setCantidadIngresada(o.getCantidadIngresada() - partial.getCantidad());
+                    o.getProducto().setPalletsRegistrados(o.getProducto().getPalletsRegistrados() + partial.getCantidad());
+                    o.getProducto().setStockLogico(o.getProducto().getStockLogico() + partial.getCantidad());
+                    productApplication.update(o.getProducto());
+                    internmentApplication.updateOrdenXProducto(o);
+                 }
                 for(int i=0;i<pallets.size();i++){
                     pallets.get(i).setEstado(EntityState.Pallets.CREADO.ordinal());
                     pallets.get(i).setPedidoParcial(null);
+                    pallets.get(i).setUbicacion(null);
                 }
             }
             //Verificamos si al pedido le quedana un pedidos parciales
@@ -941,6 +979,15 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                 System.out.println("AVAIALBLE ORDERS " + availablePartialOrders.size());
                 if(availablePartialOrders.isEmpty()){
                     p.getPedido().setEstado(EntityState.Orders.ANULADO.ordinal());
+                    orderApplication.updateOrder(p.getPedido());
+                }else
+                {
+                    p.getPedido().setEstado(EntityState.Orders.REGISTRADO.ordinal());
+                    for(int i=0;i<availablePartialOrders.size();i++)
+                        if(availablePartialOrders.get(i).getEstado() == EntityState.PartialOrders.ATENDIDO.ordinal()){
+                            p.getPedido().setEstado(EntityState.Orders.EN_CURSO.ordinal());
+                            break;
+                        }   
                     orderApplication.updateOrder(p.getPedido());
                 }
                 refreshOrders();

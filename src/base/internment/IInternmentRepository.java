@@ -10,6 +10,7 @@ import entity.Usuario;
 import entity.Almacen;
 import entity.OrdenInternamiento;
 import entity.OrdenInternamientoXProducto;
+import entity.Producto;
 import java.util.ArrayList;
 
 /**
@@ -23,5 +24,7 @@ public interface IInternmentRepository extends IRepository<OrdenInternamiento>{
     public OrdenInternamientoXProducto getProdOrder(OrdenInternamiento idType);
 
     public Boolean incCantOrderXProd(OrdenInternamientoXProducto object);
+
+    public OrdenInternamientoXProducto getOrderProd(Producto id);
     
 }

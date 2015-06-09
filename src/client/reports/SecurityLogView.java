@@ -5,10 +5,23 @@
  */
 package client.reports;
 
+import application.interceptor.LogApplication;
 import client.base.BaseView;
+import entity.Log;
+import entity.Usuario;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.table.DefaultTableModel;
 import util.EntityState;
 import util.Icons;
+import util.InstanceFactory;
+import util.Strings;
 
 /**
  *
@@ -19,18 +32,78 @@ public class SecurityLogView extends BaseView {
     /**
      * Creates new form SecurityLogView
      */
+    LogApplication logApplication = InstanceFactory.Instance.getInstance("logApplication", LogApplication.class);
+
     public SecurityLogView() {
         initComponents();
         super.initialize();
-        fillCombos();
+        Date date = Calendar.getInstance().getTime();
+        dateInitialMod.setMaxSelectableDate(date);
+        dateFinalMod.setMaxSelectableDate(date);
+        dateFinalCr.setMaxSelectableDate(date);
+        dateInitialCr.setMaxSelectableDate(date);
         loadImageButton();
+        fillCombos();
+        setSpinnersModel();
+        fillTableWithLog(logApplication.getAllLog());
     }
-    private void loadImageButton(){
+
+    private void clearLogGrid() {
+        DefaultTableModel model = (DefaultTableModel) gridLog.getModel();
+        model.setRowCount(0);
+    }
+
+    private void fillTableWithLog(ArrayList<Log> logs) {
+        clearLogGrid();
+        if (logs != null) {
+            DefaultTableModel model = (DefaultTableModel) gridLog.getModel();
+
+            for (Log l : logs) {
+                String userIdMod = l.getUsuarioByUsuarioActualizador() == null ? "root" : l.getUsuarioByUsuarioActualizador().getId();
+                String userIdCre = l.getUsuarioByUsuarioCreador() == null ? "root" : l.getUsuarioByUsuarioCreador().getId();
+                model.addRow(new Object[]{
+                    l.getIdObjeto(),
+                    EntityState.getMasters()[l.getTipo() + 1],
+                    l.getIp(),
+                    l.getMac(),
+                    userIdMod,
+                    userIdCre,
+                    l.getFechaActualizacion(),
+                    l.getFechaCreacion()
+                });
+            }
+        }
+    }
+
+    private void setSpinnersModel() {
+        SpinnerModel minuteModelIMod = new SpinnerNumberModel(0, 0, 59, 1);
+        SpinnerModel hourModelIMod = new SpinnerNumberModel(0, 0, 23, 1);
+        SpinnerModel minuteModelFMod = new SpinnerNumberModel(0, 0, 59, 1);
+        SpinnerModel hourModelFMod = new SpinnerNumberModel(0, 0, 23, 1);
+        spinFHHourMod.setModel(hourModelFMod);
+        spinIHHourMod.setModel(hourModelIMod);
+        spinFHMinuteMod.setModel(minuteModelFMod);
+        spinIHMinuteMod.setModel(minuteModelIMod);
+
+        SpinnerModel minuteModelICr = new SpinnerNumberModel(0, 0, 59, 1);
+        SpinnerModel hourModelICr = new SpinnerNumberModel(0, 0, 23, 1);
+        SpinnerModel minuteModelFCr = new SpinnerNumberModel(0, 0, 59, 1);
+        SpinnerModel hourModelFCr = new SpinnerNumberModel(0, 0, 23, 1);
+        spinFHHourCr.setModel(hourModelFCr);
+        spinIHHourCr.setModel(hourModelICr);
+        spinFHMinuteCr.setModel(minuteModelFCr);
+        spinIHMinuteCr.setModel(minuteModelICr);
+
+    }
+
+    private void loadImageButton() {
+        btnSearch.setText("");
         Icons.setButton(btnSearch, Icons.ICONOS.SEARCH.ordinal());
     }
-    private void fillCombos(){
+
+    private void fillCombos() {
         comboMaster.setModel(new DefaultComboBoxModel(EntityState.getMasters()));
-        comboOperation.setModel(new DefaultComboBoxModel(EntityState.getOperations()));
+
     }
 
     /**
@@ -42,20 +115,50 @@ public class SecurityLogView extends BaseView {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jEditorPane1 = new javax.swing.JEditorPane();
         jPanel2 = new javax.swing.JPanel();
-        txtCodUser = new javax.swing.JTextField();
+        txtUserCreate = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         comboMaster = new javax.swing.JComboBox();
         jLabel3 = new javax.swing.JLabel();
-        comboOperation = new javax.swing.JComboBox();
         btnSearch = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        dateInitial = new com.toedter.calendar.JDateChooser();
-        dateFinal = new com.toedter.calendar.JDateChooser();
+        dateInitialMod = new com.toedter.calendar.JDateChooser();
+        dateFinalMod = new com.toedter.calendar.JDateChooser();
         jLabel5 = new javax.swing.JLabel();
-        gridLog = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jLabel6 = new javax.swing.JLabel();
+        txtObjectId = new javax.swing.JTextField();
+        spinIHHourMod = new javax.swing.JSpinner();
+        spinIHMinuteMod = new javax.swing.JSpinner();
+        spinFHHourMod = new javax.swing.JSpinner();
+        spinFHMinuteMod = new javax.swing.JSpinner();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        txtUserMod = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        dateInitialCr = new com.toedter.calendar.JDateChooser();
+        jLabel12 = new javax.swing.JLabel();
+        dateFinalCr = new com.toedter.calendar.JDateChooser();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        spinIHHourCr = new javax.swing.JSpinner();
+        jLabel15 = new javax.swing.JLabel();
+        spinIHMinuteCr = new javax.swing.JSpinner();
+        spinFHHourCr = new javax.swing.JSpinner();
+        jLabel16 = new javax.swing.JLabel();
+        spinFHMinuteCr = new javax.swing.JSpinner();
+        jSeparator1 = new javax.swing.JSeparator();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jSeparator2 = new javax.swing.JSeparator();
+        gridScroll = new javax.swing.JScrollPane();
+        gridLog = new javax.swing.JTable();
+
+        jScrollPane1.setViewportView(jEditorPane1);
 
         setClosable(true);
         setTitle("Log de seguridad");
@@ -79,59 +182,147 @@ public class SecurityLogView extends BaseView {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Búsqueda"));
 
-        jLabel2.setText("Código Usuario:");
+        jLabel2.setText("Usuario Creador:");
 
         jLabel1.setText("Tipo:");
 
         comboMaster.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jLabel3.setText("Operación:");
-
-        comboOperation.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jLabel3.setText("Usuario Modificador:");
 
         btnSearch.setText("Buscar");
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("Fecha inicial:");
 
         jLabel5.setText("Fecha final:");
+
+        jLabel6.setText("Id Objeto:");
+
+        jLabel7.setText("Hora Inicial:");
+
+        jLabel8.setText("Hora Final:");
+
+        jLabel9.setText(":");
+
+        jLabel10.setText(":");
+
+        jLabel11.setText("Fecha inicial:");
+
+        jLabel12.setText("Fecha final:");
+
+        jLabel13.setText("Hora Final:");
+
+        jLabel14.setText("Hora Inicial:");
+
+        jLabel15.setText(":");
+
+        jLabel16.setText(":");
+
+        jLabel17.setText("Fecha Creación");
+
+        jLabel18.setText("Fecha Modificación");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnSearch)
-                .addGap(21, 21, 21))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel17)
+                        .addGap(18, 18, 18)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(26, 26, 26))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jLabel11)
+                                    .addComponent(jLabel14))
+                                .addGap(18, 18, 18)))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(spinIHHourCr, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel15)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(spinIHMinuteCr, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(15, 15, 15)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(jLabel5))
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addComponent(comboOperation, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel1)))
+                                        .addComponent(jLabel13))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel12)))
                                 .addGap(22, 22, 22)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(dateFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(comboMaster, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(txtCodUser)))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(dateInitial, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                    .addComponent(dateFinalCr, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(spinFHHourCr, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel16)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(spinFHMinuteCr, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(dateInitialCr, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(spinIHHourMod, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel9)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(spinIHMinuteMod, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel8))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(dateInitialMod, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
+                                            .addComponent(txtUserCreate, javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtUserMod, javax.swing.GroupLayout.Alignment.LEADING))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING))))
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGap(22, 22, 22)
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(dateFinalMod, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(comboMaster, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                                .addComponent(spinFHHourMod, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jLabel10)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(spinFHMinuteMod, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txtObjectId))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnSearch)))))))
+                .addGap(15, 15, 15))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSeparator2)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -140,47 +331,127 @@ public class SecurityLogView extends BaseView {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtCodUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtUserCreate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtObjectId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(comboOperation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1)
-                    .addComponent(comboMaster, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(comboMaster, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtUserMod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(18, 24, Short.MAX_VALUE)
+                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(24, 24, 24))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
-                            .addComponent(dateInitial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(dateInitialMod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(12, 12, 12)
+                                .addComponent(jLabel8))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(spinIHHourMod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(spinIHMinuteMod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel9)))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel7))))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(dateFinalMod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnSearch))
-                    .addComponent(dateFinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(spinFHMinuteMod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(spinFHHourMod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel10))))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(31, 31, 31)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jLabel17)))
+                .addGap(24, 24, 24)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel11)
+                            .addComponent(dateInitialCr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel12))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(12, 12, 12)
+                                .addComponent(jLabel13))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(spinIHHourCr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(spinIHMinuteCr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel15)
+                                    .addComponent(jLabel14)))))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(dateFinalCr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(spinFHMinuteCr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(spinFHHourCr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel16))))
+                .addGap(19, 19, 19)
+                .addComponent(btnSearch)
                 .addContainerGap())
         );
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        gridLog.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Id Objeto", "Operacion", "Tipo", "Usuario", "Fecha"
+                "Id Objeto", "Tipo", "Ip", "Mac", "Último Usuario Modificado", "Usuario Creador", "Fecha Modificación", "Fecha Creación"
             }
-        ));
-        gridLog.setViewportView(jTable1);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        gridLog.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        gridScroll.setViewportView(gridLog);
+        if (gridLog.getColumnModel().getColumnCount() > 0) {
+            gridLog.getColumnModel().getColumn(0).setMinWidth(100);
+            gridLog.getColumnModel().getColumn(1).setMinWidth(120);
+            gridLog.getColumnModel().getColumn(2).setMinWidth(100);
+            gridLog.getColumnModel().getColumn(3).setMinWidth(100);
+            gridLog.getColumnModel().getColumn(4).setMinWidth(120);
+            gridLog.getColumnModel().getColumn(5).setMinWidth(120);
+            gridLog.getColumnModel().getColumn(6).setMinWidth(100);
+            gridLog.getColumnModel().getColumn(7).setMinWidth(100);
+        }
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(gridLog, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(gridScroll)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -190,8 +461,8 @@ public class SecurityLogView extends BaseView {
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(gridLog, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(58, Short.MAX_VALUE))
+                .addComponent(gridScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         pack();
@@ -201,21 +472,194 @@ public class SecurityLogView extends BaseView {
         // TODO add your handling code here:
     }//GEN-LAST:event_formInternalFrameClosed
 
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        // TODO add your handling code here:
+        if (formValid()) {
+
+            Date dateIniMod = dateInitialMod.getDate();
+            Date dateFinMod = dateFinalMod.getDate();
+            Calendar calendarIniMod = null;
+            Calendar calendarFinMod = null;
+            if (dateInitialMod.getDate() != null && dateFinalMod.getDate() != null) {
+                calendarIniMod = new GregorianCalendar(
+                        dateIniMod.getYear() + 1900,
+                        dateIniMod.getMonth(),
+                        dateIniMod.getDate(),
+                        (Integer) spinIHHourMod.getValue(),
+                        (Integer) spinIHMinuteMod.getValue()
+                );
+
+                calendarFinMod = new GregorianCalendar(
+                        dateFinMod.getYear() + 1900,
+                        dateFinMod.getMonth(),
+                        dateFinMod.getDate(),
+                        (Integer) spinFHHourMod.getValue(),
+                        (Integer) spinFHMinuteMod.getValue()
+                );
+            }
+            Date dateIniCr = dateInitialCr.getDate();
+            Date dateFinCr = dateFinalCr.getDate();
+            Calendar calendarIniCr = null;
+            Calendar calendarFinCr = null;
+            if (dateInitialCr.getDate() != null && dateFinalCr.getDate() != null) {
+                calendarIniCr = new GregorianCalendar(
+                        dateIniCr.getYear() + 1900,
+                        dateIniCr.getMonth(),
+                        dateIniCr.getDate(),
+                        (Integer) spinIHHourCr.getValue(),
+                        (Integer) spinIHMinuteCr.getValue()
+                );
+                calendarFinCr = new GregorianCalendar(
+                        dateFinCr.getYear() + 1900,
+                        dateFinCr.getMonth(),
+                        dateFinCr.getDate(),
+                        (Integer) spinFHHourCr.getValue(),
+                        (Integer) spinFHMinuteCr.getValue()
+                );
+            }
+            Log log = new Log();
+
+            log.setIdObjeto(txtObjectId.getText().trim());
+
+            if (comboMaster.getSelectedIndex() != 0) {
+                log.setTipo(comboMaster.getSelectedIndex() - 1);
+            }
+            if (!txtUserCreate.getText().trim().equals("")) {
+                Usuario user = new Usuario();
+                if (txtUserCreate.getText().trim().toLowerCase().equals("root")) {
+                    user.setId(null);
+                } else {
+                    user.setId(txtUserCreate.getText().trim());
+                }
+                log.setUsuarioByUsuarioCreador(user);
+            }
+            if (!txtUserMod.getText().trim().equals("")) {
+                Usuario user = new Usuario();
+                if (txtUserMod.getText().trim().toLowerCase().equals("root")) {
+                    user.setId(null);
+                } else {
+                    user.setId(txtUserMod.getText().trim());
+                }
+                log.setUsuarioByUsuarioActualizador(user);
+            }
+            fillTableWithLog(logApplication.getLog(
+                    log, 
+                    calendarIniMod==null?null:calendarIniMod.getTime(), 
+                    calendarFinMod==null?null:calendarFinMod.getTime(), 
+                    calendarIniCr==null?null:calendarIniCr.getTime(), 
+                    calendarFinCr==null?null:calendarFinCr.getTime()));
+
+        }
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    private boolean formValid() {
+        String message = "";
+
+        if (dateInitialMod.getDate() != null && dateFinalMod.getDate() != null) {
+            Date dateIniMod = dateInitialMod.getDate();
+            Date dateFinMod = dateFinalMod.getDate();
+            Calendar calendarIniMod = new GregorianCalendar(
+                    dateIniMod.getYear() + 1900,
+                    dateIniMod.getMonth(),
+                    dateIniMod.getDate(),
+                    (Integer) spinIHHourMod.getValue(),
+                    (Integer) spinIHMinuteMod.getValue()
+            );
+            Calendar calendarFinMod = new GregorianCalendar(
+                    dateFinMod.getYear() + 1900,
+                    dateFinMod.getMonth(),
+                    dateFinMod.getDate(),
+                    (Integer) spinFHHourMod.getValue(),
+                    (Integer) spinFHMinuteMod.getValue()
+            );
+
+            if (calendarIniMod.getTime().getTime() > calendarFinMod.getTime().getTime()) {
+                message += Strings.ERROR_DATE_PROVIDED + "\n";
+                dateInitialMod.setBorder(errorBorder);
+                dateFinalMod.setBorder(errorBorder);
+            } else {
+                dateInitialMod.setBorder(null);
+                dateFinalMod.setBorder(null);
+            }
+
+        }
+        if (dateInitialCr.getDate() != null && dateFinalCr.getDate() != null) {
+            Date dateIniCr = dateInitialCr.getDate();
+            Date dateFinCr = dateFinalCr.getDate();
+            Calendar calendarIniCr = new GregorianCalendar(
+                    dateIniCr.getYear() + 1900,
+                    dateIniCr.getMonth(),
+                    dateIniCr.getDate(),
+                    (Integer) spinIHHourCr.getValue(),
+                    (Integer) spinIHMinuteCr.getValue()
+            );
+            Calendar calendarFinCr = new GregorianCalendar(
+                    dateFinCr.getYear() + 1900,
+                    dateFinCr.getMonth(),
+                    dateFinCr.getDate(),
+                    (Integer) spinFHHourCr.getValue(),
+                    (Integer) spinFHMinuteCr.getValue()
+            );
+            if (calendarIniCr.getTime().getTime() > calendarFinCr.getTime().getTime()) {
+                message += Strings.ERROR_DATE_PROVIDED + "\n";
+                dateInitialCr.setBorder(errorBorder);
+                dateFinalCr.setBorder(errorBorder);
+            } else {
+                dateInitialCr.setBorder(null);
+                dateFinalCr.setBorder(null);
+
+            }
+
+        }
+        if (!message.equals("")) {
+            JOptionPane.showMessageDialog(this, message, "Mensaje", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        return true;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSearch;
     private javax.swing.JComboBox comboMaster;
-    private javax.swing.JComboBox comboOperation;
-    private com.toedter.calendar.JDateChooser dateFinal;
-    private com.toedter.calendar.JDateChooser dateInitial;
-    private javax.swing.JScrollPane gridLog;
+    private com.toedter.calendar.JDateChooser dateFinalCr;
+    private com.toedter.calendar.JDateChooser dateFinalMod;
+    private com.toedter.calendar.JDateChooser dateInitialCr;
+    private com.toedter.calendar.JDateChooser dateInitialMod;
+    private javax.swing.JTable gridLog;
+    private javax.swing.JScrollPane gridScroll;
+    private javax.swing.JEditorPane jEditorPane1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField txtCodUser;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSpinner spinFHHourCr;
+    private javax.swing.JSpinner spinFHHourMod;
+    private javax.swing.JSpinner spinFHMinuteCr;
+    private javax.swing.JSpinner spinFHMinuteMod;
+    private javax.swing.JSpinner spinIHHourCr;
+    private javax.swing.JSpinner spinIHHourMod;
+    private javax.swing.JSpinner spinIHMinuteCr;
+    private javax.swing.JSpinner spinIHMinuteMod;
+    private javax.swing.JTextField txtObjectId;
+    private javax.swing.JTextField txtUserCreate;
+    private javax.swing.JTextField txtUserMod;
     // End of variables declaration//GEN-END:variables
 }

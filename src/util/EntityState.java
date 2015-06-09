@@ -129,6 +129,15 @@ public class EntityState {
         return partialOrdersState;
     }
     
+    public static enum RemissionGuides{
+        INACTIVO,ACTIVO
+    };
+    
+    public static String[] getRemissionGuidesState() {
+        
+        return remissionGuideState;
+    }
+    
     /*
      almacen
      guia remision
@@ -142,7 +151,7 @@ public class EntityState {
 
     public static enum Master {
 
-        Dumb,Almacen, Guia_Remision, Orden_Internamiento, Pedido, Perfil, Usuario, Despacho, Kardex
+        Almacen, Guia_Remision, Orden_Internamiento, Pedido, Perfil, Usuario, Despacho, Kardex
     };
 
     public static String[] getMasters() {
@@ -152,7 +161,7 @@ public class EntityState {
     
     public static enum Operation{
       
-        Dumb,Insert,Delete,Update
+        Insert,Update,Delete
         
     };
     
@@ -174,4 +183,5 @@ public class EntityState {
     private static String[] spotState = {"Inactivo", "Libre", "Ocupado"};
     private static String[] userState = {" ", "Activo", "Inactivo"};
     private static String[] spotStateLiteral={"Inactivo","Libre","Ocupado"};
+    private static String[] remissionGuideState={"Inactivo","Activo"};
 }

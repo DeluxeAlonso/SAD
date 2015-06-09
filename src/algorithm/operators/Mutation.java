@@ -77,7 +77,9 @@ public class Mutation {
         }
         
 //        System.out.println("node1: " + node.getProduct().getId());
-//        System.out.println("moving " + idxI + "/" + idxJ + " to " +iRoute + "/" + jRoute);
+        //System.out.println("moving " + idxI + "/" + idxJ + " to " +iRoute + "/" + jRoute);
+        
+        if(iRoute==-1 || jRoute==-1) return;
         
         Node[] fromRoute = nodes[idxI];
         Node[] toRoute = nodes[iRoute];

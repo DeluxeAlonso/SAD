@@ -53,31 +53,75 @@ public class Crossover {
         int idx1 = 0, idx2 = 0, idxChild = 0;
         Node[][] childRoutes = new Node[nRoutes][0];
         
+        HashMap<Integer,Integer> curStock = new HashMap<> (problem.getProductsStock());        
+        
         while(idx1<parentRoutes1.length && idx2<parentRoutes2.length){
             if(idxChild==nRoutes) break;
             boolean found1 = false, found2 = false;
             while(!found1 && idx1 < parentRoutes1.length){
                 if(posCand1[order1[idx1]] && parentRoutes1[order1[idx1]].length>0){
-                    childRoutes[idxChild] = parentRoutes1[order1[idx1]];
-                    for (int i = 0; i < nRoutes; i++) {
-                        if(conflicts[order1[idx1]][i])
-                            posCand2[i] = false;                        
+                    
+                    boolean overStock = false;
+                    for (int j = 0; j < parentRoutes1[order1[idx1]].length; j++) {
+                        int productId = parentRoutes1[order1[idx1]][j].getProduct().getId();
+                        int newStock = curStock.get(productId) - parentRoutes1[order1[idx1]][j].getDemand();
+                        if(newStock<0){
+                            overStock = true;
+                            break;
+                        }                        
                     }
-                    found1 = true;
-                    idxChild++;
+                    
+                    if(!overStock){
+                        for (int j = 0; j < parentRoutes1[order1[idx1]].length; j++) {
+                            int productId = parentRoutes1[order1[idx1]][j].getProduct().getId();
+                            int newStock = curStock.get(productId) - parentRoutes1[order1[idx1]][j].getDemand();
+                            curStock.put(productId, newStock);   
+                        }
+                        
+                        childRoutes[idxChild] = parentRoutes1[order1[idx1]];
+                        for (int i = 0; i < nRoutes; i++) {
+                            if (conflicts[order1[idx1]][i]) {
+                                posCand2[i] = false;
+                            }
+                        }
+                        found1 = true;
+                        idxChild++;
+                        
+                    }
                 }
                 idx1++;
             }
+            
             if(idxChild==nRoutes) break;
             while(!found2 && idx2 < parentRoutes2.length){
                 if(posCand2[order2[idx2]] && parentRoutes2[order2[idx2]].length>0){
-                    childRoutes[idxChild] = parentRoutes2[order2[idx2]];
-                    for (int i = 0; i < nRoutes; i++) {
-                        if(conflicts[i][order2[idx2]])
-                            posCand1[i] = false;                        
+                    
+                    boolean overStock = false;
+                    for (int j = 0; j < parentRoutes2[order2[idx2]].length; j++) {
+                        int productId = parentRoutes2[order2[idx2]][j].getProduct().getId();
+                        int newStock = curStock.get(productId) - parentRoutes2[order2[idx2]][j].getDemand();
+                        if(newStock<0){
+                            overStock = true;
+                            break;
+                        }                        
                     }
-                    found2 = true;
-                    idxChild++;
+                    
+                    if (!overStock) {
+                        for (int j = 0; j < parentRoutes2[order2[idx2]].length; j++) {
+                            int productId = parentRoutes2[order2[idx2]][j].getProduct().getId();
+                            int newStock = curStock.get(productId) - parentRoutes2[order2[idx2]][j].getDemand();
+                            curStock.put(productId, newStock);
+                        }
+                    
+                        childRoutes[idxChild] = parentRoutes2[order2[idx2]];
+                        for (int i = 0; i < nRoutes; i++) {
+                            if(conflicts[i][order2[idx2]])
+                                posCand1[i] = false;                        
+                        }
+                        found2 = true;
+                        idxChild++;
+                    
+                    }
                 }
                 idx2++;
             }
