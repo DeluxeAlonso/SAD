@@ -89,9 +89,11 @@ public class InternmentSelectView extends BaseView {
         internmentSelectView = this;
         setTitle("Internamiento");
         jButton2.setEnabled(false);
-        jButton3.setEnabled(false);
+        //jButton3.setEnabled(false);
         jComboBox1.removeAllItems();
         table = jTable2;
+        jTextField3.setVisible(false);
+        jLabel3.setVisible(false);
         /*table.getModel().addTableModelListener(new TableModelListener() {
         public void tableChanged(TableModelEvent e) {
         Boolean isChecked;
@@ -141,7 +143,7 @@ public class InternmentSelectView extends BaseView {
         jTextField2 = new javax.swing.JTextField();
         jTextField3 = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
+        jCheckBox1 = new javax.swing.JCheckBox();
 
         setClosable(true);
         setTitle("Crear Pedido");
@@ -261,10 +263,10 @@ public class InternmentSelectView extends BaseView {
 
         jLabel3.setText("Cantidad Pendiente por internar:");
 
-        jButton3.setText("Asignar Automático");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+        jCheckBox1.setText("Seleccionar automático");
+        jCheckBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jCheckBox1ItemStateChanged(evt);
             }
         });
 
@@ -295,8 +297,8 @@ public class InternmentSelectView extends BaseView {
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jTextField3))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton3)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jCheckBox1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -328,11 +330,11 @@ public class InternmentSelectView extends BaseView {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3)
+                    .addComponent(jCheckBox1)
                     .addComponent(jButton2))
-                .addGap(54, 54, 54))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         pack();
@@ -471,7 +473,14 @@ public class InternmentSelectView extends BaseView {
                 pallet.setOrdenInternamiento(internmentApplication.queryById(x));
                 pallet.setProducto(productApplication.queryById(b.id_item));
                 pallet.setEan128(crearEAN128(pallet));
-                palletApplication.insert(pallet);
+                int eanAux=palletApplication.insert(pallet);
+                
+                Pallet palletAux = palletApplication.queryById(eanAux);
+                String ean = palletAux.getEan128();
+                ean+=eanAux;
+                palletAux.setEan128(ean);
+                palletApplication.update(palletAux);
+                
             }
         }
         
@@ -495,7 +504,7 @@ public class InternmentSelectView extends BaseView {
     private void jTable1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MousePressed
         // TODO add your handling code here:
             jButton2.setEnabled(true);
-            jButton3.setEnabled(true);
+            //jButton3.setEnabled(true);
         
         
         int row = jTable1.getSelectedRow();
@@ -507,6 +516,7 @@ public class InternmentSelectView extends BaseView {
         ordenAInternar = orden;
         fillComboWarehouse(prod.getCondicion().getId());
         fillFreeSpots();
+        jCheckBox1.setSelected(false);
         
     }//GEN-LAST:event_jTable1MousePressed
 
@@ -556,10 +566,10 @@ public class InternmentSelectView extends BaseView {
                     spotApplication.updateSpotOccupancy(ubicaciones.get(i).getId(), EntityState.Spots.OCUPADO.ordinal());
                                     
                     //actualizar cant a internar en ordeninteramientoXproducto
-                    /*OrdenInternamientoXProducto ordenXProd = internmentApplication.getProdOrder(ordenAInternar);
+                    OrdenInternamientoXProducto ordenXProd = internmentApplication.getProdOrder(ordenAInternar);
                     ordenXProd.setCantidadIngresada(ordenXProd.getCantidadIngresada()+1);
                     internmentApplication.incCantOrderXProd(ordenXProd);
-                    */
+                    
                     
                     
                     // actualizar stock total del producto
@@ -594,9 +604,9 @@ public class InternmentSelectView extends BaseView {
             productApplication.update(prod);
             
             //actualizar cant a internar en ordeninteramientoXproducto
-            OrdenInternamientoXProducto ordenXProd = internmentApplication.getProdOrder(ordenAInternar);
-            ordenXProd.setCantidadIngresada(ordenXProd.getCantidadIngresada()+aux);
-            internmentApplication.incCantOrderXProd(ordenXProd);
+            //OrdenInternamientoXProducto ordenXProd = internmentApplication.getProdOrder(ordenAInternar);
+            //ordenXProd.setCantidadIngresada(ordenXProd.getCantidadIngresada()+aux);
+            //internmentApplication.incCantOrderXProd(ordenXProd);
             
             //disminuir ubicaciones libres en racks y almacen
             Almacen alm = almacenes.get(jComboBox1.getSelectedIndex());
@@ -634,7 +644,7 @@ public class InternmentSelectView extends BaseView {
         fillTable();
         clearGrid(jTable2);
         jButton2.setEnabled(false);
-        jButton3.setEnabled(false);    
+        //jButton3.setEnabled(false);    
         jComboBox1.removeAllItems();
         jTextField2.setText("");
         jTextField3.setText("");
@@ -679,28 +689,27 @@ public class InternmentSelectView extends BaseView {
         
     }//GEN-LAST:event_jComboBox1ItemStateChanged
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-        //Asignar auto
+    private void jCheckBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox1ItemStateChanged
+        DefaultTableModel table = (DefaultTableModel) jTable2.getModel();
+        int cant = 0;
+        if (jCheckBox1.isSelected()){
             fillFreeSpots();
-            int cont = cantAInternar - Integer.parseInt(jTextField3.getText());
-            int aux=0;
-            if(table.getRowCount()>0){
-            for (int i = 0; i < table.getRowCount(); i++) {
+            for (int i=0;i<table.getRowCount();i++){
                 table.setValueAt(true, i, 4);
-                cont++;
-                if (cont == cantAInternar) break;
+                cant++;
+                if (cant==cantAInternar)
+                    break;
             }
-            aux = cantAInternar - cont;
-            jTextField3.setText(Integer.toString(aux));
         }
-    }//GEN-LAST:event_jButton3ActionPerformed
+        else
+            fillFreeSpots();
+    }//GEN-LAST:event_jCheckBox1ItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
