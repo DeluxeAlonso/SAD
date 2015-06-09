@@ -22,9 +22,12 @@ import entity.Rack;
 import entity.TipoProducto;
 import entity.Ubicacion;
 import java.awt.event.ItemEvent;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,6 +36,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -419,7 +423,14 @@ public class AvailabilityReport extends BaseView {
  
             WritableSheet writableSheet = writableWorkbook.createSheet(
                     "Reporte de Disponibilidad", 0);
-            //writableSheet.addImage(new WritableImage());
+            URL url = getClass().getResource("../../images/warehouse-512-000000.png");
+            java.io.File imageFile = new java.io.File(url.toURI());
+            BufferedImage input = ImageIO.read(imageFile);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(input, "PNG", baos);
+            //setbackgruound
+            
+            writableSheet.addImage(new WritableImage(1,1,0.4,1,baos.toByteArray()));
             writableSheet.setColumnView(1, 26);
             writableSheet.setColumnView(2, 10);
             writableSheet.setColumnView(3, 10);
@@ -455,7 +466,7 @@ public class AvailabilityReport extends BaseView {
     public void createHeader(WritableSheet writableSheet, Date date, DateFormat dateFormat){
         
         try{
-            Label label0 = new Label(1, 1, "SAD");
+            Label label0 = new Label(1, 1, "");
             Label label1 = new Label(4, 1, "Reporte de Disponibilidad");
             Label label2 = new Label(7, 1, "Fecha: "+ dateFormat.format(date));
             Label label3 = new Label(1, 2, "Almacen: "+ almacenR );

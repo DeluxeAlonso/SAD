@@ -506,20 +506,20 @@ public class StockReport extends BaseView {
              headerRFont.setColour(jxl.format.Colour.BLACK);
             
             WritableCellFormat headerRFormat = new WritableCellFormat(headerRFont);
-             headerRFormat.setWrap(false);
-             headerRFormat.setAlignment(jxl.format.Alignment.RIGHT);
+            headerRFormat.setWrap(false);
+            headerRFormat.setAlignment(jxl.format.Alignment.RIGHT);
              headerRFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
              
-             WritableFont headerLFont = new WritableFont(WritableFont.createFont("Calibri"),
-             11,
-             WritableFont.BOLD,  false,
-             UnderlineStyle.NO_UNDERLINE);
-             headerLFont.setColour(jxl.format.Colour.BLACK);
+            WritableFont headerLFont = new WritableFont(WritableFont.createFont("Calibri"),
+            11,
+            WritableFont.BOLD,  false,
+            UnderlineStyle.NO_UNDERLINE);
+            headerLFont.setColour(jxl.format.Colour.BLACK);
             
             WritableCellFormat headerLFormat = new WritableCellFormat(headerLFont);
-             headerLFormat.setWrap(false);
-             headerLFormat.setAlignment(jxl.format.Alignment.LEFT);
-             headerLFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+            headerLFormat.setWrap(false);
+            headerLFormat.setAlignment(jxl.format.Alignment.LEFT);
+            headerLFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
              
              
              
@@ -527,21 +527,21 @@ public class StockReport extends BaseView {
              //jxl.format.Colour.BLACK);
             //Add the created Cells to the sheet
              
-             WritableFont headerTFont = new WritableFont(WritableFont.createFont("Calibri"),
-             WritableFont.DEFAULT_POINT_SIZE,
-             WritableFont.BOLD,  false,
-             UnderlineStyle.NO_UNDERLINE);
+            WritableFont headerTFont = new WritableFont(WritableFont.createFont("Calibri"),
+            WritableFont.DEFAULT_POINT_SIZE,
+            WritableFont.BOLD,  false,
+            UnderlineStyle.NO_UNDERLINE);
             headerTFont.setColour(jxl.format.Colour.WHITE);
             
             WritableCellFormat headerTFormat = new WritableCellFormat(headerTFont);
-             headerTFormat.setWrap(true);
-             headerTFormat.setAlignment(jxl.format.Alignment.CENTRE);
-             headerTFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
-             headerTFormat.setWrap(true);
-             headerTFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,
-             jxl.format.Colour.BLACK);
-             headerTFormat.setBackground(Colour.GRAY_80);
-             
+            headerTFormat.setWrap(true);
+            headerTFormat.setAlignment(jxl.format.Alignment.CENTRE);
+            headerTFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+            headerTFormat.setWrap(true);
+            headerTFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,
+            jxl.format.Colour.BLACK);
+            headerTFormat.setBackground(Colour.GRAY_80);
+            
             Label t1 = new Label(1, 6, "Producto"); 
             Label t2 = new Label(2, 6, "Tipo"); 
             Label t3 = new Label(3, 6, "Condicion"); 
