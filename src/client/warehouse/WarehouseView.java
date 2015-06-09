@@ -222,6 +222,11 @@ public class WarehouseView extends BaseView {
                 editBtnMouseClicked(evt);
             }
         });
+        editBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editBtnActionPerformed(evt);
+            }
+        });
 
         deleteBtn.setEnabled(false);
         deleteBtn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -385,6 +390,10 @@ public class WarehouseView extends BaseView {
         editBtn.setEnabled(true);
         deleteBtn.setEnabled(true);
     }//GEN-LAST:event_usersGridMouseClicked
+
+    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_editBtnActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
