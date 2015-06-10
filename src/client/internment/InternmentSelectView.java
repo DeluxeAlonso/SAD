@@ -575,8 +575,9 @@ public class InternmentSelectView extends BaseView {
                 }
             }
             if (table.getRowCount() > 0) {
-                for (int i = 0; i < table.getRowCount(); i++) {
-                    if (internmentApplication.getProdOrder(ordenAInternar).getCantidadIngresada() == internmentApplication.getProdOrder(ordenAInternar).getCantidad()) {
+                OrdenInternamientoXProducto op=internmentApplication.getProdOrder(ordenAInternar);
+                for (int i = 0; i < table.getRowCount(); i++) {                    
+                    if (op.getCantidadIngresada()==op.getCantidad()) {
                         //ordenAInternar.setEstado(EntityState.InternmentOrders.INTERNADA.ordinal());
                         OrdenInternamiento ord = internmentApplication.queryById(ordenAInternar.getId());
                         ord.setEstado(EntityState.InternmentOrders.INTERNADA.ordinal());
@@ -599,9 +600,9 @@ public class InternmentSelectView extends BaseView {
                         spotApplication.updateSpotOccupancy(ubicaciones.get(i).getId(), EntityState.Spots.OCUPADO.ordinal());
 
                         //actualizar cant a internar en ordeninteramientoXproducto
-                        OrdenInternamientoXProducto ordenXProd = internmentApplication.getProdOrder(ordenAInternar);
-                        ordenXProd.setCantidadIngresada(ordenXProd.getCantidadIngresada() + 1);
-                        internmentApplication.incCantOrderXProd(ordenXProd);
+                        //OrdenInternamientoXProducto ordenXProd = internmentApplication.getProdOrder(ordenAInternar);
+                        op.setCantidadIngresada(op.getCantidadIngresada() + 1);
+                        //internmentApplication.incCantOrderXProd(op);
 
                     // actualizar stock total del producto
                     /*Producto prod = internmentApplication.getProdOrder(ordenAInternar).getProducto();
@@ -616,16 +617,16 @@ public class InternmentSelectView extends BaseView {
                         cant++;
                         aux = cant;
                     }
-                    if (internmentApplication.getProdOrder(ordenAInternar).getCantidadIngresada() == internmentApplication.getProdOrder(ordenAInternar).getCantidad()) {
+                    /*if (internmentApplication.getProdOrder(ordenAInternar).getCantidadIngresada() == internmentApplication.getProdOrder(ordenAInternar).getCantidad()) {
                         //ordenAInternar.setEstado(EntityState.InternmentOrders.INTERNADA.ordinal());
                         OrdenInternamiento ord = internmentApplication.queryById(ordenAInternar.getId());
                         ord.setEstado(EntityState.InternmentOrders.INTERNADA.ordinal());
                         internmentApplication.update(ord);
                         aux = cant;
                         break;
-                    }
+                    }*/
                 }
-
+                internmentApplication.incCantOrderXProd(op);
                 // actualizar pallets registrados y ubicados del producto
                 Producto prod = internmentApplication.getProdOrder(ordenAInternar).getProducto();
                 prod.setPalletsUbicados(prod.getPalletsUbicados() + aux);

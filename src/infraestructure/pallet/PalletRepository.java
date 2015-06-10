@@ -552,7 +552,7 @@ public class PalletRepository implements IPalletRepository{
             int cant=pallets.size();
             
             for(int i=0;i<cant;i++){
-                if(i==1) continue;
+                if(i==0) continue;
                 Pallet p = pallets.get(i);
                 int num=startId+i;
                 p.setEan128(ean128+num);
