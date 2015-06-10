@@ -380,12 +380,12 @@ public class NewWarehouseView extends BaseDialogView {
             error_message += Strings.ERROR_AREA_WAREHOUSE_REQUIRED+"\n";
             AreaTxt.setBorder(errorBorder);
             errorFlag = true;
-        } else if (!isDouble(AreaTxt.getText())){
-            error_message += Strings.ERROR_AREA_WAREHOUSE_DOUBLE+"\n";
+        } else if (!isInteger(AreaTxt.getText())){
+            error_message += "El area debe ser un numero entero."+"\n";
             AreaTxt.setBorder(errorBorder);
             errorFlag = true;
         } else if (isDouble(AreaTxt.getText())){
-            double areaA = Double.parseDouble(AreaTxt.getText());
+            int areaA = Integer.parseInt(AreaTxt.getText());
             if (areaA>10000){
                 error_message += "El area de un almacen debe ser 10,000 o menor."+"\n";
                 AreaTxt.setBorder(errorBorder);
