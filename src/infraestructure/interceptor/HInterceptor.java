@@ -192,7 +192,7 @@ public class HInterceptor extends EmptyInterceptor implements ILogRepository {
             }
         }
         if (mode == 1) {
-            if (log.getIdObjeto() != null) {
+            if (!log.getIdObjeto().equals("")) {
                 Calendar cal = Calendar.getInstance();
                 log.setFechaCreacion(cal.getTime());
                 log.setFechaActualizacion(cal.getTime());
