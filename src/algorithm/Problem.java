@@ -49,6 +49,8 @@ public class Problem {
         vehicles = transportUnitApplication.getAllTransportUnits(); 
         ArrayList<Producto> products = productApplication.getAllProducts();
         
+        
+        
         int vehicleCapacity = 1;
         if(vehicles!=null) vehicleCapacity = vehicles.get(0).getTipoUnidadTransporte().getCapacidadPallets();
         

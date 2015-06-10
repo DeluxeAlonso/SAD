@@ -132,6 +132,11 @@ public class Strings {
     public static final String ALGORITHM_TITLE="Ejecución del Algoritmo";
     public static final String ALGORITHM_ERROR="Asegúrese de tener pallets, unidades de transporte y pedidos registrados antes de ejecutar el algoritmo.";
     public static final String ALGORITHM_ERROR_TITLE="Error en la ejecución";
+    public static final String ALGORITHM_SUCCESS="El algoritmo ha terminado su ejecución.";
+    public static final String ALGORITHM_SUCCESS_TITLE="Fin de la ejecución";
+    public static final String ALGORITHM_NO_ROUTES_FOUND="No se han encontrado rutas que cumplan con las restricciones dadas.";
+    public static final String ALGORITHM_NO_ROUTES_FOUND_TITLE="Fin de la ejecución";
+    
     
     
     
