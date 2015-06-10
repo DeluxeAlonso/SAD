@@ -628,7 +628,7 @@ public class InternmentSelectView extends BaseView {
                 }
                 internmentApplication.incCantOrderXProd(op);
                 // actualizar pallets registrados y ubicados del producto
-                Producto prod = internmentApplication.getProdOrder(ordenAInternar).getProducto();
+                Producto prod =op.getProducto();
                 prod.setPalletsUbicados(prod.getPalletsUbicados() + aux);
                 prod.setPalletsRegistrados(prod.getPalletsRegistrados() - aux);
                 productApplication.update(prod);
@@ -643,10 +643,10 @@ public class InternmentSelectView extends BaseView {
                 warehouseApplication.update(alm);
 
                 //ingresar entrada en kardex
-                ArrayList<Kardex> kardex = kardexApplication.queryByParameters(almacenes.get(comboWarehouse.getSelectedIndex()).getId(), internmentApplication.getProdOrder(ordenAInternar).getProducto().getId());
+                ArrayList<Kardex> kardex = kardexApplication.queryByParameters(almacenes.get(comboWarehouse.getSelectedIndex()).getId(), op.getProducto().getId());
                 Kardex internmentKardex = new Kardex();
                 internmentKardex.setAlmacen(almacenes.get(comboWarehouse.getSelectedIndex()));
-                internmentKardex.setProducto(internmentApplication.getProdOrder(ordenAInternar).getProducto());
+                internmentKardex.setProducto(op.getProducto());
                 internmentKardex.setTipoMovimiento("Ingreso");
                 internmentKardex.setCantidad(aux);
 
@@ -660,7 +660,7 @@ public class InternmentSelectView extends BaseView {
 
                 KardexId kId = new KardexId();
                 kId.setIdAlmacen(almacenes.get(comboWarehouse.getSelectedIndex()).getId());
-                kId.setIdProducto(internmentApplication.getProdOrder(ordenAInternar).getProducto().getId());
+                kId.setIdProducto(op.getProducto().getId());
 
                 internmentKardex.setId(kId);
 
