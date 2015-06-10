@@ -12,6 +12,7 @@ import application.product.ProductApplication;
 import application.spot.SpotApplication;
 import application.warehouse.WarehouseApplication;
 import client.base.BaseView;
+import static client.internment.InternmentSelectView.crearEAN128;
 import entity.Almacen;
 import entity.Kardex;
 import entity.KardexId;
@@ -24,11 +25,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -112,7 +118,7 @@ public class WarehouseControlCheckView extends BaseView {
         }
     }
     
-    private void loadFromFile(String csvFile){
+    private void loadFromFile(String csvFile) throws ParseException{
         BufferedReader br = null;
 	String line = "";
 	String cvsSplitBy = ",";
@@ -170,7 +176,25 @@ public class WarehouseControlCheckView extends BaseView {
                             kardexCountIn.put(prod, 1);
                         }
                         // Inserto el pallet
-                        /* FALTA */
+                        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                        Date fechaVenc = formatter.parse(line_split[6]);
+                        Pallet pallet = new Pallet();
+                        pallet.setEstado(EntityState.Pallets.UBICADO.ordinal());
+                        pallet.setFechaRegistro(new Date());
+                        pallet.setFechaVencimiento(fechaVenc);
+                        pallet.setProducto(prod);
+                        pallet.setUbicacion(spots.get(i));
+                        pallet.setEan128(crearEAN128(pallet));
+                        int eanAux=palletApplication.insert(pallet);
+
+                        Pallet palletAux = palletApplication.queryById(eanAux);
+                        String ean = palletAux.getEan128();
+                        ean+=eanAux;
+                        palletAux.setEan128(ean);
+                        palletApplication.update(palletAux);
+                        // Actualizo el estado de la ubicacion a libre
+                        spotApplication.updateSpotOccupancy(spots.get(i).getId(), EntityState.Spots.OCUPADO.ordinal());
+                    
                     }else{
                         // Si en fisico esta ocupado y en el sistema ocupado, tengo que verificar si es el mismo producto
                         if(prod.getNombre().equals(model.getValueAt(i, 5).toString())){
@@ -451,7 +475,11 @@ public class WarehouseControlCheckView extends BaseView {
     }//GEN-LAST:event_comboWarehouseFromItemStateChanged
 
     private void btnFileUploadMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFileUploadMousePressed
-        loadFromFile(file.getAbsolutePath());
+        try {
+            loadFromFile(file.getAbsolutePath());
+        } catch (ParseException ex) {
+            Logger.getLogger(WarehouseControlCheckView.class.getName()).log(Level.SEVERE, null, ex);
+        }
         file = null;
         btnFileUpload.setEnabled(false);
         fileTextField.setText("");

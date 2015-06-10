@@ -237,9 +237,12 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
             if(currentOrders.get(i).getEstado() != EntityState.Orders.ANULADO.ordinal()){
                 int attendedCount = 0;
                 ArrayList<PedidoParcial> partialOrders = orderApplication.getPendingPartialOrdersById(currentOrders.get(i).getId());        
-                for(int j=0;j<partialOrders.size();j++){
+                for(int j=0;j<partialOrders.size();j++)
                     if(partialOrders.get(j).getEstado() == EntityState.PartialOrders.ATENDIDO.ordinal())
                         attendedCount++;
+                if(attendedCount == 0){
+                    currentOrders.get(i).setEstado(EntityState.Orders.REGISTRADO.ordinal());
+                    orderApplication.updateOrder(currentOrders.get(i));
                 }
                 if(attendedCount == partialOrders.size()){
                     currentOrders.get(i).setEstado(EntityState.Orders.FINALIZADO.ordinal());
@@ -247,7 +250,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                 }
             }
         }
-        refreshOrders();
+         refreshTable();
     }
     
     /*

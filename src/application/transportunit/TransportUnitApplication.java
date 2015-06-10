@@ -36,6 +36,16 @@ public class TransportUnitApplication {
         return actions;
     }
     
+    public ArrayList<UnidadTransporte> queryByPlate(String plate){
+        ArrayList<UnidadTransporte> actions=null;
+        try{
+            actions=transportUnitRepository.queryByPlate(plate);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return actions;
+    }
+    
     public Boolean createTransportUnit(UnidadTransporte transportUnit){
         Boolean response = false;
         try {

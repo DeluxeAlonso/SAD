@@ -32,6 +32,7 @@ import util.EntityState;
 import util.EntityType;
 import util.Icons;
 import util.InstanceFactory;
+import util.Regex;
 import util.Strings;
 
 /**
@@ -156,6 +157,16 @@ public class TransportUnitView extends BaseView implements MouseListener{
             plateCreateTxt.setBorder(errorBorder);
             valid = false;
         }
+        else if(!plateCreateTxt.getText().matches(Regex.NUMBER_AND_LETTERS)){
+            error_message += "El campo de transportista solo puede contener letras y números.\n";
+            plateCreateTxt.setBorder(errorBorder);
+            valid = false; 
+        }
+        else if(transportUnitApplication.queryByPlate(plateCreateTxt.getText()).size() != 0){
+            error_message += "La unidad ya fue creada previamente.\n";
+            plateCreateTxt.setBorder(errorBorder);
+            valid = false; 
+        }
         if(transportistCreateTxt.getText().isEmpty()){
             error_message += Strings.ERROR_TRANSPORTIST_REQUIRED+"\n";
             transportistCreateTxt.setBorder(errorBorder);
@@ -163,6 +174,11 @@ public class TransportUnitView extends BaseView implements MouseListener{
         }
         else if(transportistCreateTxt.getText().length() > 60){
             error_message += Strings.ERROR_TRANSPORTIST_MORE_60+"\n";
+            transportistCreateTxt.setBorder(errorBorder);
+            valid = false; 
+        }
+        else if(!transportistCreateTxt.getText().matches(Regex.ONLY_LETTERS)){
+            error_message += "El campo de transportista solo puede contener letras.\n";
             transportistCreateTxt.setBorder(errorBorder);
             valid = false; 
         }

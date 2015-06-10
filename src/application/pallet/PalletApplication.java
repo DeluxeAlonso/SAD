@@ -13,6 +13,7 @@ import entity.Pallet;
 import entity.Producto;
 import infraestructure.pallet.PalletRepository;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,6 +36,17 @@ public class PalletApplication {
         }
         return pallets;
     }
+    
+    public Pallet queryById(int id){
+        Pallet pallets = null;
+        try {
+            pallets = palletRepository.queryById(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pallets;
+    }
+    
     
     public ArrayList<Pallet> queryPalletsBySpot(int spotId){
         ArrayList<Pallet> pallets = null;
@@ -146,7 +158,15 @@ public class PalletApplication {
         }
         return pallets;
     }
-
+    public List<Object[]> queryByReportInter(int almacen, Date fechaD, Date fechaH, int tipo){
+        List<Object[]> pallets = null;
+        try {
+            pallets = palletRepository.queryByReportInter(almacen,fechaD,fechaH,tipo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pallets;
+    }
     public ArrayList<Pallet> queryByParameters(String ean, int almacen, int producto, int internmentOrder, Boolean selected){
         ArrayList<Pallet> pallets = new ArrayList<>();
         try {

@@ -455,7 +455,7 @@ public class ClientView extends BaseView implements MouseListener {
             }
         });
 
-        jButton1.setText("GMAP");
+        jButton1.setText("Visualizar locales");
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jButton1MousePressed(evt);
@@ -485,19 +485,15 @@ public class ClientView extends BaseView implements MouseListener {
                                 .addComponent(btnDeleteClient))
                             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(btnDeleteLocal))))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton1)
-                                .addGap(74, 74, 74)))))
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnDeleteLocal, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING))))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -624,12 +620,22 @@ public class ClientView extends BaseView implements MouseListener {
             txtNewLocalLatitude.setBorder(errorBorder);
             hasErrors = true;
         }
+        if(isDouble(txtNewLocalLatitude.getText()) && Double.parseDouble(txtNewLocalLatitude.getText())>-11.5 || Double.parseDouble(txtNewLocalLatitude.getText())<-12.5 ){
+            error_message += Strings.ERROR_LATITUDE_OUT_LIMITS+"\n";
+            txtNewLocalLatitude.setBorder(errorBorder);
+            hasErrors = true;
+        }
         if(txtNewLocalLongitude.getText().isEmpty()){
             error_message += Strings.ERROR_LONGITUDE_REQUIRED+"\n";
             txtNewLocalLongitude.setBorder(errorBorder);
             hasErrors = true;
         }else if(!isDouble(txtNewLocalLongitude.getText())){
             error_message += Strings.ERROR_LONGITUDE_NOT_FLOAT+"\n";
+            txtNewLocalLongitude.setBorder(errorBorder);
+            hasErrors = true;
+        }
+        if(isDouble(txtNewLocalLongitude.getText()) && Double.parseDouble(txtNewLocalLongitude.getText())>-76.8 || Double.parseDouble(txtNewLocalLongitude.getText())<-77.2){
+            error_message += Strings.ERROR_LONGITUDE_OUT_LIMITS+"\n";
             txtNewLocalLongitude.setBorder(errorBorder);
             hasErrors = true;
         }

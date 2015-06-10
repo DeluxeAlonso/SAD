@@ -20,6 +20,7 @@ import application.transportunit.TransportUnitApplication;
 import application.warehouse.WarehouseApplication;
 import client.base.BaseView;
 import client.order.OrderView;
+import client.reports.AvailabilityReport;
 import entity.Almacen;
 import entity.Despacho;
 import entity.GuiaRemision;
@@ -33,7 +34,10 @@ import entity.Producto;
 import entity.UnidadTransporte;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,12 +45,30 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import jxl.Workbook;
+import jxl.WorkbookSettings;
+import jxl.format.Alignment;
+import jxl.format.Colour;
+import jxl.format.UnderlineStyle;
+import jxl.format.VerticalAlignment;
+import jxl.write.Label;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
+import jxl.write.WritableImage;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+import jxl.write.Number;
 import util.EntityState;
 import util.Icons;
 import util.Strings;
@@ -585,7 +607,7 @@ public class DeliveryView extends BaseView {
             if(createPartialOrders(returnValues.getAcceptedOrders(), returnValues.getRejectedOrders())){
                 if(OrderView.orderView != null)
                     OrderView.orderView.verifyOrders();
-                refreshOrders();
+                verifyOrders();
                 allCheckbox.setSelected(false);
                 jButton1.setEnabled(true);
                 jButton2.setEnabled(true);
@@ -666,29 +688,457 @@ public class DeliveryView extends BaseView {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         fc.setDialogTitle("Seleccione un archivo");
         fc.showOpenDialog(this);
+        FileFilter excelType = new FileNameExtensionFilter("Excel spreadsheet (.xls)", "xls");
+        fc.addChoosableFileFilter(excelType);
+        file = fc.getSelectedFile();
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
-        ArrayList<Almacen> warehouse = warehouseApplication.queryAll();
-        for(int i=0;i<warehouse.size();i++){
-            ArrayList<Pallet> pallets = palletApplication.queryByWarehouseParameters(warehouse.get(i), solutionDeliveries);
-            System.out.println(pallets.size());
+        try{
+            File exlFile = file;
+            WritableWorkbook writableWorkbook = Workbook.createWorkbook(exlFile);
+            ArrayList<Almacen> warehouse = warehouseApplication.queryAll();
+            for(int i=0;i<warehouse.size();i++){
+                ArrayList<Pallet> pallets = palletApplication.queryByWarehouseParameters(warehouse.get(i), solutionDeliveries);
+                if(pallets.size()>0){
+                    WritableSheet writableSheet = writableWorkbook.createSheet(
+                       "Almacen " + warehouse.get(i).getDescripcion(), i);
+                    URL url = getClass().getResource("../../images/warehouse-512-000000.png");
+                    java.io.File imageFile = new java.io.File(url.toURI());
+                    BufferedImage input = ImageIO.read(imageFile);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ImageIO.write(input, "PNG", baos);
+
+                    writableSheet.addImage(new WritableImage(1,1,0.4,1,baos.toByteArray()));
+
+                    writableSheet.setColumnView(1, 10);
+                    writableSheet.setColumnView(2, 35);
+                    writableSheet.setColumnView(3, 25);
+                    writableSheet.setColumnView(4, 20);
+                    writableSheet.setColumnView(5, 20);
+                    writableSheet.setColumnView(6, 20);
+                    writableSheet.setColumnView(7, 15);
+                    writableSheet.setColumnView(8, 15);
+                    writableSheet.setColumnView(9, 15);
+                    writableSheet.setColumnView(10, 15);
+
+                    createWarehouseHeader(writableSheet,date,dateFormat,warehouse.get(i));
+
+                   fillWarehouseReport(writableSheet,pallets);     
+                }
+            }
+            writableWorkbook.write();
+            writableWorkbook.close();
+
+        }catch (Exception ex) {
+            Logger.getLogger(AvailabilityReport.class.getName()).log(Level.SEVERE, null, ex);
+            //JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir el archivo",Strings.ERROR_KARDEX_TITLE,JOptionPane.ERROR_MESSAGE);
         }
-        file = fc.getSelectedFile();
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
+     public void createWarehouseHeader(WritableSheet writableSheet, Date date, DateFormat dateFormat, Almacen warehouse){
+        
+        try{
+            Label label0 = new Label(1, 1, "");
+            Label label1 = new Label(4, 1, "Guía de Almacen");
+            Label label2 = new Label(7, 1, "Fecha: "+ dateFormat.format(date));
+            Label label3 = new Label(1, 2, "Código: "+ warehouse.getId() );
+            Label label4 = new Label(1, 3, "Condición: "+warehouse.getCondicion().getNombre());
+            Label label5 = new Label(1, 4, "Área: "+ warehouse.getArea());
+            WritableFont tittleFont = new WritableFont(WritableFont.createFont("Calibri"),
+             16,
+             WritableFont.BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+             tittleFont.setColour(jxl.format.Colour.RED);
+            
+            WritableCellFormat tittleFormat = new WritableCellFormat(tittleFont);
+             tittleFormat.setWrap(false);
+             tittleFormat.setAlignment(jxl.format.Alignment.CENTRE);
+             tittleFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+             
+             
+             
+             
+             WritableFont headerRFont = new WritableFont(WritableFont.createFont("Calibri"),
+             10,
+             WritableFont.BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+             headerRFont.setColour(jxl.format.Colour.BLACK);
+            
+            WritableCellFormat headerRFormat = new WritableCellFormat(headerRFont);
+             headerRFormat.setWrap(false);
+             headerRFormat.setAlignment(jxl.format.Alignment.RIGHT);
+             headerRFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+             
+             WritableFont headerLFont = new WritableFont(WritableFont.createFont("Calibri"),
+             11,
+             WritableFont.BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+             headerLFont.setColour(jxl.format.Colour.BLACK);
+            
+            WritableCellFormat headerLFormat = new WritableCellFormat(headerLFont);
+             headerLFormat.setWrap(false);
+             headerLFormat.setAlignment(jxl.format.Alignment.LEFT);
+             headerLFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+             
+             
+             
+             //normalFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,
+             //jxl.format.Colour.BLACK);
+            //Add the created Cells to the sheet
+             
+             WritableFont headerTFont = new WritableFont(WritableFont.createFont("Calibri"),
+             WritableFont.DEFAULT_POINT_SIZE,
+             WritableFont.BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+            headerTFont.setColour(jxl.format.Colour.WHITE);
+            
+            WritableCellFormat headerTFormat = new WritableCellFormat(headerTFont);
+             headerTFormat.setWrap(true);
+             headerTFormat.setAlignment(jxl.format.Alignment.CENTRE);
+             headerTFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+             headerTFormat.setWrap(true);
+             headerTFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,
+             jxl.format.Colour.BLACK);
+             headerTFormat.setBackground(Colour.GRAY_80);
+             
+            Label t1 = new Label(1, 6, "Pallet"); 
+            Label t2 = new Label(2, 6, "EAN128"); 
+            Label t3 = new Label(3, 6, "Producto"); 
+            Label t4 = new Label(4, 6, "Rack"); 
+            Label t5 = new Label(5, 6, "Fila"); 
+            Label t6 = new Label(6, 6, "Lado");  
+             t1.setCellFormat(headerTFormat);
+             t2.setCellFormat(headerTFormat);
+             t3.setCellFormat(headerTFormat);
+             t4.setCellFormat(headerTFormat);
+             t5.setCellFormat(headerTFormat);
+             t6.setCellFormat(headerTFormat);
+             
+             label0.setCellFormat(headerLFormat);
+             label1.setCellFormat(tittleFormat);
+             label2.setCellFormat(headerRFormat);
+             label3.setCellFormat(headerLFormat);
+             label4.setCellFormat(headerLFormat);
+             label5.setCellFormat(headerLFormat);
+            writableSheet.addCell(label0);
+            writableSheet.addCell(label1);
+            writableSheet.addCell(label2);
+            writableSheet.addCell(label3);
+            writableSheet.addCell(label4);
+            writableSheet.addCell(label5);
+            writableSheet.addCell(t1);
+            writableSheet.addCell(t2);
+            writableSheet.addCell(t3);
+            writableSheet.addCell(t4);
+            writableSheet.addCell(t5);
+            writableSheet.addCell(t6);
+        }
+            catch(Exception e){
+                
+            }
+    }
+     
+    private void fillWarehouseReport(WritableSheet writableSheet, ArrayList<Pallet>pallets){
+        try{
+            //Definicion de formatos
+            WritableFont rowFont = new WritableFont(WritableFont.createFont("Calibri"),
+             11,
+             WritableFont.NO_BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+             rowFont.setColour(jxl.format.Colour.BLACK);
+            
+            WritableCellFormat parFormat = new WritableCellFormat(rowFont);
+             parFormat.setWrap(false);
+             parFormat.setAlignment(Alignment.CENTRE);
+             parFormat.setBackground(Colour.GREY_25_PERCENT);
+             
+             
+             WritableCellFormat imparFormat = new WritableCellFormat(rowFont);
+             imparFormat.setAlignment(Alignment.CENTRE);
+             imparFormat.setWrap(false);
+             int col=1;
+             int fil=7;
+             int i=0;
+             Object[] row;
+             for(Pallet pallet : pallets){
+                /*
+                row = new Object[]{
+                    arr[0].toString(),
+                    arr[1].toString(),
+                    arr[2].toString(),
+                    arr[3].toString()
+                };
+                model.addRow(row);
+                        */
+                Number l1 = new Number(1, fil+i,pallet.getId());
+                Label l2 = new Label(2, fil+i, pallet.getEan128());
+                Label l3 = new Label(3, fil+i, pallet.getProducto().getNombre());
+                Number l4 = new Number(4,fil+i,pallet.getUbicacion().getRack().getId());
+                Number l5 = new Number(5,fil+i,pallet.getUbicacion().getFila());
+                Label l6 = new Label(6,fil+i,pallet.getUbicacion().getLado());      
+                
+                if (i%2==0){
+                    l1.setCellFormat(imparFormat);
+                    l2.setCellFormat(imparFormat);
+                    l3.setCellFormat(imparFormat);
+                    l4.setCellFormat(imparFormat);
+                    l5.setCellFormat(imparFormat);
+                    l6.setCellFormat(imparFormat);
+                }else{
+                    l1.setCellFormat(parFormat);
+                    l2.setCellFormat(parFormat);
+                    l3.setCellFormat(parFormat);
+                    l4.setCellFormat(parFormat);
+                    l5.setCellFormat(parFormat);
+                    l6.setCellFormat(parFormat);
+                }
+                writableSheet.addCell(l1);
+                writableSheet.addCell(l2);
+                writableSheet.addCell(l3);
+                writableSheet.addCell(l4);
+                writableSheet.addCell(l5);
+                writableSheet.addCell(l6);
+                i++;
+            }
+   
+        }catch (Exception e){
+            
+        }
+    }
+    
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         fc.setDialogTitle("Seleccione un archivo");
         fc.showOpenDialog(this);
+        file = fc.getSelectedFile();
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
-        ArrayList<UnidadTransporte> transportUnits = transportUnitApplication.getAllTransportUnits();
-        for(int i=0;i<transportUnits.size();i++){
-            ArrayList<GuiaRemision> remissionGuides = transportUnitApplication.getRemissionGuides(transportUnits.get(i), solutionDeliveries);
-            System.out.println(remissionGuides.size());
+        try{
+            File exlFile = file;
+            WorkbookSettings ws = new WorkbookSettings();
+            ws.setEncoding("UTF8");
+            WritableWorkbook writableWorkbook = Workbook.createWorkbook(exlFile,ws);
+            
+            ArrayList<UnidadTransporte> transportUnits = transportUnitApplication.getAllTransportUnits();
+            for(int i=0;i<transportUnits.size();i++){
+                ArrayList<GuiaRemision> remissionGuides = transportUnitApplication.getRemissionGuides(transportUnits.get(i), solutionDeliveries);
+                if(remissionGuides.size()>0){
+                    WritableSheet writableSheet = writableWorkbook.createSheet(
+                       
+                       transportUnits.get(i).getTransportista(), i);
+                    
+                    URL url = getClass().getResource("../../images/warehouse-512-000000.png");
+                    java.io.File imageFile = new java.io.File(url.toURI());
+                    BufferedImage input = ImageIO.read(imageFile);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ImageIO.write(input, "PNG", baos);
+
+                    writableSheet.addImage(new WritableImage(1,1,0.4,1,baos.toByteArray()));
+
+                    writableSheet.setColumnView(1, 10);
+                    writableSheet.setColumnView(2, 15);
+                    writableSheet.setColumnView(3, 15);
+                    writableSheet.setColumnView(4, 20);
+                    writableSheet.setColumnView(5, 20);
+                    writableSheet.setColumnView(6, 35);
+                    writableSheet.setColumnView(7, 15);
+                    writableSheet.setColumnView(8, 15);
+                    writableSheet.setColumnView(9, 15);
+                    writableSheet.setColumnView(10, 15);
+
+                    createHeader(writableSheet,date,dateFormat,transportUnits.get(i));
+
+                   fillReport(writableSheet,remissionGuides);     
+                }
+            }
+            writableWorkbook.write();
+            writableWorkbook.close();
+
+        }catch (Exception ex) {
+            Logger.getLogger(AvailabilityReport.class.getName()).log(Level.SEVERE, null, ex);
+            //JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir el archivo",Strings.ERROR_KARDEX_TITLE,JOptionPane.ERROR_MESSAGE);
         }
-        file = fc.getSelectedFile();
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    public void createHeader(WritableSheet writableSheet, Date date, DateFormat dateFormat, UnidadTransporte transportUnit){
+        
+        try{
+            Label label0 = new Label(1, 1, "");
+            Label label1 = new Label(4, 1, "Guías de Remision");
+            Label label2 = new Label(7, 1, "Fecha: "+ dateFormat.format(date));
+            Label label3 = new Label(1, 2, "Código: "+ transportUnit.getId() );
+            Label label4 = new Label(1, 3, "Transportista: "+transportUnit.getTransportista());
+            Label label5 = new Label(1, 4, "Placa: "+ transportUnit.getPlaca());
+            WritableFont tittleFont = new WritableFont(WritableFont.createFont("Calibri"),
+             16,
+             WritableFont.BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+             tittleFont.setColour(jxl.format.Colour.RED);
+            
+            WritableCellFormat tittleFormat = new WritableCellFormat(tittleFont);
+             tittleFormat.setWrap(false);
+             tittleFormat.setAlignment(jxl.format.Alignment.CENTRE);
+             tittleFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+             
+             
+             
+             
+             WritableFont headerRFont = new WritableFont(WritableFont.createFont("Calibri"),
+             10,
+             WritableFont.BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+             headerRFont.setColour(jxl.format.Colour.BLACK);
+            
+            WritableCellFormat headerRFormat = new WritableCellFormat(headerRFont);
+             headerRFormat.setWrap(false);
+             headerRFormat.setAlignment(jxl.format.Alignment.RIGHT);
+             headerRFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+             
+             WritableFont headerLFont = new WritableFont(WritableFont.createFont("Calibri"),
+             11,
+             WritableFont.BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+             headerLFont.setColour(jxl.format.Colour.BLACK);
+            
+            WritableCellFormat headerLFormat = new WritableCellFormat(headerLFont);
+             headerLFormat.setWrap(false);
+             headerLFormat.setAlignment(jxl.format.Alignment.LEFT);
+             headerLFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+             
+             
+             
+             //normalFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,
+             //jxl.format.Colour.BLACK);
+            //Add the created Cells to the sheet
+             
+             WritableFont headerTFont = new WritableFont(WritableFont.createFont("Calibri"),
+             WritableFont.DEFAULT_POINT_SIZE,
+             WritableFont.BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+            headerTFont.setColour(jxl.format.Colour.WHITE);
+            
+            WritableCellFormat headerTFormat = new WritableCellFormat(headerTFont);
+             headerTFormat.setWrap(true);
+             headerTFormat.setAlignment(jxl.format.Alignment.CENTRE);
+             headerTFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+             headerTFormat.setWrap(true);
+             headerTFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,
+             jxl.format.Colour.BLACK);
+             headerTFormat.setBackground(Colour.GRAY_80);
+             
+            Label t1 = new Label(1, 6, "Guía de Remisión"); 
+            Label t2 = new Label(2, 6, "Cliente"); 
+            Label t3 = new Label(3, 6, "Ruc"); 
+            Label t4 = new Label(4, 6, "Local"); 
+            Label t5 = new Label(5, 6, "Descripción"); 
+            Label t6 = new Label(6, 6, "Dirección");  
+             t1.setCellFormat(headerTFormat);
+             t2.setCellFormat(headerTFormat);
+             t3.setCellFormat(headerTFormat);
+             t4.setCellFormat(headerTFormat);
+             t5.setCellFormat(headerTFormat);
+             t6.setCellFormat(headerTFormat);
+             
+             label0.setCellFormat(headerLFormat);
+             label1.setCellFormat(tittleFormat);
+             label2.setCellFormat(headerRFormat);
+             label3.setCellFormat(headerLFormat);
+             label4.setCellFormat(headerLFormat);
+             label5.setCellFormat(headerLFormat);
+            writableSheet.addCell(label0);
+            writableSheet.addCell(label1);
+            writableSheet.addCell(label2);
+            writableSheet.addCell(label3);
+            writableSheet.addCell(label4);
+            writableSheet.addCell(label5);
+            writableSheet.addCell(t1);
+            writableSheet.addCell(t2);
+            writableSheet.addCell(t3);
+            writableSheet.addCell(t4);
+            writableSheet.addCell(t5);
+            writableSheet.addCell(t6);
+        }
+            catch(Exception e){
+                
+            }
+    }
+    
+    private void fillReport(WritableSheet writableSheet, ArrayList<GuiaRemision>remissionGuides){
+        try{
+            //Definicion de formatos
+            WritableFont rowFont = new WritableFont(WritableFont.createFont("Calibri"),
+             11,
+             WritableFont.NO_BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+             rowFont.setColour(jxl.format.Colour.BLACK);
+            
+            WritableCellFormat parFormat = new WritableCellFormat(rowFont);
+             parFormat.setWrap(false);
+             parFormat.setAlignment(Alignment.CENTRE);
+             parFormat.setBackground(Colour.GREY_25_PERCENT);
+             
+             
+             WritableCellFormat imparFormat = new WritableCellFormat(rowFont);
+             imparFormat.setAlignment(Alignment.CENTRE);
+             imparFormat.setWrap(false);
+             int col=1;
+             int fil=7;
+             int i=0;
+             Object[] row;
+             for(GuiaRemision guide : remissionGuides){
+                /*
+                row = new Object[]{
+                    arr[0].toString(),
+                    arr[1].toString(),
+                    arr[2].toString(),
+                    arr[3].toString()
+                };
+                model.addRow(row);
+                        */
+                Number l1 = new Number(1, fil+i,guide.getId());
+                Label l2 = new Label(2, fil+i, guide.getCliente().getNombre());
+                Label l3 = new Label(3, fil+i, guide.getCliente().getRuc());
+                Label l4 = new Label(4,fil+i,"");
+                Label l5 = new Label(5,fil+i,"");;
+                Label l6 = new Label(6,fil+i,"");;
+                for (Iterator<PedidoParcial> partials =guide.getPedidoParcials().iterator(); partials.hasNext(); ) {
+                    PedidoParcial p = partials.next();
+                    l4 = new Label(4, fil+i, p.getPedido().getLocal().getNombre());
+                    l5 = new Label(5, fil+i, p.getPedido().getLocal().getDescripcion());
+                    l6 = new Label(6, fil+i, p.getPedido().getLocal().getDireccion());
+                    break;
+                }
+                
+                
+                if (i%2==0){
+                    l1.setCellFormat(imparFormat);
+                    l2.setCellFormat(imparFormat);
+                    l3.setCellFormat(imparFormat);
+                    l4.setCellFormat(imparFormat);
+                    l5.setCellFormat(imparFormat);
+                    l6.setCellFormat(imparFormat);
+                }else{
+                    l1.setCellFormat(parFormat);
+                    l2.setCellFormat(parFormat);
+                    l3.setCellFormat(parFormat);
+                    l4.setCellFormat(parFormat);
+                    l5.setCellFormat(parFormat);
+                    l6.setCellFormat(parFormat);
+                }
+                writableSheet.addCell(l1);
+                writableSheet.addCell(l2);
+                writableSheet.addCell(l3);
+                writableSheet.addCell(l4);
+                writableSheet.addCell(l5);
+                writableSheet.addCell(l6);
+                i++;
+            }
+   
+        }catch (Exception e){
+            
+        }
+    }
+    
     public void assignRemissionGuides(ArrayList<Despacho> deliveries){
         ArrayList<PedidoParcial> acceptedOrders = new ArrayList<>();
         ArrayList<GuiaRemision> remissionGuides = new ArrayList<>();

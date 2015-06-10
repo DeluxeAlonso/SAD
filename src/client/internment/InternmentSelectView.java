@@ -66,6 +66,10 @@ public class InternmentSelectView extends BaseView {
     SpotApplication spotApplication = InstanceFactory.Instance.getInstance("spotApplicaiton", SpotApplication.class);
     KardexApplication kardexApplication = InstanceFactory.Instance.getInstance("kardexApplication",KardexApplication.class);
     public static InternmentSelectView internmentSelectView;
+    
+    JFileChooser fc = new JFileChooser();
+    File file = null;
+    
     /**
      * Creates new form InternmentSelectView
      */
@@ -88,10 +92,13 @@ public class InternmentSelectView extends BaseView {
         super.initialize();
         internmentSelectView = this;
         setTitle("Internamiento");
+        jButton1.setEnabled(false);
         jButton2.setEnabled(false);
-        jButton3.setEnabled(false);
+        //jButton3.setEnabled(false);
         jComboBox1.removeAllItems();
         table = jTable2;
+        jTextField3.setVisible(false);
+        jLabel3.setVisible(false);
         /*table.getModel().addTableModelListener(new TableModelListener() {
         public void tableChanged(TableModelEvent e) {
         Boolean isChecked;
@@ -141,6 +148,7 @@ public class InternmentSelectView extends BaseView {
         jTextField2 = new javax.swing.JTextField();
         jTextField3 = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
+        jCheckBox1 = new javax.swing.JCheckBox();
         jButton3 = new javax.swing.JButton();
 
         setClosable(true);
@@ -155,7 +163,7 @@ public class InternmentSelectView extends BaseView {
             }
         });
 
-        jButton1.setText("Seleccionar Archivo");
+        jButton1.setText("Cargar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -261,7 +269,14 @@ public class InternmentSelectView extends BaseView {
 
         jLabel3.setText("Cantidad Pendiente por internar:");
 
-        jButton3.setText("Asignar Automático");
+        jCheckBox1.setText("Seleccionar automático");
+        jCheckBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jCheckBox1ItemStateChanged(evt);
+            }
+        });
+
+        jButton3.setText("...");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -280,9 +295,11 @@ public class InternmentSelectView extends BaseView {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jTextField1)
+                                    .addGap(28, 28, 28)
+                                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(lblFileChooser1))
                         .addGap(81, 81, 81)
@@ -295,8 +312,8 @@ public class InternmentSelectView extends BaseView {
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jTextField3))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton3)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jCheckBox1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -316,7 +333,8 @@ public class InternmentSelectView extends BaseView {
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                    .addComponent(jLabel1)
+                    .addComponent(jButton3))
                 .addGap(40, 40, 40)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblFileChooser1)
@@ -328,11 +346,11 @@ public class InternmentSelectView extends BaseView {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3)
+                    .addComponent(jCheckBox1)
                     .addComponent(jButton2))
-                .addGap(54, 54, 54))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         pack();
@@ -390,24 +408,17 @@ public class InternmentSelectView extends BaseView {
         DefaultTableModel model = (DefaultTableModel) tabla.getModel();
         model.setRowCount(0);
     }
-    
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       ordenListada.clear();
-       JFileChooser fc = new JFileChooser();
+
+    private void loadFromFile(String csvFile){
+        ordenListada.clear();
+        //JFileChooser fc = new JFileChooser();
         BufferedReader br = null;        
         String line = "";
         String cvsSplitBy = ",";
-        fc.setDialogTitle("Seleccione un archivo");
-        fc.showOpenDialog(this);
-        File file = fc.getSelectedFile();
-        //ArrayList<Buffer> buffList = new ArrayList<>();
-        if (!fc.getSelectedFile().getName().endsWith(".csv")) {
-          JOptionPane.showMessageDialog(this, "El archivo seleccionado no es un archivo CSV.");
-        }
-        else{
+        
             try {
                 jTextField1.setText(file.getAbsolutePath());
-                br = new BufferedReader(new FileReader(file));
+                br = new BufferedReader(new FileReader(csvFile));
                 
                 while ((line = br.readLine()) != null){
                     String[] lectura = line.split(cvsSplitBy);
@@ -426,10 +437,21 @@ public class InternmentSelectView extends BaseView {
             }
            
              
-        }
+        
         createInternmentOrders(ordenListada);
         fillTable(); 
-        
+    }
+    
+    private void jButton1MousePressed(java.awt.event.MouseEvent evt) {                                           
+
+    } 
+    
+    
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        loadFromFile(file.getAbsolutePath());
+        file = null;
+        jButton1.setEnabled(false);
+        jTextField1.setText("");
         
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -471,7 +493,14 @@ public class InternmentSelectView extends BaseView {
                 pallet.setOrdenInternamiento(internmentApplication.queryById(x));
                 pallet.setProducto(productApplication.queryById(b.id_item));
                 pallet.setEan128(crearEAN128(pallet));
-                palletApplication.insert(pallet);
+                int eanAux=palletApplication.insert(pallet);
+                
+                Pallet palletAux = palletApplication.queryById(eanAux);
+                String ean = palletAux.getEan128();
+                ean+=eanAux;
+                palletAux.setEan128(ean);
+                palletApplication.update(palletAux);
+                
             }
         }
         
@@ -495,7 +524,7 @@ public class InternmentSelectView extends BaseView {
     private void jTable1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MousePressed
         // TODO add your handling code here:
             jButton2.setEnabled(true);
-            jButton3.setEnabled(true);
+            //jButton3.setEnabled(true);
         
         
         int row = jTable1.getSelectedRow();
@@ -507,6 +536,7 @@ public class InternmentSelectView extends BaseView {
         ordenAInternar = orden;
         fillComboWarehouse(prod.getCondicion().getId());
         fillFreeSpots();
+        jCheckBox1.setSelected(false);
         
     }//GEN-LAST:event_jTable1MousePressed
 
@@ -556,10 +586,10 @@ public class InternmentSelectView extends BaseView {
                     spotApplication.updateSpotOccupancy(ubicaciones.get(i).getId(), EntityState.Spots.OCUPADO.ordinal());
                                     
                     //actualizar cant a internar en ordeninteramientoXproducto
-                    /*OrdenInternamientoXProducto ordenXProd = internmentApplication.getProdOrder(ordenAInternar);
+                    OrdenInternamientoXProducto ordenXProd = internmentApplication.getProdOrder(ordenAInternar);
                     ordenXProd.setCantidadIngresada(ordenXProd.getCantidadIngresada()+1);
                     internmentApplication.incCantOrderXProd(ordenXProd);
-                    */
+                    
                     
                     
                     // actualizar stock total del producto
@@ -594,9 +624,9 @@ public class InternmentSelectView extends BaseView {
             productApplication.update(prod);
             
             //actualizar cant a internar en ordeninteramientoXproducto
-            OrdenInternamientoXProducto ordenXProd = internmentApplication.getProdOrder(ordenAInternar);
-            ordenXProd.setCantidadIngresada(ordenXProd.getCantidadIngresada()+aux);
-            internmentApplication.incCantOrderXProd(ordenXProd);
+            //OrdenInternamientoXProducto ordenXProd = internmentApplication.getProdOrder(ordenAInternar);
+            //ordenXProd.setCantidadIngresada(ordenXProd.getCantidadIngresada()+aux);
+            //internmentApplication.incCantOrderXProd(ordenXProd);
             
             //disminuir ubicaciones libres en racks y almacen
             Almacen alm = almacenes.get(jComboBox1.getSelectedIndex());
@@ -634,7 +664,7 @@ public class InternmentSelectView extends BaseView {
         fillTable();
         clearGrid(jTable2);
         jButton2.setEnabled(false);
-        jButton3.setEnabled(false);    
+        //jButton3.setEnabled(false);    
         jComboBox1.removeAllItems();
         jTextField2.setText("");
         jTextField3.setText("");
@@ -679,20 +709,35 @@ public class InternmentSelectView extends BaseView {
         
     }//GEN-LAST:event_jComboBox1ItemStateChanged
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-        //Asignar auto
+    private void jCheckBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox1ItemStateChanged
+        DefaultTableModel table = (DefaultTableModel) jTable2.getModel();
+        int cant = 0;
+        if (jCheckBox1.isSelected()){
             fillFreeSpots();
-            int cont = cantAInternar - Integer.parseInt(jTextField3.getText());
-            int aux=0;
-            if(table.getRowCount()>0){
-            for (int i = 0; i < table.getRowCount(); i++) {
+            for (int i=0;i<table.getRowCount();i++){
                 table.setValueAt(true, i, 4);
-                cont++;
-                if (cont == cantAInternar) break;
+                cant++;
+                if (cant==cantAInternar)
+                    break;
             }
-            aux = cantAInternar - cont;
-            jTextField3.setText(Integer.toString(aux));
+        }
+        else
+            fillFreeSpots();
+    }//GEN-LAST:event_jCheckBox1ItemStateChanged
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        fc.setDialogTitle("Seleccione un archivo");
+        fc.showOpenDialog(this);
+        file = fc.getSelectedFile();
+        if (!fc.getSelectedFile().getName().endsWith(".csv")) {
+            JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+            JOptionPane.showMessageDialog(this, Strings.ERROR_NOT_CSV,Strings.ERROR_FILE_UPLOAD_TITLE,JOptionPane.WARNING_MESSAGE);
+            jTextField1.setText("");
+            jButton1.setEnabled(false);
+        }
+        else{
+            jTextField1.setText(file.getAbsolutePath());
+            jButton1.setEnabled(true);
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -701,6 +746,7 @@ public class InternmentSelectView extends BaseView {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

@@ -14,6 +14,7 @@ import application.warehouse.WarehouseApplication;
 import client.base.BaseView;
 import entity.Almacen;
 import entity.Condicion;
+import entity.PedidoParcial;
 import entity.Rack;
 import entity.Ubicacion;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import util.EntityState;
 import util.EntityType;
+import util.Icons;
 import util.InstanceFactory;
 import util.Strings;
 
@@ -42,6 +44,7 @@ public class RackView extends BaseView {
      */
     ArrayList<Rack> racks = null;
     ArrayList<Ubicacion> spots = null;
+    ArrayList<Almacen> warehouses = null;
     Rack rack =new Rack();
     int idRack;
     public RackView() {
@@ -50,13 +53,13 @@ public class RackView extends BaseView {
         clearGridSpot();
         initialize();
         //this.add(checkBox);
-        
+        fillWarehouseCombo();
         String [] s = {"Todos"};
         filaCombo.setModel(new javax.swing.DefaultComboBoxModel(s));
         columnaCombo.setModel(new javax.swing.DefaultComboBoxModel(s));
         ladoCombo.setModel(new javax.swing.DefaultComboBoxModel(s));
         //fillTable();
-        
+        Icons.setButton(searchBtn, Icons.ICONOS.SEARCH.ordinal());
         
     }
 
@@ -82,6 +85,15 @@ public class RackView extends BaseView {
 
     }
 
+    private void fillWarehouseCombo(){
+        warehouses = warehouseApplication.queryAll();
+        String []warehousesNames = new String[warehouses.size()];
+        for (int i = 0; i < warehouses.size(); i++) {
+            warehousesNames[i] = warehouses.get(i).getDescripcion();
+        } 
+        warehouseCombo.setModel(new javax.swing.DefaultComboBoxModel(warehousesNames));
+    }
+    
     public void fillTableRack(int id) {
         DefaultTableModel model = (DefaultTableModel) rackGrid.getModel();
         racks = rackApplication.queryRacksByWarehouse(id);
@@ -122,7 +134,8 @@ public class RackView extends BaseView {
                 u.getFila().toString(),
                 u.getColumna().toString(),
                 u.getLado(),
-                estado
+                estado,
+                false
             });
             
         }
@@ -148,7 +161,7 @@ public class RackView extends BaseView {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        checkBox = new javax.swing.JCheckBox();
+        allCheckBox = new javax.swing.JCheckBox();
         jLabel4 = new javax.swing.JLabel();
         WarehouseGrid = new javax.swing.JScrollPane();
         usersGrid = new javax.swing.JTable();
@@ -159,8 +172,8 @@ public class RackView extends BaseView {
         activoBtn = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        idTxt = new javax.swing.JTextField();
         searchBtn = new javax.swing.JButton();
+        warehouseCombo = new javax.swing.JComboBox();
         filaCombo = new javax.swing.JComboBox();
         ladoCombo = new javax.swing.JComboBox();
         columnaCombo = new javax.swing.JComboBox();
@@ -173,17 +186,22 @@ public class RackView extends BaseView {
         setPreferredSize(new java.awt.Dimension(896, 326));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        checkBox.setContentAreaFilled(false);
-        checkBox.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        checkBox.setEnabled(false);
-        checkBox.setOpaque(true);
-        checkBox.addItemListener(new java.awt.event.ItemListener() {
+        allCheckBox.setText("Marcar Todos");
+        allCheckBox.setContentAreaFilled(false);
+        allCheckBox.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        allCheckBox.setEnabled(false);
+        allCheckBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                checkBoxItemStateChanged(evt);
+                allCheckBoxItemStateChanged(evt);
             }
         });
-        getContentPane().add(checkBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 110, -1, -1));
-        checkBox.getAccessibleContext().setAccessibleDescription("");
+        allCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                allCheckBoxActionPerformed(evt);
+            }
+        });
+        getContentPane().add(allCheckBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 270, 90, -1));
+        allCheckBox.getAccessibleContext().setAccessibleDescription("");
 
         jLabel4.setText("Ubicaciones:");
         getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(487, 11, -1, -1));
@@ -196,7 +214,7 @@ public class RackView extends BaseView {
                 {null, null, null, null, null}
             },
             new String [] {
-                "Fila", "Columna", "Lado", "Estado", "."
+                "Fila", "Columna", "Lado", "Estado", "Seleccione"
             }
         ) {
             Class[] types = new Class [] {
@@ -221,13 +239,17 @@ public class RackView extends BaseView {
         WarehouseGrid.setViewportView(usersGrid);
         if (usersGrid.getColumnModel().getColumnCount() > 0) {
             usersGrid.getColumnModel().getColumn(0).setResizable(false);
+            usersGrid.getColumnModel().getColumn(0).setHeaderValue("Fila");
             usersGrid.getColumnModel().getColumn(1).setResizable(false);
+            usersGrid.getColumnModel().getColumn(1).setHeaderValue("Columna");
             usersGrid.getColumnModel().getColumn(2).setResizable(false);
+            usersGrid.getColumnModel().getColumn(2).setHeaderValue("Lado");
             usersGrid.getColumnModel().getColumn(3).setResizable(false);
+            usersGrid.getColumnModel().getColumn(3).setHeaderValue("Estado");
             usersGrid.getColumnModel().getColumn(4).setResizable(false);
+            usersGrid.getColumnModel().getColumn(4).setHeaderValue("Seleccione");
         }
         usersGrid.getAccessibleContext().setAccessibleName("");
-        usersGrid.getColumn(".").setCellEditor(new DefaultCellEditor(checkBox));
 
         getContentPane().add(WarehouseGrid, new org.netbeans.lib.awtextra.AbsoluteConstraints(483, 108, 380, 166));
 
@@ -303,12 +325,13 @@ public class RackView extends BaseView {
 
         jLabel1.setText("Almacen:");
 
-        searchBtn.setText("Buscar");
         searchBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 searchBtnMouseClicked(evt);
             }
         });
+
+        warehouseCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -317,24 +340,24 @@ public class RackView extends BaseView {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(4, 4, 4)
-                .addComponent(idTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 140, Short.MAX_VALUE)
-                .addComponent(searchBtn)
-                .addGap(27, 27, 27))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(warehouseCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 156, Short.MAX_VALUE)
+                .addComponent(searchBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(idTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(searchBtn))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(3, 3, 3)
-                        .addComponent(jLabel1)))
+                .addGap(14, 14, 14)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(warehouseCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(searchBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, 452, -1));
@@ -380,14 +403,11 @@ public class RackView extends BaseView {
 
     private void activoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activoBtnActionPerformed
         // TODO add your handling code here:
-        
-        int sr = usersGrid.getSelectedRow();
-        Ubicacion   u =spots.get(sr);
-        if (u.getEstado()==EntityState.Spots.LIBRE.ordinal()){
-        
-        }else if (u.getEstado()==EntityState.Spots.INACTIVO.ordinal()){
-            rack.setUbicLibres(rack.getUbicLibres()+1);
-            spotApplication.updateSpotOccupancy(u.getId(),EntityState.Spots.LIBRE.ordinal());
+        DefaultTableModel tableModel = (DefaultTableModel) usersGrid.getModel();
+        for(int i=0;i<spots.size();i++){
+            if((Boolean)tableModel.getValueAt(i, 4)){
+                activeSpot(spots.get(i));
+            }
         }
        
         clearGridSpot();
@@ -400,19 +420,19 @@ public class RackView extends BaseView {
         fillTableSpot();        
         
     }//GEN-LAST:event_activoBtnActionPerformed
-
-    private void enableFields(){
-        filaCombo.setEnabled(true);
-        columnaCombo.setEnabled(true);
-        ladoCombo.setEnabled(true);
-        checkBox.setEnabled(true);
+    
+    private void activeSpot(Ubicacion u){
+        if (u.getEstado()==EntityState.Spots.LIBRE.ordinal()){
+        
+        }else if (u.getEstado()==EntityState.Spots.INACTIVO.ordinal()){
+            rack.setUbicLibres(rack.getUbicLibres()+1);
+            spotApplication.updateSpotOccupancy(u.getId(),EntityState.Spots.LIBRE.ordinal());
+        }
+       
+        
     }
     
-    
-    private void inactivoBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inactivoBtnMouseClicked
-        // TODO add your handling code here:
-        int sr = usersGrid.getSelectedRow();
-        Ubicacion   u =spots.get(sr);
+    private void inactiveSpot(Ubicacion u){
         if (u.getEstado()==EntityState.Spots.LIBRE.ordinal()){
             spotApplication.updateSpotOccupancy(u.getId(),EntityState.Spots.INACTIVO.ordinal());
             rack.setUbicLibres(rack.getUbicLibres()-1);
@@ -421,7 +441,59 @@ public class RackView extends BaseView {
         }else if (u.getEstado()==EntityState.Spots.OCUPADO.ordinal()){
             JOptionPane.showMessageDialog(this, "No se puede inhabilitar una ubicacion ocupada.","Advertencia de Ubicacion",JOptionPane.WARNING_MESSAGE);
         }
-       
+    }
+    
+    
+    private void enableFields(){
+        filaCombo.setEnabled(true);
+        columnaCombo.setEnabled(true);
+        ladoCombo.setEnabled(true);
+        allCheckBox.setEnabled(true);
+        activoBtn.setEnabled(true);
+        inactivoBtn.setEnabled(true);
+    }
+    
+    private int checkStates(){
+        DefaultTableModel tableModel = (DefaultTableModel) usersGrid.getModel();
+        for(int i=0;i<spots.size();i++){
+            if((Boolean)tableModel.getValueAt(i, 4)){
+                if (spots.get(i).getEstado()== EntityState.Spots.OCUPADO.ordinal()){
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+    
+    private void inactivoBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inactivoBtnMouseClicked
+        // TODO add your handling code here:
+        int idOcupado = checkStates();
+        if (idOcupado==-1){
+        
+        
+        DefaultTableModel tableModel = (DefaultTableModel) usersGrid.getModel();
+        for(int i=0;i<spots.size();i++){
+            if((Boolean)tableModel.getValueAt(i, 4)){
+                inactiveSpot(spots.get(i));
+            }
+        }
+        
+        
+        
+        
+        }else{
+            int fil = spots.get(idOcupado).getFila();
+            int col = spots.get(idOcupado).getColumna();
+            String lado = spots.get(idOcupado).getLado();
+            
+            
+            String mesage = "La ubicacion del Rack "+idRack+
+                    ", Fila: "+fil +", Columna: "+col+", Lado: "+lado
+                    +" \nNo se puede desactivar por estar OCUPADA.";
+            
+            String tittle="Mensaje de ubicacion";
+            JOptionPane.showMessageDialog(this, mesage,tittle,JOptionPane.WARNING_MESSAGE);
+        }
         clearGridSpot();
         int col=columnaCombo.getSelectedIndex();
         int fil=filaCombo.getSelectedIndex();
@@ -435,10 +507,7 @@ public class RackView extends BaseView {
         // TODO add your handling code here:
                
         clearGridRack();
-        int idS;
-        if (idTxt.getText().equals(""))
-            idS=0;
-        else idS=Integer.parseInt(idTxt.getText());
+        int idS = warehouses.get(warehouseCombo.getSelectedIndex()).getId();
         fillTableRack(idS);
     }//GEN-LAST:event_searchBtnMouseClicked
 
@@ -467,7 +536,7 @@ public class RackView extends BaseView {
         int col=columnaCombo.getSelectedIndex();
         int fil=filaCombo.getSelectedIndex();
         int lado=ladoCombo.getSelectedIndex();
-        
+        allCheckBox.setSelected(false);
         spots=spotApplication.queryByPosition(idRack,fil ,col ,lado );
         clearGridSpot();
         fillTableSpot();
@@ -481,7 +550,7 @@ public class RackView extends BaseView {
         int col=columnaCombo.getSelectedIndex();
         int fil=filaCombo.getSelectedIndex();
         int lado=ladoCombo.getSelectedIndex();
-        
+        allCheckBox.setSelected(false);
         spots=spotApplication.queryByPosition(idRack,fil ,col ,lado );
         clearGridSpot();
         fillTableSpot();
@@ -492,19 +561,26 @@ public class RackView extends BaseView {
         int col=columnaCombo.getSelectedIndex();
         int fil=filaCombo.getSelectedIndex();
         int lado=ladoCombo.getSelectedIndex();
-        
+        allCheckBox.setSelected(false);
         spots=spotApplication.queryByPosition(idRack,fil ,col ,lado );
         clearGridSpot();
         fillTableSpot();
     }//GEN-LAST:event_ladoComboItemStateChanged
 
-    private void checkBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_checkBoxItemStateChanged
+    private void allCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_allCheckBoxItemStateChanged
         // TODO add your handling code here:
-        checkBox.repaint();
-        if (checkBox.isSelected()){
-            //
-        }
-    }//GEN-LAST:event_checkBoxItemStateChanged
+        DefaultTableModel tableModel = (DefaultTableModel) usersGrid.getModel();
+        if(allCheckBox.isSelected())
+            for(int i=0;i<spots.size();i++)
+               tableModel.setValueAt(true, i, 4); 
+        else
+           for(int i=0;i<spots.size();i++)
+               tableModel.setValueAt(false, i, 4);
+    }//GEN-LAST:event_allCheckBoxItemStateChanged
+
+    private void allCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_allCheckBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_allCheckBoxActionPerformed
 
     private void fillColumnaCombo(){
         int ncol = rack.getNumCol();
@@ -542,10 +618,9 @@ public class RackView extends BaseView {
     private javax.swing.JScrollPane WarehouseGrid;
     private javax.swing.JScrollPane WarehouseGrid1;
     private javax.swing.JButton activoBtn;
-    private javax.swing.JCheckBox checkBox;
+    private javax.swing.JCheckBox allCheckBox;
     private javax.swing.JComboBox columnaCombo;
     private javax.swing.JComboBox filaCombo;
-    private javax.swing.JTextField idTxt;
     private javax.swing.JButton inactivoBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
@@ -558,5 +633,6 @@ public class RackView extends BaseView {
     private javax.swing.JTable rackGrid;
     private javax.swing.JButton searchBtn;
     private javax.swing.JTable usersGrid;
+    private javax.swing.JComboBox warehouseCombo;
     // End of variables declaration//GEN-END:variables
 }
