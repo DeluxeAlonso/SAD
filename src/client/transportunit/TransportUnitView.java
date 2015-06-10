@@ -554,7 +554,6 @@ public class TransportUnitView extends BaseView implements MouseListener{
     }//GEN-LAST:event_typeCreateComboActionPerformed
     
     private void fileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileBtnActionPerformed
-        JFileChooser fc = new JFileChooser();
         fc.setDialogTitle("Seleccione un archivo");
         fc.showOpenDialog(this);
         File file = fc.getSelectedFile();

@@ -929,7 +929,6 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        JFileChooser fc = new JFileChooser();
         fc.setDialogTitle("Seleccione un archivo");
         fc.showOpenDialog(this);
         File file = fc.getSelectedFile();

@@ -44,6 +44,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JDesktopPane;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -88,6 +89,7 @@ public class MainView extends javax.swing.JFrame {
     private BufferedImage img = null;
     private Image icon = null;
     private SecurityLogView securiryLog = null;
+    public static JFileChooser fc = new JFileChooser();
 
     /**
      * Creates new form MainForm

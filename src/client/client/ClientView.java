@@ -42,7 +42,6 @@ public class ClientView extends BaseView implements MouseListener {
     LocalApplication localApplication=InstanceFactory.Instance.getInstance("localApplication", LocalApplication.class);
     ArrayList<Cliente> clients;
     ArrayList<Local> locals;
-    JFileChooser fc = new JFileChooser();
     File file = null;
     Border errorBorder = BorderFactory.createLineBorder(Color.RED, 1);
     Border regularBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
