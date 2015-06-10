@@ -534,5 +534,42 @@ public class PalletRepository implements IPalletRepository{
         
         
     }
+
+    @Override
+    public int insertNPallets(ArrayList<Pallet> pallets) {
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Pallet pIni=pallets.get(0);
+            session.save(pIni);
+            session.flush();
+            int startId=pIni.getId();
+            String ean128=pIni.getEan128();            
+            pIni.setEan128(ean128+startId);
+            session.update(pIni);
+            session.flush();
+            int cant=pallets.size();
+            
+            for(int i=0;i<cant;i++){
+                if(i==1) continue;
+                Pallet p = pallets.get(i);
+                int num=startId+i;
+                p.setEan128(ean128+num);
+                p.setId(num);
+                session.save(p);
+                if(i%20==0) session.flush();
+            }
+                                 
+            session.getTransaction().commit();            
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return -1;
+        } 
+        return 1;
+    }
     
 }

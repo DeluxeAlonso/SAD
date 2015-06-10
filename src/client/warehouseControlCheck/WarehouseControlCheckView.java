@@ -184,7 +184,7 @@ public class WarehouseControlCheckView extends BaseView {
                         pallet.setFechaVencimiento(fechaVenc);
                         pallet.setProducto(prod);
                         pallet.setUbicacion(spots.get(i));
-                        pallet.setEan128(crearEAN128(pallet));
+                        pallet.setEan128(crearEAN128(pallet.getProducto(),pallet.getFechaVencimiento()));
                         int eanAux=palletApplication.insert(pallet);
 
                         Pallet palletAux = palletApplication.queryById(eanAux);

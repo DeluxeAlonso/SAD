@@ -51,7 +51,6 @@ import util.Tools;
  */
 public class HInterceptor extends EmptyInterceptor implements ILogRepository {
 
-    
     private Set inserts = new HashSet();
     private Set updates = new HashSet();
 
@@ -70,7 +69,7 @@ public class HInterceptor extends EmptyInterceptor implements ILogRepository {
             updates.clear();
         }
     }
-    
+
     @Override
     public boolean onFlushDirty(Object entity, Serializable id,
             Object[] currentState, Object[] previousState,
@@ -130,69 +129,85 @@ public class HInterceptor extends EmptyInterceptor implements ILogRepository {
 
         if (entity instanceof Almacen) {
             Almacen a = (Almacen) entity;
-            updLog = queryById(a.getId().toString());
-            if (updLog == null) {
+
+            if (mode == 1) {
                 log.setIdObjeto(a.getId().toString());
                 log.setTipo(EntityState.Master.Almacen.ordinal());
+            } else {
+                updLog = queryById(a.getId().toString(), EntityState.Master.Almacen.ordinal());
             }
 
         } else if (entity instanceof GuiaRemision) {
             GuiaRemision g = (GuiaRemision) entity;
-            updLog = queryById(g.getId().toString());
-            if (updLog == null) {
+
+            if (mode == 1) {
                 log.setIdObjeto(g.getId().toString());
                 log.setTipo(EntityState.Master.Guia_Remision.ordinal());
+            } else {
+                updLog = queryById(g.getId().toString(), EntityState.Master.Almacen.ordinal());
             }
         } else if (entity instanceof OrdenInternamiento) {
             OrdenInternamiento o = (OrdenInternamiento) entity;
-            updLog = queryById(o.getId().toString());
-            if (updLog == null) {
+
+            if (mode == 1) {
                 log.setIdObjeto(o.getId().toString());
                 log.setTipo(EntityState.Master.Orden_Internamiento.ordinal());
+            } else {
+                updLog = queryById(o.getId().toString(), EntityState.Master.Almacen.ordinal());
             }
 
         } else if (entity instanceof Pedido) {
             Pedido p = (Pedido) entity;
-            updLog = queryById(p.getId().toString());
-            if (updLog == null) {
+
+            if (mode == 1) {
                 log.setIdObjeto(p.getId().toString());
                 log.setTipo(EntityState.Master.Pedido.ordinal());
+            } else {
+                updLog = queryById(p.getId().toString(), EntityState.Master.Almacen.ordinal());
             }
 
         } else if (entity instanceof Perfil) {
             Perfil p = (Perfil) entity;
-            updLog = queryById(p.getId().toString());
-            if (updLog == null) {
+
+            if (mode == 1) {
                 log.setIdObjeto(p.getId().toString());
                 log.setTipo(EntityState.Master.Perfil.ordinal());
+            } else {
+                updLog = queryById(p.getId().toString(), EntityState.Master.Almacen.ordinal());
             }
 
         } else if (entity instanceof Usuario) {
             Usuario user_modifier = (Usuario) entity;
-            updLog = queryById(user_modifier.getId());
-            if (updLog == null) {
+
+            if (mode == 1) {
                 log.setIdObjeto(user_modifier.getId());
                 log.setTipo(EntityState.Master.Usuario.ordinal());
+            } else {
+                updLog = queryById(user_modifier.getId().toString(), EntityState.Master.Almacen.ordinal());
             }
 
         } else if (entity instanceof Despacho) {
             Despacho d = (Despacho) entity;
-            updLog = queryById(d.getId().toString());
-            if (updLog == null) {
+
+            if (mode == 1) {
                 log.setIdObjeto(d.getId().toString());
                 log.setTipo(EntityState.Master.Despacho.ordinal());
+            } else {
+                updLog = queryById(d.getId().toString(), EntityState.Master.Almacen.ordinal());
             }
 
         } else if (entity instanceof Kardex) {
             Kardex k = (Kardex) entity;
-            updLog = queryById(String.valueOf(k.getId().getId()));
-            if (updLog == null) {
+
+            if (mode == 1) {
                 log.setIdObjeto(String.valueOf(k.getId().getId()));
                 log.setTipo(EntityState.Master.Kardex.ordinal());
+            } else {
+                updLog = queryById(k.getId().toString(), EntityState.Master.Almacen.ordinal());
             }
         }
         if (mode == 1) {
-            if (!log.getIdObjeto().equals("")) {
+            if (log.getIdObjeto() != null && !log.getIdObjeto().equals("")) {
                 Calendar cal = Calendar.getInstance();
                 log.setFechaCreacion(cal.getTime());
                 log.setFechaActualizacion(cal.getTime());
@@ -215,19 +230,19 @@ public class HInterceptor extends EmptyInterceptor implements ILogRepository {
     @Override
     public int insert(Log object) {
 
-         //Transaction trns = null;
+        //Transaction trns = null;
         Session session = Tools.getSessionInstance();
         //try {            
-            //trns=session.beginTransaction();
-            session.save(object);                      
-            /*session.getTransaction().commit();
-        } catch (RuntimeException e) {
-            if (trns != null) {
-                trns.rollback();
-            }
-            e.printStackTrace();
-            return -1;
-        } */
+        //trns=session.beginTransaction();
+        session.save(object);
+        /*session.getTransaction().commit();
+         } catch (RuntimeException e) {
+         if (trns != null) {
+         trns.rollback();
+         }
+         e.printStackTrace();
+         return -1;
+         } */
         return 1;
 
     }
@@ -266,31 +281,31 @@ public class HInterceptor extends EmptyInterceptor implements ILogRepository {
     public int update(Log object) {
 
         /*Session session = Tools.getSessionInstance();
-        String hql = "update Log set fecha_actualizacion=:fecha where id=:id";
-        Query q = session.createQuery(hql);
-        q.setParameter("fecha", object.getFechaActualizacion());
-        q.setParameter("id", object.getId());
-        /*if (object.getUsuarioByUsuarioActualizador() != null) {
-            q.setParameter("user", object.getUsuarioByUsuarioActualizador().getId());
-        } else {
-            q.setParameter("user", null);
-        }*/
+         String hql = "update Log set fecha_actualizacion=:fecha where id=:id";
+         Query q = session.createQuery(hql);
+         q.setParameter("fecha", object.getFechaActualizacion());
+         q.setParameter("id", object.getId());
+         /*if (object.getUsuarioByUsuarioActualizador() != null) {
+         q.setParameter("user", object.getUsuarioByUsuarioActualizador().getId());
+         } else {
+         q.setParameter("user", null);
+         }*/
         //q.executeUpdate();
-         //Transaction trns = null;
+        //Transaction trns = null;
         Session session = Tools.getSessionInstance();
-        try {            
+        try {
             //trns=session.beginTransaction();
-            session.update(object); 
+            session.update(object);
             updates.clear();
             session.flush();
             /*session.getTransaction().commit();*/
         } catch (Exception e) {
             /*if (trns != null) {
-                trns.rollback();
-            }*/
+             trns.rollback();
+             }*/
             e.printStackTrace();
             return -1;
-        } 
+        }
         return 1;
 
     }
@@ -302,16 +317,21 @@ public class HInterceptor extends EmptyInterceptor implements ILogRepository {
 
     @Override
     public Log queryById(String id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Log queryById(String id, int master) {
         //Transaction trns = null;
         Session session = Tools.getSessionInstance();
         Log log = null;
         String hql
-                = "from Log where id_objeto=:id";
+                = "from Log where id_objeto=:id and tipo=:master";
         try {
 
             //session.beginTransaction();
             Query q = session.createQuery(hql);
             q.setParameter("id", id);
+            q.setParameter("master", master);
             log = (Log) q.uniqueResult();
             //Hibernate.initialize(log.getUsuarioByUsuarioActualizador());
             //Hibernate.initialize(log.getUsuarioByUsuarioCreador());
