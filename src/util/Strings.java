@@ -102,7 +102,9 @@ public class Strings {
     public static final String MESSAGE_DELETE_LOCAL = "¿Está seguro de eliminar el local seleccionado?";
     public static final String ERROR_ADDRESS_REQUIRED = "El campo Dirección es requerido.";
     public static final String ERROR_LATITUDE_REQUIRED = "El campo Latitud es requerido.";
+    public static final String ERROR_LATITUDE_OUT_LIMITS = "El campo Latitud debe estar entre -11.5 y -12.5 grados.";
     public static final String ERROR_LONGITUDE_REQUIRED = "El campo Longitud es requerido.";
+    public static final String ERROR_LONGITUDE_OUT_LIMITS = "El campo Longitud debe estar entre -76.8 y -77.2 grados.";
     public static final String ERROR_LATITUDE_NOT_FLOAT = "El campo Latitud debe ser un número de punto flotante.";
     public static final String ERROR_LONGITUDE_NOT_FLOAT = "El campo Longitud debe ser un número de punto flotante.";
     /*END*/
