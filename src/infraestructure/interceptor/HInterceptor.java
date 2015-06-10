@@ -51,7 +51,7 @@ import util.Tools;
  */
 public class HInterceptor extends EmptyInterceptor implements ILogRepository {
 
-    Usuario user = MainView.user;
+    
     private Set inserts = new HashSet();
     private Set updates = new HashSet();
 
@@ -198,15 +198,15 @@ public class HInterceptor extends EmptyInterceptor implements ILogRepository {
                 log.setFechaActualizacion(cal.getTime());
                 log.setIp(Constants.currentIP);
                 log.setMac(Constants.currentMac);
-                log.setUsuarioByUsuarioActualizador(user);
-                log.setUsuarioByUsuarioCreador(user);
+                log.setUsuarioByUsuarioActualizador(MainView.user);
+                log.setUsuarioByUsuarioCreador(MainView.user);
                 insert(log);
             }
         } else {
             if (updLog != null) {
                 Calendar cal = Calendar.getInstance();
                 updLog.setFechaActualizacion(cal.getTime());
-                updLog.setUsuarioByUsuarioActualizador(user);
+                updLog.setUsuarioByUsuarioActualizador(MainView.user);
                 update(updLog);
             }
         }
