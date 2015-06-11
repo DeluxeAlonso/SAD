@@ -98,6 +98,7 @@ public class DeliveryView extends BaseView {
     JFileChooser fc = new JFileChooser();
     File file = null;
     Boolean firstRun = true;
+    Informable informable;
     
     /**
      * Creates new form DispatchView
@@ -716,43 +717,46 @@ public class DeliveryView extends BaseView {
             hours = Double.parseDouble(txtHours.getText());
             minutes = Double.parseDouble(txtMinutes.getText());
             ArrayList<PedidoParcial> selectedPartialOrders = getCheckedOrders();
-            txtResult.setText("");
-            algorithmExecution = new AlgorithmExecution(this, hours + minutes/60, 
-                    selectedPartialOrders, informable){
-                @Override
-                protected void done() {
-                    try {
-                        final Solution solution = get();
-                        if (solution.isEmpty()) {
-                            JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_NO_ROUTES_FOUND,
-                                    Strings.ALGORITHM_NO_ROUTES_FOUND_TITLE, JOptionPane.INFORMATION_MESSAGE);
-                            return;
-                        }
-                        solutions.add(solution);
-                        refreshCombo();
-                        JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_SUCCESS,
-                                Strings.ALGORITHM_SUCCESS_TITLE, JOptionPane.INFORMATION_MESSAGE);
-
-
-
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_ERROR,
-                                Strings.ALGORITHM_ERROR_TITLE, JOptionPane.INFORMATION_MESSAGE);
-                    }
-                }
-            };        
-            PropertyChangeListener listener
-                    = new PropertyChangeListener() {
-                        public void propertyChange(PropertyChangeEvent event) {
-                            if ("progress".equals(event.getPropertyName())) {
-                                jProgressBar.setValue((Integer) event.getNewValue());
+            if(!selectedPartialOrders.isEmpty()){
+                txtResult.setText("");
+                algorithmExecution = new AlgorithmExecution(this, hours + minutes/60, 
+                        selectedPartialOrders, informable){
+                    @Override
+                    protected void done() {
+                        try {
+                            final Solution solution = get();
+                            if (solution.isEmpty()) {
+                                JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_NO_ROUTES_FOUND,
+                                        Strings.ALGORITHM_NO_ROUTES_FOUND_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                                return;
                             }
+                            solutions.add(solution);
+                            refreshCombo();
+                            JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_SUCCESS,
+                                    Strings.ALGORITHM_SUCCESS_TITLE, JOptionPane.INFORMATION_MESSAGE);
+
+
+
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_ERROR,
+                                    Strings.ALGORITHM_ERROR_TITLE, JOptionPane.INFORMATION_MESSAGE);
                         }
-                    };
-            algorithmExecution.addPropertyChangeListener(listener);
-            algorithmExecution.execute();    
-            
+                    }
+                };        
+                PropertyChangeListener listener
+                        = new PropertyChangeListener() {
+                            public void propertyChange(PropertyChangeEvent event) {
+                                if ("progress".equals(event.getPropertyName())) {
+                                    jProgressBar.setValue((Integer) event.getNewValue());
+                                }
+                            }
+                        };
+                algorithmExecution.addPropertyChangeListener(listener);
+                algorithmExecution.execute();    
+            }else
+            JOptionPane.showMessageDialog(this, "Debe seleccionar al menos un pedido.",
+                    "Despacho",JOptionPane.WARNING_MESSAGE);
         }catch(Exception ex){
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, Strings.BAD_PARAMETERS,
@@ -761,15 +765,7 @@ public class DeliveryView extends BaseView {
         
         
 
-            }catch(Exception ex){
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, Strings.BAD_PARAMETERS,
-                        Strings.BAD_PARAMETERS_TITLE,JOptionPane.INFORMATION_MESSAGE);
-            }      
-        }
-        else
-            JOptionPane.showMessageDialog(this, "Debe seleccionar al menos un pedido.",
-                    "Despacho",JOptionPane.WARNING_MESSAGE);
+        
     }//GEN-LAST:event_btnExecuteAlgorithmActionPerformed
 
     private void btnDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisplayActionPerformed
