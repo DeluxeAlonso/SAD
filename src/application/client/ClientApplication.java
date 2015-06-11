@@ -7,6 +7,7 @@ package application.client;
 
 import base.client.IClientRepository;
 import entity.Cliente;
+import entity.Local;
 import infraestructure.client.ClientRepository;
 import java.util.ArrayList;
 import util.EntityType;
@@ -55,4 +56,15 @@ public class ClientApplication {
     public void refreshClients(){
         EntityType.CLIENTS = queryAll();
     }
+    
+    public Local queryLocalByClientId(Cliente client, Local local){
+        Local selectedLocal = null;
+        try {
+            selectedLocal = clientRepository.queryLocalById(client, local);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return selectedLocal;
+    }
+    
 }

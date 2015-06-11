@@ -391,40 +391,38 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                 DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
                 Date endDate = df.parse(line_split[4]);
                 order.setFechaVencimiento(endDate);
-                System.out.println("Order Num " + i);
+                Local currentLocal = clientApplication.queryLocalByClientId(client, local);
                 for(int j=0;j<productsNum;j++){
-                    System.out.println("Product Num " + j);
                     line = br.readLine();
                     line_split = line.split(cvsSplitBy);
-                    PedidoParcialXProducto partial = new PedidoParcialXProducto();
-                    PedidoParcialXProductoId id = new PedidoParcialXProductoId();
-                    
-                    Producto product = new Producto();
-                    product.setId(Integer.parseInt(line_split[0]));
-                    product.setNombre("");
-                   
-                    id.setIdProducto(product.getId());
-                    
-                    partial.setId(id);
-                    partial.setPedidoParcial(pp);
-                    
-                    Producto selectedProduct = productApplication.queryById(product.getId());
-                    Integer requiredQuantity = Integer.parseInt(line_split[1]);
-                    
-                    System.out.println("Producto: " + selectedProduct.getNombre());
-                    System.out.println("Stock Logico: " + selectedProduct.getStockLogico());
-                    System.out.println("Cantidad Requerida: " + requiredQuantity);
-                    Integer difference = selectedProduct.getStockLogico() - requiredQuantity;
-                    if(difference < 0){
-                       System.out.println("No se inserto pedido " + i);
+                    if(currentLocal!=null){
+                        PedidoParcialXProducto partial = new PedidoParcialXProducto();
+                        PedidoParcialXProductoId id = new PedidoParcialXProductoId();
+
+                        Producto product = new Producto();
+                        product.setId(Integer.parseInt(line_split[0]));
+                        product.setNombre("");
+
+                        id.setIdProducto(product.getId());
+
+                        partial.setId(id);
+                        partial.setPedidoParcial(pp);
+
+                        Producto selectedProduct = productApplication.queryById(product.getId());
+                        Integer requiredQuantity = Integer.parseInt(line_split[1]);
+
+                        Integer difference = selectedProduct.getStockLogico() - requiredQuantity;
+                        if(difference < 0){
+                           System.out.println("No se inserto pedido " + i);
+                        }
+                        else{
+                            selectedProduct.setStockLogico(difference);
+                            productApplication.update(selectedProduct);
+                            partial.setProducto(selectedProduct);
+                            partial.setCantidad(requiredQuantity);
+                            partialProducts.add(partial);
+                        }          
                     }
-                    else{
-                        selectedProduct.setStockLogico(difference);
-                        productApplication.update(selectedProduct);
-                        partial.setProducto(selectedProduct);
-                        partial.setCantidad(requiredQuantity);
-                        partialProducts.add(partial);
-                    }          
                 }
                 if(!partialProducts.isEmpty())
                     if (!orderApplication.CreateOrder(order, pp, partialProducts, true)){
