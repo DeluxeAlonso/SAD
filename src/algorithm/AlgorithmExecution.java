@@ -38,12 +38,7 @@ public class AlgorithmExecution {
     public static boolean bad = false;
     public static boolean overCap = false;
     public static boolean overTime = false;
-    public static boolean overStock = false;
-    public static int nGen;
-    public static int nPop;
-    public static int iGen;
-    public static int iPop;
-    
+    public static boolean overStock = false;    
     
     static boolean checkSolution(Solution solution) {
         Node[][] routes = solution.getNodes();
@@ -73,9 +68,8 @@ public class AlgorithmExecution {
         view.getTxtResult().setText(cad);
         
         Algorithm algorithm = new Algorithm();
-        //condicion de parada puede mejorar        
-        algorithm.setNumberOfGenerations(10000);
-        algorithm.setPopulationSize(10000);
+        algorithm.setNumberOfGenerations(50000);
+        algorithm.setPopulationSize(50000);
         algorithm.setTournamentSelectionKValue(50);
         algorithm.setOvercapPenalty(100000);
         algorithm.setOvertimePenalty(100000);
@@ -94,10 +88,7 @@ public class AlgorithmExecution {
         Population population = new Population(algorithm, problem);
         System.out.println("Se creo la población");
         
-        Solution bestSolution;// = population.getBestSolution();
-        //System.out.println("bestSolution: " + bestSolution.getCost());
-        
-        //displayRoutes(bestSolution);
+        Solution bestSolution;
         
         long popTime = System.currentTimeMillis() - ini;
         ini = System.currentTimeMillis();
@@ -107,22 +98,8 @@ public class AlgorithmExecution {
         String cad3 = "\nIniciando segunda fase del algoritmo...";
         view.getTxtResult().setText(cad+cad2+cad3);
         
-        nGen = algorithm.getNumberOfGenerations();
-        
-        for (int i = 0; i < algorithm.getNumberOfGenerations(); i++) {
-            iGen = i;
-           /*int iFinal = i; 
-            try {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        view.getjProgressBar().setValue(iFinal*100/nGen);
-                    }
-                });
-                java.lang.Thread.sleep(100);
-            } catch (InterruptedException e) {
-                ;
-            }*/
-            
+        for (int i = 0; i < algorithm.getNumberOfGenerations(); i++) {            
+
             Solution[] parents = new Solution[2];
             parents[0] = population.getSolutions()[Selection.tournamentSelection(
                         algorithm.getTournamentSelectionKValue(), population, 
@@ -134,34 +111,10 @@ public class AlgorithmExecution {
             
             Solution child = Crossover.uniformCrossover(parents, algorithm, problem);
             
-            /*if(!AlgorithmExecution.checkSolution(child)){
-                System.out.println(displayDemand(child));
-                throw new AssertionError("bad solution at GA crossover: " + i);
-            }*/
-            
-            //System.out.println("crossover");
-            //System.out.println(displayDemand(child));
-            
             child = Mutation.mutation(child, algorithm, problem);  
-            
-            //System.out.println("mutation");
-            //System.out.println(displayDemand(child));            
-            
-            /*if(!AlgorithmExecution.checkSolution(child)){
-                System.out.println(displayDemand(child));
-                throw new AssertionError("bad solution at GA mutation: " + i);
-            }*/
-            
+
             child = LocalSearch.opt2Improvement(child, algorithm, problem);  
-            
-            /*if(!AlgorithmExecution.checkSolution(child)){
-                System.out.println(displayDemand(child));
-                throw new AssertionError("bad solution at GA 2opt: " + i);
-            }*/
-            
-            //System.out.println("2opt");
-            //System.out.println(displayDemand(child));
-            
+
             double cost = ObjectiveFunction.getSolutionCost(child, algorithm, problem,
                 problem.getProductsStock());
             if(bad){
@@ -173,28 +126,7 @@ public class AlgorithmExecution {
                 }
             }
             else
-                child.setCost(cost);
-            
-            /*overCap = overTime = overStock = bad = false;
-            double cost2 = ObjectiveFunction.getSolutionCost(child, algorithm, problem, problem.getProductsStock());
-            if(overCap) System.out.println("overCap");
-            if(overTime) System.out.println("overTime");
-            if(overStock) System.out.println("overStock");
-            
-            /*
-            if(bad){
-                System.out.println("parent1");
-                System.out.println(displayDemand(parents[0]));
-                System.out.println("parent2");
-                System.out.println(displayDemand(parents[1]));
-                System.out.println("child");
-                System.out.println(displayDemand(child));
-            }*/
-            
-            /*if(!AlgorithmExecution.checkSolution(child)){
-                System.out.println(displayDemand(child));
-                throw new AssertionError("bad solution at GA repair: " + i);
-            }*/
+                child.setCost(cost);  
             
             overCap = overTime = overStock = bad = false;
             
@@ -202,10 +134,10 @@ public class AlgorithmExecution {
                     algorithm.getTournamentSelectionKValue(), population, 
                     Selection.Options.WORST);
             
-            bestSolution = population.getBestSolution();
+            /*bestSolution = population.getBestSolution();
             System.out.println("Generación: " + i + " child: " + child.getCost() + 
                     " best: " + bestSolution.getCost() + " worst " + population.getSolutions()[replacedSolution].getCost());
-            
+            */
             population.getSolutions()[replacedSolution] = child;
         }
         long end = System.currentTimeMillis();

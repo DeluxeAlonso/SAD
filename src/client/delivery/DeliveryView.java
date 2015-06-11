@@ -702,10 +702,7 @@ public class DeliveryView extends BaseView {
     }//GEN-LAST:event_btnViewSolutionActionPerformed
 
     private void btnExecuteAlgorithmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExecuteAlgorithmActionPerformed
-        algorithmExecution = new AlgorithmExecution(this);
-        /*solution = algorithmExecution.start(3);
-        StringBuffer buf = algorithmExecution.displayDemand(solution);
-        txtResult.setText(buf.toString());*/
+        algorithmExecution = new AlgorithmExecution(this);        
         ArrayList<PedidoParcial> selectedPartialOrders = getCheckedOrders();
         double hours = 3, minutes = 0;
         try{
@@ -713,10 +710,7 @@ public class DeliveryView extends BaseView {
             minutes = Double.parseDouble(txtMinutes.getText());
             
             try {
-                Solution solution = algorithmExecution.start(hours + minutes/60, selectedPartialOrders);
-                //StringBuffer buf = algorithmExecution.displayDemand(solution);
-                //txtResult.setText(buf.toString());
-                //fillRoutesTable();
+                Solution solution = algorithmExecution.start(hours + minutes/60, selectedPartialOrders);                
                 if(solution.isEmpty()){
                     JOptionPane.showMessageDialog(this, Strings.ALGORITHM_NO_ROUTES_FOUND,
                         Strings.ALGORITHM_NO_ROUTES_FOUND_TITLE, JOptionPane.INFORMATION_MESSAGE);
