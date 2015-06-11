@@ -68,8 +68,8 @@ public class AlgorithmExecution {
         view.getTxtResult().setText(cad);
         
         Algorithm algorithm = new Algorithm();
-        algorithm.setNumberOfGenerations(10000);
-        algorithm.setPopulationSize(10000);
+        algorithm.setNumberOfGenerations(50000);
+        algorithm.setPopulationSize(50000);
         algorithm.setTournamentSelectionKValue(50);
         algorithm.setOvercapPenalty(100000);
         algorithm.setOvertimePenalty(100000);

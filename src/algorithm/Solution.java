@@ -31,11 +31,11 @@ public class Solution implements Comparable<Solution>{
         this.algorithm = algorithm;
         this.problem = problem;        
         if(idx%6==0)
-            this.nodes = Grasp.construction(algorithm, problem);
+            this.nodes = Grasp.construction4(algorithm, problem);
         else if(idx%6==1)
-            this.nodes = Grasp.construction2(algorithm, problem);
+            this.nodes = Grasp.construction4(algorithm, problem);
         else if(idx%6==2)
-            this.nodes = Grasp.construction3(algorithm, problem);              
+            this.nodes = Grasp.construction4(algorithm, problem);              
         else
             this.nodes = Grasp.construction4(algorithm, problem);
     }
