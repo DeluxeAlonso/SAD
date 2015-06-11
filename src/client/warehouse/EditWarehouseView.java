@@ -15,14 +15,19 @@ import entity.Almacen;
 import entity.Condicion;
 import entity.Rack;
 import entity.Ubicacion;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Calendar;
+import javax.swing.BorderFactory;
+import javax.swing.JOptionPane;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import util.Constants;
 import util.EntityState;
 import util.EntityType;
 import util.Icons;
 import util.InstanceFactory;
+import util.Strings;
 
 /**
  *
@@ -34,6 +39,7 @@ public class EditWarehouseView extends BaseDialogView {
     RackApplication rackApplication=InstanceFactory.Instance.getInstance("rackApplication", RackApplication.class);
     SpotApplication spotApplication=InstanceFactory.Instance.getInstance("spotApplication", SpotApplication.class);
     Almacen a =null;
+    Border regularBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
     /**
      * Creates new form NewWarehouse
      */
@@ -104,6 +110,19 @@ public class EditWarehouseView extends BaseDialogView {
         model.setRowCount(0);
     }
     
+    public boolean isInteger( String str ){
+        try{
+            Integer.parseInt(str);
+            return true;
+        }catch( Exception e ){
+            return false;
+        }
+    }
+    private void clearBorders(){
+        capacityTxt.setBorder(regularBorder);
+        descTxt.setBorder(regularBorder);
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -134,9 +153,10 @@ public class EditWarehouseView extends BaseDialogView {
             }
         });
 
-        jLabel3.setText("Tipo:");
+        jLabel3.setText("Condicion:");
 
         condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        condicionCombo.setEnabled(false);
 
         jLabel2.setText("Capacidad:");
 
@@ -218,7 +238,7 @@ public class EditWarehouseView extends BaseDialogView {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3)
-                                .addGap(28, 28, 28)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -280,7 +300,7 @@ public class EditWarehouseView extends BaseDialogView {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(11, 11, 11)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cancelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(saveBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -291,32 +311,69 @@ public class EditWarehouseView extends BaseDialogView {
 
     private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
         // TODO add your handling code here:
-
-        Almacen al = new Almacen();
-        al.setId(a.getId());
+        clearBorders();
+        boolean errorFlag=false;
+        String error_message = "Errores:\n";
+        if (descTxt.getText().isEmpty()){
+            error_message += Strings.ERROR_DESC_WAREHOUSE_REQUIRED+"\n";
+            descTxt.setBorder(errorBorder);
+            errorFlag = true;
+        }else if (descTxt.getText().length()>60){
+            error_message += "El campo descripcion debe contener menos de 60 caracteres."+"\n";
+            descTxt.setBorder(errorBorder);
+            errorFlag = true;
+        }
+        if (capacityTxt.getText().isEmpty()){
+            error_message += Strings.ERROR_CAPACITY_WAREHOUSE_REQUIRED+"\n";
+            capacityTxt.setBorder(errorBorder);
+            errorFlag = true;
+        } else if (!isInteger(capacityTxt.getText())){
+            error_message += Strings.ERROR_CAPACITY_WAREHOUSE_INT+"\n";
+            capacityTxt.setBorder(errorBorder);
+            errorFlag = true;
+        }else {
+            int  capA=Integer.parseInt(capacityTxt.getText());
+            if (capA > 50){
+                error_message += "La capacidad de un almacen no debe ser mayor a 50."+"\n";
+                capacityTxt.setBorder(errorBorder);
+                errorFlag = true;                
+            }else 
+                if (capA < 1){
+                error_message += "La capacidad de un almacen debe ser mayor que 0 racks."+"\n";
+                capacityTxt.setBorder(errorBorder);
+                errorFlag = true;                
+            }
+        }
+        if (condicionCombo.getSelectedIndex()==0){
+            error_message += Strings.ERROR_CONDICION_WAREHOUSE_REQUIRED+"\n";
+            condicionCombo.setBorder(errorBorder);
+            errorFlag = true;
+        }
+        if (!errorFlag){
+        
         Calendar cal = Calendar.getInstance();
         int capa = Integer.parseInt(this.capacityTxt.getText());
         if (capa!=0)
         {
-            al.setCapacidad(capa);
+            a.setCapacidad(capa);
         }
         int area = Integer.parseInt(a.getArea().toString());
         if (area!=0)
         {
-            al.setArea(area);
+            a.setArea(area);
         }
         //int uLibres = Integer.parseInt(this.racksTxt.getText());
         
-        al.setUbicLibres(capa);
+        a.setUbicLibres(capa);
         
-        al.setCondicion(conditionApplication.getConditionInstance(condicionCombo.getSelectedItem().toString()));
-        al.setDescripcion(descTxt.getText());
-        al.setEstado(EntityState.Warehouses.ACTIVO.ordinal());
-        al.setFechaRegistro(a.getFechaRegistro());
-        al.setKardexes(null);
-        warehouseApplication.update(al);
-        
-        
+        a.setCondicion(conditionApplication.getConditionInstance(condicionCombo.getSelectedItem().toString()));
+        a.setDescripcion(descTxt.getText());
+        warehouseApplication.update(a);
+        JOptionPane.showMessageDialog(this, "Se actualizo la información del almacen correctamente.");
+        }else
+        {
+            JOptionPane.showMessageDialog(this, error_message,"Mensaje de actualizacion de almacen",JOptionPane.WARNING_MESSAGE);
+        }
         
         
     }//GEN-LAST:event_saveBtnActionPerformed
@@ -332,6 +389,9 @@ public class EditWarehouseView extends BaseDialogView {
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
         // TODO add your handling code here:
+        
+        
+            
         Calendar cal = Calendar.getInstance();
         Rack r = new Rack();
         r.setEstado(EntityState.Racks.ACTIVO.ordinal());
@@ -339,21 +399,29 @@ public class EditWarehouseView extends BaseDialogView {
         r.setAlmacen(a);
         r.setNumCol(a.getNumColumnas());
         r.setNumFil(a.getNumFilas());
+        r.setUbicLibres(a.getNumFilas()*a.getNumColumnas()*2);
         a.getRacks().add(r);
-        rackApplication.insert(r);
         for (int j=0;j<a.getNumColumnas();j++){
             for (int k=0;k<a.getNumFilas();k++){
-                Ubicacion u = new Ubicacion();
-                u.setRack(r);
-                u.setEstado(EntityState.Spots.LIBRE.ordinal());
-                u.setColumna(j+1);
-                u.setFila(k+1);
-                u.setLado("A");
-                spotApplication.insert(u);
-                u.setLado("B");
-                spotApplication.insert(u);
+                Ubicacion u1 = new Ubicacion();
+                u1.setRack(r);
+                u1.setEstado(EntityState.Spots.LIBRE.ordinal());
+                u1.setColumna(j+1);
+                u1.setFila(k+1);
+                u1.setLado("A");
+                Ubicacion u2 = new Ubicacion();
+                u2.setRack(r);
+                u2.setEstado(EntityState.Spots.LIBRE.ordinal());
+                u2.setColumna(j+1);
+                u2.setFila(k+1);
+                u2.setLado("B");
+                r.getUbicacions().add(u1);
+                r.getUbicacions().add(u2);
             }
         }
+        rackApplication.insert(r);
+        
+        
         clearGrid();
         fillTable(a.getId());
     }//GEN-LAST:event_addBtnActionPerformed

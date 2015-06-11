@@ -122,12 +122,12 @@ public class ObjectiveFunction {
             double routeCost = getRouteCost(vehicles.get(i), routes[i], algorithm,
                     currentStock);
             //if(AlgorithmExecution.overCap) System.out.println("solution overCap at: " + i);
-            if(routeCost>0) nonzero++;
+            if(routes[i].length>0) nonzero++;
             solutionCost += routeCost; 
             //System.out.println("costo de ruta: " + routeCost);
         }        
         if(nonzero==0) nonzero = 1;
-        return solutionCost/nonzero;
+        return solutionCost*solutionCost/nonzero;
     }   
     
     

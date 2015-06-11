@@ -12,6 +12,7 @@ import entity.OrdenInternamiento;
 import entity.Pallet;
 import entity.Producto;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ public interface IPalletRepository extends IRepository<Pallet>{
     public Boolean updateSpot(int palletId,int spotId);
     public ArrayList<Pallet> getPalletsFromOrder(int rackId);
     public ArrayList<Pallet> queryPalletsByProduct(Integer productId);
-
+    
     public ArrayList<Pallet> queryPalletsByPartialOrder(Integer partialOrderId);
 
     public Boolean updatePallets(ArrayList<Pallet> pallets);
@@ -35,4 +36,6 @@ public interface IPalletRepository extends IRepository<Pallet>{
     public ArrayList<Pallet> queryByDeliveryParameters(Almacen warehouse, ArrayList<Despacho>delivery, Producto product);
 
     public ArrayList<Pallet> queryByWarehouseParameters(Almacen warehouse, ArrayList<Despacho> delivery);
+    public List<Object[]> queryByReportInter(int almacen, Date fechaD, Date fechaH, int tipo);
+    public int insertNPallets(ArrayList<Pallet> pallets);
 }

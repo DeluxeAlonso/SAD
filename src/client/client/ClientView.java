@@ -42,7 +42,6 @@ public class ClientView extends BaseView implements MouseListener {
     LocalApplication localApplication=InstanceFactory.Instance.getInstance("localApplication", LocalApplication.class);
     ArrayList<Cliente> clients;
     ArrayList<Local> locals;
-    JFileChooser fc = new JFileChooser();
     File file = null;
     Border errorBorder = BorderFactory.createLineBorder(Color.RED, 1);
     Border regularBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
@@ -255,7 +254,7 @@ public class ClientView extends BaseView implements MouseListener {
         jScrollPane2 = new javax.swing.JScrollPane();
         tblLocals = new javax.swing.JTable();
         btnDeleteLocal = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btnMap = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Clientes");
@@ -296,9 +295,9 @@ public class ClientView extends BaseView implements MouseListener {
 
         btnDeleteClient.setText("Eliminar");
         btnDeleteClient.setEnabled(false);
-        btnDeleteClient.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnDeleteClientMousePressed(evt);
+        btnDeleteClient.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteClientActionPerformed(evt);
             }
         });
 
@@ -353,11 +352,6 @@ public class ClientView extends BaseView implements MouseListener {
 
         btnFileUpload.setText("Cargar");
         btnFileUpload.setEnabled(false);
-        btnFileUpload.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnFileUploadMousePressed(evt);
-            }
-        });
         btnFileUpload.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnFileUploadActionPerformed(evt);
@@ -384,9 +378,9 @@ public class ClientView extends BaseView implements MouseListener {
 
         btnSaveLocal.setText("Guardar");
         btnSaveLocal.setEnabled(false);
-        btnSaveLocal.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnSaveLocalMousePressed(evt);
+        btnSaveLocal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveLocalActionPerformed(evt);
             }
         });
 
@@ -449,16 +443,16 @@ public class ClientView extends BaseView implements MouseListener {
 
         btnDeleteLocal.setText("Eliminar");
         btnDeleteLocal.setEnabled(false);
-        btnDeleteLocal.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnDeleteLocalMousePressed(evt);
+        btnDeleteLocal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteLocalActionPerformed(evt);
             }
         });
 
-        jButton1.setText("GMAP");
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                jButton1MousePressed(evt);
+        btnMap.setText("Visualizar locales");
+        btnMap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMapActionPerformed(evt);
             }
         });
 
@@ -485,19 +479,15 @@ public class ClientView extends BaseView implements MouseListener {
                                 .addComponent(btnDeleteClient))
                             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(btnDeleteLocal))))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton1)
-                                .addGap(74, 74, 74)))))
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnDeleteLocal, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(btnMap, javax.swing.GroupLayout.Alignment.TRAILING))))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -510,7 +500,7 @@ public class ClientView extends BaseView implements MouseListener {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(fileTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnFileUpload)
-                        .addComponent(jButton1))
+                        .addComponent(btnMap))
                     .addComponent(btnFile, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -589,28 +579,21 @@ public class ClientView extends BaseView implements MouseListener {
         }
     }//GEN-LAST:event_btnSaveClientActionPerformed
 
-    private void btnDeleteClientMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteClientMousePressed
-        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
-        int response = JOptionPane.showConfirmDialog(this, Strings.MESSAGE_DELETE_CLIENT,Strings.MESSAGE_DELETE_CLIENT_TITLE,JOptionPane.WARNING_MESSAGE);
-        if(JOptionPane.OK_OPTION == response){
-            clientApplication.delete(clients.get(tblClients.getSelectedRow()).getId());
-            fillClientsTable();
-            clearNewLocalForm();
-            changeNewLocalFormState(false);
-            btnDeleteClient.setEnabled(false);
-            btnDeleteLocal.setEnabled(false);
-        }
-    }//GEN-LAST:event_btnDeleteClientMousePressed
-
-    private void btnFileUploadMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFileUploadMousePressed
+    private void btnFileUploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFileUploadActionPerformed
         loadFromFile(file.getAbsolutePath());
         file = null;
         btnFileUpload.setEnabled(false);
         fileTextField.setText("");
-        
-    }//GEN-LAST:event_btnFileUploadMousePressed
+        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+        JOptionPane.showMessageDialog(this, Strings.MESSAGE_LOAD_NEW_CLIENTS,Strings.MESSAGE_NEW_CLIENT_TITLE,JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_btnFileUploadActionPerformed
 
-    private void btnSaveLocalMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveLocalMousePressed
+    private void btnMapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMapActionPerformed
+        ArrayList<Local> locals = localApplication.queryAll();
+        GoogleMapsLocals map = new GoogleMapsLocals(locals);
+    }//GEN-LAST:event_btnMapActionPerformed
+
+    private void btnSaveLocalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveLocalActionPerformed
         clearNewLocalFormBorders();
         String error_message = "Errores:\n";
         JOptionPane.setDefaultLocale(new Locale("es", "ES"));
@@ -623,6 +606,10 @@ public class ClientView extends BaseView implements MouseListener {
             error_message += Strings.ERROR_LATITUDE_NOT_FLOAT+"\n";
             txtNewLocalLatitude.setBorder(errorBorder);
             hasErrors = true;
+        }else if(isDouble(txtNewLocalLatitude.getText()) && Double.parseDouble(txtNewLocalLatitude.getText())>-11.5 || Double.parseDouble(txtNewLocalLatitude.getText())<-12.5 ){
+            error_message += Strings.ERROR_LATITUDE_OUT_LIMITS+"\n";
+            txtNewLocalLatitude.setBorder(errorBorder);
+            hasErrors = true;
         }
         if(txtNewLocalLongitude.getText().isEmpty()){
             error_message += Strings.ERROR_LONGITUDE_REQUIRED+"\n";
@@ -630,6 +617,10 @@ public class ClientView extends BaseView implements MouseListener {
             hasErrors = true;
         }else if(!isDouble(txtNewLocalLongitude.getText())){
             error_message += Strings.ERROR_LONGITUDE_NOT_FLOAT+"\n";
+            txtNewLocalLongitude.setBorder(errorBorder);
+            hasErrors = true;
+        }else if(isDouble(txtNewLocalLongitude.getText()) && Double.parseDouble(txtNewLocalLongitude.getText())>-76.8 || Double.parseDouble(txtNewLocalLongitude.getText())<-77.2){
+            error_message += Strings.ERROR_LONGITUDE_OUT_LIMITS+"\n";
             txtNewLocalLongitude.setBorder(errorBorder);
             hasErrors = true;
         }
@@ -659,9 +650,22 @@ public class ClientView extends BaseView implements MouseListener {
             clearNewLocalForm();
             fillLocalsTable();
         }
-    }//GEN-LAST:event_btnSaveLocalMousePressed
+    }//GEN-LAST:event_btnSaveLocalActionPerformed
 
-    private void btnDeleteLocalMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteLocalMousePressed
+    private void btnDeleteClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteClientActionPerformed
+        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+        int response = JOptionPane.showConfirmDialog(this, Strings.MESSAGE_DELETE_CLIENT,Strings.MESSAGE_DELETE_CLIENT_TITLE,JOptionPane.WARNING_MESSAGE);
+        if(JOptionPane.OK_OPTION == response){
+            clientApplication.delete(clients.get(tblClients.getSelectedRow()).getId());
+            fillClientsTable();
+            clearNewLocalForm();
+            changeNewLocalFormState(false);
+            btnDeleteClient.setEnabled(false);
+            btnDeleteLocal.setEnabled(false);
+        }
+    }//GEN-LAST:event_btnDeleteClientActionPerformed
+
+    private void btnDeleteLocalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteLocalActionPerformed
         JOptionPane.setDefaultLocale(new Locale("es", "ES"));
         int response = JOptionPane.showConfirmDialog(this, Strings.MESSAGE_DELETE_LOCAL,Strings.MESSAGE_DELETE_LOCAL_TITLE,JOptionPane.WARNING_MESSAGE);
         if(JOptionPane.OK_OPTION == response){
@@ -669,50 +673,7 @@ public class ClientView extends BaseView implements MouseListener {
             fillLocalsTable();
             btnDeleteLocal.setEnabled(false);
         }
-    }//GEN-LAST:event_btnDeleteLocalMousePressed
-
-    private void jButton1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MousePressed
-        
-        Node[] node1 = new Node[1];
-        node1[0] = new Node();
-        /*node1[1] = new Node();
-        node1[2] = new Node();*/
-        node1[0].setX(-77.0632183);
-        node1[0].setY(-12.0910106);
-       /* node1[1].setX(-77.0695376);
-        node1[1].setY(-12.0867303);
-        node1[2].setX(-77.0824336);
-        node1[2].setY(-12.081705);*/
-        Node[] node2 = new Node[1];
-        node2[0] = new Node();
-        /*node2[1] = new Node();
-        node2[2] = new Node();
-        node2[3] = new Node();*/
-        node2[0].setX(-77.0781548);
-        node2[0].setY(-12.0510629);
-        /*node2[1].setX(-77.0519621);
-        node2[1].setY(-12.047751);
-        node2[2].setX(-77.0462544);
-        node2[2].setY(-12.0272688);
-        node2[3].setX(-77.02564);
-        node2[3].setY(-12.0423633);*/
-        
-        Node[][] node = new Node[2][];
-        node[0] = node1;
-        node[1] = node2;
-        Solution solution = new Solution();
-        
-        solution.setNodes(node);
-        
-        
-        //GoogleMaps map = new GoogleMaps(solution);
-        ArrayList<Local> locals = localApplication.queryAll();
-        GoogleMapsLocals map = new GoogleMapsLocals(locals);
-    }//GEN-LAST:event_jButton1MousePressed
-
-    private void btnFileUploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFileUploadActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnFileUploadActionPerformed
+    }//GEN-LAST:event_btnDeleteLocalActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -720,10 +681,10 @@ public class ClientView extends BaseView implements MouseListener {
     private javax.swing.JButton btnDeleteLocal;
     private javax.swing.JButton btnFile;
     private javax.swing.JButton btnFileUpload;
+    private javax.swing.JButton btnMap;
     private javax.swing.JButton btnSaveClient;
     private javax.swing.JButton btnSaveLocal;
     private javax.swing.JTextField fileTextField;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

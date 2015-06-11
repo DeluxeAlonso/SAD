@@ -39,6 +39,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import jxl.Workbook;
@@ -398,6 +399,22 @@ public class AvailabilityReport extends BaseView {
         JOptionPane.setDefaultLocale(new Locale("es", "ES"));
         fc.setDialogTitle("Seleccione un archivo");
         fc.showOpenDialog(this);
+        fc.addChoosableFileFilter(new FileFilter() {
+ 
+        @Override
+        public String getDescription() {
+            return "PDF Documents (*.pdf)";
+        }
+ 
+        @Override
+        public boolean accept(File f) {
+        if (f.isDirectory()) {
+            return true;
+        } else {
+            return f.getName().toLowerCase().endsWith(".pdf");
+        }
+    }
+});
         file = fc.getSelectedFile();
         System.out.println(file);
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");

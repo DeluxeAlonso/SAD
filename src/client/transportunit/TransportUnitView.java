@@ -546,7 +546,7 @@ public class TransportUnitView extends BaseView implements MouseListener{
             }
         }
         else{
-            JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_NEW_LOCAL_TITLE,JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_NEW_TRANSPORT_UNIT_TITLE,JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_saveBtnActionPerformed
 
@@ -555,7 +555,6 @@ public class TransportUnitView extends BaseView implements MouseListener{
     }//GEN-LAST:event_typeCreateComboActionPerformed
     
     private void fileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileBtnActionPerformed
-        JFileChooser fc = new JFileChooser();
         fc.setDialogTitle("Seleccione un archivo");
         fc.showOpenDialog(this);
         File file = fc.getSelectedFile();

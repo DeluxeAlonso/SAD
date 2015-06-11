@@ -70,7 +70,7 @@ public class PalletView extends BaseView {
         clearGrid();
         //fillTable(warehouses.get(0).getId());
         Icons.setButton(newBtn, Icons.ICONOS.CREATE.ordinal());
-        Icons.setButton(deleteBtn, Icons.ICONOS.DELETE.ordinal());
+        //Icons.setButton(deleteBtn, Icons.ICONOS.DELETE.ordinal());
         Icons.setButton(editBtn, Icons.ICONOS.MODIFY.ordinal());
         Icons.setButton(searchBtn, Icons.ICONOS.SEARCH.ordinal());
         
@@ -161,13 +161,18 @@ public class PalletView extends BaseView {
     
         public void fillTableNoUbicados(ArrayList<Pallet> pallets) {
             clearGrid();
+            String aux = null;
             DefaultTableModel model = (DefaultTableModel) spotTable.getModel();
             for (Pallet p : pallets){
+               if (p.getOrdenInternamiento()==null)
+                aux = "-";
+               else
+                aux = p.getOrdenInternamiento().getId().toString();
                model.addRow(new Object[]{
                p.getEan128(),
                p.getProducto().getNombre(),
                p.getFechaVencimiento(),
-               p.getOrdenInternamiento().getId(),
+               aux,
                "No ubicado",
                "-",
                "-",
@@ -198,7 +203,6 @@ public class PalletView extends BaseView {
         searchBtn = new javax.swing.JButton();
         newBtn = new javax.swing.JButton();
         editBtn = new javax.swing.JButton();
-        deleteBtn = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         warehouseCombo = new javax.swing.JComboBox();
         jLabel7 = new javax.swing.JLabel();
@@ -235,13 +239,6 @@ public class PalletView extends BaseView {
             }
         });
 
-        deleteBtn.setEnabled(false);
-        deleteBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                deleteBtnMouseClicked(evt);
-            }
-        });
-
         jLabel6.setText("Almacen:");
 
         warehouseCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -272,24 +269,19 @@ public class PalletView extends BaseView {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel6)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(newBtn)))
+                .addGap(24, 24, 24)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel6))
                 .addGap(60, 60, 60)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(46, 46, 46)
-                        .addComponent(editBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(deleteBtn))
-                    .addComponent(warehouseCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(idTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(newBtn)
+                        .addGap(141, 141, 141)
+                        .addComponent(editBtn))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(warehouseCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(idTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(56, 56, 56)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -302,7 +294,7 @@ public class PalletView extends BaseView {
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(45, 45, 45)
                 .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(searchBtn)
                 .addContainerGap())
         );
@@ -325,12 +317,11 @@ public class PalletView extends BaseView {
                             .addComponent(jLabel6)
                             .addComponent(jLabel2)
                             .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(31, 31, 31)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(newBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(editBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(22, Short.MAX_VALUE))
+                            .addComponent(newBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         spotTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -374,10 +365,12 @@ public class PalletView extends BaseView {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 845, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 21, Short.MAX_VALUE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -396,6 +389,7 @@ public class PalletView extends BaseView {
         // TODO add your handling code here:
         NewPalletView newPallet=new NewPalletView((JFrame)SwingUtilities.getWindowAncestor(this),true);
         newPallet.setVisible(true);
+        clearGrid();
         
     }//GEN-LAST:event_newBtnActionPerformed
 
@@ -403,26 +397,10 @@ public class PalletView extends BaseView {
         if (spotTable.getRowCount()>0){
             EditPalletView editPallet=new EditPalletView((JFrame)SwingUtilities.getWindowAncestor(this),true,palletsGlob.get(spotTable.getSelectedRow()));
             editPallet.setVisible(true);
+            clearGrid();
         }
        
     }//GEN-LAST:event_editBtnMouseClicked
-
-    private void deleteBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteBtnMouseClicked
-        // TODO add your handling code here:
-        /*
-        if (deleteBtn.isEnabled()){
-        int sr = usersGrid.getSelectedRow();
-        String idString = usersGrid.getModel().getValueAt(sr, 0).toString();
-        Almacen a = warehouseApplication.queryById(Integer.parseInt(idString));
-        a.setEstado(EntityState.Warehouses.INACTIVO.ordinal());
-        warehouseApplication.update(a);
-        clearGrid();
-        fillTable();
-        editBtn.setEnabled(false);
-        deleteBtn.setEnabled(false);
-        }
-                */
-    }//GEN-LAST:event_deleteBtnMouseClicked
 
     private void searchBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchBtnMouseClicked
      
@@ -463,7 +441,7 @@ public class PalletView extends BaseView {
             fillTable(pallets);
         
         editBtn.setEnabled(true);
-        deleteBtn.setEnabled(true);
+        //deleteBtn.setEnabled(true);
         
     }//GEN-LAST:event_searchBtnMouseClicked
 
@@ -480,7 +458,6 @@ public class PalletView extends BaseView {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton deleteBtn;
     private javax.swing.JButton editBtn;
     private javax.swing.JTextField idTxt;
     private javax.swing.JCheckBox jCheckBox1;

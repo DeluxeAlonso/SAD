@@ -11,56 +11,76 @@ import algorithm.operators.LocalSearch;
 import algorithm.operators.Mutation;
 import algorithm.operators.ObjectiveFunction;
 import algorithm.operators.Repair;
-import application.order.OrderApplication;
-import application.pallet.PalletApplication;
 import client.delivery.DeliveryView;
+import client.delivery.Informable;
 import entity.Cliente;
 import entity.Despacho;
 import entity.GuiaRemision;
-import entity.Pallet;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
 import entity.Producto;
 import entity.UnidadTransporte;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import util.EntityState;
 
 /**
  *
  * @author robert
  */
-public class AlgorithmExecution {
+public class AlgorithmExecution extends SwingWorker<Solution, String>{
     public static Problem problem;
     public static boolean bad = false;
     public static boolean overCap = false;
     public static boolean overTime = false;
-    public static boolean overStock = false;
+    public static boolean overStock = false;    
+    private double maxTravelTime;
+    private ArrayList<PedidoParcial> partialOrders;
+    private Informable informable;
+    
+    static boolean checkSolution(Solution solution) {
+        Node[][] routes = solution.getNodes();
+        boolean[] visited = new boolean[problem.getNodes().size()];        
+        for (int i = 0; i < routes.length; i++) {
+            for (int j = 0; j < routes[i].length; j++) {
+                if(visited[routes[i][j].getIdx()])
+                    return false;
+                visited[routes[i][j].getIdx()] = true; 
+            }            
+        }
+        return true;
+    }
     public DeliveryView view = null;
     
     public AlgorithmExecution() {        
     }
     
-    public AlgorithmExecution(DeliveryView view) {
+    public AlgorithmExecution(DeliveryView view, double maxTravelTime, 
+            ArrayList<PedidoParcial>partialOrders, Informable informable) {
+        this.maxTravelTime = maxTravelTime;
+        this.partialOrders = partialOrders;
+        this.informable = informable;
         this.view = view;
     }
     
-    public Solution start(double maxTravelTime, ArrayList<PedidoParcial>partialOrders){
+    public Solution start(double maxTravelTime, ArrayList<PedidoParcial>partialOrders){        
+        
         long ini = System.currentTimeMillis();
         
         String cad = "Inicializando parámetros...";
         view.getTxtResult().setText(cad);
         
         Algorithm algorithm = new Algorithm();
-        //condicion de parada puede mejorar        
-        algorithm.setNumberOfGenerations(10000);
-        algorithm.setPopulationSize(10000);
+        algorithm.setNumberOfGenerations(50000);
+        algorithm.setPopulationSize(50000);
         algorithm.setTournamentSelectionKValue(50);
         algorithm.setOvercapPenalty(100000);
         algorithm.setOvertimePenalty(100000);
@@ -79,10 +99,7 @@ public class AlgorithmExecution {
         Population population = new Population(algorithm, problem);
         System.out.println("Se creo la población");
         
-        Solution bestSolution;// = population.getBestSolution();
-        //System.out.println("bestSolution: " + bestSolution.getCost());
-        
-        //displayRoutes(bestSolution);
+        Solution bestSolution;
         
         long popTime = System.currentTimeMillis() - ini;
         ini = System.currentTimeMillis();
@@ -92,21 +109,8 @@ public class AlgorithmExecution {
         String cad3 = "\nIniciando segunda fase del algoritmo...";
         view.getTxtResult().setText(cad+cad2+cad3);
         
-        int nGen = algorithm.getNumberOfGenerations();
-        
-        for (int i = 0; i < algorithm.getNumberOfGenerations(); i++) {
-           /*int iFinal = i; 
-            try {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        view.getjProgressBar().setValue(iFinal*100/nGen);
-                    }
-                });
-                java.lang.Thread.sleep(100);
-            } catch (InterruptedException e) {
-                ;
-            }*/
-            
+        for (int i = 0; i < algorithm.getNumberOfGenerations(); i++) {            
+
             Solution[] parents = new Solution[2];
             parents[0] = population.getSolutions()[Selection.tournamentSelection(
                         algorithm.getTournamentSelectionKValue(), population, 
@@ -118,19 +122,10 @@ public class AlgorithmExecution {
             
             Solution child = Crossover.uniformCrossover(parents, algorithm, problem);
             
-            //System.out.println("crossover");
-            //System.out.println(displayDemand(child));
-            
             child = Mutation.mutation(child, algorithm, problem);  
-            
-            //System.out.println("mutation");
-            //System.out.println(displayDemand(child));            
-            
+
             child = LocalSearch.opt2Improvement(child, algorithm, problem);  
-            
-            //System.out.println("2opt");
-            //System.out.println(displayDemand(child));
-            
+
             double cost = ObjectiveFunction.getSolutionCost(child, algorithm, problem,
                 problem.getProductsStock());
             if(bad){
@@ -142,24 +137,7 @@ public class AlgorithmExecution {
                 }
             }
             else
-                child.setCost(cost);
-            
-            /*overCap = overTime = overStock = bad = false;
-            double cost2 = ObjectiveFunction.getSolutionCost(child, algorithm, problem, problem.getProductsStock());
-            if(overCap) System.out.println("overCap");
-            if(overTime) System.out.println("overTime");
-            if(overStock) System.out.println("overStock");
-            
-            /*
-            if(bad){
-                System.out.println("parent1");
-                System.out.println(displayDemand(parents[0]));
-                System.out.println("parent2");
-                System.out.println(displayDemand(parents[1]));
-                System.out.println("child");
-                System.out.println(displayDemand(child));
-            }*/
-            
+                child.setCost(cost);  
             
             overCap = overTime = overStock = bad = false;
             
@@ -167,10 +145,10 @@ public class AlgorithmExecution {
                     algorithm.getTournamentSelectionKValue(), population, 
                     Selection.Options.WORST);
             
-            bestSolution = population.getBestSolution();
+            /*bestSolution = population.getBestSolution();
             System.out.println("Generación: " + i + " child: " + child.getCost() + 
                     " best: " + bestSolution.getCost() + " worst " + population.getSolutions()[replacedSolution].getCost());
-            
+            */
             population.getSolutions()[replacedSolution] = child;
         }
         long end = System.currentTimeMillis();
@@ -191,6 +169,8 @@ public class AlgorithmExecution {
         String cad4 = "\nEjecución finalizada...";
         String cad5 = "\nTiempo de ejecución: " + String.format( "%.2f", theTime ) + " s";
         view.getTxtResult().setText(cad+cad2+cad3+cad4+cad5+"\n");
+        
+        bestSolution = orderByNodes(bestSolution);
         
         return bestSolution;  
     }
@@ -467,5 +447,129 @@ public class AlgorithmExecution {
         
         
     }
+
+    private Solution orderByNodes(Solution solution) {
+        Node[][] nodes = solution.getNodes();
+        
+        Arrays.sort(nodes, new Comparator<Node[]>(){
+            public int compare(Node[] a, Node[] b){
+                return (b.length - a.length);
+            }
+        });
+        
+        solution.setNodes(nodes);
+        return solution;
+    }
+
+    @Override
+    protected Solution doInBackground() throws Exception {
+        long ini = System.currentTimeMillis();
+
+        publish("Inicializando parámetros...");       
+
+        Algorithm algorithm = new Algorithm();
+        algorithm.setNumberOfGenerations(50000);
+        algorithm.setPopulationSize(50000);
+        algorithm.setTournamentSelectionKValue(50);
+        algorithm.setOvercapPenalty(100000);
+        algorithm.setOvertimePenalty(100000);
+        algorithm.setOverstockPenalty(100000);
+        algorithm.setMutationRate(0.5f);
+        algorithm.setMaxPriority(100);
+        algorithm.setBasePriority(1.09f);
+        algorithm.setMaxTravelTime(maxTravelTime);
+        algorithm.setGraspAlpha(0.3f);
+
+        publish("Iniciando primera fase del algoritmo...");
+
+        problem = new Problem(partialOrders);
+
+        Population population = new Population(algorithm, problem);
+        System.out.println("Se creo la población");
+
+        Solution bestSolution;
+
+        long popTime = System.currentTimeMillis() - ini;
+        ini = System.currentTimeMillis();
+
+        overCap = overTime = overStock = bad = false;
+
+        publish("Iniciando segunda fase del algoritmo...");
+        
+        int n = algorithm.getNumberOfGenerations();
+        for (int i = 0; i < n; i++) {
+            
+            Solution[] parents = new Solution[2];
+            parents[0] = population.getSolutions()[Selection.tournamentSelection(
+                    algorithm.getTournamentSelectionKValue(), population,
+                    Selection.Options.BEST)];
+            parents[1] = population.getSolutions()[Selection.tournamentSelection(
+                    algorithm.getTournamentSelectionKValue(), population,
+                    Selection.Options.BEST)];
+            Arrays.sort(parents);
+
+            Solution child = Crossover.uniformCrossover(parents, algorithm, problem);
+
+            child = Mutation.mutation(child, algorithm, problem);
+
+            child = LocalSearch.opt2Improvement(child, algorithm, problem);
+
+            double cost = ObjectiveFunction.getSolutionCost(child, algorithm, problem,
+                    problem.getProductsStock());
+            if (bad) {
+                Solution sol = Repair.repair(child, algorithm, problem);
+                if (sol != null) {
+                    child = sol;
+                    child.setCost(ObjectiveFunction.getSolutionCost(child, algorithm, problem,
+                            problem.getProductsStock()));
+                }
+            } else {
+                child.setCost(cost);
+            }
+
+            overCap = overTime = overStock = bad = false;
+
+            int replacedSolution = Selection.tournamentSelection(
+                    algorithm.getTournamentSelectionKValue(), population,
+                    Selection.Options.WORST);
+
+            /*bestSolution = population.getBestSolution();
+             System.out.println("Generación: " + i + " child: " + child.getCost() + 
+             " best: " + bestSolution.getCost() + " worst " + population.getSolutions()[replacedSolution].getCost());
+             */
+            population.getSolutions()[replacedSolution] = child;
+            
+            if(n%100==0) setProgress((i+1) * 100 / n);
+            
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("Grasp algorithm time: " + popTime + "ms");
+        System.out.println("Genetic algorithm time: " + (end - ini) + "ms");
+
+        bestSolution = population.getBestSolution();
+
+        System.out.println("bestSolution cost: " + bestSolution.getCost());
+        System.out.println("");
+        //System.out.println(displayRoutes(bestSolution));
+        //System.out.println("");
+        System.out.println(displayDemand(bestSolution));
+
+        double theTime = (popTime + (end - ini));
+        theTime /= 1000;
+
+        publish("Ejecución finalizada...");
+        publish("Tiempo de ejecución: " + String.format("%.2f", theTime) + " s");
+
+        bestSolution = orderByNodes(bestSolution);
+
+        return bestSolution;
+    }
+    
+    @Override
+    protected void process(List<String> chunks) {
+        for (String message : chunks) {
+            informable.messageChanged(message);
+        }
+  }
     
 }

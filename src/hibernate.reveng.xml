@@ -27,4 +27,5 @@
   <table-filter match-name="accion"/>
   <table-filter match-name="local"/>
   <table-filter match-name="pallet"/>
+  <table-filter match-name="sesion"/>
 </hibernate-reverse-engineering>

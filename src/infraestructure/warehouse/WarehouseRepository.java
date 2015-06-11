@@ -8,7 +8,11 @@ package infraestructure.warehouse;
 
 import base.warehouse.IWarehouseRepository;
 import entity.Almacen;
+import entity.Rack;
+import entity.Ubicacion;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -24,9 +28,18 @@ public class WarehouseRepository implements IWarehouseRepository{
     public int insert(Almacen object) {
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
+        Set racks = object.getRacks();
+        Set spots=null;
         try {            
             trns=session.beginTransaction();
             session.save(object);                      
+            for (Object r: racks){
+                session.save((Rack)r);
+                spots=((Rack)r).getUbicacions();
+                for (Object u: spots){
+                    session.save(u);
+                }
+            }
             session.getTransaction().commit();
             return object.getId();
         } catch (RuntimeException e) {

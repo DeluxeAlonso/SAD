@@ -26,6 +26,7 @@ import entity.Despacho;
 import entity.GuiaRemision;
 import entity.Kardex;
 import entity.KardexId;
+import entity.Local;
 import entity.Pallet;
 import entity.Pedido;
 import entity.PedidoParcial;
@@ -35,6 +36,8 @@ import entity.UnidadTransporte;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.net.URL;
@@ -43,6 +46,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -57,6 +61,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import jxl.Workbook;
+import jxl.WorkbookSettings;
 import jxl.format.Alignment;
 import jxl.format.Colour;
 import jxl.format.UnderlineStyle;
@@ -68,6 +73,7 @@ import jxl.write.WritableImage;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.Number;
+import util.Constants;
 import util.EntityState;
 import util.Icons;
 import util.Strings;
@@ -77,7 +83,7 @@ import util.Strings;
  * @author alulab14
  */
 public class DeliveryView extends BaseView {
-    private Solution solution = null;
+    //private Solution solution = null;
     private AlgorithmExecution algorithmExecution = null;
     ArrayList<Pedido> currentOrders = new ArrayList<>();
     OrderApplication orderApplication = new OrderApplication();
@@ -87,8 +93,12 @@ public class DeliveryView extends BaseView {
     KardexApplication kardexApplication = new KardexApplication();
     TransportUnitApplication transportUnitApplication = new TransportUnitApplication();
     ArrayList<Despacho> solutionDeliveries = new ArrayList<Despacho>();
+    ArrayList<UnidadTransporte> vehicles = new ArrayList<UnidadTransporte>();
+    ArrayList<Solution> solutions = new ArrayList<Solution>();
     JFileChooser fc = new JFileChooser();
     File file = null;
+    Boolean firstRun = true;
+    Informable informable;
     
     /**
      * Creates new form DispatchView
@@ -99,12 +109,19 @@ public class DeliveryView extends BaseView {
         Icons.setButton(btnProcess, Icons.ICONOS.APPLY.ordinal());
         Icons.setButton(btnExecuteAlgorithm, Icons.ICONOS.PLAY.ordinal());
         Icons.setButton(btnViewSolution, Icons.ICONOS.DELIVERY.ordinal());
+        vehicles = transportUnitApplication.getAllTransportUnits();
         setupElements();
         tblRoutes.addMouseListener(new MouseAdapter(){
-            public void mouseClicked(MouseEvent e){
+            public void mousePressed(MouseEvent e){
                 fillRouteDetailTable();                
             }    
         });
+        informable = new Informable() {
+            @Override
+            public void messageChanged(String message) {                
+                txtResult.append(message + "\n");
+            }
+        };
     }
     
     private void setupElements(){
@@ -115,10 +132,29 @@ public class DeliveryView extends BaseView {
         DefaultTableModel tableModel = (DefaultTableModel) orderTable.getModel();
         tableModel.setRowCount(0);
         currentOrders.stream().forEach((_order) -> {
+            
+            DateFormat df = new SimpleDateFormat("dd/MM/yyyy");            
+            double time = ObjectiveFunction.geographicalDist(Constants.WAREHOUSE_LONGITUDE, 
+                    Constants.WAREHOUSE_LATITUDE, _order.getLocal().getLongitud(), 
+                    _order.getLocal().getLatitud());     
+            
+            double speed;
+            if(vehicles.size()>0) speed = vehicles.get(0).getTipoUnidadTransporte().getVelocidadPromedio();
+            else speed = 30;
+            time = time/speed; //<-- velocidad
+            int seconds = (int) (time * 3600);
+            int hours = seconds / 3600;
+            int minutes = (seconds - hours * 3600) / 60;
+            String totalTime = "" + hours + "h " + minutes + "m";
+            
             Object[] row = {_order.getId(), _order.getCliente().getNombre()
-                    , _order.getLocal().getNombre(),EntityState.getOrdersState()[_order.getEstado()], false};
+                    , _order.getLocal().getNombre(),EntityState.getOrdersState()[_order.getEstado()]
+                    , df.format(_order.getFechaVencimiento()), totalTime,
+                    firstRun};
             tableModel.addRow(row);
         });
+        if(firstRun)
+            firstRun = false;
     }
     
     private void refreshOrders(){
@@ -126,16 +162,31 @@ public class DeliveryView extends BaseView {
         fillOrderTable();
     }
 
+    private void refreshCombo(){
+        String[] cads = new String[solutions.size()];
+        for (int i = 0; i < cads.length; i++) {
+            cads[i] = "Solución " + (i+1);            
+        }
+        cmbSolutions.setModel(new javax.swing.DefaultComboBoxModel(cads));
+        if(solutions.size()>0)
+            cmbSolutions.setSelectedIndex(solutions.size()-1);
+        fillRoutesTable();
+        fillRouteDetailTable();
+    }
+    
     private void fillRouteDetailTable() {
         clearRouteDetailTable();
         DefaultTableModel model = (DefaultTableModel) tblRouteDetail.getModel();
         int idx = tblRoutes.getSelectedRow();
         if(idx==-1) return;
-        Node[] route = solution.getNodes()[idx];
+        int cmbIdx = cmbSolutions.getSelectedIndex();
+        if(cmbIdx==-1) return;
+        Node[] route = solutions.get(cmbIdx).getNodes()[idx];
         for (int j = 0; j < route.length; j++) {
             model.addRow(new Object[]{
                 j,
                 route[j].getPartialOrder().getPedido().getCliente().getNombre(),
+                route[j].getPartialOrder().getPedido().getLocal().getDescripcion(),
                 route[j].getPartialOrder().getPedido().getLocal().getDireccion(),
                 route[j].getProduct().getNombre(),
                 route[j].getDemand()                
@@ -148,7 +199,9 @@ public class DeliveryView extends BaseView {
         DefaultTableModel model = (DefaultTableModel) tblRoutes.getModel();
         ArrayList<UnidadTransporte> vehiculos = AlgorithmExecution.problem.getVehicles();
 
-        Node[][] nodes = solution.getNodes();
+        int cmbIdx = cmbSolutions.getSelectedIndex();
+        if(cmbIdx==-1) return;
+        Node[][] nodes = solutions.get(cmbIdx).getNodes();
         for (int i = 0; i < nodes.length; i++) {
             int cap = 0;
             double time = 0;
@@ -192,17 +245,14 @@ public class DeliveryView extends BaseView {
         DefaultTableModel tableModel = (DefaultTableModel) orderTable.getModel();
         ArrayList<PedidoParcial> partials = new ArrayList<>();
         for(int i=0;i<currentOrders.size();i++){
-            if((Boolean)tableModel.getValueAt(i, 4)){
+            if((Boolean)tableModel.getValueAt(i, 6)){
                 ArrayList<PedidoParcial> tempPartials = 
                         orderApplication.getPendingPartialOrdersById(currentOrders.get(i).getId());
                 for(int j=0;j<tempPartials.size();j++)
                     partials.add(tempPartials.get(j));
             }
         }
-        if(partials.isEmpty())
-            return orderApplication.getPendingPartialOrders();
-        else
-            return partials;
+        return partials;
     }
          
     public void verifyOrders(){
@@ -280,6 +330,7 @@ public class DeliveryView extends BaseView {
         jLabel3 = new javax.swing.JLabel();
         btnDisplay = new javax.swing.JButton();
         jProgressBar = new javax.swing.JProgressBar();
+        cmbSolutions = new javax.swing.JComboBox();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblRoutes = new javax.swing.JTable();
@@ -292,6 +343,7 @@ public class DeliveryView extends BaseView {
         jScrollPane4 = new javax.swing.JScrollPane();
         orderTable = new javax.swing.JTable();
         allCheckbox = new javax.swing.JCheckBox();
+        btnViewLocals = new javax.swing.JButton();
 
         setClosable(true);
         setTitle(Strings.ALGORITHM_TITLE);
@@ -339,34 +391,49 @@ public class DeliveryView extends BaseView {
         jProgressBar.setMinimum(0);
         jProgressBar.setMaximum(100);
 
+        cmbSolutions.setModel(new javax.swing.DefaultComboBoxModel(new String[] {"Ejecute el algoritmo"}));
+        cmbSolutions.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbSolutionsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnProcess)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnExecuteAlgorithm)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnViewSolution))
+                        .addGap(94, 94, 94)
+                        .addComponent(jProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtHours, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtMinutes, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(25, Short.MAX_VALUE))
+                        .addGap(24, 24, 24)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(cmbSolutions, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(txtHours, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel2)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txtMinutes, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel3)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(btnProcess)
+                                        .addGap(30, 30, 30)
+                                        .addComponent(btnExecuteAlgorithm)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                                        .addComponent(btnViewSolution)))))))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -383,7 +450,8 @@ public class DeliveryView extends BaseView {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnProcess)
                     .addComponent(btnExecuteAlgorithm)
-                    .addComponent(btnViewSolution))
+                    .addComponent(btnViewSolution)
+                    .addComponent(cmbSolutions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -424,7 +492,7 @@ public class DeliveryView extends BaseView {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -442,14 +510,14 @@ public class DeliveryView extends BaseView {
 
             },
             new String [] {
-                "Nodo No.", "Cliente", "Dirección", "Producto", "Demanda"
+                "Orden de visita", "Cliente", "Local", "Dirección", "Producto", "Demanda"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -485,7 +553,7 @@ public class DeliveryView extends BaseView {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 507, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -511,14 +579,14 @@ public class DeliveryView extends BaseView {
 
             },
             new String [] {
-                "Codigo", "Cliente", "Local", "Estado", "Seleccione"
+                "Codigo", "Cliente", "Local", "Estado", "Fecha de vencimiento", "Tiempo de llegada", "Seleccione"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true
+                false, false, false, false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -531,6 +599,7 @@ public class DeliveryView extends BaseView {
         });
         jScrollPane4.setViewportView(orderTable);
 
+        allCheckbox.setSelected(true);
         allCheckbox.setText("Marcar Todos");
         allCheckbox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -540,6 +609,13 @@ public class DeliveryView extends BaseView {
         allCheckbox.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 allCheckboxStateChanged(evt);
+            }
+        });
+
+        btnViewLocals.setText("Ver Locales");
+        btnViewLocals.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewLocalsActionPerformed(evt);
             }
         });
 
@@ -553,6 +629,8 @@ public class DeliveryView extends BaseView {
                     .addComponent(jScrollPane4)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnViewLocals)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(allCheckbox)))
                 .addContainerGap())
         );
@@ -560,9 +638,11 @@ public class DeliveryView extends BaseView {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(allCheckbox, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(allCheckbox, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnViewLocals))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -575,19 +655,19 @@ public class DeliveryView extends BaseView {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(65, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -599,8 +679,10 @@ public class DeliveryView extends BaseView {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnProcessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessActionPerformed
-        if(solution!=null && algorithmExecution!=null){
-            AlgorithmReturnValues returnValues = algorithmExecution.processOrders(solution);
+        int cmbIdx = cmbSolutions.getSelectedIndex();
+        if(cmbIdx==-1) return;
+        if(solutions.get(cmbIdx)!=null && algorithmExecution!=null){
+            AlgorithmReturnValues returnValues = algorithmExecution.processOrders(solutions.get(cmbIdx));
             solutionDeliveries = returnValues.getDespachos();
             assignRemissionGuides(returnValues.getDespachos());
             if(createPartialOrders(returnValues.getAcceptedOrders(), returnValues.getRejectedOrders())){
@@ -621,33 +703,60 @@ public class DeliveryView extends BaseView {
     }//GEN-LAST:event_btnProcessActionPerformed
 
     private void btnViewSolutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewSolutionActionPerformed
-        if(solution!=null){
-            GoogleMaps googleMaps = new GoogleMaps(solution);
+        int cmbIdx = cmbSolutions.getSelectedIndex();
+        if(cmbIdx==-1) return;
+        if(solutions.get(cmbIdx)!=null){
+            GoogleMaps googleMaps = new GoogleMaps(solutions.get(cmbIdx));
         }
     }//GEN-LAST:event_btnViewSolutionActionPerformed
 
     private void btnExecuteAlgorithmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExecuteAlgorithmActionPerformed
-        algorithmExecution = new AlgorithmExecution(this);
-        /*solution = algorithmExecution.start(3);
-        StringBuffer buf = algorithmExecution.displayDemand(solution);
-        txtResult.setText(buf.toString());*/
-        ArrayList<PedidoParcial> selectedPartialOrders = getCheckedOrders();
-        double hours = 3, minutes = 0;
+        
         try{
+            double hours = 3, minutes = 0;
             hours = Double.parseDouble(txtHours.getText());
             minutes = Double.parseDouble(txtMinutes.getText());
-            
-            try {
-                solution = algorithmExecution.start(hours + minutes/60, selectedPartialOrders);
-                //StringBuffer buf = algorithmExecution.displayDemand(solution);
-                //txtResult.setText(buf.toString());
-                fillRoutesTable();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, Strings.ALGORITHM_ERROR,
-                        Strings.ALGORITHM_ERROR_TITLE, JOptionPane.INFORMATION_MESSAGE);
-            }
-            
+            ArrayList<PedidoParcial> selectedPartialOrders = getCheckedOrders();
+            if(!selectedPartialOrders.isEmpty()){
+                txtResult.setText("");
+                algorithmExecution = new AlgorithmExecution(this, hours + minutes/60, 
+                        selectedPartialOrders, informable){
+                    @Override
+                    protected void done() {
+                        try {
+                            final Solution solution = get();
+                            if (solution.isEmpty()) {
+                                JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_NO_ROUTES_FOUND,
+                                        Strings.ALGORITHM_NO_ROUTES_FOUND_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                                return;
+                            }
+                            solutions.add(solution);
+                            refreshCombo();
+                            JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_SUCCESS,
+                                    Strings.ALGORITHM_SUCCESS_TITLE, JOptionPane.INFORMATION_MESSAGE);
+
+
+
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_ERROR,
+                                    Strings.ALGORITHM_ERROR_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                };        
+                PropertyChangeListener listener
+                        = new PropertyChangeListener() {
+                            public void propertyChange(PropertyChangeEvent event) {
+                                if ("progress".equals(event.getPropertyName())) {
+                                    jProgressBar.setValue((Integer) event.getNewValue());
+                                }
+                            }
+                        };
+                algorithmExecution.addPropertyChangeListener(listener);
+                algorithmExecution.execute();    
+            }else
+            JOptionPane.showMessageDialog(this, "Debe seleccionar al menos un pedido.",
+                    "Despacho",JOptionPane.WARNING_MESSAGE);
         }catch(Exception ex){
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, Strings.BAD_PARAMETERS,
@@ -655,13 +764,17 @@ public class DeliveryView extends BaseView {
         }      
         
         
+
+        
     }//GEN-LAST:event_btnExecuteAlgorithmActionPerformed
 
     private void btnDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisplayActionPerformed
-        if(solution!=null){
+        int cmbIdx = cmbSolutions.getSelectedIndex();
+        if(cmbIdx==-1) return;
+        if(solutions.get(cmbIdx)!=null){
             //System.out.println("got here");
             JDesktopPane desktopPane = getDesktopPane();
-            AlgorithmView view = new AlgorithmView(solution);            
+            AlgorithmView view = new AlgorithmView(solutions.get(cmbIdx));            
             desktopPane.add(view);
             view.setSize(700, 700);
             view.setBounds(0, 0, 700, 700);
@@ -671,17 +784,17 @@ public class DeliveryView extends BaseView {
     }//GEN-LAST:event_btnDisplayActionPerformed
 
     private void allCheckboxStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_allCheckboxStateChanged
-
+        
     }//GEN-LAST:event_allCheckboxStateChanged
 
     private void allCheckboxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_allCheckboxItemStateChanged
         DefaultTableModel tableModel = (DefaultTableModel) orderTable.getModel();
         if(allCheckbox.isSelected())
             for(int i=0;i<currentOrders.size();i++)
-               tableModel.setValueAt(true, i, 4); 
+               tableModel.setValueAt(true, i, 6); 
         else
            for(int i=0;i<currentOrders.size();i++)
-               tableModel.setValueAt(false, i, 4);
+               tableModel.setValueAt(false, i, 6);
     }//GEN-LAST:event_allCheckboxItemStateChanged
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -914,13 +1027,18 @@ public class DeliveryView extends BaseView {
         Date date = new Date();
         try{
             File exlFile = file;
-            WritableWorkbook writableWorkbook = Workbook.createWorkbook(exlFile);
+            WorkbookSettings ws = new WorkbookSettings();
+            ws.setEncoding("UTF8");
+            WritableWorkbook writableWorkbook = Workbook.createWorkbook(exlFile,ws);
+            
             ArrayList<UnidadTransporte> transportUnits = transportUnitApplication.getAllTransportUnits();
             for(int i=0;i<transportUnits.size();i++){
                 ArrayList<GuiaRemision> remissionGuides = transportUnitApplication.getRemissionGuides(transportUnits.get(i), solutionDeliveries);
                 if(remissionGuides.size()>0){
                     WritableSheet writableSheet = writableWorkbook.createSheet(
+                       
                        transportUnits.get(i).getTransportista(), i);
+                    
                     URL url = getClass().getResource("../../images/warehouse-512-000000.png");
                     java.io.File imageFile = new java.io.File(url.toURI());
                     BufferedImage input = ImageIO.read(imageFile);
@@ -953,6 +1071,20 @@ public class DeliveryView extends BaseView {
             //JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir el archivo",Strings.ERROR_KARDEX_TITLE,JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void btnViewLocalsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewLocalsActionPerformed
+        HashSet<Local> hsLocals = new HashSet<>();
+        ArrayList<PedidoParcial> selectedPartialOrders = getCheckedOrders();
+        for (PedidoParcial currentOrder : selectedPartialOrders) {
+            hsLocals.add(currentOrder.getPedido().getLocal());            
+        }
+        ArrayList<Local> locals = new ArrayList<>(hsLocals);
+        GoogleMapsLocals map = new GoogleMapsLocals(locals);
+    }//GEN-LAST:event_btnViewLocalsActionPerformed
+
+    private void cmbSolutionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSolutionsActionPerformed
+        fillRoutesTable();
+    }//GEN-LAST:event_cmbSolutionsActionPerformed
 
     public void createHeader(WritableSheet writableSheet, Date date, DateFormat dateFormat, UnidadTransporte transportUnit){
         
@@ -1149,7 +1281,9 @@ public class DeliveryView extends BaseView {
     private javax.swing.JButton btnDisplay;
     private javax.swing.JButton btnExecuteAlgorithm;
     private javax.swing.JButton btnProcess;
+    private javax.swing.JButton btnViewLocals;
     private javax.swing.JButton btnViewSolution;
+    private javax.swing.JComboBox cmbSolutions;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;

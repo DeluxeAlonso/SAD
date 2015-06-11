@@ -9,6 +9,7 @@ import client.general.MainView;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.BorderFactory;
+import javax.swing.JFileChooser;
 import javax.swing.border.Border;
 import util.Icons;
 
@@ -20,6 +21,7 @@ public abstract class BaseView extends javax.swing.JInternalFrame {
     protected Border errorBorder = BorderFactory.createLineBorder(Color.RED, 1);
     protected Border regularBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
     protected String error_message;
+    protected JFileChooser fc = MainView.fc;
 
     
     protected void initialize(){

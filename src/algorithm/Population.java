@@ -26,13 +26,20 @@ public class Population {
 
     private void generatePopulation() {
         solutions = new Solution[algorithm.getPopulationSize()];
+        //AlgorithmExecution.nPop = solutions.length;
         for (int i = 0; i < solutions.length; i++) {
+            //AlgorithmExecution.iPop = i;
             //System.out.println("Creando solucion: " + i);
             solutions[i] = new Solution(algorithm, problem, i); 
             solutions[i] = LocalSearch.opt2Improvement(solutions[i], algorithm, problem);
             solutions[i].setCost(ObjectiveFunction.getSolutionCost(solutions[i], 
                     algorithm, problem, problem.getProductsStock()));
-            System.out.println("Solucion " + i + " costo: " + solutions[i].getCost());
+            /*if(!AlgorithmExecution.checkSolution(solutions[i])){
+                AlgorithmExecution a = new AlgorithmExecution();
+                System.out.println(a.displayDemand(solutions[i]));
+                throw new AssertionError("bad solution at GRASP: " + i + " " + problem.getNodes().size());                
+            }*/
+            //System.out.println("Solucion " + i + " costo: " + solutions[i].getCost());
         }        
     }
     

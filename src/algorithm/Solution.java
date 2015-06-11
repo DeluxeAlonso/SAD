@@ -30,12 +30,14 @@ public class Solution implements Comparable<Solution>{
     public Solution(Algorithm algorithm, Problem problem, int idx) {
         this.algorithm = algorithm;
         this.problem = problem;        
-        if(idx%3==0)
-            this.nodes = Grasp.construction(algorithm, problem);
-        else if(idx%3==1)
-            this.nodes = Grasp.construction2(algorithm, problem);
-        else if(idx%3==2)
-            this.nodes = Grasp.construction3(algorithm, problem);              
+        if(idx%6==0)
+            this.nodes = Grasp.construction4(algorithm, problem);
+        else if(idx%6==1)
+            this.nodes = Grasp.construction4(algorithm, problem);
+        else if(idx%6==2)
+            this.nodes = Grasp.construction4(algorithm, problem);              
+        else
+            this.nodes = Grasp.construction4(algorithm, problem);
     }
     
     @Override
@@ -74,5 +76,10 @@ public class Solution implements Comparable<Solution>{
     public void setCost(double cost) {
         this.cost = cost;
     }
-    
+
+    public boolean isEmpty() {
+        for(int i=0; i<nodes.length; i++)
+            if(nodes[i].length>0) return false;
+        return true;        
+    }
 }

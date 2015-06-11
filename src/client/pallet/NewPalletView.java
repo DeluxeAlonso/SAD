@@ -281,11 +281,11 @@ ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
             jComboBox1.setBorder(errorBorder);
             errorFlag=true;
         }
-        if (jComboBox2.getSelectedIndex()==0){
+        /*if (jComboBox2.getSelectedIndex()==0){
             error_message += "Debe seleccionar un Almacén\n";
             jComboBox2.setBorder(errorBorder);
             errorFlag=true;
-        }
+        }*/
         if (dtcInitDate.getDate() == null ){
             error_message += "Debe seleccionar una Fecha\n";
             dtcInitDate.setBorder(errorBorder);
@@ -330,6 +330,7 @@ ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
     
     private void saveTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveTxtActionPerformed
         clearBorders();
+        int eanAux=0;
         int cont = 0;
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
@@ -344,25 +345,33 @@ ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
                      u = ubicaciones.get(i);
                  }
             }
-            if (cont != 1){
+            if (cont > 1){
                 jTable1.setBorder(errorBorder);
                 JOptionPane.showMessageDialog(this, "Debe seleccionar solo 1 ubicación","Mensaje de creación de pallet",JOptionPane.WARNING_MESSAGE);
             }
-            else{
+            else if (cont == 1){
                 Pallet pallet = new Pallet();
                 pallet.setEstado(EntityState.Pallets.UBICADO.ordinal());
                 pallet.setFechaRegistro(date);
                 pallet.setFechaVencimiento(dtcInitDate.getDate());
                 pallet.setProducto(product.get(jComboBox1.getSelectedIndex()-1));
                 pallet.setUbicacion(u);
-                pallet.setEan128(crearEAN128(pallet));
-                palletApplication.insert(pallet);
+                pallet.setEan128(crearEAN128(pallet.getProducto(),pallet.getFechaVencimiento()));
+                eanAux=palletApplication.insert(pallet);
+                
+                Pallet palletAux = palletApplication.queryById(eanAux);
+                String ean = palletAux.getEan128();
+                ean+=eanAux;
+                palletAux.setEan128(ean);
+                palletApplication.update(palletAux);
                 
                 spotApplication.updateSpotOccupancy(u.getId(), EntityState.Spots.OCUPADO.ordinal());
                 
                 // actualizar pallets registrados y ubicados del producto
                 Producto prod = product.get(jComboBox1.getSelectedIndex()-1);
+                prod.setStockLogico(prod.getStockLogico()+1);
                 prod.setPalletsUbicados(prod.getPalletsUbicados()+1);
+                
                 //prod.setPalletsRegistrados(prod.getPalletsRegistrados());
                 productApplication.update(prod);
                 
@@ -397,6 +406,61 @@ ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
             kardexApplication.insert(internmentKardex);
             //kardexApplication.insertKardexID(kId);
                 
+            }else if (cont == 0){
+                Pallet pallet = new Pallet();
+                pallet.setEstado(EntityState.Pallets.UBICADO.ordinal());
+                pallet.setFechaRegistro(date);
+                pallet.setFechaVencimiento(dtcInitDate.getDate());
+                pallet.setProducto(product.get(jComboBox1.getSelectedIndex()-1));
+                //pallet.setUbicacion(u);
+                pallet.setEan128(crearEAN128(pallet.getProducto(),pallet.getFechaVencimiento()));
+                eanAux=palletApplication.insert(pallet);
+                
+                Pallet palletAux = palletApplication.queryById(eanAux);
+                String ean = palletAux.getEan128();
+                ean+=eanAux;
+                palletAux.setEan128(ean);
+                palletApplication.update(palletAux);
+                
+                //spotApplication.updateSpotOccupancy(u.getId(), EntityState.Spots.OCUPADO.ordinal());
+                
+                // actualizar pallets registrados y ubicados del producto
+                Producto prod = product.get(jComboBox1.getSelectedIndex()-1);
+                //prod.setPalletsUbicados(prod.getPalletsUbicados()+1);
+                prod.setPalletsRegistrados(prod.getPalletsRegistrados()+1);
+                productApplication.update(prod);
+                
+                
+                //disminuir ubicaciones libres en racks y almacen
+                //Almacen alm = warehouses.get(jComboBox2.getSelectedIndex()-1);
+                //alm.setUbicLibres(alm.getUbicLibres()-1);
+                //warehouseApplication.update(alm);
+                
+            //ingresar entrada en kardex
+            /*ArrayList<Kardex> kardex = kardexApplication.queryByParameters(warehouses.get(jComboBox2.getSelectedIndex()-1).getId(), prod.getId());
+            Kardex internmentKardex = new Kardex();
+            internmentKardex.setAlmacen(warehouses.get(jComboBox2.getSelectedIndex()-1));
+            internmentKardex.setProducto(prod);
+            internmentKardex.setTipoMovimiento("Ingreso");
+            internmentKardex.setCantidad(1);
+            
+            internmentKardex.setFecha(Calendar.getInstance().getTime());
+            if(kardex.size()==0){
+                internmentKardex.setStockInicial(0);
+            }else{
+                internmentKardex.setStockInicial(kardex.get(0).getStockFinal());
+            }
+            internmentKardex.setStockFinal(internmentKardex.getStockInicial() + 1);
+            
+            KardexId kId = new KardexId();
+            kId.setIdAlmacen(warehouses.get(jComboBox2.getSelectedIndex()-1).getId());
+            kId.setIdProducto(prod.getId());
+            
+            internmentKardex.setId(kId);
+            
+            kardexApplication.insert(internmentKardex);
+            //kardexApplication.insertKardexID(kId);
+            */
             }
         }
         clearGrid(jTable1);
@@ -436,47 +500,7 @@ ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
         model.setRowCount(0);
     }
         
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NewPalletView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NewPalletView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NewPalletView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NewPalletView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                NewPalletView dialog = new NewPalletView(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
+   
     
     private void fillWarehouseCombo(int type){
         warehouses.clear();

@@ -8,6 +8,7 @@ package infraestructure.rack;
 import base.rack.IRackRepository;
 import entity.Rack;
 import java.util.ArrayList;
+import java.util.Set;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -51,9 +52,13 @@ public class RackRepository implements IRackRepository{
     public int insert(Rack object) {
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
+        Set spots=object.getUbicacions();
         try {            
             trns=session.beginTransaction();
-            session.save(object);                      
+            session.save(object);  
+            for (Object s :spots){
+                session.save(s);
+            }
             session.getTransaction().commit();
             return object.getId();
         } catch (RuntimeException e) {

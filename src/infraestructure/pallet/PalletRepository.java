@@ -12,7 +12,9 @@ import entity.OrdenInternamiento;
 import entity.Pallet;
 import entity.Producto;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -50,7 +52,7 @@ public class PalletRepository implements IPalletRepository{
     
     @Override
     public ArrayList<Pallet> queryPalletsBySpot(int spotId) {
-        String hql="from Pallet p where p.ubicacion.id=:spotId";
+        String hql="from Pallet p where p.ubicacion.id=:spotId and p.estado=:state";
         ArrayList<Pallet> pallets=null;
         
         Transaction trns = null;
@@ -59,6 +61,7 @@ public class PalletRepository implements IPalletRepository{
             trns=session.beginTransaction();
             Query q = session.createQuery(hql);
             q.setParameter("spotId", spotId);
+            q.setParameter("state", Pallets.UBICADO.ordinal());
             pallets = (ArrayList<Pallet>) q.list();          
             session.getTransaction().commit();
         } catch (RuntimeException e) {
@@ -95,7 +98,7 @@ public class PalletRepository implements IPalletRepository{
     
     @Override
     public Boolean deletePalletBySpot(int spotId) {
-        String hql="UPDATE Pallet p SET p.estado=:state WHERE p.ubicacion.id=:spotId";
+        String hql="UPDATE Pallet SET estado=:state WHERE id_ubicacion=:spotId";
         
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
@@ -164,7 +167,27 @@ public class PalletRepository implements IPalletRepository{
 
     @Override
     public Pallet queryById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        Pallet pallet = null;
+        String hql
+                = "from Pallet where id=:id";
+        try {
+            
+            session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("id", id);
+            pallet = (Pallet) q.uniqueResult();
+            if(pallet!=null)
+                Hibernate.initialize(pallet.getId());
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return pallet;
     }
 
     @Override
@@ -350,36 +373,80 @@ public class PalletRepository implements IPalletRepository{
     
     @Override
     public List<Object[]> queryByReport(int almacen, int condicion, int tipo, int reporte) {
+        String dif="";
+        if (reporte ==0){
+            dif="WHERE (:wareId=0 OR p.ubicacion.rack.almacen.id = :wareId )";
+        }
+        else if (reporte==1){
+            dif="WHERE (p.estado = :est1 OR p.estado= :est2) ";
+        }else if (reporte ==2){
+            
+        }
+                    /*
         String hql="SELECT p.producto.nombre, p.producto.tipoProducto.nombre, p.producto.condicion.nombre, "
                 + "count(1) "
-                + "FROM Pallet p WHERE (p.ubicacion.rack.almacen.id = :wareId OR :wareId=0) AND " + 
-                "(p.producto.condicion.id=:conId  OR :conId=-1) AND "+
-                "(p.producto.tipoProducto.id =:tipoId OR :tipoId=-1) " +
-                "  ORDER BY p.ubicacion.rack.almacen.id";
+                + "FROM Pallet p "
+                //+ "WHERE (p.ubicacion.rack.almacen.id = :wareId OR :wareId=0)" //" AND"
+                //+ dif + 
+                 + " GROUP BY p.producto.nombre" +
+                "  ORDER BY p.ubicacion.rack.almacen.id ";
+        */
+        String hql="SELECT pro.nombre, pro.tipoProducto.nombre, pro.condicion.nombre, "
+                + "count(1) "
+                + "FROM Pallet p "
+                + "JOIN p.producto pro "
+                
+                + dif  
+                 + " GROUP BY pro.nombre, pro.tipoProducto.nombre, pro.condicion.nombre" ;
         
+        String hql1= "SELECT p.nombre, p.tipoProducto.nombre, p.condicion.nombre, 0 "
+                    + "FROM Producto p "
+                    + "WHERE (p.condicion.id = :id OR :id =0) ";
         
-        List<Object[]> list=null;
+        String hql2 = "SELECT p.nombre, p.tipoProducto.nombre, p.condicion.nombre, p.stockLogico"
+                + " FROM Producto p";
+        List<Object[]> listPall=null;
+        List<Object[]> listPro=null;
         //gracias baldeon por enseniarme a usar DAO
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
+            if (reporte!=2){
             Query q = session.createQuery(hql);
-            q.setParameter("wareId", almacen);
-            q.setParameter("conId", condicion);
-            q.setParameter("tipoId", tipo);
-            //q.setParameter("lado",l);
-            list = q.list();          
+            if (reporte ==0){
+                q.setParameter("wareId", almacen);
+            }
+            else if (reporte==1){
+                q.setParameter("est1", EntityState.Pallets.CREADO.ordinal());
+                q.setParameter("est2",EntityState.Pallets.UBICADO.ordinal());
+            }    
+            listPall = q.list();          
+            Query q1 = session.createQuery(hql1);
+            q1.setParameter("id", condicion);
+            listPro = q1.list();
             session.getTransaction().commit();
+            /////////////////////////////////////
+            for (Object[] arr: listPro){
+                for (Object[] arr1: listPall){
+                    if (arr[0].equals(arr1[0])){
+                        arr[3]=arr1[3];
+                    }
+                }
+            }
+            ////////////////////////////////////////////
+            }else {   
+                Query q = session.createQuery(hql2);
+                listPro = q.list();
+                session.getTransaction().commit();
+            }
         } catch (RuntimeException e) {
             if (trns != null) {
                 trns.rollback();
             }
             e.printStackTrace();
         }
-        return list; //To change body of generated methods, choose Tools | Templates.
-        
-        
+        return listPro; //To change body of generated methods, choose Tools | Templates.
         
     }
 
@@ -432,6 +499,78 @@ public class PalletRepository implements IPalletRepository{
             e.printStackTrace();
         }
         return pallets; 
+    }
+
+    @Override
+    public List<Object[]> queryByReportInter(int almacen, Date fechaD, Date fechaH, int tipo) {
+        String hql="SELECT p.ordenInternamiento.id, p.ubicacion.rack.almacen.descripcion, pro.nombre, pro.tipoProducto.nombre, pro.condicion.nombre, "
+                + "count(1) , p.fechaRegistro "
+                + "FROM Pallet p "
+                + "JOIN p.producto pro "
+                + "WHERE (p.ubicacion.rack.almacen.id = :wareId OR :wareId=0) AND (p.fechaRegistro BETWEEN :dateIni AND :dateEnd)"
+                 + " GROUP BY p.ordenInternamiento.id,p.ubicacion.rack.almacen.descripcion, "
+                + "pro.nombre, pro.tipoProducto.nombre, pro.condicion.nombre, "
+                + "p.fechaRegistro" ;
+        List<Object[]> list=null;
+        //gracias baldeon por enseniarme a usar DAO
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            
+            Query q = session.createQuery(hql);
+            q.setParameter("wareId", almacen);
+            q.setParameter("dateIni", fechaD);
+            q.setParameter("dateEnd", fechaH);
+            list = q.list();          
+            session.getTransaction().commit();
+            
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return list; //To change body of generated methods, choose Tools | Templates.
+        
+        
+    }
+
+    @Override
+    public int insertNPallets(ArrayList<Pallet> pallets) {
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Pallet pIni=pallets.get(0);
+            session.save(pIni);
+            session.flush();
+            int startId=pIni.getId();
+            String ean128=pIni.getEan128();            
+            pIni.setEan128(ean128+startId);
+            session.update(pIni);
+            session.flush();
+            int cant=pallets.size();
+            
+            for(int i=0;i<cant;i++){
+                if(i==0) continue;
+                Pallet p = pallets.get(i);
+                int num=startId+i;
+                p.setEan128(ean128+num);
+                p.setId(num);
+                session.save(p);
+                if(i%20==0) session.flush();
+            }
+                                 
+            session.getTransaction().commit();            
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return -1;
+        } 
+        return 1;
     }
     
 }

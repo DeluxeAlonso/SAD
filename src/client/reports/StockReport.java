@@ -91,6 +91,7 @@ public class StockReport extends BaseView {
     String alm;
     String tipo;
     String condi;
+    int reporte;
     public StockReport() {
         initComponents();
         initialize();
@@ -98,9 +99,9 @@ public class StockReport extends BaseView {
         //condicionTxt.setText(EntityType.getCondition(warehouses.get(0).getCondicion().getId()).getNombre());
         warehouseCombo.setModel(new javax.swing.DefaultComboBoxModel(warehousesNames));
         fillRacksIni();
-        tipoCombo.setModel(new javax.swing.DefaultComboBoxModel(typeNames));
+        //tipoCombo.setModel(new javax.swing.DefaultComboBoxModel(typeNames));
         fillConditionsIni();
-        condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(conditionNames));
+        //condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(conditionNames));
     }
     
     public void fillWarehouses(){
@@ -221,11 +222,9 @@ public class StockReport extends BaseView {
         tblKardex = new javax.swing.JTable();
         jSeparator1 = new javax.swing.JSeparator();
         btnExport = new javax.swing.JButton();
-        tipoCombo = new javax.swing.JComboBox();
-        jLabel2 = new javax.swing.JLabel();
-        condicionCombo = new javax.swing.JComboBox();
-        condicionCombo1 = new javax.swing.JComboBox();
+        reporteCombo = new javax.swing.JComboBox();
         jLabel5 = new javax.swing.JLabel();
+        condicionTxt = new javax.swing.JTextField();
 
         setClosable(true);
         setTitle("Reporte de Stock");
@@ -260,7 +259,7 @@ public class StockReport extends BaseView {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                true, false, true, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -269,10 +268,7 @@ public class StockReport extends BaseView {
         });
         jScrollPane1.setViewportView(tblKardex);
         if (tblKardex.getColumnModel().getColumnCount() > 0) {
-            tblKardex.getColumnModel().getColumn(0).setResizable(false);
             tblKardex.getColumnModel().getColumn(1).setResizable(false);
-            tblKardex.getColumnModel().getColumn(2).setResizable(false);
-            tblKardex.getColumnModel().getColumn(3).setResizable(false);
         }
 
         btnExport.setText("Exportar XLS");
@@ -283,19 +279,17 @@ public class StockReport extends BaseView {
             }
         });
 
-        tipoCombo.addItemListener(new java.awt.event.ItemListener() {
+        reporteCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Productos internados", "Stock Total", "Stock Logico" }));
+        reporteCombo.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                tipoComboItemStateChanged(evt);
+                reporteComboItemStateChanged(evt);
             }
         });
 
-        jLabel2.setText("Tipo de producto:");
+        jLabel5.setText("Reporte:");
 
-        condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        condicionCombo1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jLabel5.setText("Tipo:");
+        condicionTxt.setEditable(false);
+        condicionTxt.setText("Todos");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -304,36 +298,31 @@ public class StockReport extends BaseView {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnExport))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 2, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnExport, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnReport, javax.swing.GroupLayout.Alignment.TRAILING)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(tipoCombo, 0, 128, Short.MAX_VALUE)
-                            .addComponent(warehouseCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(btnReport)
+                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
                                 .addGap(18, 18, 18)
-                                .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jLabel5)
-                                .addGap(18, 18, 18)
-                                .addComponent(condicionCombo1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel5)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(reporteCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel1)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(warehouseCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(28, 28, 28)
+                                        .addComponent(jLabel4)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(condicionTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(0, 13, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -341,23 +330,21 @@ public class StockReport extends BaseView {
             .addGroup(layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(reporteCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addGap(14, 14, 14)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(warehouseCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
-                    .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(10, 10, 10)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tipoCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(condicionCombo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
-                .addComponent(btnReport)
+                    .addComponent(condicionTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnReport)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                 .addComponent(btnExport)
                 .addGap(20, 20, 20))
         );
@@ -375,7 +362,7 @@ public class StockReport extends BaseView {
                 btnExport.setEnabled(false);
             }else{
                 int idWare;
-                int idTipo;
+                int idReport;
                 int idCon;
                 spots = new ArrayList<Ubicacion>();
                 
@@ -384,20 +371,21 @@ public class StockReport extends BaseView {
                 }else{
                     idWare=warehouses.get(warehouseCombo.getSelectedIndex()-1).getId();
                 }
+                if (warehouseCombo.getSelectedIndex()==0){
+                    idCon=0;
+                }else{
+                    idCon=warehouses.get(warehouseCombo.getSelectedIndex()-1).getCondicion().getId();
+                }
+                idReport= reporteCombo.getSelectedIndex();
                 
-                if (tipoCombo.getSelectedIndex()==0)
-                    idTipo=-1;
-                else
-                    idTipo=racks.get(tipoCombo.getSelectedIndex()-1).getId();
-                
-                if (tipoCombo.getSelectedIndex()==0)
-                    idCon=-1;
-                else
-                    idCon=racks.get(tipoCombo.getSelectedIndex()-1).getId();
-                alm = warehouseCombo.getSelectedItem().toString();
-                tipo = tipoCombo.getSelectedItem().toString();
-                condi = condicionCombo.getSelectedItem().toString();
-                listReport = palletApplication.queryByReport(idWare,idCon,idTipo,0);
+                if (warehouseCombo.getSelectedIndex()==0){
+                    alm = "Todos";
+                    condi = "Todos";
+                }else {
+                    alm = warehouseCombo.getSelectedItem().toString();
+                    condi = condicionTxt.getText();
+                }
+                listReport = palletApplication.queryByReport(idWare,idCon,0,idReport);
                 //System.out.println(racks.size());
                 fillKardex();
                 btnExport.setEnabled(true);
@@ -406,7 +394,13 @@ public class StockReport extends BaseView {
     }//GEN-LAST:event_btnReportActionPerformed
 
     private void warehouseComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_warehouseComboItemStateChanged
-        
+        if (warehouseCombo.getSelectedIndex()==0){
+            condicionTxt.setText("Todos");
+        }else{
+            condicionTxt.setText(EntityType.CONDITIONS_NAMES[warehouses.get
+            (warehouseCombo.getSelectedIndex()-1).getCondicion().getId()]);
+        }
+            
 
     }//GEN-LAST:event_warehouseComboItemStateChanged
 
@@ -472,19 +466,39 @@ public class StockReport extends BaseView {
         }
     }//GEN-LAST:event_btnExportMousePressed
 
-    private void tipoComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_tipoComboItemStateChanged
+    private void reporteComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_reporteComboItemStateChanged
         // TODO add your handling code here:
-    }//GEN-LAST:event_tipoComboItemStateChanged
+        if (reporteCombo.getSelectedIndex()==0){
+            warehouseCombo.setEnabled(true);
+        }else if (reporteCombo.getSelectedIndex()==1)
+        {
+            warehouseCombo.setEnabled(false);
+            warehouseCombo.setSelectedIndex(0);
+            condicionTxt.setText("Todos");
+        }else if (reporteCombo.getSelectedIndex()==2){
+            warehouseCombo.setEnabled(false);
+            warehouseCombo.setSelectedIndex(0);
+            condicionTxt.setText("Todos");
+        }
+    }//GEN-LAST:event_reporteComboItemStateChanged
 
     public void createHeader(WritableSheet writableSheet, Date date, DateFormat dateFormat){
         
         try{
             Label label0 = new Label(1, 1, "SAD");
-            Label label1 = new Label(3, 1, "Reporte de Stock");
+            Label label1 = new Label(3, 1, "Reporte de Stock Total");;
+            if (reporte==0){
+                label1 = new Label(3, 1, "Reporte de productos internados");
+            }else if (reporte==1){
+                label1 = new Label(3, 1, "Reporte de Stock Total");
+            }
+            else if (reporte==2){
+                label1 = new Label(3, 1, "Reporte de Stock Logico");
+            }
             Label label2 = new Label(5, 1, "Fecha: "+ dateFormat.format(date));
             Label label3 = new Label(1, 2, "Almacen: "+ alm );
-            Label label4 = new Label(1, 3, "Tipo de producto: "+tipo);
-            Label label5 = new Label(1, 4, "Condicion: "+condi);
+            //Label label4 = new Label(1, 3, "Tipo de producto: "+tipo);
+            Label label5 = new Label(1, 3, "Condicion: "+condi);
             WritableFont tittleFont = new WritableFont(WritableFont.createFont("Calibri"),
              16,
              WritableFont.BOLD,  false,
@@ -556,13 +570,13 @@ public class StockReport extends BaseView {
              label1.setCellFormat(tittleFormat);
              label2.setCellFormat(headerRFormat);
              label3.setCellFormat(headerLFormat);
-             label4.setCellFormat(headerLFormat);
+             //label4.setCellFormat(headerLFormat);
              label5.setCellFormat(headerLFormat);
             writableSheet.addCell(label0);
             writableSheet.addCell(label1);
             writableSheet.addCell(label2);
             writableSheet.addCell(label3);
-            writableSheet.addCell(label4);
+            //writableSheet.addCell(label4);
             writableSheet.addCell(label5);
             writableSheet.addCell(t1);
             writableSheet.addCell(t2);
@@ -638,17 +652,15 @@ public class StockReport extends BaseView {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnExport;
     private javax.swing.JButton btnReport;
-    private javax.swing.JComboBox condicionCombo;
-    private javax.swing.JComboBox condicionCombo1;
+    private javax.swing.JTextField condicionTxt;
     private com.toedter.calendar.JCalendar jCalendar1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JComboBox reporteCombo;
     private javax.swing.JTable tblKardex;
-    private javax.swing.JComboBox tipoCombo;
     private javax.swing.JComboBox warehouseCombo;
     // End of variables declaration//GEN-END:variables
 }

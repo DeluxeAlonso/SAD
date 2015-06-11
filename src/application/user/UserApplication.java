@@ -59,6 +59,7 @@ public class UserApplication {
         Usuario user=null;
         try {
             user= userRepository.getUser(correo);
+            
             if(!decrypt(user.getPassword()).equals(password))
                 return null;
         } catch (Exception ex) {

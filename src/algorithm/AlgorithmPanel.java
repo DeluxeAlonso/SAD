@@ -34,8 +34,8 @@ public class AlgorithmPanel extends javax.swing.JPanel {
         double xAla, yAla;
         minXa = Math.min(minXa, xAla = Constants.WAREHOUSE_LONGITUDE);
         maxXa = Math.max(maxXa, Constants.WAREHOUSE_LONGITUDE);
-        minYa = Math.min(minYa, yAla = Constants.WAREHOUSE_LATITUDE);
-        maxYa = Math.max(maxYa, Constants.WAREHOUSE_LATITUDE);
+        minYa = Math.min(minYa, yAla = -Constants.WAREHOUSE_LATITUDE);
+        maxYa = Math.max(maxYa, -Constants.WAREHOUSE_LATITUDE);
 
         this.xAl = xAla;
         this.yAl = yAla;
@@ -44,8 +44,8 @@ public class AlgorithmPanel extends javax.swing.JPanel {
             for (int j = 0; j < nodes[i].length; j++) {
                 minXa = Math.min(minXa, nodes[i][j].getX());
                 maxXa = Math.max(maxXa, nodes[i][j].getX());
-                minYa = Math.min(minYa, nodes[i][j].getY());
-                maxYa = Math.max(maxYa, nodes[i][j].getY());                
+                minYa = Math.min(minYa, -nodes[i][j].getY());
+                maxYa = Math.max(maxYa, -nodes[i][j].getY());                
             }            
         }
         
@@ -80,8 +80,8 @@ public class AlgorithmPanel extends javax.swing.JPanel {
             for (int j = 1; j < nodes[i].length; j++) { //dibujar la ruta
                 double posX2 = nodes[i][j].getX();
                 double posX1 = nodes[i][j - 1].getX();
-                double posY2 = nodes[i][j].getY();
-                double posY1 = nodes[i][j - 1].getY();
+                double posY2 = -nodes[i][j].getY();
+                double posY1 = -nodes[i][j - 1].getY();
                 int x1 = (int) (totX * (posX1 - minX) / (maxX - minX));
                 int y1 = (int) (totY * (posY1 - minY) / (maxY - minY));
                 int x2 = (int) (totX * (posX2 - minX) / (maxX - minX));
@@ -99,7 +99,7 @@ public class AlgorithmPanel extends javax.swing.JPanel {
                 //dibujar camino desde el centro de distribucion
                 double posX2 = nodes[i][0].getX();
                 double posX1 = xAl;
-                double posY2 = nodes[i][0].getY();
+                double posY2 = -nodes[i][0].getY();
                 double posY1 = yAl;
                 int x1 = (int) (totX * (posX1 - minX) / (maxX - minX));
                 int y1 = (int) (totY * (posY1 - minY) / (maxY - minY));
@@ -117,7 +117,7 @@ public class AlgorithmPanel extends javax.swing.JPanel {
                 //dibujar camino hacia el centro de distribucion
                 posX1 = nodes[i][nodes[i].length - 1].getX();
                 posX2 = xAl;
-                posY1 = nodes[i][nodes[i].length - 1].getY();
+                posY1 = -nodes[i][nodes[i].length - 1].getY();
                 posY2 = yAl;
                 x1 = (int) (totX * (posX1 - minX) / (maxX - minX));
                 y1 = (int) (totY * (posY1 - minY) / (maxY - minY));

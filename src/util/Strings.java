@@ -65,6 +65,8 @@ public class Strings {
 
     /*WAREHOUSE MODULE MESSAGES*/
     public static final String ERROR_PALLETS_MOVEMENT_TITLE = "Error al mover pallets";
+    public static final String MESSAGE_PALLETS_MOVEMENT_TITLE = "Movimiento de pallets";
+    public static final String MESSAGE_PALLETS_MOVEMENT = "Se realizó correctamente el movimiento de pallets.";
     public static final String ERROR_NO_PALLETS_SELECTED = "Seleccione algún pallet.";
     public static final String ERROR_NO_SPOTS_SELECTED = "Seleccione alguna ubicación de destino.";
     public static final String ERROR_PALLETS_DONT_MATCH_SPOTS = "La cantidad de pallets y ubicaciones seleccionados deben ser iguales.";
@@ -85,6 +87,7 @@ public class Strings {
     /*END*/
     /*CLIENT MODULE MESSAGES*/
     public static final String MESSAGE_NEW_CLIENT_TITLE = "Mensaje de inserción de cliente";
+    public static final String MESSAGE_LOAD_NEW_CLIENTS = "Se realizó la carga masiva de clientes correctamente.";
     public static final String MESSAGE_NEW_CLIENT_CREATED = "Se registró correctamente el cliente.";
     public static final String MESSAGE_DELETE_CLIENT_TITLE = "Mensaje de eliminación de cliente";
     public static final String MESSAGE_DELETE_CLIENT = "¿Está seguro de eliminar el cliente seleccionado?";
@@ -102,7 +105,9 @@ public class Strings {
     public static final String MESSAGE_DELETE_LOCAL = "¿Está seguro de eliminar el local seleccionado?";
     public static final String ERROR_ADDRESS_REQUIRED = "El campo Dirección es requerido.";
     public static final String ERROR_LATITUDE_REQUIRED = "El campo Latitud es requerido.";
+    public static final String ERROR_LATITUDE_OUT_LIMITS = "El campo Latitud debe estar entre -11.5 y -12.5 grados.";
     public static final String ERROR_LONGITUDE_REQUIRED = "El campo Longitud es requerido.";
+    public static final String ERROR_LONGITUDE_OUT_LIMITS = "El campo Longitud debe estar entre -76.8 y -77.2 grados.";
     public static final String ERROR_LATITUDE_NOT_FLOAT = "El campo Latitud debe ser un número de punto flotante.";
     public static final String ERROR_LONGITUDE_NOT_FLOAT = "El campo Longitud debe ser un número de punto flotante.";
     /*END*/
@@ -122,6 +127,7 @@ public class Strings {
     public static final String ERROR_TRANSPORTIST_REQUIRED = "El campo Transportista es requerido.";
     public static final String ERROR_TRANSPORTIST_MORE_60 = "El campo Transportista no debe contener mas de 60 caracteres.";
     public static final String ERROR_TRANSPORT_TYPE_REQUIRED = "El campo Tipo es requerido.";
+    public static final String ERROR_NEW_TRANSPORT_UNIT_TITLE = "Unidad de Transporte";
 
     /*END*/
     /*ALGORITHM EXECUTION MESSAGES*/
@@ -130,6 +136,11 @@ public class Strings {
     public static final String ALGORITHM_TITLE="Ejecución del Algoritmo";
     public static final String ALGORITHM_ERROR="Asegúrese de tener pallets, unidades de transporte y pedidos registrados antes de ejecutar el algoritmo.";
     public static final String ALGORITHM_ERROR_TITLE="Error en la ejecución";
+    public static final String ALGORITHM_SUCCESS="El algoritmo ha terminado su ejecución.";
+    public static final String ALGORITHM_SUCCESS_TITLE="Fin de la ejecución";
+    public static final String ALGORITHM_NO_ROUTES_FOUND="No se han encontrado rutas que cumplan con las restricciones dadas.";
+    public static final String ALGORITHM_NO_ROUTES_FOUND_TITLE="Fin de la ejecución";
+    
     
     
     
