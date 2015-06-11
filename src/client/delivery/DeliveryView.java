@@ -688,6 +688,9 @@ public class DeliveryView extends BaseView {
     private void btnProcessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessActionPerformed
         int cmbIdx = cmbSolutions.getSelectedIndex();
         if(cmbIdx==-1) return;
+        if(solutions.isEmpty()) 
+            JOptionPane.showMessageDialog(this, Strings.ALGORITHM_RUN_MESSAGE,
+                    Strings.ALGORITHM_RUN_MESSAGE_TITLE,JOptionPane.INFORMATION_MESSAGE);
         if(solutions.get(cmbIdx)!=null && algorithmExecution!=null){
             AlgorithmReturnValues returnValues = algorithmExecution.processOrders(solutions.get(cmbIdx));
             solutionDeliveries = returnValues.getDespachos();

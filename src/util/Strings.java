@@ -142,6 +142,8 @@ public class Strings {
     public static final String ALGORITHM_NO_ROUTES_FOUND_TITLE="Fin de la ejecución";
     public static final String PARAMETERS_OUT_OF_BOUNDS="Solo puede ingresar entre 0 y 24 horas y entre 0 y 1000 minutos";
     public static final String PARAMETERS_OUT_OF_BOUNDS_TITLE="Parámetros del algoritmo";
+    public static final String ALGORITHM_RUN_MESSAGE="Genere al menos un conjunto de rutas antes de hacer los despachos.";
+    public static final String ALGORITHM_RUN_MESSAGE_TITLE="Ejecución del Algoritmo";
     
     
     
