@@ -95,6 +95,7 @@ public class DeliveryView extends BaseView {
     ArrayList<Solution> solutions = new ArrayList<Solution>();
     JFileChooser fc = new JFileChooser();
     File file = null;
+    Boolean firstRun = true;
     
     /**
      * Creates new form DispatchView
@@ -140,9 +141,11 @@ public class DeliveryView extends BaseView {
             Object[] row = {_order.getId(), _order.getCliente().getNombre()
                     , _order.getLocal().getNombre(),EntityState.getOrdersState()[_order.getEstado()]
                     , df.format(_order.getFechaVencimiento()), totalTime,
-                    true};
+                    firstRun};
             tableModel.addRow(row);
         });
+        if(firstRun)
+            firstRun = false;
     }
     
     private void refreshOrders(){
@@ -240,10 +243,7 @@ public class DeliveryView extends BaseView {
                     partials.add(tempPartials.get(j));
             }
         }
-        if(partials.isEmpty())
-            return orderApplication.getPendingPartialOrders();
-        else
-            return partials;
+        return partials;
     }
          
     public void verifyOrders(){
@@ -705,34 +705,37 @@ public class DeliveryView extends BaseView {
         algorithmExecution = new AlgorithmExecution(this);        
         ArrayList<PedidoParcial> selectedPartialOrders = getCheckedOrders();
         double hours = 3, minutes = 0;
-        try{
-            hours = Double.parseDouble(txtHours.getText());
-            minutes = Double.parseDouble(txtMinutes.getText());
-            
-            try {
-                Solution solution = algorithmExecution.start(hours + minutes/60, selectedPartialOrders);                
-                if(solution.isEmpty()){
-                    JOptionPane.showMessageDialog(this, Strings.ALGORITHM_NO_ROUTES_FOUND,
-                        Strings.ALGORITHM_NO_ROUTES_FOUND_TITLE, JOptionPane.INFORMATION_MESSAGE);
-                    return;
+        if (!selectedPartialOrders.isEmpty()){
+            try{
+                hours = Double.parseDouble(txtHours.getText());
+                minutes = Double.parseDouble(txtMinutes.getText());
+
+                try {
+                    Solution solution = algorithmExecution.start(hours + minutes/60, selectedPartialOrders);                
+                    if(solution.isEmpty()){
+                        JOptionPane.showMessageDialog(this, Strings.ALGORITHM_NO_ROUTES_FOUND,
+                            Strings.ALGORITHM_NO_ROUTES_FOUND_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                        return;
+                    }
+                    solutions.add(solution);
+                    refreshCombo();
+                    JOptionPane.showMessageDialog(this, Strings.ALGORITHM_SUCCESS,
+                            Strings.ALGORITHM_SUCCESS_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this, Strings.ALGORITHM_ERROR,
+                            Strings.ALGORITHM_ERROR_TITLE, JOptionPane.INFORMATION_MESSAGE);
                 }
-                solutions.add(solution);
-                refreshCombo();
-                JOptionPane.showMessageDialog(this, Strings.ALGORITHM_SUCCESS,
-                        Strings.ALGORITHM_SUCCESS_TITLE, JOptionPane.INFORMATION_MESSAGE);
-            } catch (Exception ex) {
+
+            }catch(Exception ex){
                 ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, Strings.ALGORITHM_ERROR,
-                        Strings.ALGORITHM_ERROR_TITLE, JOptionPane.INFORMATION_MESSAGE);
-            }
-            
-        }catch(Exception ex){
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, Strings.BAD_PARAMETERS,
-                    Strings.BAD_PARAMETERS_TITLE,JOptionPane.INFORMATION_MESSAGE);
-        }      
-        
-        
+                JOptionPane.showMessageDialog(this, Strings.BAD_PARAMETERS,
+                        Strings.BAD_PARAMETERS_TITLE,JOptionPane.INFORMATION_MESSAGE);
+            }      
+        }
+        else
+            JOptionPane.showMessageDialog(this, "Debe seleccionar al menos un pedido.",
+                    "Despacho",JOptionPane.WARNING_MESSAGE);
     }//GEN-LAST:event_btnExecuteAlgorithmActionPerformed
 
     private void btnDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisplayActionPerformed
