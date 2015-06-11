@@ -36,6 +36,8 @@ import entity.UnidadTransporte;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.net.URL;
@@ -95,6 +97,7 @@ public class DeliveryView extends BaseView {
     ArrayList<Solution> solutions = new ArrayList<Solution>();
     JFileChooser fc = new JFileChooser();
     File file = null;
+    Informable informable;
     
     /**
      * Creates new form DispatchView
@@ -112,6 +115,12 @@ public class DeliveryView extends BaseView {
                 fillRouteDetailTable();                
             }    
         });
+        informable = new Informable() {
+            @Override
+            public void messageChanged(String message) {                
+                txtResult.append(message + "\n");
+            }
+        };
     }
     
     private void setupElements(){
@@ -701,29 +710,48 @@ public class DeliveryView extends BaseView {
     }//GEN-LAST:event_btnViewSolutionActionPerformed
 
     private void btnExecuteAlgorithmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExecuteAlgorithmActionPerformed
-        algorithmExecution = new AlgorithmExecution(this);        
-        ArrayList<PedidoParcial> selectedPartialOrders = getCheckedOrders();
-        double hours = 3, minutes = 0;
+        
         try{
+            double hours = 3, minutes = 0;
             hours = Double.parseDouble(txtHours.getText());
             minutes = Double.parseDouble(txtMinutes.getText());
-            
-            try {
-                Solution solution = algorithmExecution.start(hours + minutes/60, selectedPartialOrders);                
-                if(solution.isEmpty()){
-                    JOptionPane.showMessageDialog(this, Strings.ALGORITHM_NO_ROUTES_FOUND,
-                        Strings.ALGORITHM_NO_ROUTES_FOUND_TITLE, JOptionPane.INFORMATION_MESSAGE);
-                    return;
+            ArrayList<PedidoParcial> selectedPartialOrders = getCheckedOrders();
+            txtResult.setText("");
+            algorithmExecution = new AlgorithmExecution(this, hours + minutes/60, 
+                    selectedPartialOrders, informable){
+                @Override
+                protected void done() {
+                    try {
+                        final Solution solution = get();
+                        if (solution.isEmpty()) {
+                            JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_NO_ROUTES_FOUND,
+                                    Strings.ALGORITHM_NO_ROUTES_FOUND_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                            return;
+                        }
+                        solutions.add(solution);
+                        refreshCombo();
+                        JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_SUCCESS,
+                                Strings.ALGORITHM_SUCCESS_TITLE, JOptionPane.INFORMATION_MESSAGE);
+
+
+
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_ERROR,
+                                Strings.ALGORITHM_ERROR_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                    }
                 }
-                solutions.add(solution);
-                refreshCombo();
-                JOptionPane.showMessageDialog(this, Strings.ALGORITHM_SUCCESS,
-                        Strings.ALGORITHM_SUCCESS_TITLE, JOptionPane.INFORMATION_MESSAGE);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, Strings.ALGORITHM_ERROR,
-                        Strings.ALGORITHM_ERROR_TITLE, JOptionPane.INFORMATION_MESSAGE);
-            }
+            };        
+            PropertyChangeListener listener
+                    = new PropertyChangeListener() {
+                        public void propertyChange(PropertyChangeEvent event) {
+                            if ("progress".equals(event.getPropertyName())) {
+                                jProgressBar.setValue((Integer) event.getNewValue());
+                            }
+                        }
+                    };
+            algorithmExecution.addPropertyChangeListener(listener);
+            algorithmExecution.execute();    
             
         }catch(Exception ex){
             ex.printStackTrace();
