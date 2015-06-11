@@ -140,7 +140,7 @@ public class DeliveryView extends BaseView {
             Object[] row = {_order.getId(), _order.getCliente().getNombre()
                     , _order.getLocal().getNombre(),EntityState.getOrdersState()[_order.getEstado()]
                     , df.format(_order.getFechaVencimiento()), totalTime,
-                    false};
+                    true};
             tableModel.addRow(row);
         });
     }
@@ -590,6 +590,7 @@ public class DeliveryView extends BaseView {
         });
         jScrollPane4.setViewportView(orderTable);
 
+        allCheckbox.setSelected(true);
         allCheckbox.setText("Marcar Todos");
         allCheckbox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
