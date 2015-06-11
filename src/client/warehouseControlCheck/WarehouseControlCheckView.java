@@ -59,8 +59,8 @@ public class WarehouseControlCheckView extends BaseView {
     //private JDesktopPane mainPanel;
     JFileChooser fc = new JFileChooser();
     File file = null;
-    HashMap<Producto,Integer> kardexCountIn = new HashMap<Producto,Integer>();
-    HashMap<Producto,Integer> kardexCountOut = new HashMap<Producto,Integer>();
+    HashMap<Integer,Integer> kardexCountIn = new HashMap<Integer,Integer>();
+    HashMap<Integer,Integer> kardexCountOut = new HashMap<Integer,Integer>();
     
     /**
      * Creates new form WarehouseControlCheckView
@@ -95,6 +95,7 @@ public class WarehouseControlCheckView extends BaseView {
         if(spots.size()>0){
             for(Ubicacion spot : spots){
                 p = palletApplication.queryPalletsBySpot(spot.getId());
+                System.out.println("Pallets en la ubicacion "+spot.getId()+": "+p.size());
                 if(p.size()>0){
                     model.addRow(new Object[]{
                         spot.getRack().getId(),
@@ -144,15 +145,16 @@ public class WarehouseControlCheckView extends BaseView {
                         model.setValueAt("Remover pallet del sistema", i, 8);
                         // Agrupo los pallets que se moveran por Producto para ser ingresados al kardex
                         ArrayList<Pallet> pallets = palletApplication.queryPalletsBySpot(spots.get(i).getId());
-                        if(!kardexCountOut.isEmpty() && kardexCountOut.containsKey(pallets.get(0).getProducto())){
-                            int productCount = kardexCountOut.get(pallets.get(0).getProducto()).intValue();
-                            productCount++;
-                            kardexCountOut.put(pallets.get(0).getProducto(), productCount);
+                        if(!kardexCountOut.isEmpty() && kardexCountOut.containsKey(pallets.get(0).getProducto().getId())){
+                            System.out.println("kardex de salida contiene: "+pallets.get(0).getProducto());
+                            kardexCountOut.put(pallets.get(0).getProducto().getId(), kardexCountOut.get(pallets.get(0).getProducto().getId())+1);
                         }else{
-                            kardexCountOut.put(pallets.get(0).getProducto(), 1);
+                            System.out.println("kardex de salida NO contiene: "+pallets.get(0).getProducto());
+                            kardexCountOut.put(pallets.get(0).getProducto().getId(), 1);
                         }
                         // Eliminar el pallet de la ubicacion
-                        palletApplication.deletePalletBySpot(spots.get(i).getId());
+                        Boolean bol = palletApplication.deletePalletBySpot(spots.get(i).getId());
+                        System.out.println("Elimino el pallet de la ubicacion "+spots.get(i).getId()+": "+bol.booleanValue());
                         // Actualizo el estado de la ubicacion a libre
                         spotApplication.updateSpotOccupancy(spots.get(i).getId(), EntityState.Spots.LIBRE.ordinal());
                     }else{
@@ -168,12 +170,12 @@ public class WarehouseControlCheckView extends BaseView {
                         // Si en fisico esta ocupado y en el sistema libre, tengo que internar el pallet
                         model.setValueAt("Internar Pallet", i, 8);
                         // Agrupo los pallets que se moveran por Producto para ser ingresados al kardex
-                        if(!kardexCountIn.isEmpty() && kardexCountIn.containsKey(prod)){
-                            int productCount = kardexCountIn.get(prod).intValue();
-                            productCount++;
-                            kardexCountIn.put(prod, productCount);
+                        if(!kardexCountIn.isEmpty() && kardexCountIn.containsKey(prod.getId())){
+                            System.out.println("kardex de salida contiene: "+prod);
+                            kardexCountIn.put(prod.getId(), kardexCountIn.get(prod.getId())+1);
                         }else{
-                            kardexCountIn.put(prod, 1);
+                            System.out.println("kardex de salida NO contiene: "+prod);
+                            kardexCountIn.put(prod.getId(), 1);
                         }
                         // Inserto el pallet
                         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -192,7 +194,8 @@ public class WarehouseControlCheckView extends BaseView {
                         ean+=eanAux;
                         palletAux.setEan128(ean);
                         palletApplication.update(palletAux);
-                        // Actualizo el estado de la ubicacion a libre
+                        System.out.println("Inserto el pallet de la ubicacion "+spots.get(i).getId()+": "+eanAux);
+                        // Actualizo el estado de la ubicacion a ocupado
                         spotApplication.updateSpotOccupancy(spots.get(i).getId(), EntityState.Spots.OCUPADO.ordinal());
                     
                     }else{
@@ -201,71 +204,72 @@ public class WarehouseControlCheckView extends BaseView {
                             // Si en fisico y en el sistema tienen el mismo producto
                             model.setValueAt("-", i, 8);
                         }else{
+                            model.setValueAt("Actualizar pallet", i, 8);
                             // Si en fisico y en el sistema tienen productos diferentes
                             /* FALTA */
+                            // Agrupo los pallets que se moveran por Producto para ser ingresados al kardex
+                            ArrayList<Pallet> pallets = palletApplication.queryPalletsBySpot(spots.get(i).getId());
+                            if(!kardexCountOut.isEmpty() && kardexCountOut.containsKey(pallets.get(0).getProducto().getId())){
+                                System.out.println("kardex de salida contiene: "+pallets.get(0).getProducto());
+                                kardexCountOut.put(pallets.get(0).getProducto().getId(), kardexCountOut.get(pallets.get(0).getProducto().getId()) +1);
+                            }else{
+                                System.out.println("kardex de salida NO contiene: "+pallets.get(0).getProducto());
+                                kardexCountOut.put(pallets.get(0).getProducto().getId(), 1);
+                            }
+                            // Eliminar el pallet de la ubicacion
+                            palletApplication.deletePalletBySpot(spots.get(i).getId());
+                            // Agrupo los pallets que se moveran por Producto para ser ingresados al kardex
+                            if(!kardexCountIn.isEmpty() && kardexCountIn.containsKey(prod.getId())){
+                                //int productCount = kardexCountIn.get(prod).intValue();
+                                //productCount++;
+                                System.out.println("kardex de salida contiene: "+prod);
+                                kardexCountIn.put(prod.getId(), kardexCountIn.get(prod.getId())+1);
+                            }else{
+                                System.out.println("kardex de salida NO contiene: "+prod);
+                                kardexCountIn.put(prod.getId(), 1);
+                            }
+                            // Inserto el pallet
+                            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                            Date fechaVenc = formatter.parse(line_split[6]);
+                            Pallet pallet = new Pallet();
+                            pallet.setEstado(EntityState.Pallets.UBICADO.ordinal());
+                            pallet.setFechaRegistro(new Date());
+                            pallet.setFechaVencimiento(fechaVenc);
+                            pallet.setProducto(prod);
+                            pallet.setUbicacion(spots.get(i));
+                            pallet.setEan128(crearEAN128(pallet.getProducto(),pallet.getFechaVencimiento()));
+                            int eanAux=palletApplication.insert(pallet);
+
+                            Pallet palletAux = palletApplication.queryById(eanAux);
+                            String ean = palletAux.getEan128();
+                            ean+=eanAux;
+                            palletAux.setEan128(ean);
+                            palletApplication.update(palletAux);
                         }
                     }
                 }
-                
-                /*
-                prod = productApplication.queryById(Integer.parseInt(line_split[5]));
-                model.setValueAt(line_split[4], i, 6);
-                model.setValueAt(prod.getNombre(), i, 7);
-                if(prod.getNombre().equals(model.getValueAt(i, 5).toString())){
-                    model.setValueAt("-", i, 6);
-                }else{
-                    if(line_split[4].equals("Ocupado")){
-                        // En sistema libre y en fisico ocupado, debo insertar el pallet
-                        // Agrupo los pallets que se moveran por Producto para ser ingresados al kardex
-                        Producto product = productApplication.queryById(Integer.parseInt(line_split[5]));
-                        if(!kardexCountIn.isEmpty() && kardexCountIn.containsKey(product)){
-                            int productCount = kardexCountIn.get(product).intValue();
-                            productCount++;
-                            kardexCountIn.put(product, productCount);
-                        }else{
-                            kardexCountIn.put(product, 1);
-                        }
-                        // Inserto el pallet
-                        
-                    }else{
-                        // En sistema ocupado y en fisico libre, debo eliminar el pallet
-                        
-                        // Agrupo los pallets que se moveran por Producto para ser ingresados al kardex
-                        ArrayList<Pallet> pallets = palletApplication.queryPalletsBySpot(spots.get(i).getId());
-                        if(!kardexCountOut.isEmpty() && kardexCountOut.containsKey(pallets.get(0).getProducto())){
-                            int productCount = kardexCountOut.get(pallets.get(0).getProducto()).intValue();
-                            productCount++;
-                            kardexCountOut.put(pallets.get(0).getProducto(), productCount);
-                        }else{
-                            kardexCountOut.put(pallets.get(0).getProducto(), 1);
-                        }
-                        // Eliminar el pallet de la ubicacion
-                        palletApplication.deletePalletBySpot(spots.get(i).getId());
-                        // Actualizo el estado de la ubicacion a libre
-                        spotApplication.updateSpotOccupancy(spots.get(i).getId(), EntityState.Spots.LIBRE.ordinal());
-                        
-                    }
-                }
-                */
             }
             // Ingreso los registros de kardex
             ArrayList<Kardex> previousKardex;
-            Producto key;
+            Integer key;
             Kardex kardex;
             KardexId kardexId;
             Date date = new Date();
             // Para el kardex de salida
-            Iterator<Producto> keySetIterator = kardexCountOut.keySet().iterator();
+            Iterator<Integer> keySetIterator = kardexCountOut.keySet().iterator();
+            System.out.println("Kardex de Salida:");
             while(keySetIterator.hasNext()){
                 key = keySetIterator.next();
-                previousKardex = kardexApplication.queryByParameters(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId(), key.getId());
+                Producto prodIn = productApplication.queryById(key);
+                System.out.println("Producto: "+prodIn.getNombre()+", Cantidad: "+kardexCountOut.get(key));
+                previousKardex = kardexApplication.queryByParameters(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId(), prodIn.getId());
                 kardexId = new KardexId();
                 kardexId.setIdAlmacen(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId());
-                kardexId.setIdProducto(key.getId());
+                kardexId.setIdProducto(prodIn.getId());
                 kardex = new Kardex();
                 kardex.setId(kardexId);
                 kardex.setAlmacen(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()));
-                kardex.setProducto(key);
+                kardex.setProducto(prodIn);
                 kardex.setFecha(date);
                 kardex.setCantidad(kardexCountOut.get(key).intValue());
                 kardex.setTipoMovimiento("Salida");
@@ -279,16 +283,19 @@ public class WarehouseControlCheckView extends BaseView {
             }
             // Para el kardex de ingreso
             keySetIterator = kardexCountIn.keySet().iterator();
+            System.out.println("Kardex de Ingreso:");
             while(keySetIterator.hasNext()){
                 key = keySetIterator.next();
-                previousKardex = kardexApplication.queryByParameters(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId(), key.getId());
+                Producto prodOut = productApplication.queryById(key);
+                System.out.println("Producto: "+prodOut.getNombre()+", Cantidad: "+kardexCountIn.get(key));
+                previousKardex = kardexApplication.queryByParameters(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId(), prodOut.getId());
                 kardexId = new KardexId();
                 kardexId.setIdAlmacen(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId());
-                kardexId.setIdProducto(key.getId());
+                kardexId.setIdProducto(prodOut.getId());
                 kardex = new Kardex();
                 kardex.setId(kardexId);
                 kardex.setAlmacen(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()));
-                kardex.setProducto(key);
+                kardex.setProducto(prodOut);
                 kardex.setFecha(date);
                 kardex.setCantidad(kardexCountIn.get(key).intValue());
                 kardex.setTipoMovimiento("Ingreso");
