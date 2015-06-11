@@ -127,7 +127,7 @@ public class ObjectiveFunction {
             //System.out.println("costo de ruta: " + routeCost);
         }        
         if(nonzero==0) nonzero = 1;
-        return solutionCost/nonzero;
+        return solutionCost*solutionCost/nonzero;
     }   
     
     

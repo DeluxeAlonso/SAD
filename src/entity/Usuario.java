@@ -1,5 +1,5 @@
 package entity;
-// Generated 08/06/2015 05:30:00 AM by Hibernate Tools 4.3.1
+// Generated 10/06/2015 05:59:02 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -21,6 +21,7 @@ public class Usuario  implements java.io.Serializable {
      private String apellidoMaterno;
      private String respuesta;
      private Integer estado;
+     private Set sesions = new HashSet(0);
      private Set logsForUsuarioActualizador = new HashSet(0);
      private Set logsForUsuarioCreador = new HashSet(0);
 
@@ -33,7 +34,7 @@ public class Usuario  implements java.io.Serializable {
         this.correo = correo;
         this.password = password;
     }
-    public Usuario(String id, Perfil perfil, PreguntaSecreta preguntaSecreta, String correo, String password, String nombre, String apellidoPaterno, String apellidoMaterno, String respuesta, Integer estado, Set logsForUsuarioActualizador, Set logsForUsuarioCreador) {
+    public Usuario(String id, Perfil perfil, PreguntaSecreta preguntaSecreta, String correo, String password, String nombre, String apellidoPaterno, String apellidoMaterno, String respuesta, Integer estado, Set sesions, Set logsForUsuarioActualizador, Set logsForUsuarioCreador) {
        this.id = id;
        this.perfil = perfil;
        this.preguntaSecreta = preguntaSecreta;
@@ -44,6 +45,7 @@ public class Usuario  implements java.io.Serializable {
        this.apellidoMaterno = apellidoMaterno;
        this.respuesta = respuesta;
        this.estado = estado;
+       this.sesions = sesions;
        this.logsForUsuarioActualizador = logsForUsuarioActualizador;
        this.logsForUsuarioCreador = logsForUsuarioCreador;
     }
@@ -117,6 +119,13 @@ public class Usuario  implements java.io.Serializable {
     
     public void setEstado(Integer estado) {
         this.estado = estado;
+    }
+    public Set getSesions() {
+        return this.sesions;
+    }
+    
+    public void setSesions(Set sesions) {
+        this.sesions = sesions;
     }
     public Set getLogsForUsuarioActualizador() {
         return this.logsForUsuarioActualizador;

@@ -25,7 +25,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -35,10 +37,12 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import jxl.DateCell;
 import jxl.Workbook;
 import jxl.format.Colour;
 import jxl.format.UnderlineStyle;
 import jxl.format.VerticalAlignment;
+import jxl.write.DateTime;
 import jxl.write.Label;
 import jxl.write.WritableCellFormat;
 import jxl.write.WritableFont;
@@ -72,6 +76,8 @@ public class KardexReport extends BaseView {
     public KardexReport() {
         initComponents();
         super.initialize();
+        dtcInitDate.setMaxSelectableDate(new Date());
+        dtcEndDate.setMaxSelectableDate(new Date());
         fillWarehouses();
         if(warehouses.size()>0)
             fillProducts(warehouses.get(0).getCondicion().getId());
@@ -327,11 +333,6 @@ public class KardexReport extends BaseView {
         jLabel3.setText("Fecha final:");
 
         btnReport.setText("Generar Reporte");
-        btnReport.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnReportMouseClicked(evt);
-            }
-        });
         btnReport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnReportActionPerformed(evt);
@@ -359,6 +360,11 @@ public class KardexReport extends BaseView {
         btnExport.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btnExportMousePressed(evt);
+            }
+        });
+        btnExport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportActionPerformed(evt);
             }
         });
 
@@ -434,6 +440,7 @@ public class KardexReport extends BaseView {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportActionPerformed
+        
         JOptionPane.setDefaultLocale(new Locale("es", "ES"));
         boolean hasErrors=false;
         String error_message = "Errores:\n";
@@ -458,7 +465,13 @@ public class KardexReport extends BaseView {
                 btnExport.setEnabled(false);
             }else{
                 kardex = new ArrayList<Kardex>();
-                kardex = kardexApplication.queryByParameters(warehouses.get(comboWarehouseFrom.getSelectedIndex()).getId(), products.get(comboProductFrom.getSelectedIndex()).getId(), dtcInitDate.getDate(),dtcEndDate.getDate());
+                /* To decrement 1 day from the dtcInitDate */
+                Calendar c = Calendar.getInstance(); 
+                c.setTime(dtcInitDate.getDate()); 
+                c.add(Calendar.DATE, -1);
+                Date newInitDate = c.getTime();
+                kardex = kardexApplication.queryByParameters(warehouses.get(comboWarehouseFrom.getSelectedIndex()).getId(), products.get(comboProductFrom.getSelectedIndex()).getId(), newInitDate,dtcEndDate.getDate());
+                
                 fillKardex();
                 btnExport.setEnabled(true);
             }
@@ -503,6 +516,54 @@ public class KardexReport extends BaseView {
             //JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir el archivo",Strings.ERROR_KARDEX_TITLE,JOptionPane.ERROR_MESSAGE);
         }
         */
+        /*
+        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+        fc.setDialogTitle("Seleccione un archivo");
+        fc.showOpenDialog(this);
+        file = fc.getSelectedFile();
+        System.out.println(file);
+        Date date = new Date();
+        // Export to XSL 
+        try {
+            File exlFile = file;
+            WritableWorkbook writableWorkbook = Workbook.createWorkbook(exlFile);
+ 
+            WritableSheet writableSheet = writableWorkbook.createSheet("Kardex", 0);
+            URL url = getClass().getResource("../../images/warehouse-512-000000.png");
+            java.io.File imageFile = new java.io.File(url.toURI());
+            BufferedImage input = ImageIO.read(imageFile);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(input, "PNG", baos);
+            
+            writableSheet.addImage(new WritableImage(1,1,0.4,1,baos.toByteArray()));
+            writableSheet.setColumnView(1, 26);
+            writableSheet.setColumnView(2, 10);
+            writableSheet.setColumnView(3, 10);
+            writableSheet.setColumnView(4, 10);
+            writableSheet.setColumnView(5, 10);
+            writableSheet.setColumnView(6, 15);
+            writableSheet.setColumnView(7, 15);
+            writableSheet.setColumnView(8, 15);
+            writableSheet.setColumnView(9, 15);
+            writableSheet.setColumnView(10, 15);
+            //Create Cells with contents of different data types.
+            //Also specify the Cell coordinates in the constructor
+            
+            createHeader(writableSheet,date);
+            
+            fillReport(writableSheet);
+ 
+            //Write and close the workbook
+            writableWorkbook.write();
+            writableWorkbook.close();
+        } catch (Exception ex) {
+            Logger.getLogger(AvailabilityReport.class.getName()).log(Level.SEVERE, null, ex);
+            //JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir el archivo",Strings.ERROR_KARDEX_TITLE,JOptionPane.ERROR_MESSAGE);
+        }
+        */
+    }//GEN-LAST:event_btnExportMousePressed
+
+    private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
         JOptionPane.setDefaultLocale(new Locale("es", "ES"));
         fc.setDialogTitle("Seleccione un archivo");
         fc.showOpenDialog(this);
@@ -546,41 +607,7 @@ public class KardexReport extends BaseView {
             Logger.getLogger(AvailabilityReport.class.getName()).log(Level.SEVERE, null, ex);
             //JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir el archivo",Strings.ERROR_KARDEX_TITLE,JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_btnExportMousePressed
-
-    private void btnReportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReportMouseClicked
-        // TODO add your handling code here:
-        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
-        boolean hasErrors=false;
-        String error_message = "Errores:\n";
-        if(warehouses.size()>0 && products.size()>0){
-            if(dtcInitDate.getDate()==null){
-                hasErrors=true;
-                //error_message += Strings.ERROR_DATE_INI+"\n";
-            }
-            if(dtcEndDate.getDate()==null){
-                hasErrors=true;
-                //error_message += Strings.ERROR_DATE_END+"\n";
-            }
-            if(dtcInitDate.getDate()!=null && dtcEndDate.getDate()!=null){
-                if(dtcInitDate.getDate().getTime() > dtcEndDate.getDate().getTime()){
-                    hasErrors=true;
-                    //error_message += Strings.ERROR_DATE+"\n";
-                }
-            }
-            
-            if(hasErrors){
-                //JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_KARDEX_TITLE,JOptionPane.WARNING_MESSAGE);
-                btnExport.setEnabled(false);
-            }else{
-                kardex = new ArrayList<Kardex>();
-                kardex = kardexApplication.queryByParameters(warehouses.get(comboWarehouseFrom.getSelectedIndex()).getId(), products.get(comboProductFrom.getSelectedIndex()).getId(), dtcInitDate.getDate(),dtcEndDate.getDate());
-                System.out.println(kardex.size());
-                fillKardex();
-                btnExport.setEnabled(true);
-            }
-        }
-    }//GEN-LAST:event_btnReportMouseClicked
+    }//GEN-LAST:event_btnExportActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

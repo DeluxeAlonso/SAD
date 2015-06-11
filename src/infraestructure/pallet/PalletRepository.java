@@ -52,7 +52,7 @@ public class PalletRepository implements IPalletRepository{
     
     @Override
     public ArrayList<Pallet> queryPalletsBySpot(int spotId) {
-        String hql="from Pallet p where p.ubicacion.id=:spotId";
+        String hql="from Pallet p where p.ubicacion.id=:spotId and p.estado=:state";
         ArrayList<Pallet> pallets=null;
         
         Transaction trns = null;
@@ -61,6 +61,7 @@ public class PalletRepository implements IPalletRepository{
             trns=session.beginTransaction();
             Query q = session.createQuery(hql);
             q.setParameter("spotId", spotId);
+            q.setParameter("state", Pallets.UBICADO.ordinal());
             pallets = (ArrayList<Pallet>) q.list();          
             session.getTransaction().commit();
         } catch (RuntimeException e) {
@@ -97,7 +98,7 @@ public class PalletRepository implements IPalletRepository{
     
     @Override
     public Boolean deletePalletBySpot(int spotId) {
-        String hql="UPDATE Pallet p SET p.estado=:state WHERE p.ubicacion.id=:spotId";
+        String hql="UPDATE Pallet SET estado=:state WHERE id_ubicacion=:spotId";
         
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
@@ -533,6 +534,43 @@ public class PalletRepository implements IPalletRepository{
         return list; //To change body of generated methods, choose Tools | Templates.
         
         
+    }
+
+    @Override
+    public int insertNPallets(ArrayList<Pallet> pallets) {
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Pallet pIni=pallets.get(0);
+            session.save(pIni);
+            session.flush();
+            int startId=pIni.getId();
+            String ean128=pIni.getEan128();            
+            pIni.setEan128(ean128+startId);
+            session.update(pIni);
+            session.flush();
+            int cant=pallets.size();
+            
+            for(int i=0;i<cant;i++){
+                if(i==0) continue;
+                Pallet p = pallets.get(i);
+                int num=startId+i;
+                p.setEan128(ean128+num);
+                p.setId(num);
+                session.save(p);
+                if(i%20==0) session.flush();
+            }
+                                 
+            session.getTransaction().commit();            
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return -1;
+        } 
+        return 1;
     }
     
 }

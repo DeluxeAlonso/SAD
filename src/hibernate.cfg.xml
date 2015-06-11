@@ -32,6 +32,7 @@
     <mapping resource="entity/Pedido.hbm.xml"/>
     <mapping resource="entity/Kardex.hbm.xml"/>
     <mapping resource="entity/Usuario.hbm.xml"/>
+    <mapping resource="entity/Sesion.hbm.xml"/>
     <mapping resource="entity/TipoProducto.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>
