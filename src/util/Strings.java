@@ -127,6 +127,7 @@ public class Strings {
     public static final String ERROR_TRANSPORTIST_REQUIRED = "El campo Transportista es requerido.";
     public static final String ERROR_TRANSPORTIST_MORE_60 = "El campo Transportista no debe contener mas de 60 caracteres.";
     public static final String ERROR_TRANSPORT_TYPE_REQUIRED = "El campo Tipo es requerido.";
+    public static final String ERROR_NEW_TRANSPORT_UNIT_TITLE = "Unidad de Transporte";
 
     /*END*/
     /*ALGORITHM EXECUTION MESSAGES*/

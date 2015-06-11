@@ -545,7 +545,7 @@ public class TransportUnitView extends BaseView implements MouseListener{
             }
         }
         else{
-            JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_NEW_LOCAL_TITLE,JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_NEW_TRANSPORT_UNIT_TITLE,JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_saveBtnActionPerformed
 
