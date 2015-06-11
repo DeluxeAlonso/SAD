@@ -7,6 +7,7 @@ package client.general;
 
 import application.action.ActionApplication;
 import application.profile.ProfileApplication;
+import application.session.SessionApplication;
 import client.internment.InternmentSelectView;
 
 import client.devolution.DevolutionView;
@@ -34,11 +35,13 @@ import client.warehouse.PalletMovementsView;
 import client.warehouse.WarehouseView;
 import client.warehouseControlCheck.WarehouseControlCheckView;
 import entity.Accion;
+import entity.Sesion;
 import entity.Usuario;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyVetoException;
+import java.util.Calendar;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,7 +63,7 @@ public class MainView extends javax.swing.JFrame {
 
     ProfileApplication profileApplication = InstanceFactory.Instance.getInstance("profileApplication", ProfileApplication.class);
     ActionApplication actionApplication = InstanceFactory.Instance.getInstance("actionApplication", ActionApplication.class);
-
+    SessionApplication sessionApplication = InstanceFactory.Instance.getInstance("sessionApplication", SessionApplication.class);
     private UserView userView = null;
     private TransportUnitView transportUnitView = null;
     private WarehouseView warehouseView = null;
@@ -88,6 +91,7 @@ public class MainView extends javax.swing.JFrame {
     private BufferedImage img = null;
     private Image icon = null;
     private SecurityLogView securiryLog = null;
+    private Sesion session= new Sesion();
 
     /**
      * Creates new form MainForm
@@ -100,17 +104,16 @@ public class MainView extends javax.swing.JFrame {
         desktopPane = mainPanel;
         renderUserMenu();
         Icons.setMainIcon(this);
-    }
+        //inicializar la sesión
 
-    public MainView() {
-        loadImageToDesktopPane();
-        initComponents();
-        desktopPane = mainPanel;
-        Icons.setMainIcon(this);
+        session.setUsuario(user);
+
+        session.setInicioSesion(Calendar.getInstance().getTime());
+
     }
 
     private void renderUserMenu() {
-        if (user!=null) {
+        if (user != null) {
             Set actions = profileApplication.getProfileByName(user.getPerfil().getNombrePerfil()).getAccions();
             int numActions = actionApplication.getParents().size();
 
@@ -655,6 +658,8 @@ public class MainView extends javax.swing.JFrame {
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         // TODO add your handling code here:
         //Tools.closeSession();
+        session.setFinSesion(Calendar.getInstance().getTime());
+        sessionApplication.insertSession(session);
     }//GEN-LAST:event_formWindowClosing
 
     private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
@@ -694,6 +699,8 @@ public class MainView extends javax.swing.JFrame {
     private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
         // TODO add your handling code here:
         new LoginView().setVisible(true);
+        session.setFinSesion(Calendar.getInstance().getTime());
+        sessionApplication.insertSession(session);
         this.dispose();
     }//GEN-LAST:event_jMenuItem18ActionPerformed
 

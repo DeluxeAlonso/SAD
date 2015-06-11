@@ -11,6 +11,7 @@ import application.producttype.ProductTypeApplication;
 import application.profile.ProfileApplication;
 import application.transportunit.TransportUnitApplication;
 import application.rack.RackApplication;
+import application.session.SessionApplication;
 import application.spot.SpotApplication;
 import application.user.UserApplication;
 import application.warehouse.WarehouseApplication;
@@ -60,6 +61,7 @@ public class AppStart {
             InstanceFactory.Instance.register("productApplication", ProductApplication.class);
             InstanceFactory.Instance.register("productTypeApplication", ProductTypeApplication.class);
             InstanceFactory.Instance.register("logApplication",LogApplication.class);
+            InstanceFactory.Instance.register("sessionApplication",SessionApplication.class);
         } catch (Exception ex) {
             Logger.getLogger(AppStart.class.getName()).log(Level.SEVERE, null, ex);
         }
