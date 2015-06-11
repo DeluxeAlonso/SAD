@@ -286,8 +286,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         
         partialCombo.setEnabled(true);
         
-        detailStatusCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getOrdersState()));
-        detailStatusCombo.setSelectedIndex(order.getEstado());
+        endDateTxt.setText(dateFormat.format(order.getFechaVencimiento()));
         
         currentPartialOrders = orderApplication.getPendingPartialOrdersById(currentOrders.get(orderTable.getSelectedRow()).getId());
         String[]partialOrders = new String[currentPartialOrders.size() + 1];
@@ -392,8 +391,9 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                 DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
                 Date endDate = df.parse(line_split[4]);
                 order.setFechaVencimiento(endDate);
-                
+                System.out.println("Order Num " + i);
                 for(int j=0;j<productsNum;j++){
+                    System.out.println("Product Num " + j);
                     line = br.readLine();
                     line_split = line.split(cvsSplitBy);
                     PedidoParcialXProducto partial = new PedidoParcialXProducto();
@@ -410,9 +410,13 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                     
                     Producto selectedProduct = productApplication.queryById(product.getId());
                     Integer requiredQuantity = Integer.parseInt(line_split[1]);
+                    
+                    System.out.println("Producto: " + selectedProduct.getNombre());
+                    System.out.println("Stock Logico: " + selectedProduct.getStockLogico());
+                    System.out.println("Cantidad Requerida: " + requiredQuantity);
                     Integer difference = selectedProduct.getStockLogico() - requiredQuantity;
                     if(difference < 0){
-                       System.out.println("No se inserto pedido" + i);
+                       System.out.println("No se inserto pedido " + i);
                     }
                     else{
                         selectedProduct.setStockLogico(difference);
@@ -495,10 +499,10 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         jLabel11 = new javax.swing.JLabel();
         dateTxt = new javax.swing.JFormattedTextField();
         jLabel12 = new javax.swing.JLabel();
-        detailStatusCombo = new javax.swing.JComboBox();
         jLabel13 = new javax.swing.JLabel();
         partialCombo = new javax.swing.JComboBox();
         partialStatusTxt = new javax.swing.JLabel();
+        endDateTxt = new javax.swing.JTextField();
         deletePartialBtn = new javax.swing.JButton();
         jLabel14 = new javax.swing.JLabel();
         reasonCombo = new javax.swing.JComboBox();
@@ -715,9 +719,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
 
         dateTxt.setEditable(false);
 
-        jLabel12.setText("Estado:");
-
-        detailStatusCombo.setEnabled(false);
+        jLabel12.setText("F. Venc:");
 
         jLabel13.setText("P. Parcial:");
 
@@ -741,8 +743,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                                     .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.TRAILING))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(direccionTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(detailClientTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
@@ -759,19 +760,21 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(localTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(dateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel12)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(detailStatusCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(partialCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(partialStatusTxt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                .addComponent(partialStatusTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                    .addComponent(dateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(9, 9, 9)
+                                    .addComponent(jLabel12)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(endDateTxt))
+                                .addComponent(direccionTxt, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jLabel8)))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -797,7 +800,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                     .addComponent(dateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11)
                     .addComponent(jLabel12)
-                    .addComponent(detailStatusCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(endDateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
@@ -887,7 +890,6 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         if(JOptionPane.OK_OPTION == response){
             deleteOrder();
             clearDetailFields();
-            detailStatusCombo.setSelectedIndex(1);
         }
     }//GEN-LAST:event_deleteBtnActionPerformed
                                      
@@ -1008,8 +1010,8 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     private javax.swing.JButton deleteBtn;
     private javax.swing.JButton deletePartialBtn;
     private javax.swing.JTextField detailClientTxt;
-    private javax.swing.JComboBox detailStatusCombo;
     private javax.swing.JTextField direccionTxt;
+    private javax.swing.JTextField endDateTxt;
     private javax.swing.JTextField fileTextField;
     private javax.swing.JComboBox filterClientCombo;
     private javax.swing.JTextField filterIdTxt;

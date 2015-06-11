@@ -146,7 +146,6 @@ public class OrderRepository implements IOrderRepository{
                         Integer index = productNamesToRemove.indexOf(p.getProducto().getNombre());
                         quantityToRemove.set(index, quantityToRemove.get(index) + p.getCantidad());
                     }
-
                     //p.getProducto().setPalletsUbicados(p.getProducto().getPalletsUbicados() - p.getCantidad());
                     //session.merge(p.getProducto());                    
                     ArrayList<Pallet> pallets = getAvailablePalletsByProductId(p.getProducto().getId(), session, trns);
