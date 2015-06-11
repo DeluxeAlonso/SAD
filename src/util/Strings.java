@@ -65,6 +65,8 @@ public class Strings {
 
     /*WAREHOUSE MODULE MESSAGES*/
     public static final String ERROR_PALLETS_MOVEMENT_TITLE = "Error al mover pallets";
+    public static final String MESSAGE_PALLETS_MOVEMENT_TITLE = "Movimiento de pallets";
+    public static final String MESSAGE_PALLETS_MOVEMENT = "Se realizó correctamente el movimiento de pallets.";
     public static final String ERROR_NO_PALLETS_SELECTED = "Seleccione algún pallet.";
     public static final String ERROR_NO_SPOTS_SELECTED = "Seleccione alguna ubicación de destino.";
     public static final String ERROR_PALLETS_DONT_MATCH_SPOTS = "La cantidad de pallets y ubicaciones seleccionados deben ser iguales.";
@@ -85,6 +87,7 @@ public class Strings {
     /*END*/
     /*CLIENT MODULE MESSAGES*/
     public static final String MESSAGE_NEW_CLIENT_TITLE = "Mensaje de inserción de cliente";
+    public static final String MESSAGE_LOAD_NEW_CLIENTS = "Se realizó la carga masiva de clientes correctamente.";
     public static final String MESSAGE_NEW_CLIENT_CREATED = "Se registró correctamente el cliente.";
     public static final String MESSAGE_DELETE_CLIENT_TITLE = "Mensaje de eliminación de cliente";
     public static final String MESSAGE_DELETE_CLIENT = "¿Está seguro de eliminar el cliente seleccionado?";
@@ -124,6 +127,7 @@ public class Strings {
     public static final String ERROR_TRANSPORTIST_REQUIRED = "El campo Transportista es requerido.";
     public static final String ERROR_TRANSPORTIST_MORE_60 = "El campo Transportista no debe contener mas de 60 caracteres.";
     public static final String ERROR_TRANSPORT_TYPE_REQUIRED = "El campo Tipo es requerido.";
+    public static final String ERROR_NEW_TRANSPORT_UNIT_TITLE = "Unidad de Transporte";
 
     /*END*/
     /*ALGORITHM EXECUTION MESSAGES*/
