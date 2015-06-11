@@ -1,14 +1,8 @@
 package client.delivery;
 
-import client.client.*;
 import algorithm.Node;
 import algorithm.Solution;
 import com.teamdev.jxbrowser.chromium.Browser;
-import com.teamdev.jxbrowser.chromium.dom.DOMDocument;
-import com.teamdev.jxbrowser.chromium.dom.DOMElement;
-import com.teamdev.jxbrowser.chromium.dom.events.DOMEvent;
-import com.teamdev.jxbrowser.chromium.dom.events.DOMEventListener;
-import com.teamdev.jxbrowser.chromium.dom.events.DOMEventType;
 import com.teamdev.jxbrowser.chromium.swing.BrowserView;
 
 import javax.swing.*;
@@ -23,7 +17,7 @@ public class GoogleMaps {
         BrowserView browserView = new BrowserView(browser);
         JFrame frame = new JFrame("Vista en Mapa");
         frame.add(browserView, BorderLayout.CENTER);
-        frame.setSize(900, 500);
+        frame.setSize(1000, 700);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
@@ -101,8 +95,8 @@ html += "createRoute(waypts0,clientByRoute0);" +
 "   e.preventDefault();\n" +
 "   createRoute(splitWayptsArray[$('select option:selected').val()],clientsByRouteArray[$('select option:selected').val()]);\n" +
 "});\n" +
-"  map.controls[google.maps.ControlPosition.TOP_CENTER].push(selectRoute);\n" + 
-"  map.controls[google.maps.ControlPosition.TOP_CENTER].push(table);\n" + 
+"  map.controls[google.maps.ControlPosition.TOP_RIGHT].push(table);\n" + 
+"  map.controls[google.maps.ControlPosition.TOP_RIGHT].push(selectRoute);\n" + 
 
 "}\n" +
 "\n" +

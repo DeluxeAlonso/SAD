@@ -52,7 +52,7 @@ public class PalletRepository implements IPalletRepository{
     
     @Override
     public ArrayList<Pallet> queryPalletsBySpot(int spotId) {
-        String hql="from Pallet p where p.ubicacion.id=:spotId";
+        String hql="from Pallet p where p.ubicacion.id=:spotId and p.estado=:state";
         ArrayList<Pallet> pallets=null;
         
         Transaction trns = null;
@@ -61,6 +61,7 @@ public class PalletRepository implements IPalletRepository{
             trns=session.beginTransaction();
             Query q = session.createQuery(hql);
             q.setParameter("spotId", spotId);
+            q.setParameter("state", Pallets.UBICADO.ordinal());
             pallets = (ArrayList<Pallet>) q.list();          
             session.getTransaction().commit();
         } catch (RuntimeException e) {
@@ -97,7 +98,7 @@ public class PalletRepository implements IPalletRepository{
     
     @Override
     public Boolean deletePalletBySpot(int spotId) {
-        String hql="UPDATE Pallet p SET p.estado=:state WHERE p.ubicacion.id=:spotId";
+        String hql="UPDATE Pallet SET estado=:state WHERE id_ubicacion=:spotId";
         
         Transaction trns = null;
         Session session = Tools.getSessionInstance();

@@ -11,25 +11,22 @@ import algorithm.operators.LocalSearch;
 import algorithm.operators.Mutation;
 import algorithm.operators.ObjectiveFunction;
 import algorithm.operators.Repair;
-import application.order.OrderApplication;
-import application.pallet.PalletApplication;
 import client.delivery.DeliveryView;
 import entity.Cliente;
 import entity.Despacho;
 import entity.GuiaRemision;
-import entity.Pallet;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
 import entity.Producto;
 import entity.UnidadTransporte;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import javax.swing.SwingUtilities;
 import util.EntityState;
 
 /**
@@ -42,7 +39,12 @@ public class AlgorithmExecution {
     public static boolean overCap = false;
     public static boolean overTime = false;
     public static boolean overStock = false;
-
+    public static int nGen;
+    public static int nPop;
+    public static int iGen;
+    public static int iPop;
+    
+    
     static boolean checkSolution(Solution solution) {
         Node[][] routes = solution.getNodes();
         boolean[] visited = new boolean[problem.getNodes().size()];        
@@ -105,9 +107,10 @@ public class AlgorithmExecution {
         String cad3 = "\nIniciando segunda fase del algoritmo...";
         view.getTxtResult().setText(cad+cad2+cad3);
         
-        int nGen = algorithm.getNumberOfGenerations();
+        nGen = algorithm.getNumberOfGenerations();
         
         for (int i = 0; i < algorithm.getNumberOfGenerations(); i++) {
+            iGen = i;
            /*int iFinal = i; 
             try {
                 SwingUtilities.invokeLater(new Runnable() {
@@ -223,6 +226,8 @@ public class AlgorithmExecution {
         String cad4 = "\nEjecución finalizada...";
         String cad5 = "\nTiempo de ejecución: " + String.format( "%.2f", theTime ) + " s";
         view.getTxtResult().setText(cad+cad2+cad3+cad4+cad5+"\n");
+        
+        bestSolution = orderByNodes(bestSolution);
         
         return bestSolution;  
     }
@@ -498,6 +503,19 @@ public class AlgorithmExecution {
         }
         
         
+    }
+
+    private Solution orderByNodes(Solution solution) {
+        Node[][] nodes = solution.getNodes();
+        
+        Arrays.sort(nodes, new Comparator<Node[]>(){
+            public int compare(Node[] a, Node[] b){
+                return (b.length - a.length);
+            }
+        });
+        
+        solution.setNodes(nodes);
+        return solution;
     }
     
 }
