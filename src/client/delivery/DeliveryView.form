@@ -534,6 +534,7 @@
         </Container>
         <Component class="javax.swing.JCheckBox" name="allCheckbox">
           <Properties>
+            <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" value="Marcar Todos"/>
           </Properties>
           <Events>

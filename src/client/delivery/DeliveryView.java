@@ -97,7 +97,7 @@ public class DeliveryView extends BaseView {
     ArrayList<Solution> solutions = new ArrayList<Solution>();
     JFileChooser fc = new JFileChooser();
     File file = null;
-    Informable informable;
+    Boolean firstRun = true;
     
     /**
      * Creates new form DispatchView
@@ -149,9 +149,11 @@ public class DeliveryView extends BaseView {
             Object[] row = {_order.getId(), _order.getCliente().getNombre()
                     , _order.getLocal().getNombre(),EntityState.getOrdersState()[_order.getEstado()]
                     , df.format(_order.getFechaVencimiento()), totalTime,
-                    false};
+                    firstRun};
             tableModel.addRow(row);
         });
+        if(firstRun)
+            firstRun = false;
     }
     
     private void refreshOrders(){
@@ -249,10 +251,7 @@ public class DeliveryView extends BaseView {
                     partials.add(tempPartials.get(j));
             }
         }
-        if(partials.isEmpty())
-            return orderApplication.getPendingPartialOrders();
-        else
-            return partials;
+        return partials;
     }
          
     public void verifyOrders(){
@@ -599,6 +598,7 @@ public class DeliveryView extends BaseView {
         });
         jScrollPane4.setViewportView(orderTable);
 
+        allCheckbox.setSelected(true);
         allCheckbox.setText("Marcar Todos");
         allCheckbox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -760,6 +760,16 @@ public class DeliveryView extends BaseView {
         }      
         
         
+
+            }catch(Exception ex){
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, Strings.BAD_PARAMETERS,
+                        Strings.BAD_PARAMETERS_TITLE,JOptionPane.INFORMATION_MESSAGE);
+            }      
+        }
+        else
+            JOptionPane.showMessageDialog(this, "Debe seleccionar al menos un pedido.",
+                    "Despacho",JOptionPane.WARNING_MESSAGE);
     }//GEN-LAST:event_btnExecuteAlgorithmActionPerformed
 
     private void btnDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisplayActionPerformed

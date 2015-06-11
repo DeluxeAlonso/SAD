@@ -7,6 +7,7 @@ package base.client;
 
 import base.IRepository;
 import entity.Cliente;
+import entity.Local;
 import java.util.ArrayList;
 
 /**
@@ -17,4 +18,6 @@ public interface IClientRepository extends IRepository<Cliente>{
     public int insert(Cliente object);
     public ArrayList<Cliente> queryAll();
     public Boolean delete(int clientId);
+
+    public Local queryLocalById(Cliente client, Local local);
 }

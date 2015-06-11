@@ -7,6 +7,7 @@ package infraestructure.client;
 
 import base.client.IClientRepository;
 import entity.Cliente;
+import entity.Local;
 import java.util.ArrayList;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -106,6 +107,29 @@ public class ClientRepository implements IClientRepository{
     @Override
     public int delete(Cliente object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Local queryLocalById(Cliente client, Local local) {
+        String hql="FROM Local l WHERE l.estado=1 and l.cliente=:cliente and l.cliente.estado=1 and l.id=:local";
+        Local selectedLocal =null;
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);    
+            q.setParameter("cliente", client);  
+            q.setParameter("local", local.getId());
+            selectedLocal = (Local)q.uniqueResult();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        } 
+        return selectedLocal;
     }
     
 }
