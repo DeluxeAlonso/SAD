@@ -213,8 +213,9 @@ public class TransportUnitView extends BaseView implements MouseListener{
         tableModel.setRowCount(0);
         EntityType.TRANSPORT_UNITS.stream().forEach((_transportUnit) -> {
             Object[] row = {_transportUnit.getId(), _transportUnit.getPlaca(),
-                _transportUnit.getTransportista(), EntityState.getTransportUnitsState()[_transportUnit.getEstado()],
-                _transportUnit.getTipoUnidadTransporte().getDescripcion(),""};
+                _transportUnit.getTransportista(),_transportUnit.getTipoUnidadTransporte().getDescripcion(),
+                EntityState.getTransportUnitsState()[_transportUnit.getEstado()]
+                ,""};
             tableModel.addRow(row);
         });
     }
