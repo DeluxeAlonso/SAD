@@ -67,6 +67,16 @@ public class SpotApplication {
         return spots;
     }
     
+    public ArrayList<Ubicacion> querySpotsByWarehouse2(int warehouseId){
+        ArrayList<Ubicacion> spots = null;
+        try {
+            spots = spotRepository.querySpotsByWarehouse2(warehouseId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return spots;
+    }
+    
     public ArrayList<Ubicacion> querySpotsByWarehouse(int warehouseId){
         ArrayList<Ubicacion> spots = null;
         try {

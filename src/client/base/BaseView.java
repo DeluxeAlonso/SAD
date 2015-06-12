@@ -6,11 +6,15 @@
 package client.base;
 
 import client.general.MainView;
+import static client.general.MainView.reportFc;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.File;
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.border.Border;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import util.Icons;
 
 /**
@@ -22,6 +26,7 @@ public abstract class BaseView extends javax.swing.JInternalFrame {
     protected Border regularBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
     protected String error_message;
     protected JFileChooser fc = MainView.fc;
+    protected JFileChooser reportFc = MainView.reportFc;
 
     
     protected void initialize(){
@@ -51,6 +56,16 @@ public abstract class BaseView extends javax.swing.JInternalFrame {
         
         
     }
+    
+    protected File getReportSelectedFile(){
+        File file = null;
+        reportFc.showDialog(this, "Exportar");
+        file = reportFc.getSelectedFile();
+        if(!file.getAbsolutePath().endsWith(".xls"))
+                file = new File(file.getAbsolutePath()+".xls");
+        return file;
+    }
+    
     private void formInternalFrameClosed(javax.swing.event.InternalFrameEvent evt){
             this.dispose();
         }

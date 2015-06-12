@@ -14,9 +14,14 @@ import algorithm.operators.Selection;
  * @author robert
  */
 public class Population {
+
+    
     private Solution[] solutions;
     private Algorithm algorithm;
     private Problem problem;
+        
+    public Population() {
+    } 
     
     Population(Algorithm algorithm, Problem problem) {
         this.algorithm = algorithm;
