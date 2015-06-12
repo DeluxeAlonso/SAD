@@ -265,6 +265,8 @@ public class DeliveryView extends BaseView {
                     if(partialOrders.get(j).getEstado() == EntityState.PartialOrders.ATENDIDO.ordinal())
                         attendedCount++;
                 }
+                if(attendedCount == 0)
+                    currentOrders.get(i).setEstado(EntityState.Orders.REGISTRADO.ordinal());
                 if(attendedCount == partialOrders.size()){
                     currentOrders.get(i).setEstado(EntityState.Orders.FINALIZADO.ordinal());
                     orderApplication.updateOrder(currentOrders.get(i));
@@ -686,9 +688,9 @@ public class DeliveryView extends BaseView {
             solutionDeliveries = returnValues.getDespachos();
             assignRemissionGuides(returnValues.getDespachos());
             if(createPartialOrders(returnValues.getAcceptedOrders(), returnValues.getRejectedOrders())){
+                verifyOrders();
                 if(OrderView.orderView != null)
                     OrderView.orderView.verifyOrders();
-                verifyOrders();
                 allCheckbox.setSelected(false);
                 jButton1.setEnabled(true);
                 jButton2.setEnabled(true);

@@ -92,10 +92,8 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     }
 
     public void setupElements(){
-        currentOrders = orderApplication.getAllOrdersWithAllStates();
         fillCombos();
         verifyOrders();
-        //refreshTable();
         Icons.setButton(newBtn, Icons.ICONOS.CREATE.ordinal());
         Icons.setButton(searchBtn, Icons.ICONOS.SEARCH.ordinal());
         Icons.setButton(deleteBtn, Icons.ICONOS.DELETE.ordinal());
@@ -188,9 +186,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         DefaultTableModel tableModel = (DefaultTableModel) productTable.getModel();
         tableModel.setRowCount(0);
         ArrayList<PedidoParcialXProducto> products = new ArrayList<>();
-        System.out.println("OrderID " + orderId);
         products = orderApplication.queryAllProductsByOrderId(orderId);
-        System.out.println("Cantidad de productos " + products.size());
         products.stream().forEach((_product) -> {
             Object[] row = {_product.getProducto().getId(), _product.getProducto().getNombre(),
                 _product.getProducto().getCondicion().getNombre(), _product.getCantidad()};
@@ -233,23 +229,20 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     
     public void verifyOrders(){
         currentOrders = orderApplication.getAllOrdersWithAllStates();
-        for(int i=0;i<currentOrders.size();i++){
+        /*for(int i=0;i<currentOrders.size();i++){
             if(currentOrders.get(i).getEstado() != EntityState.Orders.ANULADO.ordinal()){
                 int attendedCount = 0;
                 ArrayList<PedidoParcial> partialOrders = orderApplication.getPendingPartialOrdersById(currentOrders.get(i).getId());        
                 for(int j=0;j<partialOrders.size();j++)
                     if(partialOrders.get(j).getEstado() == EntityState.PartialOrders.ATENDIDO.ordinal())
                         attendedCount++;
-                if(attendedCount == 0){
+                if(attendedCount == 0)
                     currentOrders.get(i).setEstado(EntityState.Orders.REGISTRADO.ordinal());
-                    orderApplication.updateOrder(currentOrders.get(i));
-                }
-                if(attendedCount == partialOrders.size()){
+                if(attendedCount == partialOrders.size())
                     currentOrders.get(i).setEstado(EntityState.Orders.FINALIZADO.ordinal());
-                    orderApplication.updateOrder(currentOrders.get(i));
-                }
+                orderApplication.updateOrder(currentOrders.get(i));
             }
-        }
+        }*/
          refreshTable();
     }
     
@@ -962,11 +955,14 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                 for(Iterator<PedidoParcialXProducto> partialOrderDetail = p.getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){
                     PedidoParcialXProducto partial = partialOrderDetail.next(); 
                     OrdenInternamientoXProducto o = internmentApplication.getOrderProduct(partial.getProducto());
+                    OrdenInternamiento internmentOrder = o.getOrdenInternamiento();
+                    internmentOrder.setEstado(EntityState.InternmentOrders.PENDIENTE.ordinal());
                     o.setCantidad(o.getCantidad());
                     o.setCantidadIngresada(o.getCantidadIngresada() - partial.getCantidad());
                     o.getProducto().setPalletsRegistrados(o.getProducto().getPalletsRegistrados() + partial.getCantidad());
                     o.getProducto().setStockLogico(o.getProducto().getStockLogico() + partial.getCantidad());
                     productApplication.update(o.getProducto());
+                    internmentApplication.update(internmentOrder);
                     internmentApplication.updateOrdenXProducto(o);
                  }
                 for(int i=0;i<pallets.size();i++){

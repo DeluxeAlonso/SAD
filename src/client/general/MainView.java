@@ -41,6 +41,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyVetoException;
+import java.io.File;
 import java.util.Calendar;
 import java.util.Set;
 import java.util.logging.Level;
@@ -53,6 +54,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.MenuElement;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import util.Icons;
 import util.InstanceFactory;
 
@@ -93,6 +96,7 @@ public class MainView extends javax.swing.JFrame {
     private Image icon = null;
     private SecurityLogView securiryLog = null;
     public static JFileChooser fc = new JFileChooser();
+    public static JFileChooser reportFc = new JFileChooser();
     private Sesion session= new Sesion();
 
     /**
@@ -104,6 +108,7 @@ public class MainView extends javax.swing.JFrame {
         this.user = user;
         System.out.println(mainPanel);
         desktopPane = mainPanel;
+        setupFileChooser();
         renderUserMenu();
         Icons.setMainIcon(this);
         //inicializar la sesión
@@ -149,6 +154,13 @@ public class MainView extends javax.swing.JFrame {
                 }
             }
         }
+    }
+    
+    private void setupFileChooser(){
+        reportFc.setDialogTitle("Exportar");
+        FileFilter excelType = new FileNameExtensionFilter("Microsoft Excel Document", "xls");
+        reportFc.setFileFilter(excelType);
+        reportFc.setDialogType(JFileChooser.SAVE_DIALOG);
     }
 
     /**

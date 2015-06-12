@@ -40,6 +40,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import jxl.Workbook;
@@ -397,26 +398,7 @@ public class AvailabilityReport extends BaseView {
 
     private void btnExportMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportMousePressed
         JOptionPane.setDefaultLocale(new Locale("es", "ES"));
-        fc.setDialogTitle("Seleccione un archivo");
-        fc.showOpenDialog(this);
-        fc.addChoosableFileFilter(new FileFilter() {
- 
-        @Override
-        public String getDescription() {
-            return "PDF Documents (*.pdf)";
-        }
- 
-        @Override
-        public boolean accept(File f) {
-        if (f.isDirectory()) {
-            return true;
-        } else {
-            return f.getName().toLowerCase().endsWith(".pdf");
-        }
-    }
-});
-        file = fc.getSelectedFile();
-        System.out.println(file);
+        file = getReportSelectedFile();
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
         /* Export to XSL */

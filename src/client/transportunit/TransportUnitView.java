@@ -142,7 +142,7 @@ public class TransportUnitView extends BaseView implements MouseListener{
         transportistCreateTxt.setBorder(regularBorder);
     }
     
-    public Boolean validFields(){                                         
+    public Boolean validFields(Integer actionType){                                         
         clearNewTransportUnitFielBorders();
         error_message = "Errores:\n";
         JOptionPane.setDefaultLocale(new Locale("es", "ES"));
@@ -162,7 +162,7 @@ public class TransportUnitView extends BaseView implements MouseListener{
             plateCreateTxt.setBorder(errorBorder);
             valid = false; 
         }
-        else if(transportUnitApplication.queryByPlate(plateCreateTxt.getText()).size() != 0){
+        else if(transportUnitApplication.queryByPlate(plateCreateTxt.getText()).size() != 0 && actionType==1){
             error_message += "La unidad ya fue creada previamente.\n";
             plateCreateTxt.setBorder(errorBorder);
             valid = false; 
@@ -534,7 +534,7 @@ public class TransportUnitView extends BaseView implements MouseListener{
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
-        if(validFields()){   
+        if(validFields(1)){   
             if(saveTransportUnit()){
                 transportUnitApplication.refreshTransportUnits();
                 JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_TRANSPORT_UNIT_CREATED,Strings.MESSAGE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
@@ -568,7 +568,7 @@ public class TransportUnitView extends BaseView implements MouseListener{
     }//GEN-LAST:event_fileBtnActionPerformed
 
     private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
-        if(validFields()){
+        if(validFields(2)){
             if(editTransportUnit(EntityType.TRANSPORT_UNITS.get(transportTable.getSelectedRow()))){
                 transportUnitApplication.refreshTransportUnits();
                 JOptionPane.showMessageDialog(this, Strings.MESSAGE_NEW_TRANSPORT_UNIT_CREATED,Strings.MESSAGE_TRANSPORT_UNIT_TITLE,JOptionPane.INFORMATION_MESSAGE);
