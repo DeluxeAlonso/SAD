@@ -484,7 +484,20 @@ public class AlgorithmExecution extends SwingWorker<Solution, String>{
 
         problem = new Problem(partialOrders);
 
-        Population population = new Population(algorithm, problem);
+        Population population = new Population();
+        population.setProblem(problem);
+        population.setAlgorithm(algorithm);
+        Solution[] solutions = new Solution[algorithm.getPopulationSize()];
+        int n1 = solutions.length;
+        for (int i = 0; i < n1; i++) {            
+            solutions[i] = new Solution(algorithm, problem, i); 
+            solutions[i] = LocalSearch.opt2Improvement(solutions[i], algorithm, problem);
+            solutions[i].setCost(ObjectiveFunction.getSolutionCost(solutions[i], 
+                    algorithm, problem, problem.getProductsStock()));  
+            if(n1%100==0) setProgress((i+1) * 50 / n1);
+        }        
+        population.setSolutions(solutions);
+        
         System.out.println("Se creo la población");
 
         Solution bestSolution;
@@ -539,7 +552,7 @@ public class AlgorithmExecution extends SwingWorker<Solution, String>{
              */
             population.getSolutions()[replacedSolution] = child;
             
-            if(n%100==0) setProgress((i+1) * 100 / n);
+            if(n%100==0) setProgress(50 + (i+1) * 50 / n);
             
         }
         long end = System.currentTimeMillis();
