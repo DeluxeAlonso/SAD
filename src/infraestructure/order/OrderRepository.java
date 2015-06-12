@@ -522,4 +522,26 @@ public class OrderRepository implements IOrderRepository{
         return partialOrders;
     }
 
+    @Override
+    public ArrayList<Pedido> queryOrdersByClientId(Integer clientId) {
+        Session session = Tools.getSessionInstance();
+        String hql = "from Pedido where (estado=1 or estado=2) and id_cliente=:id";
+        ArrayList<Pedido> orders = new ArrayList<>();
+        Transaction trns = null;
+        try{
+            trns = session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("id", clientId);
+            orders = (ArrayList<Pedido>) q.list();
+            session.getTransaction().commit();
+        }
+        catch (RuntimeException e){
+            if(trns != null){
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return orders;
+    }
+
 }

@@ -197,8 +197,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     /*
      * Order Methods
      */
-    public void deleteOrder(){
-        Pedido currentOrder = currentOrders.get(currentOrderIndex());
+    public void deleteOrder(Pedido currentOrder){
         Boolean deleteEnable = true;
         ArrayList<PedidoParcial> partialOrders = orderApplication.getPendingPartialOrdersById(currentOrder.getId());
         currentOrder.setEstado(0);
@@ -807,7 +806,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
             }
         });
 
-        jLabel14.setText("Razon:");
+        jLabel14.setText("Devolucion:");
 
         reasonCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seleccionar Razon", "Productos Vencidos", "Disconformidad" }));
         reasonCombo.setEnabled(false);
@@ -824,11 +823,11 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                         .addComponent(newBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(57, 57, 57)
+                        .addGap(51, 51, 51)
                         .addComponent(jLabel14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(reasonCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(reasonCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                         .addComponent(deletePartialBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -879,7 +878,8 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
         int response = JOptionPane.showConfirmDialog(this, Strings.MESSAGE_CONFIRM_DELETE_ORDER,Strings.MESSAGE_DELETE_ORDER_TITLE,JOptionPane.WARNING_MESSAGE);
         if(JOptionPane.OK_OPTION == response){
-            deleteOrder();
+            Pedido currentOrder = currentOrders.get(currentOrderIndex());
+            deleteOrder(currentOrder);
             clearDetailFields();
         }
     }//GEN-LAST:event_deleteBtnActionPerformed

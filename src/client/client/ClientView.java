@@ -9,9 +9,16 @@ import algorithm.Node;
 import algorithm.Solution;
 import application.client.ClientApplication;
 import application.local.LocalApplication;
+import application.order.OrderApplication;
+import application.product.ProductApplication;
 import client.base.BaseView;
+import client.order.OrderView;
 import entity.Cliente;
 import entity.Local;
+import entity.Pedido;
+import entity.PedidoParcial;
+import entity.PedidoParcialXProducto;
+import entity.Producto;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -22,12 +29,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Locale;
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
+import util.EntityState;
 import util.EntityState.Clients;
 import util.EntityState.Locals;
 import util.InstanceFactory;
@@ -40,6 +49,8 @@ import util.Strings;
 public class ClientView extends BaseView implements MouseListener {
     ClientApplication clientApplication=InstanceFactory.Instance.getInstance("clientApplication", ClientApplication.class);
     LocalApplication localApplication=InstanceFactory.Instance.getInstance("localApplication", LocalApplication.class);
+    OrderApplication orderApplication= new OrderApplication();
+    ProductApplication productApplication = new ProductApplication();
     ArrayList<Cliente> clients;
     ArrayList<Local> locals;
     File file = null;
@@ -217,6 +228,21 @@ public class ClientView extends BaseView implements MouseListener {
         txtNewLocalLatitude.setBorder(regularBorder);
         txtNewLocalLongitude.setBorder(regularBorder);
         txtNewLocalAddress.setBorder(regularBorder);
+    }
+    
+    public void deleteOrder(Pedido currentOrder){
+        ArrayList<PedidoParcial> partialOrders = orderApplication.getPendingPartialOrdersById(currentOrder.getId());
+        currentOrder.setEstado(0);
+        for(int i=0;i<partialOrders.size();i++){
+            if(partialOrders.get(i).getEstado() == EntityState.PartialOrders.ATENDIDO.ordinal())
+           for (Iterator<PedidoParcialXProducto> partialXProduct = partialOrders.get(i).getPedidoParcialXProductos().iterator(); partialXProduct.hasNext(); ) {
+                PedidoParcialXProducto pxp = partialXProduct.next();
+                Producto product = pxp.getProducto();
+                product.setStockLogico(product.getStockLogico() + pxp.getCantidad());
+                productApplication.update(product);
+            }
+        }
+        orderApplication.updateOrder(currentOrder);
     }
 
     /**
@@ -657,6 +683,11 @@ public class ClientView extends BaseView implements MouseListener {
         int response = JOptionPane.showConfirmDialog(this, Strings.MESSAGE_DELETE_CLIENT,Strings.MESSAGE_DELETE_CLIENT_TITLE,JOptionPane.WARNING_MESSAGE);
         if(JOptionPane.OK_OPTION == response){
             clientApplication.delete(clients.get(tblClients.getSelectedRow()).getId());
+            ArrayList<Pedido> ordersToDelete = orderApplication.getOrdersByClientId(clients.get(tblClients.getSelectedRow()).getId());
+            for(int i=0;i<ordersToDelete.size();i++)
+                deleteOrder(ordersToDelete.get(i));
+            if(OrderView.orderView != null)
+                OrderView.orderView.verifyOrders();
             fillClientsTable();
             clearNewLocalForm();
             changeNewLocalFormState(false);
@@ -730,4 +761,5 @@ public class ClientView extends BaseView implements MouseListener {
     public void mouseExited(MouseEvent e) {
         //To change body of generated methods, choose Tools | Templates.
     }
+    
 }

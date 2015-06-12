@@ -59,6 +59,16 @@ public class OrderApplication {
         return client;
     }
     
+    public ArrayList<Pedido> getOrdersByClientId(Integer clientId){
+        ArrayList<Pedido>orders = new ArrayList<>();
+        try{
+            orders = orderRepository.queryOrdersByClientId(clientId);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return orders;
+    }
+    
     public Boolean CreateOrder(Pedido order, PedidoParcial p, ArrayList<PedidoParcialXProducto> pp, Boolean uploaded){
         Boolean response = false;
         try {
