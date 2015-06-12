@@ -737,6 +737,17 @@ public class MainView extends javax.swing.JFrame {
                         .getName()).log(Level.SEVERE, null, ex);
             }
         }
+        else{
+            try {
+                // TODO add your handling code here:
+                orderView.moveToFront();
+                orderView.setSelected(true);
+
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }//GEN-LAST:event_PedidosActionPerformed
 
     private void jMenuItem10MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem10MousePressed
@@ -843,6 +854,17 @@ public class MainView extends javax.swing.JFrame {
                         .getName()).log(Level.SEVERE, null, ex);
             }
 
+        }
+        else{
+            try {
+                // TODO add your handling code here:
+                transportUnitView.moveToFront();
+                transportUnitView.setSelected(true);
+
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
     }//GEN-LAST:event_TUFrameMousePressed

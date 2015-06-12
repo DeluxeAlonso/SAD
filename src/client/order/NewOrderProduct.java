@@ -133,12 +133,17 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
         if(orderProducts.contains(p)){
             int index = orderProducts.indexOf(p);
             productQuantities.set(index, q + productQuantities.get(index));
-            if (productQuantities.get(index) > p.getStockLogico())
+            if (productQuantities.get(index) > p.getStockLogico()){
+                JOptionPane.showMessageDialog(this, "Se ha agregado toda la cantidad disponible para este producto.",
+                    Strings.MESSAGE_CREATE_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
                 productQuantities.set(index, p.getStockLogico());
+            }
         }
         else{
             orderProducts.add(p);
             if (q > p.getStockLogico()){
+                JOptionPane.showMessageDialog(this, "Se ha agregado toda la cantidad disponible para este producto.",
+                    Strings.MESSAGE_CREATE_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
                 productQuantities.add(p.getStockLogico()); 
             }else{
                 productQuantities.add(q); 
