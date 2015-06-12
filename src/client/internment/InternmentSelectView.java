@@ -23,6 +23,7 @@ import entity.Producto;
 import entity.Pallet;
 import entity.Rack;
 import entity.Ubicacion;
+import java.awt.Cursor;
 import java.awt.event.ItemEvent;
 import java.io.BufferedReader;
 import java.io.File;
@@ -61,7 +62,7 @@ public class InternmentSelectView extends BaseView {
     KardexApplication kardexApplication = InstanceFactory.Instance.getInstance("kardexApplication", KardexApplication.class);
     public static InternmentSelectView internmentSelectView;
 
-    JFileChooser fc = new JFileChooser();
+    //JFileChooser fc = new JFileChooser();
     File file = null;
 
     /**
@@ -91,8 +92,8 @@ public class InternmentSelectView extends BaseView {
         //jButton3.setEnabled(false);
         comboWarehouse.removeAllItems();
         table = tableFreeSpots;
-        txtPendingInterns.setVisible(false);
-        jLabel3.setVisible(false);
+        //txtPendingInterns.setVisible(false);
+        //jLabel3.setVisible(false);
         /*table.getModel().addTableModelListener(new TableModelListener() {
          public void tableChanged(TableModelEvent e) {
          Boolean isChecked;
@@ -528,7 +529,12 @@ public class InternmentSelectView extends BaseView {
 
     private void btnInternActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInternActionPerformed
         if (Integer.parseInt(txtPendingInterns.getText()) >= 0) {
+            Cursor cur1 = new Cursor(Cursor.WAIT_CURSOR);
+            setCursor(cur1);
             internarPallets();
+            Cursor cur2 = new Cursor(Cursor.DEFAULT_CURSOR);
+            setCursor(cur2);
+            
         } else {
             JOptionPane.setDefaultLocale(new Locale("es", "ES"));
             JOptionPane.showMessageDialog(this, "Seleccione una cantidad de ubicaciones menor o igual a la cantidad de pallets", "Error al Internar pallets", JOptionPane.ERROR_MESSAGE);
@@ -569,86 +575,40 @@ public class InternmentSelectView extends BaseView {
         if (ordenAInternar != null) {
             ArrayList<Pallet> pallets = palletApplication.getPalletsFromOrder(ordenAInternar.getId());
             ArrayList<Pallet> palletsInter = new ArrayList<Pallet>();
+            ArrayList<Pallet> palletsInterAFuncion = new ArrayList<Pallet>();
             for (int i = 0; i < pallets.size(); i++) {
                 if (pallets.get(i).getUbicacion() == null) {
                     palletsInter.add(pallets.get(i));
                 }
             }
+            
             if (table.getRowCount() > 0) {
                 OrdenInternamientoXProducto op=internmentApplication.getProdOrder(ordenAInternar);
+                aux = op.getCantidadIngresada();
                 for (int i = 0; i < table.getRowCount(); i++) {                    
-                    if (op.getCantidadIngresada()==op.getCantidad()) {
-                        //ordenAInternar.setEstado(EntityState.InternmentOrders.INTERNADA.ordinal());
-                        OrdenInternamiento ord = internmentApplication.queryById(ordenAInternar.getId());
-                        ord.setEstado(EntityState.InternmentOrders.INTERNADA.ordinal());
-                        internmentApplication.update(ord);
-                        aux = cant - 1;
+                    if (aux==op.getCantidad()) {
                         break;
                     }
 
                     isChecked = (Boolean) table.getValueAt(i, 4);
                     if (isChecked != null && isChecked) {
-                    //meter ubicacion al pallet  
-
-                        //palletApplication.updateSpot(palletsInter.get(cant).getId(),ubicaciones.get(i).getId());
                         Pallet pall = palletsInter.get(cant);
                         pall.setEstado(EntityState.Pallets.UBICADO.ordinal());
                         pall.setUbicacion(ubicaciones.get(i));
-                        palletApplication.update(pall);
-
-                        // cambiar estado de ubicacion a ocupada
-                        spotApplication.updateSpotOccupancy(ubicaciones.get(i).getId(), EntityState.Spots.OCUPADO.ordinal());
-
-                        //actualizar cant a internar en ordeninteramientoXproducto
-                        //OrdenInternamientoXProducto ordenXProd = internmentApplication.getProdOrder(ordenAInternar);
-                        op.setCantidadIngresada(op.getCantidadIngresada() + 1);
-                        //internmentApplication.incCantOrderXProd(op);
-
-                    // actualizar stock total del producto
-                    /*Producto prod = internmentApplication.getProdOrder(ordenAInternar).getProducto();
-                         prod.setStockTotal(prod.getStockTotal()+1);
-                         productApplication.update(prod);
-                         */
-                        //disminuir ubicaciones libres en racks y almacen
-                    /*Almacen alm = almacenes.get(jComboBox1.getSelectedIndex());
-                         alm.setUbicLibres(alm.getUbicLibres()-1);
-                         warehouseApplication.update(alm);
-                         */
+                        palletsInterAFuncion.add(pall);
                         cant++;
-                        aux = cant;
+                        aux++;
                     }
-                    /*if (internmentApplication.getProdOrder(ordenAInternar).getCantidadIngresada() == internmentApplication.getProdOrder(ordenAInternar).getCantidad()) {
-                        //ordenAInternar.setEstado(EntityState.InternmentOrders.INTERNADA.ordinal());
-                        OrdenInternamiento ord = internmentApplication.queryById(ordenAInternar.getId());
-                        ord.setEstado(EntityState.InternmentOrders.INTERNADA.ordinal());
-                        internmentApplication.update(ord);
-                        aux = cant;
-                        break;
-                    }*/
+                   
                 }
-                internmentApplication.incCantOrderXProd(op);
-                // actualizar pallets registrados y ubicados del producto
-                Producto prod =op.getProducto();
-                prod.setPalletsUbicados(prod.getPalletsUbicados() + aux);
-                prod.setPalletsRegistrados(prod.getPalletsRegistrados() - aux);
-                productApplication.update(prod);
-
-                //actualizar cant a internar en ordeninteramientoXproducto
-                //OrdenInternamientoXProducto ordenXProd = internmentApplication.getProdOrder(ordenAInternar);
-                //ordenXProd.setCantidadIngresada(ordenXProd.getCantidadIngresada()+aux);
-                //internmentApplication.incCantOrderXProd(ordenXProd);
-                //disminuir ubicaciones libres en racks y almacen
-                Almacen alm = almacenes.get(comboWarehouse.getSelectedIndex());
-                alm.setUbicLibres(alm.getUbicLibres() - aux);
-                warehouseApplication.update(alm);
-
+                
                 //ingresar entrada en kardex
                 ArrayList<Kardex> kardex = kardexApplication.queryByParameters(almacenes.get(comboWarehouse.getSelectedIndex()).getId(), op.getProducto().getId());
                 Kardex internmentKardex = new Kardex();
                 internmentKardex.setAlmacen(almacenes.get(comboWarehouse.getSelectedIndex()));
                 internmentKardex.setProducto(op.getProducto());
                 internmentKardex.setTipoMovimiento("Ingreso");
-                internmentKardex.setCantidad(aux);
+                internmentKardex.setCantidad(palletsInterAFuncion.size());
 
                 internmentKardex.setFecha(Calendar.getInstance().getTime());
                 if (kardex.size() == 0) {
@@ -656,7 +616,7 @@ public class InternmentSelectView extends BaseView {
                 } else {
                     internmentKardex.setStockInicial(kardex.get(0).getStockFinal());
                 }
-                internmentKardex.setStockFinal(internmentKardex.getStockInicial() + aux);
+                internmentKardex.setStockFinal(internmentKardex.getStockInicial() + palletsInterAFuncion.size());
 
                 KardexId kId = new KardexId();
                 kId.setIdAlmacen(almacenes.get(comboWarehouse.getSelectedIndex()).getId());
@@ -664,9 +624,16 @@ public class InternmentSelectView extends BaseView {
 
                 internmentKardex.setId(kId);
 
-                kardexApplication.insert(internmentKardex);
+                //kardexApplication.insert(internmentKardex);
                 //kardexApplication.insertKardexID(kId);
-
+                if (palletsInterAFuncion.size()>0){
+                    int intern = palletApplication.internNPallets(palletsInterAFuncion, op, internmentKardex);
+                    if (intern == 1)
+                        JOptionPane.showMessageDialog(this, "Pallets internados correctamente","Mensaje de internado de pallet",JOptionPane.INFORMATION_MESSAGE);
+                }
+                else
+                    JOptionPane.showMessageDialog(this, "Por favor seleccione al menos 1 ubicación","Mensaje de internado de pallet",JOptionPane.WARNING_MESSAGE);
+                    
             }
             fillTable();
             clearGrid(tableFreeSpots);
@@ -678,6 +645,7 @@ public class InternmentSelectView extends BaseView {
         }
     }
 
+
     private void fillFreeSpots() {
 
         clearGrid(tableFreeSpots);
@@ -686,25 +654,18 @@ public class InternmentSelectView extends BaseView {
             DefaultTableModel model = (DefaultTableModel) tableFreeSpots.getModel();
             ArrayList<Ubicacion> ubi = new ArrayList<Ubicacion>();
             Almacen alm = almacenes.get(comboWarehouse.getSelectedIndex());
-            txtAvUbication.setText(alm.getUbicLibres().toString());
-            System.out.println("Almacen id  " + alm.getId());
-            ArrayList<Rack> racks = rackApplication.queryRacksByWarehouse(alm.getId());
-            System.out.println("Racks " + racks.size());
-            for (Rack r : racks) {
-                //r.getUbicacions().
-                ubi = (ArrayList<Ubicacion>) spotApplication.queryEmptySpotsByRack(r.getId());
-                System.out.println("Ubicaciones " + ubi.size());
-                ubicaciones.addAll(ubi);
+            ubi = spotApplication.querySpotsByWarehouse2(alm.getId());
+            txtAvUbication.setText(String.valueOf(ubi.size()));
+            ubicaciones.addAll(ubi);
                 for (Ubicacion ub : ubi) {
                     model.addRow(new Object[]{
-                        r.getId(),
+                        ub.getRack().getId(),
                         ub.getLado(),
                         ub.getFila(),
                         ub.getColumna()
                     });
                 }
 
-            }
         }else
             JOptionPane.showMessageDialog(this, "No existe ningún almacén creado que cumpla con la condición del producto.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
     }

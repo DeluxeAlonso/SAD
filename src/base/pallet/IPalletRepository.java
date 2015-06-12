@@ -8,7 +8,9 @@ package base.pallet;
 import base.IRepository;
 import entity.Almacen;
 import entity.Despacho;
+import entity.Kardex;
 import entity.OrdenInternamiento;
+import entity.OrdenInternamientoXProducto;
 import entity.Pallet;
 import entity.Producto;
 import java.util.ArrayList;
@@ -38,4 +40,6 @@ public interface IPalletRepository extends IRepository<Pallet>{
     public ArrayList<Pallet> queryByWarehouseParameters(Almacen warehouse, ArrayList<Despacho> delivery);
     public List<Object[]> queryByReportInter(int almacen, Date fechaD, Date fechaH, int tipo);
     public int insertNPallets(ArrayList<Pallet> pallets);
+    public int internNPallets(ArrayList<Pallet> pallets, OrdenInternamientoXProducto orXProd, Kardex kardex );
+    
 }

@@ -8,9 +8,12 @@ package infraestructure.pallet;
 import base.pallet.IPalletRepository;
 import entity.Almacen;
 import entity.Despacho;
+import entity.Kardex;
 import entity.OrdenInternamiento;
+import entity.OrdenInternamientoXProducto;
 import entity.Pallet;
 import entity.Producto;
+import entity.Ubicacion;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -573,4 +576,61 @@ public class PalletRepository implements IPalletRepository{
         return 1;
     }
     
+    public int internNPallets(ArrayList<Pallet> pallets, OrdenInternamientoXProducto orXProd, Kardex kardex ) {
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Almacen alm = pallets.get(0).getUbicacion().getRack().getAlmacen();
+            Producto prod = pallets.get(0).getProducto();
+            for (Pallet p : pallets){
+                if (p.getUbicacion() != null){
+                    //Actualizar ubicacion de pallets
+                    session.update(p);
+                    //actualizar estado en ubicaciones
+                    Ubicacion ub = p.getUbicacion();
+                    ub.setEstado(EntityState.Spots.OCUPADO.ordinal());
+                    session.update(ub);                    
+                }
+            }
+            session.flush(); 
+
+            
+            //actualizar orden intermientoXproducto. cant ingresada
+            orXProd.setCantidadIngresada(orXProd.getCantidadIngresada()+pallets.size());
+            session.update(orXProd);
+            session.flush(); 
+
+            //cambiar estado si se interna toda la orden
+            int x = orXProd.getCantidad();
+            int y = orXProd.getCantidadIngresada();
+            if (x == y){
+                orXProd.getOrdenInternamiento().setEstado(EntityState.InternmentOrders.INTERNADA.ordinal());
+                session.update(orXProd.getOrdenInternamiento());
+            }
+            session.flush();
+            
+            // actualizar pallets registrados y ubicados del producto
+            prod.setPalletsRegistrados(prod.getPalletsRegistrados()-pallets.size());
+            prod.setPalletsUbicados(prod.getPalletsUbicados()+ pallets.size());
+            session.update(prod);
+            session.flush(); 
+            //disminuir ubicaciones libres en almacen
+            alm.setUbicLibres(alm.getUbicLibres()-pallets.size());
+            session.update(alm);
+            session.flush(); 
+            //ingresar entrada en kardex
+            session.save(kardex);
+            session.flush();     
+            session.getTransaction().commit();            
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return -1;
+        } 
+        return 1;
+    }
+
 }
