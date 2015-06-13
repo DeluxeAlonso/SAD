@@ -201,8 +201,8 @@ public class InternmentRepository implements IInternmentRepository {
     }
     
     @Override
-    public OrdenInternamientoXProducto getOrderProd(Producto id) {
-         String hql="FROM OrdenInternamientoXProducto WHERE producto=:id";
+    public OrdenInternamientoXProducto getOrderProd(Producto id, Integer quantity) {
+         String hql="FROM OrdenInternamientoXProducto WHERE producto=:id and (cantidad_ingresada >= :quantity)";
         ArrayList<OrdenInternamientoXProducto> orden= new ArrayList<>();
         
         Transaction trns = null;
@@ -211,6 +211,7 @@ public class InternmentRepository implements IInternmentRepository {
             trns=session.beginTransaction();
             Query q = session.createQuery(hql);
             q.setParameter("id", id);
+            q.setParameter("quantity", quantity);
             orden = (ArrayList<OrdenInternamientoXProducto>) q.list();          
             session.getTransaction().commit();
         } catch (RuntimeException e) {

@@ -952,17 +952,19 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
             else{//CLIENTE INSATISFECHO
                 p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
                 for(Iterator<PedidoParcialXProducto> partialOrderDetail = p.getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){
-                    PedidoParcialXProducto partial = partialOrderDetail.next(); 
-                    OrdenInternamientoXProducto o = internmentApplication.getOrderProduct(partial.getProducto());
+                    PedidoParcialXProducto partial = partialOrderDetail.next();
+                    OrdenInternamientoXProducto o = internmentApplication.getOrderProduct(partial.getProducto(), partial.getCantidad());
                     OrdenInternamiento internmentOrder = o.getOrdenInternamiento();
-                    internmentOrder.setEstado(EntityState.InternmentOrders.PENDIENTE.ordinal());
-                    o.setCantidad(o.getCantidad());
-                    o.setCantidadIngresada(o.getCantidadIngresada() - partial.getCantidad());
-                    o.getProducto().setPalletsRegistrados(o.getProducto().getPalletsRegistrados() + partial.getCantidad());
-                    o.getProducto().setStockLogico(o.getProducto().getStockLogico() + partial.getCantidad());
-                    productApplication.update(o.getProducto());
-                    internmentApplication.update(internmentOrder);
-                    internmentApplication.updateOrdenXProducto(o);
+                    if(o != null){
+                        internmentOrder.setEstado(EntityState.InternmentOrders.PENDIENTE.ordinal());
+                        o.setCantidad(o.getCantidad());
+                        o.setCantidadIngresada(o.getCantidadIngresada() - partial.getCantidad());
+                        o.getProducto().setPalletsRegistrados(o.getProducto().getPalletsRegistrados() + partial.getCantidad());
+                        o.getProducto().setStockLogico(o.getProducto().getStockLogico() + partial.getCantidad());
+                        productApplication.update(o.getProducto());
+                        internmentApplication.update(internmentOrder);
+                        internmentApplication.updateOrdenXProducto(o);
+                    }
                  }
                 for(int i=0;i<pallets.size();i++){
                     pallets.get(i).setEstado(EntityState.Pallets.CREADO.ordinal());
@@ -1088,12 +1090,18 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
             if(partialCombo.getSelectedIndex()==0){
                 refreshAllProductsTable(currentOrders.get(orderTable.getSelectedRow()).getId());
                 partialStatusTxt.setText("");
+                reasonCombo.setEnabled(false);
+                deletePartialBtn.setEnabled(false);
             }
             else{
                 if(currentPartialOrders.get(partialCombo.getSelectedIndex()-1).getEstado() == 0){
                     reasonCombo.setEnabled(true);
                     deletePartialBtn.setEnabled(true);
-                }   
+                }else
+                {
+                    reasonCombo.setEnabled(false);
+                    deletePartialBtn.setEnabled(false);
+                }
                 refreshProductTable(currentPartialOrders.get(partialCombo.getSelectedIndex()-1).getId());
                 partialStatusTxt.setText(EntityState.getPartialOrdersState()[currentPartialOrders.get(partialCombo.getSelectedIndex()-1).getEstado()]);
             }

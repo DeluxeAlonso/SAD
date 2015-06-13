@@ -454,10 +454,7 @@ public class OrderRepository implements IOrderRepository{
         try {            
             trns=session.beginTransaction();
             for(int i=0;i<pallets.size();i++){
-                Ubicacion slot = pallets.get(i).getUbicacion();
-                slot.setEstado(EntityState.Spots.LIBRE.ordinal());
                 pallets.get(i).setUbicacion(null);
-                session.update(slot);
                 session.update(pallets.get(i));
             }
             session.update(p.getPedido());
