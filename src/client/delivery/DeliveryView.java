@@ -265,8 +265,10 @@ public class DeliveryView extends BaseView {
                     if(partialOrders.get(j).getEstado() == EntityState.PartialOrders.ATENDIDO.ordinal())
                         attendedCount++;
                 }
-                if(attendedCount == 0)
+                if(attendedCount == 0){
                     currentOrders.get(i).setEstado(EntityState.Orders.REGISTRADO.ordinal());
+                    orderApplication.updateOrder(currentOrders.get(i));
+                }
                 if(attendedCount == partialOrders.size()){
                     currentOrders.get(i).setEstado(EntityState.Orders.FINALIZADO.ordinal());
                     orderApplication.updateOrder(currentOrders.get(i));
@@ -822,11 +824,7 @@ public class DeliveryView extends BaseView {
     }//GEN-LAST:event_allCheckboxItemStateChanged
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        fc.setDialogTitle("Seleccione un archivo");
-        fc.showOpenDialog(this);
-        FileFilter excelType = new FileNameExtensionFilter("Excel spreadsheet (.xls)", "xls");
-        fc.addChoosableFileFilter(excelType);
-        file = fc.getSelectedFile();
+        file = getReportSelectedFile();
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
         try{
@@ -943,13 +941,16 @@ public class DeliveryView extends BaseView {
             Label t3 = new Label(3, 6, "Producto"); 
             Label t4 = new Label(4, 6, "Rack"); 
             Label t5 = new Label(5, 6, "Fila"); 
-            Label t6 = new Label(6, 6, "Lado");  
+            Label t6 = new Label(6, 6, "Columna");  
+            Label t7 = new Label(7, 6, "Lado");
+            
              t1.setCellFormat(headerTFormat);
              t2.setCellFormat(headerTFormat);
              t3.setCellFormat(headerTFormat);
              t4.setCellFormat(headerTFormat);
              t5.setCellFormat(headerTFormat);
              t6.setCellFormat(headerTFormat);
+             t7.setCellFormat(headerTFormat);
              
              label0.setCellFormat(headerLFormat);
              label1.setCellFormat(tittleFormat);
@@ -969,6 +970,7 @@ public class DeliveryView extends BaseView {
             writableSheet.addCell(t4);
             writableSheet.addCell(t5);
             writableSheet.addCell(t6);
+            writableSheet.addCell(t7);
         }
             catch(Exception e){
                 
@@ -1012,7 +1014,9 @@ public class DeliveryView extends BaseView {
                 Label l3 = new Label(3, fil+i, pallet.getProducto().getNombre());
                 Number l4 = new Number(4,fil+i,pallet.getUbicacion().getRack().getId());
                 Number l5 = new Number(5,fil+i,pallet.getUbicacion().getFila());
-                Label l6 = new Label(6,fil+i,pallet.getUbicacion().getLado());      
+                Number l6 = new Number(6,fil+i,pallet.getUbicacion().getColumna()); 
+                Label l7 = new Label(7,fil+i,pallet.getUbicacion().getLado()); 
+                
                 
                 if (i%2==0){
                     l1.setCellFormat(imparFormat);
@@ -1021,6 +1025,7 @@ public class DeliveryView extends BaseView {
                     l4.setCellFormat(imparFormat);
                     l5.setCellFormat(imparFormat);
                     l6.setCellFormat(imparFormat);
+                    l7.setCellFormat(imparFormat);
                 }else{
                     l1.setCellFormat(parFormat);
                     l2.setCellFormat(parFormat);
@@ -1028,6 +1033,7 @@ public class DeliveryView extends BaseView {
                     l4.setCellFormat(parFormat);
                     l5.setCellFormat(parFormat);
                     l6.setCellFormat(parFormat);
+                    l7.setCellFormat(parFormat);
                 }
                 writableSheet.addCell(l1);
                 writableSheet.addCell(l2);
@@ -1035,6 +1041,7 @@ public class DeliveryView extends BaseView {
                 writableSheet.addCell(l4);
                 writableSheet.addCell(l5);
                 writableSheet.addCell(l6);
+                writableSheet.addCell(l7);
                 i++;
             }
    
@@ -1044,9 +1051,7 @@ public class DeliveryView extends BaseView {
     }
     
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        fc.setDialogTitle("Seleccione un archivo");
-        fc.showOpenDialog(this);
-        file = fc.getSelectedFile();
+        file = getReportSelectedFile();
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
         try{
