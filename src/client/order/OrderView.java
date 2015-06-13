@@ -947,7 +947,6 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                     //productApplication.update(product);
                     pallets.get(i).setEstado(EntityState.Pallets.ELIMINADO.ordinal());
                     pallets.get(i).setPedidoParcial(null);
-                    pallets.get(i).setUbicacion(null);
                 }
             }
             else{//CLIENTE INSATISFECHO
@@ -968,7 +967,6 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                 for(int i=0;i<pallets.size();i++){
                     pallets.get(i).setEstado(EntityState.Pallets.CREADO.ordinal());
                     pallets.get(i).setPedidoParcial(null);
-                    pallets.get(i).setUbicacion(null);
                 }
             }
             //Verificamos si al pedido le quedana un pedidos parciales
