@@ -101,7 +101,7 @@ public class EntityState {
     
     public static enum Pallets {
 
-        CREADO, UBICADO, DESPACHADO, ELIMINADO
+        CREADO, UBICADO, DESPACHADO, ELIMINADO, ROTO, VENCIDO
     }
 
     public static String[] getPalletsState() {

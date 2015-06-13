@@ -1,5 +1,5 @@
 package entity;
-// Generated 10/06/2015 05:59:02 PM by Hibernate Tools 4.3.1
+// Generated 13-jun-2015 16:24:54 by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -19,6 +19,7 @@ public class Pallet  implements java.io.Serializable {
      private Date fechaRegistro;
      private Date fechaVencimiento;
      private Integer estado;
+     private Date fechaInternamiento;
 
     public Pallet() {
     }
@@ -27,7 +28,7 @@ public class Pallet  implements java.io.Serializable {
     public Pallet(Producto producto) {
         this.producto = producto;
     }
-    public Pallet(OrdenInternamiento ordenInternamiento, PedidoParcial pedidoParcial, Producto producto, Ubicacion ubicacion, String ean128, Date fechaRegistro, Date fechaVencimiento, Integer estado) {
+    public Pallet(OrdenInternamiento ordenInternamiento, PedidoParcial pedidoParcial, Producto producto, Ubicacion ubicacion, String ean128, Date fechaRegistro, Date fechaVencimiento, Integer estado, Date fechaInternamiento) {
        this.ordenInternamiento = ordenInternamiento;
        this.pedidoParcial = pedidoParcial;
        this.producto = producto;
@@ -36,6 +37,7 @@ public class Pallet  implements java.io.Serializable {
        this.fechaRegistro = fechaRegistro;
        this.fechaVencimiento = fechaVencimiento;
        this.estado = estado;
+       this.fechaInternamiento = fechaInternamiento;
     }
    
     public Integer getId() {
@@ -100,6 +102,13 @@ public class Pallet  implements java.io.Serializable {
     
     public void setEstado(Integer estado) {
         this.estado = estado;
+    }
+    public Date getFechaInternamiento() {
+        return this.fechaInternamiento;
+    }
+    
+    public void setFechaInternamiento(Date fechaInternamiento) {
+        this.fechaInternamiento = fechaInternamiento;
     }
 
 
