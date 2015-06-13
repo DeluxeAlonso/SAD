@@ -318,12 +318,12 @@ public class PalletRepository implements IPalletRepository{
                     "(select r.id from Rack r where (r.almacen.id=:almacen OR :almacen=0)))) AND "+
                     "(a.ean128 like :ean OR :ean = :aux) AND" +
                     "(a.ordenInternamiento.id = :internmentOrder OR :internmentOrder = 0) AND" +
-                    "(a.producto.id = :producto OR :producto = 0)";
+                    "(a.producto.id = :producto OR :producto = 0) ORDER BY a.ubicacion.rack.almacen.id, a.ubicacion.rack.id, a.ubicacion.lado, a.ubicacion.fila, a.ubicacion.columna";
         
         String hql2 = "FROM Pallet a where (a.ubicacion is null) AND "+
                         "(a.ean128 like :ean OR :ean = :aux) AND" +
                         "(a.ordenInternamiento.id = :internmentOrder OR :internmentOrder = 0) AND" +
-                        "(a.producto.id = :producto OR :producto = 0)";       
+                        "(a.producto.id = :producto OR :producto = 0)  ";       
         String hql = null;
         ArrayList<Pallet> pallets=null;
         Transaction trns = null;
