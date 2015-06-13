@@ -146,9 +146,11 @@ public class EditPalletView extends BaseDialogView {
             estados.add(EntityState.Pallets.ELIMINADO.ordinal());
 
             estadosStr.add("CREADO");
-            //estadosStr.add("DESPACHADO");
+            estadosStr.add("DESPACHADO");
             estadosStr.add("UBICADO");
             estadosStr.add("ELIMINADO");
+            EntityState.getPalletsState();
+            
         
         if (estados!=null && estados.size()!=0){
             
