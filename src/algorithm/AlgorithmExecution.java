@@ -480,7 +480,7 @@ public class AlgorithmExecution extends SwingWorker<Solution, String>{
         algorithm.setMaxTravelTime(maxTravelTime);
         algorithm.setGraspAlpha(0.3f);
 
-        publish("Iniciando primera fase del algoritmo...");
+        publish("Iniciando primera fase de la generación de rutas...");
 
         problem = new Problem(partialOrders);
 
@@ -507,7 +507,7 @@ public class AlgorithmExecution extends SwingWorker<Solution, String>{
 
         overCap = overTime = overStock = bad = false;
 
-        publish("Iniciando segunda fase del algoritmo...");
+        publish("Iniciando segunda fase de la generación de rutas...");
         
         int n = algorithm.getNumberOfGenerations();
         for (int i = 0; i < n; i++) {

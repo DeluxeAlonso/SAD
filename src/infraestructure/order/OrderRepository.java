@@ -16,6 +16,7 @@ import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
 import entity.PedidoParcialXProductoId;
 import entity.Producto;
+import entity.Ubicacion;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -164,11 +165,11 @@ public class OrderRepository implements IOrderRepository{
                 productsToRemove.get(i).setPalletsUbicados(productsToRemove.get(i).getPalletsUbicados() - quantityToRemove.get(i));
                 session.merge(productsToRemove.get(i));
             }
+            //REJECTED
             System.out.println("Cantidad de Rejected Orders " + rejectedOrders.size());
-            ArrayList<Integer>previousRejectedOrdersId = new ArrayList<>();
             for(int i=0;i<rejectedOrders.size();i++){
-                if(!previousRejectedOrdersId.contains(rejectedOrders.get(i).getPedido().getId())){
-                    previousRejectedOrdersId.add(rejectedOrders.get(i).getPedido().getId());
+                if(!previousAcceptedOrdersId.contains(rejectedOrders.get(i).getPedido().getId())){
+                    previousAcceptedOrdersId.add(rejectedOrders.get(i).getPedido().getId());
                     System.out.println("Eliminar pedidos parciales del pedido " + rejectedOrders.get(i).getPedido().getId());
                     ArrayList<PedidoParcial> oldOrders = queryAllLocalPendingPartialOrdersById(rejectedOrders.get(i).getPedido().getId(),session, trns);
                     for(int j=0;j<oldOrders.size();j++){
@@ -453,6 +454,10 @@ public class OrderRepository implements IOrderRepository{
         try {            
             trns=session.beginTransaction();
             for(int i=0;i<pallets.size();i++){
+                Ubicacion slot = pallets.get(i).getUbicacion();
+                slot.setEstado(EntityState.Spots.LIBRE.ordinal());
+                pallets.get(i).setUbicacion(null);
+                session.update(slot);
                 session.update(pallets.get(i));
             }
             session.update(p.getPedido());
@@ -488,6 +493,10 @@ public class OrderRepository implements IOrderRepository{
     public Boolean updatePallets(ArrayList<Pallet> pallets, Session session, Transaction trns) {
         try {            
             for(int i=0;i<pallets.size();i++){
+                Ubicacion spot = pallets.get(i).getUbicacion();
+                spot.setEstado(EntityState.Spots.LIBRE.ordinal());
+                pallets.get(i).setUbicacion(null);
+                session.update(spot);
                 session.update(pallets.get(i));
             }                  
             return true;
