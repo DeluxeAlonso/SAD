@@ -9,8 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import util.Constants;
 
-public class GoogleMaps {
-    
+public class GoogleMaps{
+    private Image icon = null;
     public GoogleMaps(Solution solution){
         Node[][] nodes = solution.getNodes();
         final Browser browser = new Browser();
@@ -20,7 +20,7 @@ public class GoogleMaps {
         frame.setSize(1000, 700);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-
+        
         //browser.loadURL("./map.html");
         String html = "<!DOCTYPE html>\n" +
 "<html>\n" +
@@ -107,7 +107,7 @@ html += "createRoute(waypts0,clientByRoute0);" +
 "<body>\n" +
 "<select id='selectRoute'>\n";
 for(int i=0; i<nodes.length;i++){
-    html += "<option value="+i+">Ruta del camión "+i+"</option>\n";
+    html += "<option value="+i+">Ruta del camión "+(i+1)+"</option>\n";
 }
 html += "</select>\n" +
 "<table id='info' border='1'>\n" +
