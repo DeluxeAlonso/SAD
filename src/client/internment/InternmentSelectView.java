@@ -239,7 +239,7 @@ public class InternmentSelectView extends BaseView {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(27, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
@@ -342,7 +342,7 @@ public class InternmentSelectView extends BaseView {
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnLoadFile)
                     .addComponent(btnChooseFile))
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Órdenes de Internamiento Pendientes"));
@@ -403,8 +403,8 @@ public class InternmentSelectView extends BaseView {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblFileChooser2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -804,8 +804,27 @@ public class InternmentSelectView extends BaseView {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        int x = (Integer)jSpinner1.getValue();
-        System.out.println(x);
+        int cont = (Integer)jSpinner1.getValue();
+        DefaultTableModel table = (DefaultTableModel) tableFreeSpots.getModel();
+        if ((cont <= table.getRowCount() && (cont > 0))){
+            int cant = 0;
+            fillFreeSpots();
+            for (int i = 0; i < table.getRowCount(); i++) {
+                table.setValueAt(true, i, 4);
+                cant++;
+                if ((cant == cantAInternar) || (cant == cont)) {
+                    break;
+                }
+            }
+        }
+        else if (cont == 0)
+            fillFreeSpots();
+        else{
+            JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+            JOptionPane.showMessageDialog(this, "Seleccione una cantidad de ubicaciones menor o igual a la capacidad del almacén", "Error al Internar pallets", JOptionPane.ERROR_MESSAGE);
+        }
+            
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
 
