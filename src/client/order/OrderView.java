@@ -958,7 +958,6 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                 if(shouldDelete)
                     p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
                 else{
-                    System.out.println("UPDATE");
                     p.setEstado(EntityState.PartialOrders.NO_ATENDIDO.ordinal());
                     for(int i=0;i<productsToUpdate.size();i++)
                         productApplication.update(productsToUpdate.get(i));
