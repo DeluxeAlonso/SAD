@@ -61,15 +61,18 @@ public class PalletView extends BaseView {
     ArrayList<OrdenInternamiento> ordenInternamiento = new ArrayList<OrdenInternamiento>();
     
     ArrayList<String> state = new ArrayList<String>();
-    
+    ArrayList<Integer> stateN = new ArrayList<Integer>();
     
     public PalletView() {
         initComponents();
         super.initialize();
         String[] stateAux = EntityState.getPalletsState();
         for (String s : stateAux){
-            if (s.compareTo("ELIMINADO")!=0)
+            if (s.compareTo("Eliminado")!=0){
                 state.add(s);
+                stateN.add(EntityState.Pallets.valueOf(s.toUpperCase()).ordinal());
+            }
+                
         }
         fillStateCombo();
         fillWarehouseCombo();
@@ -150,50 +153,45 @@ public class PalletView extends BaseView {
     
     public void fillTable(ArrayList<Pallet> pallets) {
             clearGrid();
-            String aux = null;
-            
+            String auxOrdenInternamiento = null;
             DefaultTableModel model = (DefaultTableModel) spotTable.getModel();
-            for (Pallet p : pallets){
-               if (p.getOrdenInternamiento()==null)
-                   aux = "-";
-               else
-                   aux = p.getOrdenInternamiento().getId().toString();
-               model.addRow(new Object[]{
-               p.getEan128(),
-               p.getProducto().getNombre(),
-               p.getFechaVencimiento(),
-               aux,
-               p.getUbicacion().getRack().getAlmacen().getId(),
-               p.getUbicacion().getRack().getId(),
-               p.getUbicacion().getLado(),
-               p.getUbicacion().getFila(),
-               p.getUbicacion().getColumna()
-            }); 
-            }
-            
-    }
-    
-        public void fillTableNoUbicados(ArrayList<Pallet> pallets) {
-            clearGrid();
-            String aux = null;
-            DefaultTableModel model = (DefaultTableModel) spotTable.getModel();
-            for (Pallet p : pallets){
-               if (p.getOrdenInternamiento()==null)
-                aux = "-";
-               else
-                aux = p.getOrdenInternamiento().getId().toString();
-               model.addRow(new Object[]{
-               p.getEan128(),
-               p.getProducto().getNombre(),
-               p.getFechaVencimiento(),
-               aux,
-               "No ubicado",
-               "-",
-               "-",
-               "-",
-               "-"
-            }); 
-            }
+
+                for (Pallet p : pallets){
+                    if (p.getOrdenInternamiento()==null)
+                        auxOrdenInternamiento = "-";
+                    else
+                        auxOrdenInternamiento = p.getOrdenInternamiento().getId().toString();
+                    
+                    if (p.getUbicacion() != null){
+                        model.addRow(new Object[]{
+                        p.getEan128(),
+                        p.getProducto().getNombre(),
+                        state.get(p.getEstado()),
+                        p.getFechaVencimiento(),
+                        auxOrdenInternamiento,
+                        p.getUbicacion().getRack().getAlmacen().getId(),
+                        p.getUbicacion().getRack().getId(),
+                        p.getUbicacion().getLado(),
+                        p.getUbicacion().getFila(),
+                        p.getUbicacion().getColumna()
+                        });    
+                    }
+                    else if (p.getUbicacion() == null){
+                        model.addRow(new Object[]{
+                        p.getEan128(),
+                        p.getProducto().getNombre(),
+                        state.get(p.getEstado()),
+                        p.getFechaVencimiento(),
+                        auxOrdenInternamiento,
+                        "No ubicado",
+                        "-",
+                        "-",
+                        "-",
+                        "-"
+                        });    
+                    }
+                     
+                }                
             
     }
     
@@ -201,11 +199,6 @@ public class PalletView extends BaseView {
         DefaultTableModel model = (DefaultTableModel) spotTable.getModel();
         model.setRowCount(0);
     }
-    
-    
-    
-    
-    
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -349,14 +342,14 @@ public class PalletView extends BaseView {
 
             },
             new String [] {
-                "EAN128", "Producto", "F. Venc.", "Orden Int.", "Almacén", "Rack", "Lado", "Fila", "Columna"
+                "EAN128", "Producto", "Estado", "F. Venc.", "Orden Int.", "Almacén", "Rack", "Lado", "Fila", "Columna"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -377,6 +370,7 @@ public class PalletView extends BaseView {
             spotTable.getColumnModel().getColumn(6).setResizable(false);
             spotTable.getColumnModel().getColumn(7).setResizable(false);
             spotTable.getColumnModel().getColumn(8).setResizable(false);
+            spotTable.getColumnModel().getColumn(9).setResizable(false);
         }
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -446,7 +440,7 @@ public class PalletView extends BaseView {
             internmentOr = 0;
         
         if (jComboBox3.getSelectedIndex()>0)
-            estado = (int)(jComboBox3.getSelectedIndex()-1);
+            estado = (stateN.get(jComboBox3.getSelectedIndex()-1));
         else
             estado = -1;
         
@@ -454,10 +448,7 @@ public class PalletView extends BaseView {
         palletsGlob.clear();
         palletsGlob.addAll(pallets);
         
-        if (estado == -1)
-            fillTableNoUbicados(pallets);
-        else
-            fillTable(pallets);
+        fillTable(pallets);
         
         editBtn.setEnabled(true);
         //deleteBtn.setEnabled(true);
