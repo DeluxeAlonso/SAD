@@ -635,10 +635,11 @@
     <Component class="javax.swing.JComboBox" name="reasonCombo">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="3">
-            <StringItem index="0" value="Seleccionar Razon"/>
+          <StringArray count="4">
+            <StringItem index="0" value="--Seleccionar Razon--"/>
             <StringItem index="1" value="Productos Vencidos"/>
             <StringItem index="2" value="Disconformidad"/>
+            <StringItem index="3" value="Por Rotura"/>
           </StringArray>
         </Property>
         <Property name="enabled" type="boolean" value="false"/>
