@@ -715,6 +715,8 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
 
         partialCombo.setEnabled(false);
 
+        endDateTxt.setEditable(false);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -949,12 +951,14 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                     else{
                         Producto product = partialProduct.getProducto();
                         product.setStockLogico(product.getStockLogico() - partialProduct.getCantidad());
+                        System.out.println("a quitar de logico " + partialProduct.getCantidad());
                         productsToUpdate.add(product);
                     }
                 }
                 if(shouldDelete)
                     p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
                 else{
+                    System.out.println("UPDATE");
                     p.setEstado(EntityState.PartialOrders.NO_ATENDIDO.ordinal());
                     for(int i=0;i<productsToUpdate.size();i++)
                         productApplication.update(productsToUpdate.get(i));
