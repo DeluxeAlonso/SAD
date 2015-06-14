@@ -12,6 +12,7 @@ import java.util.Set;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import util.EntityState;
 import util.EntityState.Racks;
 import util.HibernateUtil;
 import util.Tools;
@@ -151,5 +152,95 @@ public class RackRepository implements IRackRepository{
             e.printStackTrace();
         }
         return racks;
+    }
+    
+    
+    public ArrayList<Rack> queryAllByWarehouse(int warehouseId) {
+        String hql="FROM Rack WHERE id_almacen=:warehouse_id";
+        ArrayList<Rack> warehouses=null;
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("warehouse_id", warehouseId);
+            warehouses = (ArrayList<Rack>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+//            session.flush();
+//            session.close();
+        }
+        return warehouses; //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int inactive(Rack r) {
+        r.setEstado(EntityState.Spots.INACTIVO.ordinal());
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        String hql = "UPDATE Ubicacion u SET estado = :state WHERE u.rack.id = :rackId";
+        long nOcupados=0;
+        long zero=0;
+        String veri = "SELECT count(1) FROM Ubicacion u WHERE u.rack.id = :rackId AND u.estado = :state";
+        try {            
+            trns=session.beginTransaction();
+            Query q1 = session.createQuery(veri);
+            q1.setParameter("rackId", r.getId());
+            q1.setParameter("state", EntityState.Spots.OCUPADO.ordinal());
+            nOcupados = ((long)q1.uniqueResult());
+            if (nOcupados > 0){
+                session.getTransaction().commit();
+                return 1;
+            }
+            else {
+                session.saveOrUpdate(r);                      
+
+                Query q = session.createQuery(hql);
+                q.setParameter("rackId", r.getId());
+                q.setParameter("state",EntityState.Spots.INACTIVO.ordinal() );
+                q.executeUpdate();
+                session.getTransaction().commit();
+            
+                return 0;
+            }
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return -1;
+        } 
+    }
+    
+    
+    @Override
+    public int active(Rack r) {
+        r.setEstado(EntityState.Spots.LIBRE.ordinal());
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        String hql = "UPDATE Ubicacion u SET estado = :state WHERE u.rack.id = :rackId";
+        try {            
+            trns=session.beginTransaction();
+            session.saveOrUpdate(r);                      
+            
+            Query q = session.createQuery(hql);
+            q.setParameter("rackId", r.getId());
+            q.setParameter("state",EntityState.Spots.LIBRE.ordinal() );
+            q.executeUpdate();
+            session.getTransaction().commit();
+            return 0;
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return -1;
+        } 
     }
 }

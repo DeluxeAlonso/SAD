@@ -16,4 +16,7 @@ import java.util.ArrayList;
 public interface IRackRepository extends IRepository<Rack>{
     ArrayList<Rack> queryRacksByWarehouse(int warehouseId);
     ArrayList<Rack> queryRacksByParameters(int idWare,int idCon);
+    ArrayList<Rack> queryAllByWarehouse(int warehouseId);
+    int inactive(Rack r);
+    int active(Rack r);
 }

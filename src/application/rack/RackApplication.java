@@ -30,6 +30,17 @@ public class RackApplication {
         return racks;
     }
     
+    public ArrayList<Rack> queryAllByWarehouse(int warehouse_id){
+        ArrayList<Rack> racks = null;
+        try {
+            racks = rackRepository.queryAllByWarehouse(warehouse_id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return racks;
+    }
+    
+    
     public ArrayList<Rack> queryByParameters(int idWare,int idCon){
         ArrayList<Rack> racks = null;
         try {
@@ -77,5 +88,25 @@ public class RackApplication {
     }    
     
     
+    public int active(Rack r){
+        try{
+            RackRepository w = new RackRepository();
+            return w.active(r);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return -1;
+        }
+    }
     
+    public int inactive(Rack r){
+        try{
+            RackRepository w = new RackRepository();
+            return w.inactive(r);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return -1;
+        }
+    }
 }
