@@ -271,7 +271,7 @@ public class WarehouseControlCheckView extends BaseView {
                 kardex.setProducto(prodIn);
                 kardex.setFecha(date);
                 kardex.setCantidad(kardexCountOut.get(key).intValue());
-                kardex.setTipoMovimiento("Salida");
+                kardex.setTipoMovimiento(Strings.MESSAGE_KARDEX_OUT_ADJUST);
                 if(previousKardex.size()==0){
                     kardex.setStockInicial(0);
                 }else{
@@ -297,7 +297,7 @@ public class WarehouseControlCheckView extends BaseView {
                 kardex.setProducto(prodOut);
                 kardex.setFecha(date);
                 kardex.setCantidad(kardexCountIn.get(key).intValue());
-                kardex.setTipoMovimiento("Ingreso");
+                kardex.setTipoMovimiento(Strings.MESSAGE_KARDEX_IN_ADJUST);
                 if(previousKardex.size()==0){
                     kardex.setStockInicial(0);
                 }else{
@@ -346,6 +346,7 @@ public class WarehouseControlCheckView extends BaseView {
         btnFile = new javax.swing.JButton();
         btnFileUpload = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
 
         setClosable(true);
         setTitle("Ajuste de inventario");
@@ -418,7 +419,7 @@ public class WarehouseControlCheckView extends BaseView {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(comboWarehouseFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Toma de inventario"));
@@ -445,6 +446,8 @@ public class WarehouseControlCheckView extends BaseView {
 
         jLabel4.setText("* Debe escoger primero un almacén para contrastar con la toma de inventario");
 
+        jLabel6.setText("** Al cargar la toma de inventario, se realiza el ajuste automaticamente");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -452,9 +455,6 @@ public class WarehouseControlCheckView extends BaseView {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addGap(0, 48, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -464,7 +464,12 @@ public class WarehouseControlCheckView extends BaseView {
                         .addComponent(btnFile, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnFileUpload)
-                        .addGap(41, 41, 41))))
+                        .addGap(41, 41, 41))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel4))
+                        .addGap(0, 48, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -478,6 +483,8 @@ public class WarehouseControlCheckView extends BaseView {
                     .addComponent(btnFileUpload))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel6)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -500,10 +507,10 @@ public class WarehouseControlCheckView extends BaseView {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -564,6 +571,7 @@ public class WarehouseControlCheckView extends BaseView {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
