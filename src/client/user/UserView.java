@@ -70,7 +70,8 @@ public class UserView extends BaseView {
         clearTree();
 
     }
-    public void addImagesToButton(){
+
+    public void addImagesToButton() {
         btnAddProfile.setText("");
         btnCancelEdit.setText("");
         btnDeleteProfile.setText("");
@@ -81,15 +82,16 @@ public class UserView extends BaseView {
         btnSaveProfile.setText("");
         btnSearchUser.setText("");
         Icons.setButton(btnAddProfile, Icons.ICONOS.CREATE.ordinal());
-        Icons.setButton(btnCancelEdit, Icons.ICONOS.CANCEL.ordinal());   
+        Icons.setButton(btnCancelEdit, Icons.ICONOS.CANCEL.ordinal());
         Icons.setButton(btnDeleteProfile, Icons.ICONOS.DELETE.ordinal());
         Icons.setButton(btnEditUser, Icons.ICONOS.MODIFY.ordinal());
         Icons.setButton(btnEditProfile, Icons.ICONOS.MODIFY.ordinal());
         Icons.setButton(btnNewUser, Icons.ICONOS.CREATE.ordinal());
         Icons.setButton(btnReset, Icons.ICONOS.RESET.ordinal());
         Icons.setButton(btnSaveProfile, Icons.ICONOS.SAVE.ordinal());
-        Icons.setButton(btnSearchUser, Icons.ICONOS.SEARCH.ordinal());        
+        Icons.setButton(btnSearchUser, Icons.ICONOS.SEARCH.ordinal());
     }
+
     public void clearTree() {
         DefaultTreeModel model = (DefaultTreeModel) treeActions.getModel();
         model.setRoot(null);
@@ -735,7 +737,23 @@ public class UserView extends BaseView {
     }
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(this, Strings.MESSAGE_RESTABLISH_PASSWORD);
+        DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();
+        int selectedRow = -1;
+        selectedRow = usersGrid.getSelectedRow();
+        Usuario user = null;
+        if (selectedRow != -1) {
+            String userId = model.getValueAt(selectedRow, 0).toString();
+            user = userApplication.getUserById(userId);
+            if (user != null && !user.getId().equals("root")) {
+                String newPass = userApplication.recoverPasswordAndSendEmail(user);
+                if (!"".equals(newPass)) {
+                    JOptionPane.showMessageDialog(this,
+                            "Se ha restablecida la contraseña del usuario. La contraseña es: " + newPass);
+                }else
+                    JOptionPane.showMessageDialog(this,"Error al enviar el correo. La contraseña es: " + newPass , "Mensaje", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void btnEditUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditUserActionPerformed

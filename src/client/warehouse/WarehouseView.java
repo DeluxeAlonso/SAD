@@ -143,12 +143,6 @@ public class WarehouseView extends BaseView {
         setClosable(true);
         setTitle("Almacen");
 
-        WarehouseGrid.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                WarehouseGridMouseClicked(evt);
-            }
-        });
-
         usersGrid.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
@@ -176,8 +170,8 @@ public class WarehouseView extends BaseView {
             }
         });
         usersGrid.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                usersGridMouseClicked(evt);
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                usersGridMousePressed(evt);
             }
         });
         WarehouseGrid.setViewportView(usersGrid);
@@ -204,9 +198,9 @@ public class WarehouseView extends BaseView {
 
         condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        searchBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                searchBtnMouseClicked(evt);
+        searchBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchBtnActionPerformed(evt);
             }
         });
 
@@ -217,11 +211,6 @@ public class WarehouseView extends BaseView {
         });
 
         editBtn.setEnabled(false);
-        editBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                editBtnMouseClicked(evt);
-            }
-        });
         editBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editBtnActionPerformed(evt);
@@ -229,9 +218,9 @@ public class WarehouseView extends BaseView {
         });
 
         deleteBtn.setEnabled(false);
-        deleteBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                deleteBtnMouseClicked(evt);
+        deleteBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBtnActionPerformed(evt);
             }
         });
 
@@ -322,7 +311,7 @@ public class WarehouseView extends BaseView {
         
     }//GEN-LAST:event_newBtnActionPerformed
 
-    private void editBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editBtnMouseClicked
+    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
         // TODO add your handling code here:
         int sr = usersGrid.getSelectedRow();
         String idString = usersGrid.getModel().getValueAt(sr, 0).toString();
@@ -333,24 +322,9 @@ public class WarehouseView extends BaseView {
         fillTable();
         editBtn.setEnabled(false);
         deleteBtn.setEnabled(false);
-    }//GEN-LAST:event_editBtnMouseClicked
+    }//GEN-LAST:event_editBtnActionPerformed
 
-    private void deleteBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteBtnMouseClicked
-        // TODO add your handling code here:
-        if (deleteBtn.isEnabled()){
-        int sr = usersGrid.getSelectedRow();
-        String idString = usersGrid.getModel().getValueAt(sr, 0).toString();
-        Almacen a = warehouseApplication.queryById(Integer.parseInt(idString));
-        a.setEstado(EntityState.Warehouses.INACTIVO.ordinal());
-        warehouseApplication.update(a);
-        clearGrid();
-        fillTable();
-        editBtn.setEnabled(false);
-        deleteBtn.setEnabled(false);
-        }
-    }//GEN-LAST:event_deleteBtnMouseClicked
-
-    private void searchBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchBtnMouseClicked
+    private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
         // TODO add your handling code here:
         int w = searchBtn.getWidth();
         int h = searchBtn.getHeight();
@@ -377,23 +351,28 @@ public class WarehouseView extends BaseView {
         fillTable(idS,condicionS,state);
         editBtn.setEnabled(false);
         deleteBtn.setEnabled(false);
-    }//GEN-LAST:event_searchBtnMouseClicked
+    }//GEN-LAST:event_searchBtnActionPerformed
 
-    private void WarehouseGridMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_WarehouseGridMouseClicked
+    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
+        // TODO add your handling code here:
+        if (deleteBtn.isEnabled()){
+        int sr = usersGrid.getSelectedRow();
+        String idString = usersGrid.getModel().getValueAt(sr, 0).toString();
+        Almacen a = warehouseApplication.queryById(Integer.parseInt(idString));
+        a.setEstado(EntityState.Warehouses.INACTIVO.ordinal());
+        warehouseApplication.update(a);
+        clearGrid();
+        fillTable();
+        editBtn.setEnabled(false);
+        deleteBtn.setEnabled(false);
+        }
+    }//GEN-LAST:event_deleteBtnActionPerformed
+
+    private void usersGridMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usersGridMousePressed
         // TODO add your handling code here:
         editBtn.setEnabled(true);
         deleteBtn.setEnabled(true);
-    }//GEN-LAST:event_WarehouseGridMouseClicked
-
-    private void usersGridMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usersGridMouseClicked
-        // TODO add your handling code here:
-        editBtn.setEnabled(true);
-        deleteBtn.setEnabled(true);
-    }//GEN-LAST:event_usersGridMouseClicked
-
-    private void editBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_editBtnActionPerformed
+    }//GEN-LAST:event_usersGridMousePressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

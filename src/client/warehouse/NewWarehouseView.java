@@ -384,7 +384,7 @@ public class NewWarehouseView extends BaseDialogView {
             error_message += "El area debe ser un numero entero."+"\n";
             AreaTxt.setBorder(errorBorder);
             errorFlag = true;
-        } else if (isDouble(AreaTxt.getText())){
+        } else if (isInteger(AreaTxt.getText())){
             int areaA = Integer.parseInt(AreaTxt.getText());
             if (areaA>10000){
                 error_message += "El area de un almacen debe ser 10,000 o menor."+"\n";

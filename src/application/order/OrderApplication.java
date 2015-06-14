@@ -15,6 +15,7 @@ import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
 import infraestructure.order.OrderRepository;
 import java.util.ArrayList;
+import java.util.Date;
 import util.EntityType;
 
 /**
@@ -182,6 +183,16 @@ public class OrderApplication {
             e.printStackTrace();
         }
         return response;
+    }
+    
+    public ArrayList<GuiaRemision> searchRemissionGuides(Integer idDelivery, Integer idRemissionGuide, Date startDate, Date endDate){
+        ArrayList<GuiaRemision> remissionGuides = new ArrayList<>();
+        try{
+            remissionGuides = orderRepository.queryAllProductsByOrderId(idDelivery, idRemissionGuide, startDate, endDate);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return remissionGuides;
     }
         
 }

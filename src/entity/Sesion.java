@@ -1,5 +1,5 @@
 package entity;
-// Generated 13-jun-2015 16:24:54 by Hibernate Tools 4.3.1
+// Generated 13/06/2015 10:34:15 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -14,14 +14,18 @@ public class Sesion  implements java.io.Serializable {
      private Usuario usuario;
      private Date inicioSesion;
      private Date finSesion;
+     private String ip;
+     private String mac;
 
     public Sesion() {
     }
 
-    public Sesion(Usuario usuario, Date inicioSesion, Date finSesion) {
+    public Sesion(Usuario usuario, Date inicioSesion, Date finSesion, String ip, String mac) {
        this.usuario = usuario;
        this.inicioSesion = inicioSesion;
        this.finSesion = finSesion;
+       this.ip = ip;
+       this.mac = mac;
     }
    
     public Integer getId() {
@@ -51,6 +55,20 @@ public class Sesion  implements java.io.Serializable {
     
     public void setFinSesion(Date finSesion) {
         this.finSesion = finSesion;
+    }
+    public String getIp() {
+        return this.ip;
+    }
+    
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+    public String getMac() {
+        return this.mac;
+    }
+    
+    public void setMac(String mac) {
+        this.mac = mac;
     }
 
 

@@ -46,12 +46,14 @@ public class EditUserAdmin extends BaseDialogView {
         fillCombos();
         fillUserFields();
     }
-    public void addImagesToButton(){
+
+    public void addImagesToButton() {
         btnSave.setText("");
         btnCancel.setText("");
         Icons.setButton(btnSave, Icons.ICONOS.SAVE.ordinal());
-        Icons.setButton(btnCancel, Icons.ICONOS.CANCEL.ordinal());        
+        Icons.setButton(btnCancel, Icons.ICONOS.CANCEL.ordinal());
     }
+
     public void fillCombos() {
         comboState.setModel(new javax.swing.DefaultComboBoxModel(EntityState.getUsersState()));
         comboProfile.setModel(new javax.swing.DefaultComboBoxModel(EntityType.PROFILES_NAMES));
@@ -75,6 +77,7 @@ public class EditUserAdmin extends BaseDialogView {
         String firstName = txtFirstName.getText().trim();
         String secondName = txtSecondName.getText().trim();
         String email = txtEmail.getText().trim();
+        String id = txtUserId.getText().trim();
         //Validation name
         if (name.length() > 0 && name.length() <= 40) {
             if (!name.matches(Regex.ONLY_LETTERS)) {
@@ -167,6 +170,14 @@ public class EditUserAdmin extends BaseDialogView {
         } else {
             comboProfile.setBorder(regularBorder);
         }
+
+        //validate id
+        if (id.equals("root") && comboState.getSelectedIndex() - 1 == EntityState.Users.INACTIVO.ordinal()) {
+            message+="No se puede inactivar el administrador del sistema.";
+             comboState.setBorder(errorBorder);
+        }else
+            comboState.setBorder(regularBorder);
+
         if (!message.equals("")) {
             JOptionPane.showMessageDialog(this, message, "Mensaje", JOptionPane.WARNING_MESSAGE);
             return false;

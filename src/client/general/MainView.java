@@ -56,6 +56,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.MenuElement;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import util.Constants;
 import util.Icons;
 import util.InstanceFactory;
 
@@ -112,13 +113,17 @@ public class MainView extends javax.swing.JFrame {
         renderUserMenu();
         Icons.setMainIcon(this);
         //inicializar la sesión
-
-        session.setUsuario(user);
-
-        session.setInicioSesion(Calendar.getInstance().getTime());
+        setSession();
+        
 
     }
-
+    private void setSession(){
+        session.setUsuario(user);
+        session.setInicioSesion(Calendar.getInstance().getTime());
+        session.setIp(Constants.currentIP);
+        session.setMac(Constants.currentMac);
+    }
+    
     private void renderUserMenu() {
         if (user != null) {
             Set actions = profileApplication.getProfileByName(user.getPerfil().getNombrePerfil()).getAccions();
@@ -188,7 +193,6 @@ public class MainView extends javax.swing.JFrame {
         menuOp = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
-        jMenuItem11 = new javax.swing.JMenuItem();
         menuMaint = new javax.swing.JMenu();
         WarehouseMenu = new javax.swing.JMenuItem();
         RackItem = new javax.swing.JMenuItem();
@@ -278,14 +282,6 @@ public class MainView extends javax.swing.JFrame {
             }
         });
         menuOp.add(jMenuItem4);
-
-        jMenuItem11.setText("Devoluciones");
-        jMenuItem11.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                jMenuItem11MousePressed(evt);
-            }
-        });
-        menuOp.add(jMenuItem11);
 
         menuBar.add(menuOp);
 
@@ -652,23 +648,6 @@ public class MainView extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jMenuItem2MousePressed
 
-    private void jMenuItem11MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem11MousePressed
-        // TODO add your handling code here:
-        if (devolutionView == null || !devolutionView.isShowing()) {
-            devolutionView = new DevolutionView();
-            devolutionView.setVisible(true);
-            mainPanel.add(devolutionView);
-            try {
-                // TODO add your handling code here:
-                devolutionView.setSelected(true);
-
-            } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class
-                        .getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }//GEN-LAST:event_jMenuItem11MousePressed
-
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         // TODO add your handling code here:
         //Tools.closeSession();
@@ -908,7 +887,6 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JMenuItem WarehouseMenu;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
-    private javax.swing.JMenuItem jMenuItem11;
     private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem13;
     private javax.swing.JMenuItem jMenuItem14;

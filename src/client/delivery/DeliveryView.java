@@ -373,6 +373,7 @@ public class DeliveryView extends BaseView {
         });
 
         btnProcess.setText("Escoger Rutas");
+        btnProcess.setEnabled(false);
         btnProcess.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnProcessActionPerformed(evt);
@@ -715,6 +716,7 @@ public class DeliveryView extends BaseView {
                 insertKardex(returnValues.getDespachos());
                 JOptionPane.showMessageDialog(this, Strings.DELIVERY_SUCCESS,
                     Strings.DELIVERY_TITLE,JOptionPane.INFORMATION_MESSAGE);
+                btnProcess.setEnabled(false);
             }
             else
                 JOptionPane.showMessageDialog(this, Strings.DELIVERY_ERROR,
@@ -764,7 +766,7 @@ public class DeliveryView extends BaseView {
                             refreshCombo();
                             JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_SUCCESS,
                                     Strings.ALGORITHM_SUCCESS_TITLE, JOptionPane.INFORMATION_MESSAGE);
-
+                            btnProcess.setEnabled(true);
 
 
                         } catch (Exception ex) {

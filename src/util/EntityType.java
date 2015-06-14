@@ -5,11 +5,11 @@
  */
 package util;
 
-import entity.Accion;
 import entity.Cliente;
 import entity.Condicion;
 import entity.Pedido;
 import entity.Perfil;
+import entity.PreguntaSecreta;
 import entity.Producto;
 import entity.TipoUnidadTransporte;
 import entity.UnidadTransporte;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * @author A20112449
  */
 public class EntityType {
-
+    
     public EntityType() {
     }
 
@@ -37,6 +37,19 @@ public class EntityType {
     public static String[] PROFILES_NAMES;
     public static String[] CONDITIONS_NAMES;
     public static String[] TRANSPORT_TYPE_NAMES;
+    
+    public static String[] USER_QUESTIONS;
+    
+    public static void fillUserQuestions(ArrayList<PreguntaSecreta> questions){
+        USER_QUESTIONS = new String[questions.size() + 1];
+        for (int i = 0; i < questions.size()+1; i++) {
+            if (i == 0) {
+                USER_QUESTIONS[i] = "";
+            } else {
+                USER_QUESTIONS[i] = questions.get(i-1).getPregunta();
+            }
+        }
+    }
 
     public static void fillProfileNames() {
         PROFILES_NAMES = new String[PROFILES.size() + 1];

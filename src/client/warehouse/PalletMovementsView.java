@@ -262,11 +262,6 @@ public class PalletMovementsView extends BaseView {
         jLabel4.setText("Seleccione rack destino");
 
         btnSave.setText("Mover Pallets");
-        btnSave.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnSaveMousePressed(evt);
-            }
-        });
         btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSaveActionPerformed(evt);
@@ -313,7 +308,7 @@ public class PalletMovementsView extends BaseView {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(42, 42, 42)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(comboWarehouseFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(comboWarehouseTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -335,152 +330,183 @@ public class PalletMovementsView extends BaseView {
                     .addComponent(jScrollPaneTo, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(btnSave)
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void comboWarehouseFromItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboWarehouseFromItemStateChanged
-        if(evt.getStateChange() == ItemEvent.SELECTED){
-            clearComponents();
-            fillWarehousesTo(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getCondicion().getId());
-            fillRacksFrom(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId());
-            if(racksFrom.size()>0)
-                fillTableFrom(racksFrom.get(0).getId());
-            if(warehousesTo.size()>0){
-                fillRacksTo(warehousesTo.get(0).getId());
-                if(racksTo.size()>0)
-                    fillTableTo(racksTo.get(0).getId());
+        try {
+            startLoader();
+            if(evt.getStateChange() == ItemEvent.SELECTED){
+                clearComponents();
+                fillWarehousesTo(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getCondicion().getId());
+                fillRacksFrom(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId());
+                if(racksFrom.size()>0)
+                    fillTableFrom(racksFrom.get(0).getId());
+                if(warehousesTo.size()>0){
+                    fillRacksTo(warehousesTo.get(0).getId());
+                    if(racksTo.size()>0)
+                        fillTableTo(racksTo.get(0).getId());
+                }
             }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            stopLoader();
         }
     }//GEN-LAST:event_comboWarehouseFromItemStateChanged
 
     private void comboWarehouseToItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboWarehouseToItemStateChanged
-        if(evt.getStateChange() == ItemEvent.SELECTED){
-            fillRacksTo(warehousesTo.get(comboWarehouseTo.getSelectedIndex()).getId());
-            if(racksTo.size()>0)
-                fillTableTo(racksTo.get(0).getId());
+        try {
+            startLoader();
+            if(evt.getStateChange() == ItemEvent.SELECTED){
+                fillRacksTo(warehousesTo.get(comboWarehouseTo.getSelectedIndex()).getId());
+                if(racksTo.size()>0)
+                    fillTableTo(racksTo.get(0).getId());
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            stopLoader();
         }
     }//GEN-LAST:event_comboWarehouseToItemStateChanged
 
     private void comboRackFromItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboRackFromItemStateChanged
-        if(evt.getStateChange() == ItemEvent.SELECTED){
-            fillTableFrom(racksFrom.get(comboRackFrom.getSelectedIndex()).getId());
+        try {
+            startLoader();
+            if(evt.getStateChange() == ItemEvent.SELECTED){
+                fillTableFrom(racksFrom.get(comboRackFrom.getSelectedIndex()).getId());
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            stopLoader();
         }
     }//GEN-LAST:event_comboRackFromItemStateChanged
 
     private void comboRackToItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboRackToItemStateChanged
-        if(evt.getStateChange() == ItemEvent.SELECTED){
-            fillTableTo(racksTo.get(comboRackTo.getSelectedIndex()).getId());
+        try {
+            startLoader();    
+            if(evt.getStateChange() == ItemEvent.SELECTED){
+                fillTableTo(racksTo.get(comboRackTo.getSelectedIndex()).getId());
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            stopLoader();
         }
     }//GEN-LAST:event_comboRackToItemStateChanged
 
-    private void btnSaveMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMousePressed
-        
-    }//GEN-LAST:event_btnSaveMousePressed
-
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        ArrayList<Integer> selectedPallets = new ArrayList<Integer>();                            
-        ArrayList<Integer> selectedSpots = new ArrayList<Integer>(); 
-        Boolean isChecked;
-        kardexCount = new HashMap<Integer,Integer>();
-        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
-        
-        if(tblPalletFrom.getRowCount()>0){
-            for (int i = 0; i < tblPalletFrom.getRowCount(); i++) {
-                isChecked = (Boolean)tblPalletFrom.getValueAt(i, 5);
-                if (isChecked != null && isChecked) {
-                    selectedPallets.add(palletsFrom.get(i).getId());
-                    // Agrupo los pallets que se moveran por Producto para ser ingresados al kardex
-                    if(!kardexCount.isEmpty() && kardexCount.containsKey(palletsFrom.get(i).getProducto().getId())){
-                        //int productCount = kardexCount.get(palletsFrom.get(i).getProducto()).intValue();
-                        //productCount++;
-                        kardexCount.put(palletsFrom.get(i).getProducto().getId(), kardexCount.get(palletsFrom.get(i).getProducto().getId())+1);
-                    }else{
-                        kardexCount.put(palletsFrom.get(i).getProducto().getId(), 1);
-                    }   
-                }
-            }
-        }
-        
-        if(tblPalletTo.getRowCount()>0){
-            for (int i = 0; i < tblPalletTo.getRowCount(); i++) {
-                isChecked = (Boolean)tblPalletTo.getValueAt(i, 3);
-                if (isChecked != null && isChecked) {
-                    selectedSpots.add(spotsTo.get(i).getId());
-                }
-            }
-        }
-        if(selectedPallets.size() == selectedSpots.size() && selectedPallets.size()>0){
-            for(int i=0;i<selectedPallets.size();i++){
-                spotApplication.updateSpotOccupancy(palletsFrom.get(i).getUbicacion().getId(), Spots.LIBRE.ordinal());
-                palletApplication.updatePalletSpot(palletsFrom.get(i).getId(), selectedSpots.get(i));
-                spotApplication.updateSpotOccupancy(selectedSpots.get(i), Spots.OCUPADO.ordinal());
-            }
-            if(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId() != warehousesTo.get(comboWarehouseTo.getSelectedIndex()).getId()){
-                //Ingreso kardex por cada producto movido, solo si se mueven los pallets a un almacen diferente
-                ArrayList<Kardex> previousKardex;
-                Iterator<Integer> keySetIterator = kardexCount.keySet().iterator();
-                Integer key;
-                Kardex kardex;
-                KardexId kardexId;
-                Date date = new Date();
-                while(keySetIterator.hasNext()){
-                    key = keySetIterator.next();
-                    Producto prod = productApplication.queryById(key);
-                    // Para las salidas
-                    previousKardex = kardexApplication.queryByParameters(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId(), prod.getId());
-                    kardexId = new KardexId();
-                    kardexId.setIdAlmacen(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId());
-                    kardexId.setIdProducto(prod.getId());
-                    kardex = new Kardex();
-                    kardex.setId(kardexId);
-                    kardex.setAlmacen(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()));
-                    kardex.setProducto(prod);
-                    kardex.setFecha(date);
-                    kardex.setCantidad(kardexCount.get(key).intValue());
-                    kardex.setTipoMovimiento("Salida");
-                    if(previousKardex.size()==0){
-                        kardex.setStockInicial(0);
-                    }else{
-                        kardex.setStockInicial(previousKardex.get(0).getStockFinal());
+        try {
+            startLoader();    
+            ArrayList<Integer> selectedPallets = new ArrayList<Integer>();                            
+            ArrayList<Integer> selectedSpots = new ArrayList<Integer>(); 
+            Boolean isChecked;
+            kardexCount = new HashMap<Integer,Integer>();
+            JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+
+            if(tblPalletFrom.getRowCount()>0){
+                for (int i = 0; i < tblPalletFrom.getRowCount(); i++) {
+                    isChecked = (Boolean)tblPalletFrom.getValueAt(i, 5);
+                    if (isChecked != null && isChecked) {
+                        selectedPallets.add(palletsFrom.get(i).getId());
+                        // Agrupo los pallets que se moveran por Producto para ser ingresados al kardex
+                        if(!kardexCount.isEmpty() && kardexCount.containsKey(palletsFrom.get(i).getProducto().getId())){
+                            //int productCount = kardexCount.get(palletsFrom.get(i).getProducto()).intValue();
+                            //productCount++;
+                            kardexCount.put(palletsFrom.get(i).getProducto().getId(), kardexCount.get(palletsFrom.get(i).getProducto().getId())+1);
+                        }else{
+                            kardexCount.put(palletsFrom.get(i).getProducto().getId(), 1);
+                        }   
                     }
-                    kardex.setStockFinal(kardex.getStockInicial() - kardex.getCantidad());
-                    kardexApplication.insert(kardex);
-                    // Para los ingresos
-                    previousKardex = kardexApplication.queryByParameters(warehousesTo.get(comboWarehouseTo.getSelectedIndex()).getId(), prod.getId());
-                    kardexId = new KardexId();
-                    kardexId.setIdAlmacen(warehousesTo.get(comboWarehouseTo.getSelectedIndex()).getId());
-                    kardexId.setIdProducto(prod.getId());
-                    kardex = new Kardex();
-                    kardex.setId(kardexId);
-                    kardex.setAlmacen(warehousesTo.get(comboWarehouseTo.getSelectedIndex()));
-                    kardex.setProducto(prod);
-                    kardex.setFecha(date);
-                    kardex.setCantidad(kardexCount.get(key).intValue());
-                    kardex.setTipoMovimiento("Ingreso");
-                    if(previousKardex.size()==0){
-                        kardex.setStockInicial(0);
-                    }else{
-                        kardex.setStockInicial(previousKardex.get(0).getStockFinal());
-                    }
-                    kardex.setStockFinal(kardex.getStockInicial() + kardex.getCantidad());
-                    kardexApplication.insert(kardex);
                 }
             }
-            JOptionPane.showMessageDialog(this, Strings.MESSAGE_PALLETS_MOVEMENT,Strings.MESSAGE_PALLETS_MOVEMENT_TITLE,JOptionPane.INFORMATION_MESSAGE);
-            fillTableFrom(racksFrom.get(comboRackFrom.getSelectedIndex()).getId());
-            fillTableTo(racksTo.get(comboRackTo.getSelectedIndex()).getId());
-        }else{
-            String error_message = "Errores:\n";
-            if(selectedPallets.size()<1)
-                error_message += Strings.ERROR_NO_PALLETS_SELECTED+"\n";
-            if(selectedSpots.size()<1)
-                error_message += Strings.ERROR_NO_SPOTS_SELECTED+"\n";
-            if(selectedPallets.size() != selectedSpots.size())
-                error_message += Strings.ERROR_PALLETS_DONT_MATCH_SPOTS+"\n";
-            JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_PALLETS_MOVEMENT_TITLE,JOptionPane.ERROR_MESSAGE);
+
+            if(tblPalletTo.getRowCount()>0){
+                for (int i = 0; i < tblPalletTo.getRowCount(); i++) {
+                    isChecked = (Boolean)tblPalletTo.getValueAt(i, 3);
+                    if (isChecked != null && isChecked) {
+                        selectedSpots.add(spotsTo.get(i).getId());
+                    }
+                }
+            }
+            if(selectedPallets.size() == selectedSpots.size() && selectedPallets.size()>0){
+                for(int i=0;i<selectedPallets.size();i++){
+                    spotApplication.updateSpotOccupancy(palletsFrom.get(i).getUbicacion().getId(), Spots.LIBRE.ordinal());
+                    palletApplication.updatePalletSpot(palletsFrom.get(i).getId(), selectedSpots.get(i));
+                    spotApplication.updateSpotOccupancy(selectedSpots.get(i), Spots.OCUPADO.ordinal());
+                }
+                if(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId() != warehousesTo.get(comboWarehouseTo.getSelectedIndex()).getId()){
+                    //Ingreso kardex por cada producto movido, solo si se mueven los pallets a un almacen diferente
+                    ArrayList<Kardex> previousKardex;
+                    Iterator<Integer> keySetIterator = kardexCount.keySet().iterator();
+                    Integer key;
+                    Kardex kardex;
+                    KardexId kardexId;
+                    Date date = new Date();
+                    while(keySetIterator.hasNext()){
+                        key = keySetIterator.next();
+                        Producto prod = productApplication.queryById(key);
+                        // Para las salidas
+                        previousKardex = kardexApplication.queryByParameters(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId(), prod.getId());
+                        kardexId = new KardexId();
+                        kardexId.setIdAlmacen(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()).getId());
+                        kardexId.setIdProducto(prod.getId());
+                        kardex = new Kardex();
+                        kardex.setId(kardexId);
+                        kardex.setAlmacen(warehousesFrom.get(comboWarehouseFrom.getSelectedIndex()));
+                        kardex.setProducto(prod);
+                        kardex.setFecha(date);
+                        kardex.setCantidad(kardexCount.get(key).intValue());
+                        kardex.setTipoMovimiento(Strings.MESSAGE_KARDEX_OUT_MOVEMENT);
+                        if(previousKardex.size()==0){
+                            kardex.setStockInicial(0);
+                        }else{
+                            kardex.setStockInicial(previousKardex.get(0).getStockFinal());
+                        }
+                        kardex.setStockFinal(kardex.getStockInicial() - kardex.getCantidad());
+                        kardexApplication.insert(kardex);
+                        // Para los ingresos
+                        previousKardex = kardexApplication.queryByParameters(warehousesTo.get(comboWarehouseTo.getSelectedIndex()).getId(), prod.getId());
+                        kardexId = new KardexId();
+                        kardexId.setIdAlmacen(warehousesTo.get(comboWarehouseTo.getSelectedIndex()).getId());
+                        kardexId.setIdProducto(prod.getId());
+                        kardex = new Kardex();
+                        kardex.setId(kardexId);
+                        kardex.setAlmacen(warehousesTo.get(comboWarehouseTo.getSelectedIndex()));
+                        kardex.setProducto(prod);
+                        kardex.setFecha(date);
+                        kardex.setCantidad(kardexCount.get(key).intValue());
+                        kardex.setTipoMovimiento(Strings.MESSAGE_KARDEX_IN_MOVEMENT);
+                        if(previousKardex.size()==0){
+                            kardex.setStockInicial(0);
+                        }else{
+                            kardex.setStockInicial(previousKardex.get(0).getStockFinal());
+                        }
+                        kardex.setStockFinal(kardex.getStockInicial() + kardex.getCantidad());
+                        kardexApplication.insert(kardex);
+                    }
+                }
+                JOptionPane.showMessageDialog(this, Strings.MESSAGE_PALLETS_MOVEMENT,Strings.MESSAGE_PALLETS_MOVEMENT_TITLE,JOptionPane.INFORMATION_MESSAGE);
+                fillTableFrom(racksFrom.get(comboRackFrom.getSelectedIndex()).getId());
+                fillTableTo(racksTo.get(comboRackTo.getSelectedIndex()).getId());
+            }else{
+                String error_message = "Errores:\n";
+                if(selectedPallets.size()<1)
+                    error_message += Strings.ERROR_NO_PALLETS_SELECTED+"\n";
+                if(selectedSpots.size()<1)
+                    error_message += Strings.ERROR_NO_SPOTS_SELECTED+"\n";
+                if(selectedPallets.size() != selectedSpots.size())
+                    error_message += Strings.ERROR_PALLETS_DONT_MATCH_SPOTS+"\n";
+                JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_PALLETS_MOVEMENT_TITLE,JOptionPane.ERROR_MESSAGE);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            stopLoader();
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 

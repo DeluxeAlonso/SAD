@@ -275,7 +275,7 @@ public class SecurityLogView extends BaseView {
                 {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Id Objeto", "Tipo", "Ip", "Mac", "Último Usuario Modificado", "Usuario Creador", "Fecha Modificación", "Fecha Creación"
+                "Id Objeto", "Tipo", "IP", "MAC", "Último Usuario Modificado", "Usuario Creador", "Fecha Modificación", "Fecha Creación"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -295,8 +295,8 @@ public class SecurityLogView extends BaseView {
             gridLog.getColumnModel().getColumn(3).setMinWidth(100);
             gridLog.getColumnModel().getColumn(4).setMinWidth(120);
             gridLog.getColumnModel().getColumn(5).setMinWidth(120);
-            gridLog.getColumnModel().getColumn(6).setMinWidth(100);
-            gridLog.getColumnModel().getColumn(7).setMinWidth(100);
+            gridLog.getColumnModel().getColumn(6).setMinWidth(120);
+            gridLog.getColumnModel().getColumn(7).setMinWidth(120);
         }
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -485,16 +485,23 @@ public class SecurityLogView extends BaseView {
 
         gridSession.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Código Usuario", "Inicio Sesión", "Fin Sesión"
+                "Código Usuario", "Inicio Sesión", "Fin Sesión", "IP", "MAC"
             }
         ));
         jScrollPane2.setViewportView(gridSession);
+        if (gridSession.getColumnModel().getColumnCount() > 0) {
+            gridSession.getColumnModel().getColumn(0).setMinWidth(150);
+            gridSession.getColumnModel().getColumn(1).setMinWidth(120);
+            gridSession.getColumnModel().getColumn(2).setMinWidth(120);
+            gridSession.getColumnModel().getColumn(3).setMinWidth(100);
+            gridSession.getColumnModel().getColumn(4).setMinWidth(100);
+        }
 
         jLabel19.setText("Código Usuario:");
 
@@ -679,20 +686,16 @@ public class SecurityLogView extends BaseView {
             }
             if (!txtUserCreate.getText().trim().equals("")) {
                 Usuario user = new Usuario();
-                if (txtUserCreate.getText().trim().toLowerCase().equals("root")) {
-                    user.setId(null);
-                } else {
-                    user.setId(txtUserCreate.getText().trim());
-                }
+
+                user.setId(txtUserCreate.getText().trim());
+
                 log.setUsuarioByUsuarioCreador(user);
             }
             if (!txtUserMod.getText().trim().equals("")) {
                 Usuario user = new Usuario();
-                if (txtUserMod.getText().trim().toLowerCase().equals("root")) {
-                    user.setId(null);
-                } else {
-                    user.setId(txtUserMod.getText().trim());
-                }
+
+                user.setId(txtUserMod.getText().trim());
+
                 log.setUsuarioByUsuarioActualizador(user);
             }
             fillTableWithLog(logApplication.getLog(
@@ -738,16 +741,13 @@ public class SecurityLogView extends BaseView {
         }
         Sesion s = new Sesion();
         Usuario u = new Usuario();
-        String userId=txtUserCode.getText().trim();
-        if(userId.toLowerCase().equals("root"))
-            u.setId(userId);
-        else
-            u.setId(null);
-        s.setUsuario(u);        
+        String userId = txtUserCode.getText().trim();
+        u.setId(userId);       
+        s.setUsuario(u);
         fillSessionTable(sessionApplication.getSession(
-                s, 
-                calendarIniCr==null?null:calendarIniCr.getTime(),
-                calendarFinCr==null?null:calendarFinCr.getTime()
+                s,
+                calendarIniCr == null ? null : calendarIniCr.getTime(),
+                calendarFinCr == null ? null : calendarFinCr.getTime()
         ));
     }//GEN-LAST:event_btnSearchSActionPerformed
     private void fillSessionTable(ArrayList<Sesion> sessions) {
@@ -759,9 +759,11 @@ public class SecurityLogView extends BaseView {
                 String userId = l.getUsuario() == null ? "root" : l.getUsuario().getId();
                 //String userIdCre = l.getUsuarioByUsuarioCreador() == null ? "root" : l.getUsuarioByUsuarioCreador().getId();
                 model.addRow(new Object[]{
-                    userId,                    
+                    userId,
                     l.getInicioSesion(),
-                    l.getFinSesion()
+                    l.getFinSesion(),
+                    l.getIp(),
+                    l.getMac()
                 });
             });
         }

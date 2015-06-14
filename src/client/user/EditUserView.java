@@ -5,10 +5,22 @@
  */
 package client.user;
 
+import application.user.UserApplication;
 import client.base.BaseView;
+import client.general.MainView;
+import static com.teamdev.jxbrowser.chromium.dom.By.id;
+import entity.PreguntaSecreta;
+import entity.Usuario;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import util.EntityState;
+import util.EntityType;
 import util.Icons;
+import util.InstanceFactory;
+import util.Regex;
+import util.Strings;
 
 /**
  *
@@ -19,11 +31,38 @@ public class EditUserView extends BaseView {
     /**
      * Creates new form EditUser
      */
+    UserApplication userApplication = InstanceFactory.Instance.getInstance("userApplication", UserApplication.class);
+    Usuario user = null;
+
     public EditUserView() {
         super();
         initComponents();
         super.initialize();
+        user = MainView.user;
         Icons.setMainIcon(this);
+        setIconButtons();
+        fillFields();
+    }
+
+    private void fillFields() {
+        txtFirstName.setText(user.getApellidoPaterno());
+        txtSecondName.setText(user.getApellidoMaterno());
+        txtAnswer.setText(user.getRespuesta());
+        txtName.setText(user.getNombre());
+        txtEmail.setText(user.getCorreo());
+        comboQuestions.setModel(new DefaultComboBoxModel(EntityType.USER_QUESTIONS));
+        if(user.getPreguntaSecreta()!=null)
+            comboQuestions.setSelectedIndex(user.getPreguntaSecreta().getId());
+    }
+
+    private void setIconButtons() {
+        btnCancel.setText("");        
+        btnEdit.setText("");
+        btnSave.setText("");
+        Icons.setButton(btnCancel, Icons.ICONOS.CANCEL.ordinal());
+        Icons.setButton(btnChPass, Icons.ICONOS.RESET.ordinal());
+        Icons.setButton(btnEdit, Icons.ICONOS.MODIFY.ordinal());
+        Icons.setButton(btnSave, Icons.ICONOS.SAVE.ordinal());
     }
 
     /**
@@ -35,44 +74,51 @@ public class EditUserView extends BaseView {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        saveTxt = new javax.swing.JButton();
-        cancelBtn = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
+        btnCancel = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
-        firstNameTxt = new javax.swing.JTextField();
-        secondNameTxt = new javax.swing.JTextField();
+        txtFirstName = new javax.swing.JTextField();
+        txtSecondName = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        emailTxt = new javax.swing.JTextField();
+        txtEmail = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        nameTxt = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        txtName = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        comboQuestions = new javax.swing.JComboBox();
         jLabel6 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtAnswer = new javax.swing.JTextField();
+        btnChPass = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Actualizar Información");
 
-        saveTxt.setText("Guardar");
-        saveTxt.addActionListener(new java.awt.event.ActionListener() {
+        btnSave.setText("Guardar");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveTxtActionPerformed(evt);
+                btnSaveActionPerformed(evt);
             }
         });
 
-        cancelBtn.setText("Cancelar");
-        cancelBtn.addActionListener(new java.awt.event.ActionListener() {
+        btnCancel.setText("Cancelar");
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelBtnActionPerformed(evt);
+                btnCancelActionPerformed(evt);
             }
         });
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos personales"));
 
+        txtFirstName.setEnabled(false);
+
+        txtSecondName.setEnabled(false);
+
         jLabel4.setText("Correo:");
+
+        txtEmail.setEnabled(false);
 
         jLabel1.setText("Nombres:");
 
@@ -80,75 +126,66 @@ public class EditUserView extends BaseView {
 
         jLabel3.setText("Apellido Materno:");
 
-        jButton1.setText("Modificar Contraseña");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
+        txtName.setEnabled(false);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(jLabel1)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(nameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(jLabel2)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(firstNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel4))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(emailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(secondNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(99, 99, 99)
-                        .addComponent(jButton1)))
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtSecondName, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel1)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel2)
+                            .addGap(18, 18, 18)
+                            .addComponent(txtFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
+                .addGap(32, 32, 32)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(nameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(firstNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(secondNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtSecondName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(emailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 21, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addContainerGap())
+                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Pregunta secreta"));
 
         jLabel5.setText("Cuál es su pregunta secreta?");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboQuestions.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboQuestions.setEnabled(false);
 
         jLabel6.setText("Respuesta:");
+
+        txtAnswer.setEnabled(false);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -158,8 +195,8 @@ public class EditUserView extends BaseView {
                 .addContainerGap(17, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comboQuestions, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtAnswer, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
@@ -169,13 +206,27 @@ public class EditUserView extends BaseView {
                 .addGap(0, 17, Short.MAX_VALUE)
                 .addComponent(jLabel5)
                 .addGap(18, 18, 18)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(comboQuestions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtAnswer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
         );
+
+        btnChPass.setText("Modificar Contraseña");
+        btnChPass.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChPassActionPerformed(evt);
+            }
+        });
+
+        btnEdit.setText("Editar");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -183,64 +234,196 @@ public class EditUserView extends BaseView {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(21, 21, 21)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(288, Short.MAX_VALUE)
-                .addComponent(saveTxt)
-                .addGap(63, 63, 63)
-                .addComponent(cancelBtn)
-                .addGap(266, 266, 266))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnEdit)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnSave)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnCancel))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(103, 103, 103)
+                                .addComponent(btnChPass)))))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(saveTxt)
-                    .addComponent(cancelBtn))
-                .addGap(32, 32, 32))
+                    .addComponent(btnEdit)
+                    .addComponent(btnSave)
+                    .addComponent(btnCancel))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnChPass))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void saveTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveTxtActionPerformed
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         // TODO add your handling code here:
-        /*Usuario user=new Usuario();
-        user.setIdusuario(UUID.randomUUID().toString().replace("-", ""));
-        user.setNombre(nameTxt.getText());
-        user.setApellidoPaterno(firstNameTxt.getText());
-        user.setApellidoMaterno(firstNameTxt.getText());
-        user.setCorreo(emailTxt.getText());
-        user.setEstado(stateCombo.getSelectedIndex());
-        userApplication.createUser(user);*/
-    }//GEN-LAST:event_saveTxtActionPerformed
 
-    private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
+        //user.setIdusuario(UUID.randomUUID().toString().replace("-", ""));
+        if (isFormValid()) {
+            user.setNombre(txtName.getText().trim());
+            user.setApellidoPaterno(txtFirstName.getText().trim());
+            user.setApellidoMaterno(txtSecondName.getText().trim());
+            user.setCorreo(txtEmail.getText().trim());
+            user.setRespuesta(txtAnswer.getText().trim());
+            PreguntaSecreta p=new PreguntaSecreta();
+            p.setId(comboQuestions.getSelectedIndex());
+            p.setPregunta(comboQuestions.getSelectedItem().toString());
+            user.setPreguntaSecreta(p);
+            userApplication.updateUser(user);
+            JOptionPane.showMessageDialog(this, Strings.MESSAGE_USER_UPDATED, "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+            btnCancelActionPerformed(null);
+        }
+    }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         // TODO add your handling code here:
-        this.dispose();
-    }//GEN-LAST:event_cancelBtnActionPerformed
+        txtAnswer.setEnabled(false);
+        txtEmail.setEnabled(false);
+        txtFirstName.setEnabled(false);
+        txtName.setEnabled(false);
+        txtSecondName.setEnabled(false);
+        comboQuestions.setEnabled(false);
+    }//GEN-LAST:event_btnCancelActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnChPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChPassActionPerformed
         // TODO add your handling code here:
-        new ChangePasswordView((JFrame)SwingUtilities.getWindowAncestor(this), true).setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+        new ChangePasswordView((JFrame) SwingUtilities.getWindowAncestor(this), true,user).setVisible(true);
+    }//GEN-LAST:event_btnChPassActionPerformed
 
- 
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        // TODO add your handling code here:
+        txtAnswer.setEnabled(true);
+        txtEmail.setEnabled(true);
+        txtFirstName.setEnabled(true);
+        txtName.setEnabled(true);
+        txtSecondName.setEnabled(true);
+        comboQuestions.setEnabled(true);
+    }//GEN-LAST:event_btnEditActionPerformed
+    private boolean isFormValid() {
+        String message = "";
+        String name = txtName.getText().trim();
+        String firstName = txtFirstName.getText().trim();
+        String secondName = txtSecondName.getText().trim();
+        String email = txtEmail.getText().trim();
+
+        //Validation name
+        if (name.length() > 0 && name.length() <= 40) {
+            if (!name.matches(Regex.ONLY_LETTERS)) {
+                message += Strings.ERROR_NAME_ONLY_LETTERS + "\n";
+                txtName.setBorder(errorBorder);
+            } else {
+                txtName.setBorder(regularBorder);
+            }
+        } else {
+            if (name.length() == 0) {
+                message += Strings.ERROR_NAME_REQUIRED + "\n";
+            }
+            if (name.length() > 40) {
+                message += Strings.ERROR_NAME_LENGTH + "\n";
+            }
+            txtName.setBorder(errorBorder);
+        }
+        //Validation firstName
+        if (firstName.length() > 0 && firstName.length() <= 40) {
+            if (!firstName.matches(Regex.ONLY_LETTERS)) {
+                message += Strings.ERROR_FIRSTNAME_ONLY_LETTERS + "\n";
+                txtFirstName.setBorder(errorBorder);
+            } else {
+                txtFirstName.setBorder(regularBorder);
+            }
+        } else {
+            if (firstName.length() == 0) {
+                message += Strings.ERROR_FIRSTNAME_REQUIRED + "\n";
+            }
+            if (firstName.length() > 40) {
+                message += Strings.ERROR_FIRSTNAME_LENGTH + "\n";
+            }
+            txtFirstName.setBorder(errorBorder);
+        }
+        //Validation secondName
+        if (secondName.length() > 0 && secondName.length() <= 40) {
+            if (!secondName.matches(Regex.ONLY_LETTERS)) {
+                message += Strings.ERROR_SECONDNAME_ONLY_LETTERS + "\n";
+                txtSecondName.setBorder(errorBorder);
+            } else {
+                txtSecondName.setBorder(regularBorder);
+            }
+        } else {
+            if (secondName.length() == 0) {
+                message += Strings.ERROR_SECONDNAME_REQUIRED + "\n";
+            }
+            if (secondName.length() > 40) {
+                message += Strings.ERROR_SECONDNAME_LENGTH + "\n";
+            }
+            txtSecondName.setBorder(errorBorder);
+        }
+
+        //Validation email
+        if (email.length() > 0 && email.length() <= 40) {
+            if (!email.matches(Regex.EMAIL)) {
+                message += Strings.ERROR_EMAIL_INVALID + "\n";
+                txtEmail.setBorder(errorBorder);
+            } else {
+                if (userApplication.doesUserExist(email)) {
+                    if (!email.equals(this.user.getCorreo())) {
+                        message += Strings.ERROR_USER_SAME_EMAIL + "\n";
+                        txtEmail.setBorder(errorBorder);
+                    }
+                } else {
+                    txtEmail.setBorder(regularBorder);
+                }
+            }
+
+        } else {
+            if (email.length() == 0) {
+                message += Strings.ERROR_EMAIL_REQUIRED + "\n";
+            }
+            if (email.length() > 40) {
+                message += Strings.ERROR_EMAIL_LENGTH + "\n";
+            }
+            txtEmail.setBorder(errorBorder);
+        }
+
+        //validate State
+        if (comboQuestions.getSelectedIndex() == 0) {
+            message += "Seleccione una pregunta." + "\n";
+            comboQuestions.setBorder(errorBorder);
+        } else {
+            comboQuestions.setBorder(regularBorder);
+        }
+
+        if (!message.equals("")) {
+            JOptionPane.showMessageDialog(this, message, "Mensaje", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton cancelBtn;
-    private javax.swing.JTextField emailTxt;
-    private javax.swing.JTextField firstNameTxt;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnChPass;
+    private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnSave;
+    private javax.swing.JComboBox comboQuestions;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -249,9 +432,10 @@ public class EditUserView extends BaseView {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField nameTxt;
-    private javax.swing.JButton saveTxt;
-    private javax.swing.JTextField secondNameTxt;
+    private javax.swing.JTextField txtAnswer;
+    private javax.swing.JTextField txtEmail;
+    private javax.swing.JTextField txtFirstName;
+    private javax.swing.JTextField txtName;
+    private javax.swing.JTextField txtSecondName;
     // End of variables declaration//GEN-END:variables
 }

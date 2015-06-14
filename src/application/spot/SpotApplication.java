@@ -125,5 +125,16 @@ public class SpotApplication {
         }
         return response;
     }
-    
+    public long verifySpots(int idRack){
+        long a=0;
+        try {
+            a = spotRepository.verifySpots(idRack);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        
+        
+        return a;
+    }
 }
