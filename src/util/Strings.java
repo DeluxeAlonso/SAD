@@ -211,10 +211,12 @@ public class Strings {
     
     /* Kardex States */
     public static final String MESSAGE_KARDEX_IN_INTERNMENT = "Ingreso por internamiento";
+    public static final String MESSAGE_KARDEX_IN_MOVEMENT = "Ingreso por movimiento";
     public static final String MESSAGE_KARDEX_IN_ADJUST = "Ingreso por ajuste";
     public static final String MESSAGE_KARDEX_IN_RETURN = "Ingreso por devolucion";
     public static final String MESSAGE_KARDEX_OUT_DELIVERY = "Salida por despacho";
     public static final String MESSAGE_KARDEX_OUT_SMASH = "Salida por rotura";
     public static final String MESSAGE_KARDEX_OUT_ADJUST = "Salida por ajuste";
+    public static final String MESSAGE_KARDEX_OUT_MOVEMENT = "Salida por movimiento";
     /*END*/
 }
