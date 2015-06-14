@@ -461,7 +461,7 @@ public class PalletMovementsView extends BaseView {
                         kardex.setProducto(prod);
                         kardex.setFecha(date);
                         kardex.setCantidad(kardexCount.get(key).intValue());
-                        kardex.setTipoMovimiento(Strings.MESSAGE_KARDEX_OUT_ADJUST);
+                        kardex.setTipoMovimiento(Strings.MESSAGE_KARDEX_OUT_MOVEMENT);
                         if(previousKardex.size()==0){
                             kardex.setStockInicial(0);
                         }else{
@@ -480,7 +480,7 @@ public class PalletMovementsView extends BaseView {
                         kardex.setProducto(prod);
                         kardex.setFecha(date);
                         kardex.setCantidad(kardexCount.get(key).intValue());
-                        kardex.setTipoMovimiento(Strings.MESSAGE_KARDEX_IN_ADJUST);
+                        kardex.setTipoMovimiento(Strings.MESSAGE_KARDEX_IN_MOVEMENT);
                         if(previousKardex.size()==0){
                             kardex.setStockInicial(0);
                         }else{
