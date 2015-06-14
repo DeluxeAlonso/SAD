@@ -74,7 +74,7 @@ public class EditWarehouseView extends BaseDialogView {
     
     public void fillTable(int id) {
         DefaultTableModel model = (DefaultTableModel) rackTable.getModel();
-        ArrayList<Rack> racks = rackApplication.queryRacksByWarehouse(id);
+        ArrayList<Rack> racks = rackApplication.queryAllByWarehouse(id);
 
         for (Rack r : racks) {
             String estado = "Desconocido";
@@ -431,8 +431,10 @@ public class EditWarehouseView extends BaseDialogView {
         int sr = rackTable.getSelectedRow();
         String idString = rackTable.getModel().getValueAt(sr, 0).toString();
         Rack r = rackApplication.queryById(Integer.parseInt(idString));
-        r.setEstado(EntityState.Racks.INACTIVO.ordinal());
-        rackApplication.update(r);
+        int verificacion = rackApplication.inactive(r);
+        if (verificacion ==1){
+            JOptionPane.showMessageDialog(this, "No se puede eliminar este Rack porque esta OCUPADO.","Mensaje de mantenimiento de Rack",JOptionPane.WARNING_MESSAGE);
+        }
         clearGrid();
         fillTable(a.getId());
         deleteBtn.setEnabled(false);

@@ -47,6 +47,8 @@ public class RackView extends BaseView {
     ArrayList<Almacen> warehouses = null;
     Rack rack =new Rack();
     int idRack;
+    
+    Almacen warehouse;
     public RackView() {
         initComponents();
         clearGridRack();
@@ -96,7 +98,7 @@ public class RackView extends BaseView {
     
     public void fillTableRack(int id) {
         DefaultTableModel model = (DefaultTableModel) rackGrid.getModel();
-        racks = rackApplication.queryRacksByWarehouse(id);
+        racks = rackApplication.queryAllByWarehouse(id);
 
         for (Rack r : racks) {
             String estado = "Desconocido";
@@ -131,9 +133,9 @@ public class RackView extends BaseView {
                     if (u.getEstado()==2) estado= "Ocupado";
             model.addRow(new Object[]{
                 //Integer.toString(u.getId()),
+                u.getLado(),
                 u.getFila().toString(),
                 u.getColumna().toString(),
-                u.getLado(),
                 estado,
                 false
             });
@@ -214,7 +216,7 @@ public class RackView extends BaseView {
                 {null, null, null, null, null}
             },
             new String [] {
-                "Fila", "Columna", "Lado", "Estado", "Seleccione"
+                "Lado", "Fila", "Columna", "Estado", "Seleccione"
             }
         ) {
             Class[] types = new Class [] {
@@ -239,15 +241,10 @@ public class RackView extends BaseView {
         WarehouseGrid.setViewportView(usersGrid);
         if (usersGrid.getColumnModel().getColumnCount() > 0) {
             usersGrid.getColumnModel().getColumn(0).setResizable(false);
-            usersGrid.getColumnModel().getColumn(0).setHeaderValue("Fila");
             usersGrid.getColumnModel().getColumn(1).setResizable(false);
-            usersGrid.getColumnModel().getColumn(1).setHeaderValue("Columna");
             usersGrid.getColumnModel().getColumn(2).setResizable(false);
-            usersGrid.getColumnModel().getColumn(2).setHeaderValue("Lado");
             usersGrid.getColumnModel().getColumn(3).setResizable(false);
-            usersGrid.getColumnModel().getColumn(3).setHeaderValue("Estado");
             usersGrid.getColumnModel().getColumn(4).setResizable(false);
-            usersGrid.getColumnModel().getColumn(4).setHeaderValue("Seleccione");
         }
         usersGrid.getAccessibleContext().setAccessibleName("");
 
@@ -280,8 +277,8 @@ public class RackView extends BaseView {
             }
         });
         rackGrid.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                rackGridMouseClicked(evt);
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                rackGridMousePressed(evt);
             }
         });
         WarehouseGrid1.setViewportView(rackGrid);
@@ -297,11 +294,6 @@ public class RackView extends BaseView {
 
         inactivoBtn.setText("Inactivo");
         inactivoBtn.setEnabled(false);
-        inactivoBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                inactivoBtnMouseClicked(evt);
-            }
-        });
         inactivoBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inactivoBtnActionPerformed(evt);
@@ -325,9 +317,9 @@ public class RackView extends BaseView {
 
         jLabel1.setText("Almacen:");
 
-        searchBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                searchBtnMouseClicked(evt);
+        searchBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchBtnActionPerformed(evt);
             }
         });
 
@@ -435,7 +427,7 @@ public class RackView extends BaseView {
     private void inactiveSpot(Ubicacion u){
         if (u.getEstado()==EntityState.Spots.LIBRE.ordinal()){
             spotApplication.updateSpotOccupancy(u.getId(),EntityState.Spots.INACTIVO.ordinal());
-            rack.setUbicLibres(rack.getUbicLibres()-1);
+            warehouse.setUbicLibres(warehouse.getUbicLibres()-1);
         }else if (u.getEstado()==EntityState.Spots.INACTIVO.ordinal()){
             //spotApplication.updateSpotOccupancy(idSpot,EntityState.Spots.LIBRE.ordinal());
         }else if (u.getEstado()==EntityState.Spots.OCUPADO.ordinal()){
@@ -453,6 +445,15 @@ public class RackView extends BaseView {
         inactivoBtn.setEnabled(true);
     }
     
+    private void disableFields(){
+        filaCombo.setEnabled(false);
+        columnaCombo.setEnabled(false);
+        ladoCombo.setEnabled(false);
+        allCheckBox.setEnabled(false);
+        activoBtn.setEnabled(false);
+        inactivoBtn.setEnabled(false);
+    }
+    
     private int checkStates(){
         DefaultTableModel tableModel = (DefaultTableModel) usersGrid.getModel();
         for(int i=0;i<spots.size();i++){
@@ -465,28 +466,20 @@ public class RackView extends BaseView {
         return -1;
     }
     
-    private void inactivoBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inactivoBtnMouseClicked
+    private void inactivoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inactivoBtnActionPerformed
         // TODO add your handling code here:
         int idOcupado = checkStates();
         if (idOcupado==-1){
-        
-        
         DefaultTableModel tableModel = (DefaultTableModel) usersGrid.getModel();
         for(int i=0;i<spots.size();i++){
             if((Boolean)tableModel.getValueAt(i, 4)){
                 inactiveSpot(spots.get(i));
             }
         }
-        
-        
-        
-        
         }else{
             int fil = spots.get(idOcupado).getFila();
             int col = spots.get(idOcupado).getColumna();
-            String lado = spots.get(idOcupado).getLado();
-            
-            
+            String lado = spots.get(idOcupado).getLado();    
             String mesage = "La ubicacion del Rack "+idRack+
                     ", Fila: "+fil +", Columna: "+col+", Lado: "+lado
                     +" \nNo se puede desactivar por estar OCUPADA.";
@@ -494,6 +487,16 @@ public class RackView extends BaseView {
             String tittle="Mensaje de ubicacion";
             JOptionPane.showMessageDialog(this, mesage,tittle,JOptionPane.WARNING_MESSAGE);
         }
+            long veri = spotApplication.verifySpots(idRack);
+        
+            if (veri ==0){
+                rack.setEstado(EntityState.Racks.INACTIVO.ordinal());
+                rackApplication.update(rack);
+                racks = rackApplication.queryAllByWarehouse(warehouse.getId());
+                clearGridRack();
+                fillTableRack(warehouse.getId());
+            }
+        
         clearGridSpot();
         int col=columnaCombo.getSelectedIndex();
         int fil=filaCombo.getSelectedIndex();
@@ -501,35 +504,7 @@ public class RackView extends BaseView {
         
         spots=spotApplication.queryByPosition(idRack,fil ,col ,lado );
         fillTableSpot();    
-    }//GEN-LAST:event_inactivoBtnMouseClicked
-
-    private void searchBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchBtnMouseClicked
-        // TODO add your handling code here:
-               
-        clearGridRack();
-        int idS = warehouses.get(warehouseCombo.getSelectedIndex()).getId();
-        fillTableRack(idS);
-    }//GEN-LAST:event_searchBtnMouseClicked
-
-    private void inactivoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inactivoBtnActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_inactivoBtnActionPerformed
-
-    private void rackGridMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rackGridMouseClicked
-        // TODO add your handling code here:
-        int sr = rackGrid.getSelectedRow();
-        String idString = rackGrid.getModel().getValueAt(sr, 0).toString();
-        int id = Integer.parseInt(idString);
-        idRack=id;
-        rack = rackApplication.queryById(id);
-        clearGridSpot();
-        spots = spotApplication.querySpotsByRack(id);
-        fillTableSpot();
-        fillColumnaCombo();
-        fillFilaCombo();
-        fillLadoCombo();
-        enableFields();
-    }//GEN-LAST:event_rackGridMouseClicked
 
     private void filaComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filaComboItemStateChanged
         // TODO add your handling code here:
@@ -581,6 +556,36 @@ public class RackView extends BaseView {
     private void allCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_allCheckBoxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_allCheckBoxActionPerformed
+
+    private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
+        // TODO add your handling code here:
+        clearGridRack();
+        warehouse = warehouses.get(warehouseCombo.getSelectedIndex());
+        int idS = warehouses.get(warehouseCombo.getSelectedIndex()).getId();
+        fillTableRack(idS);
+        
+    }//GEN-LAST:event_searchBtnActionPerformed
+
+    private void rackGridMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rackGridMousePressed
+        // TODO add your handling code here:
+        int sr = rackGrid.getSelectedRow();
+        String idString = rackGrid.getModel().getValueAt(sr, 0).toString();
+        int id = Integer.parseInt(idString);
+        idRack=id;
+        rack = rackApplication.queryById(id);
+        clearGridSpot();
+        spots = spotApplication.querySpotsByRack(id);
+        fillTableSpot();
+        fillColumnaCombo();
+        fillFilaCombo();
+        fillLadoCombo();
+        if (rack.getEstado()!=EntityState.Racks.INACTIVO.ordinal())
+            enableFields();
+        else{
+            disableFields();
+        }
+            
+    }//GEN-LAST:event_rackGridMousePressed
 
     private void fillColumnaCombo(){
         int ncol = rack.getNumCol();

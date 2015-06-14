@@ -319,11 +319,6 @@ public class ProductView extends BaseView implements MouseListener {
 
         btnDeleteClient.setText("Eliminar");
         btnDeleteClient.setEnabled(false);
-        btnDeleteClient.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnDeleteClientMousePressed(evt);
-            }
-        });
         btnDeleteClient.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDeleteClientActionPerformed(evt);
@@ -437,11 +432,6 @@ public class ProductView extends BaseView implements MouseListener {
 
         btnSaveLocal.setText("Guardar");
         btnSaveLocal.setEnabled(false);
-        btnSaveLocal.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnSaveLocalMousePressed(evt);
-            }
-        });
         btnSaveLocal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSaveLocalActionPerformed(evt);
@@ -533,9 +523,9 @@ public class ProductView extends BaseView implements MouseListener {
 
         btnDeleteLocal.setText("Eliminar");
         btnDeleteLocal.setEnabled(false);
-        btnDeleteLocal.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnDeleteLocalMousePressed(evt);
+        btnDeleteLocal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteLocalActionPerformed(evt);
             }
         });
 
@@ -646,7 +636,51 @@ public class ProductView extends BaseView implements MouseListener {
         }
     }//GEN-LAST:event_btnSaveClientActionPerformed
 
-    private void btnDeleteClientMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteClientMousePressed
+    private void btnFileUploadMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFileUploadMousePressed
+        loadFromFile(file.getAbsolutePath());
+        file = null;
+        btnFileUpload.setEnabled(false);
+        fileTextField.setText("");
+        
+    }//GEN-LAST:event_btnFileUploadMousePressed
+
+    private String calcularEAN13(int id){
+        int iSum = 0;
+        int iSumInpar = 0;
+        int iDigit = 0;
+        
+        String ean12;
+        /*
+        String country= "775";
+        String company="7061";
+                */
+        String country= "775";
+        String company="7061";
+        String idS = String.format("%05d", id);
+        ean12 =  country+ company+idS;
+ 
+        String EAN="0"+ean12;
+ 
+        for (int i = 0; i <12; i++){
+            iDigit = Integer.parseInt(ean12.charAt(i)+"");
+            if (i % 2 != 0)
+            {
+                iSumInpar += iDigit;
+            }
+            else
+            {
+                iSum += iDigit;
+            }
+        }
+ 
+        iDigit = (iSumInpar*3) + iSum ;
+ 
+        int iCheckSum = (10 - (iDigit % 10)) % 10;
+        return ean12 + iCheckSum;
+    }
+    
+    private void btnDeleteClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteClientActionPerformed
+        // TODO add your handling code here:
         JOptionPane.setDefaultLocale(new Locale("es", "ES"));
         int response = JOptionPane.showConfirmDialog(this, "¿Esta seguro que desea borrar el tipo de producto?","Mensaje de error producto",JOptionPane.WARNING_MESSAGE);
         if(JOptionPane.OK_OPTION == response){
@@ -658,17 +692,15 @@ public class ProductView extends BaseView implements MouseListener {
             btnDeleteClient.setEnabled(false);
             btnDeleteLocal.setEnabled(false);
         }
-    }//GEN-LAST:event_btnDeleteClientMousePressed
+    }//GEN-LAST:event_btnDeleteClientActionPerformed
 
-    private void btnFileUploadMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFileUploadMousePressed
-        loadFromFile(file.getAbsolutePath());
-        file = null;
-        btnFileUpload.setEnabled(false);
-        fileTextField.setText("");
+    private void jScrollPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane1MouseClicked
+        // TODO add your handling code here:
         
-    }//GEN-LAST:event_btnFileUploadMousePressed
+    }//GEN-LAST:event_jScrollPane1MouseClicked
 
-    private void btnSaveLocalMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveLocalMousePressed
+    private void btnSaveLocalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveLocalActionPerformed
+        // TODO add your handling code here:
         clearNewLocalFormBorders();
         String error_message = "Errores:\n";
         JOptionPane.setDefaultLocale(new Locale("es", "ES"));
@@ -745,44 +777,14 @@ public class ProductView extends BaseView implements MouseListener {
             clearNewLocalForm();
             fillProductsTable();
         }
-    }//GEN-LAST:event_btnSaveLocalMousePressed
+    }//GEN-LAST:event_btnSaveLocalActionPerformed
 
-    private String calcularEAN13(int id){
-        int iSum = 0;
-        int iSumInpar = 0;
-        int iDigit = 0;
-        
-        String ean12;
-        /*
-        String country= "775";
-        String company="7061";
-                */
-        String country= "775";
-        String company="7061";
-        String idS = String.format("%05d", id);
-        ean12 =  country+ company+idS;
- 
-        String EAN="0"+ean12;
- 
-        for (int i = 0; i <12; i++){
-            iDigit = Integer.parseInt(ean12.charAt(i)+"");
-            if (i % 2 != 0)
-            {
-                iSumInpar += iDigit;
-            }
-            else
-            {
-                iSum += iDigit;
-            }
-        }
- 
-        iDigit = (iSumInpar*3) + iSum ;
- 
-        int iCheckSum = (10 - (iDigit % 10)) % 10;
-        return ean12 + iCheckSum;
-    }
-    
-    private void btnDeleteLocalMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteLocalMousePressed
+    private void btnFileUploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFileUploadActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnFileUploadActionPerformed
+
+    private void btnDeleteLocalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteLocalActionPerformed
+        // TODO add your handling code here:
         JOptionPane.setDefaultLocale(new Locale("es", "ES"));
         int response = JOptionPane.showConfirmDialog(this, "¿Esta seguro que desea eliminar este producto?","Mensaje mantenimiento Producto",JOptionPane.WARNING_MESSAGE);
         if(JOptionPane.OK_OPTION == response){
@@ -790,24 +792,7 @@ public class ProductView extends BaseView implements MouseListener {
             fillProductsTable();
             btnDeleteLocal.setEnabled(false);
         }
-    }//GEN-LAST:event_btnDeleteLocalMousePressed
-
-    private void btnDeleteClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteClientActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnDeleteClientActionPerformed
-
-    private void jScrollPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane1MouseClicked
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_jScrollPane1MouseClicked
-
-    private void btnSaveLocalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveLocalActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnSaveLocalActionPerformed
-
-    private void btnFileUploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFileUploadActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnFileUploadActionPerformed
+    }//GEN-LAST:event_btnDeleteLocalActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

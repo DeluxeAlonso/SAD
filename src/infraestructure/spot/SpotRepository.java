@@ -263,6 +263,48 @@ public class SpotRepository implements ISpotRepository{
         }
         return spots; //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public long verifySpots(int idRack) {
+        
+        
+        String hql="Select count(1) FROM Ubicacion u WHERE u.rack.id=:rackId "
+                + "AND (u.estado=:state1 OR u.estado=:state2)";
+        String hql2 ="UPDATE Rack r SET estado=:stateNew WHERE r.id=:idRack";
+
+        long number=0;
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q= session.createQuery(hql);
+            q.setParameter("rackId", idRack);
+            q.setParameter("state1", EntityState.Spots.OCUPADO.ordinal());
+            q.setParameter("state2", EntityState.Spots.LIBRE.ordinal());
+            number=((long)q.uniqueResult());
+            
+            if (number==0){
+                Query q1= session.createQuery(hql2);
+                q1.setParameter("stateNew", EntityState.Spots.INACTIVO.ordinal());
+                q1.setParameter("idRack", idRack);
+            }
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return number; //To change body of generated methods, choose Tools | Templates.
+                
+                
+                
+                
+                
+                
+                
+                
+    }
     
         public ArrayList<Ubicacion> querySpotsByWarehouse2(int warehouseId) {
         String hql="FROM Ubicacion u WHERE u.rack.id IN (SELECT id FROM Rack r WHERE r.almacen.id=:warehouseId) AND u.estado!=:state AND u.estado!=:state2  ORDER BY u.rack.id, u.lado, u.fila, u.columna";
