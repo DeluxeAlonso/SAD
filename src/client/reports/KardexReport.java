@@ -431,58 +431,72 @@ public class KardexReport extends BaseView {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportActionPerformed
-        
-        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
-        boolean hasErrors=false;
-        String error_message = "Errores:\n";
-        if(warehouses.size()>0 && products.size()>0){
-            if(dtcInitDate.getDate()==null){
-                hasErrors=true;
-                //error_message += Strings.ERROR_DATE_INI+"\n";
-            }
-            if(dtcEndDate.getDate()==null){
-                hasErrors=true;
-                error_message += Strings.ERROR_DATE_END+"\n";
-            }
-            if(dtcInitDate.getDate()!=null && dtcEndDate.getDate()!=null){
-                if(dtcInitDate.getDate().getTime() > dtcEndDate.getDate().getTime()){
+        try {
+            startLoader();
+            JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+            boolean hasErrors=false;
+            String error_message = "Errores:\n";
+            if(warehouses.size()>0 && products.size()>0){
+                if(dtcInitDate.getDate()==null){
                     hasErrors=true;
-                    error_message += Strings.ERROR_DATE+"\n";
+                    //error_message += Strings.ERROR_DATE_INI+"\n";
+                }
+                if(dtcEndDate.getDate()==null){
+                    hasErrors=true;
+                    error_message += Strings.ERROR_DATE_END+"\n";
+                }
+                if(dtcInitDate.getDate()!=null && dtcEndDate.getDate()!=null){
+                    if(dtcInitDate.getDate().getTime() > dtcEndDate.getDate().getTime()){
+                        hasErrors=true;
+                        error_message += Strings.ERROR_DATE+"\n";
+                    }
+                }
+
+                if(hasErrors){
+                    JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_KARDEX_TITLE,JOptionPane.WARNING_MESSAGE);
+                    btnExport.setEnabled(false);
+                }else{
+                    kardex = new ArrayList<Kardex>();
+                    /* To decrement 1 day from the dtcInitDate */
+                    Calendar c = Calendar.getInstance(); 
+                    c.setTime(dtcInitDate.getDate()); 
+                    c.add(Calendar.DATE, -1);
+                    Date newInitDate = c.getTime();
+                    kardex = kardexApplication.queryByParameters(warehouses.get(comboWarehouseFrom.getSelectedIndex()).getId(), products.get(comboProductFrom.getSelectedIndex()).getId(), newInitDate,dtcEndDate.getDate());
+
+                    fillKardex();
+                    btnExport.setEnabled(true);
                 }
             }
-            
-            if(hasErrors){
-                JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_KARDEX_TITLE,JOptionPane.WARNING_MESSAGE);
-                btnExport.setEnabled(false);
-            }else{
-                kardex = new ArrayList<Kardex>();
-                /* To decrement 1 day from the dtcInitDate */
-                Calendar c = Calendar.getInstance(); 
-                c.setTime(dtcInitDate.getDate()); 
-                c.add(Calendar.DATE, -1);
-                Date newInitDate = c.getTime();
-                kardex = kardexApplication.queryByParameters(warehouses.get(comboWarehouseFrom.getSelectedIndex()).getId(), products.get(comboProductFrom.getSelectedIndex()).getId(), newInitDate,dtcEndDate.getDate());
-                
-                fillKardex();
-                btnExport.setEnabled(true);
-            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            stopLoader();
         }
     }//GEN-LAST:event_btnReportActionPerformed
 
     private void comboWarehouseFromItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboWarehouseFromItemStateChanged
-        if(evt.getStateChange() == ItemEvent.SELECTED)
-            fillProducts(warehouses.get(comboWarehouseFrom.getSelectedIndex()).getCondicion().getId());
+        try {
+            startLoader();
+            if(evt.getStateChange() == ItemEvent.SELECTED)
+                fillProducts(warehouses.get(comboWarehouseFrom.getSelectedIndex()).getCondicion().getId());
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            stopLoader();
+        }
     }//GEN-LAST:event_comboWarehouseFromItemStateChanged
 
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
-        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
-        fc.setDialogTitle("Seleccione un archivo");
-        fc.showOpenDialog(this);
-        file = fc.getSelectedFile();
-        System.out.println(file);
-        Date date = new Date();
-        /* Export to XSL */
         try {
+            startLoader();
+            JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+            fc.setDialogTitle("Seleccione un archivo");
+            fc.showOpenDialog(this);
+            file = fc.getSelectedFile();
+            System.out.println(file);
+            Date date = new Date();
+            /* Export to XSL */
             File exlFile = file;
             WritableWorkbook writableWorkbook = Workbook.createWorkbook(exlFile);
  
@@ -517,6 +531,8 @@ public class KardexReport extends BaseView {
         } catch (Exception ex) {
             Logger.getLogger(AvailabilityReport.class.getName()).log(Level.SEVERE, null, ex);
             //JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir el archivo",Strings.ERROR_KARDEX_TITLE,JOptionPane.ERROR_MESSAGE);
+        }finally{
+            stopLoader();
         }
     }//GEN-LAST:event_btnExportActionPerformed
 
