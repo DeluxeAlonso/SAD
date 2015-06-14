@@ -119,15 +119,6 @@ public class PalletView extends BaseView {
     }
     
     
-    public void calculartam(JButton searchBtn){
-        int w = searchBtn.getWidth();
-        int h = searchBtn.getHeight();
-        System.out.println("W:"+w+"");
-        System.out.println("H:"+h+"");
-        
-        
-    }
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

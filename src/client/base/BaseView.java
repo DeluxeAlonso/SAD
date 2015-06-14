@@ -8,6 +8,7 @@ package client.base;
 import client.general.MainView;
 import static client.general.MainView.reportFc;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.io.File;
 import javax.swing.BorderFactory;
@@ -27,7 +28,8 @@ public abstract class BaseView extends javax.swing.JInternalFrame {
     protected String error_message;
     protected JFileChooser fc = MainView.fc;
     protected JFileChooser reportFc = MainView.reportFc;
-
+    protected Cursor waitCursor = new Cursor(Cursor.WAIT_CURSOR);
+    protected Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
     
     protected void initialize(){
         Dimension desktopSize = MainView.desktopPane.getSize();
@@ -66,6 +68,12 @@ public abstract class BaseView extends javax.swing.JInternalFrame {
         return file;
     }
     
+    protected void startLoader(){
+        setCursor(waitCursor);
+    }
+    protected void stopLoader(){
+        setCursor(defaultCursor);
+    }
     private void formInternalFrameClosed(javax.swing.event.InternalFrameEvent evt){
             this.dispose();
         }

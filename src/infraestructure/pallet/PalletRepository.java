@@ -336,7 +336,7 @@ public class PalletRepository implements IPalletRepository{
                 trns=session.beginTransaction();
                 Query q = session.createQuery(hql);
                 q.setParameter("producto", producto);
-                q.setParameter("ean", ean);
+                q.setParameter("ean", "%"+ean+"%");
                 q.setParameter("aux","");
                 q.setParameter("internmentOrder",internmentOrder);
                 pallets = (ArrayList<Pallet>) q.list();          
