@@ -84,7 +84,7 @@ public class InternmentRepository implements IInternmentRepository {
 
     @Override
     public ArrayList<OrdenInternamiento> queryAll() {
-         String hql="FROM OrdenInternamiento c WHERE c.estado=:state";
+         String hql="FROM OrdenInternamiento";
         ArrayList<OrdenInternamiento> internmentOrders=null;
         
         Transaction trns = null;
@@ -92,7 +92,6 @@ public class InternmentRepository implements IInternmentRepository {
         try {            
             trns=session.beginTransaction();
             Query q = session.createQuery(hql);    
-            q.setParameter("state", EntityState.InternmentOrders.REGISTRADA.ordinal());          
             internmentOrders = (ArrayList<OrdenInternamiento>) q.list();          
             session.getTransaction().commit();
         } catch (RuntimeException e) {

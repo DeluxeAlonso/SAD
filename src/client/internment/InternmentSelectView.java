@@ -616,11 +616,13 @@ public class InternmentSelectView extends BaseView {
 
     private void btnInternActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInternActionPerformed
         if (Integer.parseInt(txtPendingInterns.getText()) >= 0) {
-            Cursor cur1 = new Cursor(Cursor.WAIT_CURSOR);
-            setCursor(cur1);
-            internarPallets();
-            Cursor cur2 = new Cursor(Cursor.DEFAULT_CURSOR);
-            setCursor(cur2);
+            try {
+                startLoader();
+                internarPallets();
+            }
+            finally{
+                stopLoader();
+            }
             
         } else {
             JOptionPane.setDefaultLocale(new Locale("es", "ES"));
@@ -659,13 +661,14 @@ public class InternmentSelectView extends BaseView {
         JTable table = tableFreeSpots;
         int cant = 0;
         int aux = 0;
+        Date date = new Date();
         Boolean isChecked = null;
         if (ordenAInternar != null) {
             ArrayList<Pallet> pallets = palletApplication.getPalletsFromOrder(ordenAInternar.getId());
             ArrayList<Pallet> palletsInter = new ArrayList<Pallet>();
             ArrayList<Pallet> palletsInterAFuncion = new ArrayList<Pallet>();
             for (int i = 0; i < pallets.size(); i++) {
-                if (pallets.get(i).getUbicacion() == null) {
+                if ((pallets.get(i).getUbicacion() == null) && (pallets.get(i).getEstado() != EntityState.Pallets.ELIMINADO.ordinal()) && (pallets.get(i).getEstado() != EntityState.Pallets.VENCIDO.ordinal()) && (pallets.get(i).getEstado() != EntityState.Pallets.ROTO.ordinal())) {
                     palletsInter.add(pallets.get(i));
                 }
             }
@@ -683,6 +686,7 @@ public class InternmentSelectView extends BaseView {
                         Pallet pall = palletsInter.get(cant);
                         pall.setEstado(EntityState.Pallets.UBICADO.ordinal());
                         pall.setUbicacion(ubicaciones.get(i));
+                        pall.setFechaInternamiento(date);
                         palletsInterAFuncion.add(pall);
                         cant++;
                         aux++;

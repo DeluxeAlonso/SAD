@@ -313,30 +313,34 @@ public class PalletRepository implements IPalletRepository{
     }
 
     @Override
-    public ArrayList<Pallet> queryByParameters(String ean, int almacen, int producto,int internmentOrder, Boolean selected) {
+    public ArrayList<Pallet> queryByParameters(String ean, int almacen, int producto,int internmentOrder, int estado) {
         String hql1= "FROM Pallet a where (a.ubicacion.id in (select u.id from Ubicacion u where u.rack.id in" +
+                    "(select r.id from Rack r where (r.almacen.id=:almacen OR :almacen=0)))) AND "+
+                    "(a.ean128 like :ean OR :ean = :aux) AND" +
+                    "(a.ordenInternamiento.id = :internmentOrder OR :internmentOrder = 0) AND" +
+                    "(a.estado = :estado) AND" +
+                    "(a.producto.id = :producto OR :producto = 0) ORDER BY a.ubicacion.rack.almacen.id, a.ubicacion.rack.id, a.ubicacion.lado, a.ubicacion.fila, a.ubicacion.columna";
+        
+        String hql2 =  "FROM Pallet a where (a.ubicacion.id in (select u.id from Ubicacion u where u.rack.id in" +
                     "(select r.id from Rack r where (r.almacen.id=:almacen OR :almacen=0)))) AND "+
                     "(a.ean128 like :ean OR :ean = :aux) AND" +
                     "(a.ordenInternamiento.id = :internmentOrder OR :internmentOrder = 0) AND" +
                     "(a.producto.id = :producto OR :producto = 0) ORDER BY a.ubicacion.rack.almacen.id, a.ubicacion.rack.id, a.ubicacion.lado, a.ubicacion.fila, a.ubicacion.columna";
         
-        String hql2 = "FROM Pallet a where (a.ubicacion is null) AND "+
-                        "(a.ean128 like :ean OR :ean = :aux) AND" +
-                        "(a.ordenInternamiento.id = :internmentOrder OR :internmentOrder = 0) AND" +
-                        "(a.producto.id = :producto OR :producto = 0)  ";       
         String hql = null;
         ArrayList<Pallet> pallets=null;
         Transaction trns = null;
         
         
-        if (selected){
+        if (estado == -1){
             hql = hql2;
             Session session = Tools.getSessionInstance();
             try {            
                 trns=session.beginTransaction();
                 Query q = session.createQuery(hql);
+                q.setParameter("almacen", almacen);
                 q.setParameter("producto", producto);
-                q.setParameter("ean", ean);
+                q.setParameter("ean", "%"+ean+"%");
                 q.setParameter("aux","");
                 q.setParameter("internmentOrder",internmentOrder);
                 pallets = (ArrayList<Pallet>) q.list();          
@@ -355,11 +359,12 @@ public class PalletRepository implements IPalletRepository{
             try {            
                 trns=session.beginTransaction();
                 Query q = session.createQuery(hql);
-                q.setParameter("ean", ean);
+                q.setParameter("ean", "%"+ean+"%");
                 q.setParameter("almacen", almacen);
                 q.setParameter("producto", producto);
                 q.setParameter("aux","");
                 q.setParameter("internmentOrder",internmentOrder);
+                q.setParameter("estado", estado);
                 pallets = (ArrayList<Pallet>) q.list();          
                 session.getTransaction().commit();
             } catch (RuntimeException e) {
