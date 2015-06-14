@@ -8,7 +8,9 @@ package application.pallet;
 import base.pallet.IPalletRepository;
 import entity.Almacen;
 import entity.Despacho;
+import entity.Kardex;
 import entity.OrdenInternamiento;
+import entity.OrdenInternamientoXProducto;
 import entity.Pallet;
 import entity.Producto;
 import infraestructure.pallet.PalletRepository;
@@ -99,6 +101,17 @@ public class PalletApplication {
         }
     }
     
+    public int internNPallets(ArrayList<Pallet> pallets, OrdenInternamientoXProducto orXProd, Kardex kardex ){
+        try {
+            
+            palletRepository.internNPallets(pallets,orXProd,kardex);
+            //return object.getId();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+        return 1;
+    } 
     
     public int insertNPallet(ArrayList<Pallet> pallets) {
         try {
@@ -181,10 +194,10 @@ public class PalletApplication {
         return pallets;
     }
 
-    public ArrayList<Pallet> queryByParameters(String ean, int almacen, int producto, int internmentOrder, Boolean selected) {
+    public ArrayList<Pallet> queryByParameters(String ean, int almacen, int producto, int internmentOrder, int estado) {
         ArrayList<Pallet> pallets = new ArrayList<>();
         try {
-            pallets = palletRepository.queryByParameters(ean, almacen, producto, internmentOrder, selected);
+            pallets = palletRepository.queryByParameters(ean, almacen, producto, internmentOrder, estado);
         } catch (Exception e) {
             e.printStackTrace();
         }

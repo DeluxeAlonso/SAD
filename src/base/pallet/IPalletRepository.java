@@ -8,7 +8,9 @@ package base.pallet;
 import base.IRepository;
 import entity.Almacen;
 import entity.Despacho;
+import entity.Kardex;
 import entity.OrdenInternamiento;
+import entity.OrdenInternamientoXProducto;
 import entity.Pallet;
 import entity.Producto;
 import java.util.ArrayList;
@@ -32,10 +34,12 @@ public interface IPalletRepository extends IRepository<Pallet>{
     public Boolean deletePalletBySpot(int spotId);
     public ArrayList<Pallet> queryPalletsBySpot(int spotId);
     public List<Object[]> queryByReport(int almacen, int condicion, int tipo, int reporte);
-    public ArrayList<Pallet> queryByParameters(String ean, int almacen, int producto,int internmentOrder, Boolean selected);
+    public ArrayList<Pallet> queryByParameters(String ean, int almacen, int producto,int internmentOrder, int estado);
     public ArrayList<Pallet> queryByDeliveryParameters(Almacen warehouse, ArrayList<Despacho>delivery, Producto product);
 
     public ArrayList<Pallet> queryByWarehouseParameters(Almacen warehouse, ArrayList<Despacho> delivery);
     public List<Object[]> queryByReportInter(int almacen, Date fechaD, Date fechaH, int tipo);
     public int insertNPallets(ArrayList<Pallet> pallets);
+    public int internNPallets(ArrayList<Pallet> pallets, OrdenInternamientoXProducto orXProd, Kardex kardex );
+    
 }

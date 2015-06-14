@@ -8,9 +8,12 @@ package infraestructure.pallet;
 import base.pallet.IPalletRepository;
 import entity.Almacen;
 import entity.Despacho;
+import entity.Kardex;
 import entity.OrdenInternamiento;
+import entity.OrdenInternamientoXProducto;
 import entity.Pallet;
 import entity.Producto;
+import entity.Ubicacion;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -310,30 +313,34 @@ public class PalletRepository implements IPalletRepository{
     }
 
     @Override
-    public ArrayList<Pallet> queryByParameters(String ean, int almacen, int producto,int internmentOrder, Boolean selected) {
+    public ArrayList<Pallet> queryByParameters(String ean, int almacen, int producto,int internmentOrder, int estado) {
         String hql1= "FROM Pallet a where (a.ubicacion.id in (select u.id from Ubicacion u where u.rack.id in" +
                     "(select r.id from Rack r where (r.almacen.id=:almacen OR :almacen=0)))) AND "+
                     "(a.ean128 like :ean OR :ean = :aux) AND" +
                     "(a.ordenInternamiento.id = :internmentOrder OR :internmentOrder = 0) AND" +
-                    "(a.producto.id = :producto OR :producto = 0)";
+                    "(a.estado = :estado) AND" +
+                    "(a.producto.id = :producto OR :producto = 0) ORDER BY a.ubicacion.rack.almacen.id, a.ubicacion.rack.id, a.ubicacion.lado, a.ubicacion.fila, a.ubicacion.columna";
         
-        String hql2 = "FROM Pallet a where (a.ubicacion is null) AND "+
-                        "(a.ean128 like :ean OR :ean = :aux) AND" +
-                        "(a.ordenInternamiento.id = :internmentOrder OR :internmentOrder = 0) AND" +
-                        "(a.producto.id = :producto OR :producto = 0)";       
+        String hql2 =  "FROM Pallet a where (a.ubicacion.id in (select u.id from Ubicacion u where u.rack.id in" +
+                    "(select r.id from Rack r where (r.almacen.id=:almacen OR :almacen=0)))) AND "+
+                    "(a.ean128 like :ean OR :ean = :aux) AND" +
+                    "(a.ordenInternamiento.id = :internmentOrder OR :internmentOrder = 0) AND" +
+                    "(a.producto.id = :producto OR :producto = 0) ORDER BY a.ubicacion.rack.almacen.id, a.ubicacion.rack.id, a.ubicacion.lado, a.ubicacion.fila, a.ubicacion.columna";
+        
         String hql = null;
         ArrayList<Pallet> pallets=null;
         Transaction trns = null;
         
         
-        if (selected){
+        if (estado == -1){
             hql = hql2;
             Session session = Tools.getSessionInstance();
             try {            
                 trns=session.beginTransaction();
                 Query q = session.createQuery(hql);
+                q.setParameter("almacen", almacen);
                 q.setParameter("producto", producto);
-                q.setParameter("ean", ean);
+                q.setParameter("ean", "%"+ean+"%");
                 q.setParameter("aux","");
                 q.setParameter("internmentOrder",internmentOrder);
                 pallets = (ArrayList<Pallet>) q.list();          
@@ -352,11 +359,12 @@ public class PalletRepository implements IPalletRepository{
             try {            
                 trns=session.beginTransaction();
                 Query q = session.createQuery(hql);
-                q.setParameter("ean", ean);
+                q.setParameter("ean", "%"+ean+"%");
                 q.setParameter("almacen", almacen);
                 q.setParameter("producto", producto);
                 q.setParameter("aux","");
                 q.setParameter("internmentOrder",internmentOrder);
+                q.setParameter("estado", estado);
                 pallets = (ArrayList<Pallet>) q.list();          
                 session.getTransaction().commit();
             } catch (RuntimeException e) {
@@ -573,4 +581,61 @@ public class PalletRepository implements IPalletRepository{
         return 1;
     }
     
+    public int internNPallets(ArrayList<Pallet> pallets, OrdenInternamientoXProducto orXProd, Kardex kardex ) {
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Almacen alm = pallets.get(0).getUbicacion().getRack().getAlmacen();
+            Producto prod = pallets.get(0).getProducto();
+            for (Pallet p : pallets){
+                if (p.getUbicacion() != null){
+                    //Actualizar ubicacion de pallets
+                    session.update(p);
+                    //actualizar estado en ubicaciones
+                    Ubicacion ub = p.getUbicacion();
+                    ub.setEstado(EntityState.Spots.OCUPADO.ordinal());
+                    session.update(ub);                    
+                }
+            }
+            session.flush(); 
+
+            
+            //actualizar orden intermientoXproducto. cant ingresada
+            orXProd.setCantidadIngresada(orXProd.getCantidadIngresada()+pallets.size());
+            session.update(orXProd);
+            session.flush(); 
+
+            //cambiar estado si se interna toda la orden
+            int x = orXProd.getCantidad();
+            int y = orXProd.getCantidadIngresada();
+            if (x == y){
+                orXProd.getOrdenInternamiento().setEstado(EntityState.InternmentOrders.INTERNADA.ordinal());
+                session.update(orXProd.getOrdenInternamiento());
+            }
+            session.flush();
+            
+            // actualizar pallets registrados y ubicados del producto
+            prod.setPalletsRegistrados(prod.getPalletsRegistrados()-pallets.size());
+            prod.setPalletsUbicados(prod.getPalletsUbicados()+ pallets.size());
+            session.update(prod);
+            session.flush(); 
+            //disminuir ubicaciones libres en almacen
+            alm.setUbicLibres(alm.getUbicLibres()-pallets.size());
+            session.update(alm);
+            session.flush(); 
+            //ingresar entrada en kardex
+            session.save(kardex);
+            session.flush();     
+            session.getTransaction().commit();            
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return -1;
+        } 
+        return 1;
+    }
+
 }

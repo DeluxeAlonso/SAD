@@ -261,10 +261,15 @@ public class PalletMovementsView extends BaseView {
 
         jLabel4.setText("Seleccione rack destino");
 
-        btnSave.setText("Guardar");
+        btnSave.setText("Mover Pallets");
         btnSave.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btnSaveMousePressed(evt);
+            }
+        });
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
             }
         });
 
@@ -372,6 +377,10 @@ public class PalletMovementsView extends BaseView {
     }//GEN-LAST:event_comboRackToItemStateChanged
 
     private void btnSaveMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMousePressed
+        
+    }//GEN-LAST:event_btnSaveMousePressed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         ArrayList<Integer> selectedPallets = new ArrayList<Integer>();                            
         ArrayList<Integer> selectedSpots = new ArrayList<Integer>(); 
         Boolean isChecked;
@@ -460,10 +469,11 @@ public class PalletMovementsView extends BaseView {
                     kardexApplication.insert(kardex);
                 }
             }
+            JOptionPane.showMessageDialog(this, Strings.MESSAGE_PALLETS_MOVEMENT,Strings.MESSAGE_PALLETS_MOVEMENT_TITLE,JOptionPane.INFORMATION_MESSAGE);
             fillTableFrom(racksFrom.get(comboRackFrom.getSelectedIndex()).getId());
             fillTableTo(racksTo.get(comboRackTo.getSelectedIndex()).getId());
         }else{
-            String error_message = "Errores:\n\n";
+            String error_message = "Errores:\n";
             if(selectedPallets.size()<1)
                 error_message += Strings.ERROR_NO_PALLETS_SELECTED+"\n";
             if(selectedSpots.size()<1)
@@ -472,7 +482,7 @@ public class PalletMovementsView extends BaseView {
                 error_message += Strings.ERROR_PALLETS_DONT_MATCH_SPOTS+"\n";
             JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_PALLETS_MOVEMENT_TITLE,JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_btnSaveMousePressed
+    }//GEN-LAST:event_btnSaveActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

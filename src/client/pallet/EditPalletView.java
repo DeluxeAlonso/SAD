@@ -141,14 +141,16 @@ public class EditPalletView extends BaseDialogView {
     
     private void fillEstadoCombo(){
             estados.add(EntityState.Pallets.CREADO.ordinal());
-            //estados.add(EntityState.Pallets.DESPACHADO.ordinal());
+            estados.add(EntityState.Pallets.DESPACHADO.ordinal());
             estados.add(EntityState.Pallets.UBICADO.ordinal());
             estados.add(EntityState.Pallets.ELIMINADO.ordinal());
 
             estadosStr.add("CREADO");
-            //estadosStr.add("DESPACHADO");
+            estadosStr.add("DESPACHADO");
             estadosStr.add("UBICADO");
             estadosStr.add("ELIMINADO");
+            EntityState.getPalletsState();
+            
         
         if (estados!=null && estados.size()!=0){
             

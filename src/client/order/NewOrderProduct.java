@@ -130,21 +130,28 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
      * Product Methods
      */   
     public void addProduct(Producto p, Integer q){
+        Boolean isFull = false;
         if(orderProducts.contains(p)){
             int index = orderProducts.indexOf(p);
             productQuantities.set(index, q + productQuantities.get(index));
-            if (productQuantities.get(index) > p.getStockLogico())
+            if (productQuantities.get(index) > p.getStockLogico()){
                 productQuantities.set(index, p.getStockLogico());
+                isFull = true;
+            }
         }
         else{
             orderProducts.add(p);
             if (q > p.getStockLogico()){
                 productQuantities.add(p.getStockLogico()); 
+                isFull = true;
             }else{
                 productQuantities.add(q); 
             }
         }
         refreshOrderProductsTable();
+        if(isFull)
+            JOptionPane.showMessageDialog(this, "Se ha agregado toda la cantidad disponible para este producto.",
+                    Strings.MESSAGE_CREATE_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
     }
     
     public void deleteProduct(int index){

@@ -56,8 +56,6 @@ public class WarehouseControlCheckView extends BaseView {
     public static WarehouseControlCheckView warehouseControlCheckView;
     public ArrayList<Almacen> warehousesFrom;
     public ArrayList<Ubicacion> spots;
-    //private JDesktopPane mainPanel;
-    JFileChooser fc = new JFileChooser();
     File file = null;
     HashMap<Integer,Integer> kardexCountIn = new HashMap<Integer,Integer>();
     HashMap<Integer,Integer> kardexCountOut = new HashMap<Integer,Integer>();

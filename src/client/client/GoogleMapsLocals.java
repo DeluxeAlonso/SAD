@@ -1,15 +1,7 @@
 package client.client;
 
-import algorithm.Node;
-import algorithm.Solution;
 import com.teamdev.jxbrowser.chromium.Browser;
-import com.teamdev.jxbrowser.chromium.dom.DOMDocument;
-import com.teamdev.jxbrowser.chromium.dom.DOMElement;
-import com.teamdev.jxbrowser.chromium.dom.events.DOMEvent;
-import com.teamdev.jxbrowser.chromium.dom.events.DOMEventListener;
-import com.teamdev.jxbrowser.chromium.dom.events.DOMEventType;
 import com.teamdev.jxbrowser.chromium.swing.BrowserView;
-import entity.Cliente;
 import entity.Local;
 
 import javax.swing.*;
@@ -25,7 +17,7 @@ public class GoogleMapsLocals {
 
         JFrame frame = new JFrame("Vista en mapa de los locales");
         frame.add(browserView, BorderLayout.CENTER);
-        frame.setSize(900, 500);
+        frame.setSize(1000, 700);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
@@ -40,16 +32,9 @@ public class GoogleMapsLocals {
 "       #map-canvas { height: 100% }\n" +
 "   </style>\n" +
 "   <script type='text/javascript' src='https://maps.googleapis.com/maps/api/js?v=3.exp'></script>\n" +
-"   <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js'></script>\n" +
 "   <script type='text/javascript'>\n" +
 "  var waypts = [];\n" +
 "  var splitWayptsArray = [];\n";
-        /*
-    for(int i=0;i<clients.size();i++){
-html += " var waypts"+i+" = [];\n" +
-"         splitWayptsArray.push(waypts"+i+");\n";
-    }
-                */
 html += "function initialize() {\n" +
 "  var directionsDisplay = new google.maps.DirectionsRenderer();\n" +
 "  var directionsService = new google.maps.DirectionsService();\n" +

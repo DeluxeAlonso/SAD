@@ -509,12 +509,12 @@
                           <Editor/>
                           <Renderer/>
                         </Column>
-                        <Column maxWidth="-1" minWidth="100" prefWidth="-1" resizable="true">
+                        <Column maxWidth="-1" minWidth="120" prefWidth="-1" resizable="true">
                           <Title/>
                           <Editor/>
                           <Renderer/>
                         </Column>
-                        <Column maxWidth="-1" minWidth="100" prefWidth="-1" resizable="true">
+                        <Column maxWidth="-1" minWidth="120" prefWidth="-1" resizable="true">
                           <Title/>
                           <Editor/>
                           <Renderer/>

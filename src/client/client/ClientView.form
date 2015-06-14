@@ -54,7 +54,7 @@
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="btnDeleteLocal" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jButton1" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnMap" alignment="1" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -74,7 +74,7 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="fileTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnFileUpload" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnMap" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Component id="btnFile" min="-2" pref="29" max="-2" attributes="0"/>
               </Group>
@@ -162,7 +162,7 @@
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
-        <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnDeleteClientMousePressed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDeleteClientActionPerformed"/>
       </Events>
     </Component>
     <Container class="javax.swing.JPanel" name="jPanel1">
@@ -251,7 +251,6 @@
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
-        <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnFileUploadMousePressed"/>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnFileUploadActionPerformed"/>
       </Events>
     </Component>
@@ -369,7 +368,7 @@
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
-            <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnSaveLocalMousePressed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSaveLocalActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>
@@ -398,15 +397,15 @@
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
-        <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnDeleteLocalMousePressed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDeleteLocalActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton1">
+    <Component class="javax.swing.JButton" name="btnMap">
       <Properties>
         <Property name="text" type="java.lang.String" value="Visualizar locales"/>
       </Properties>
       <Events>
-        <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jButton1MousePressed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMapActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

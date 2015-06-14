@@ -25,6 +25,6 @@ public interface IInternmentRepository extends IRepository<OrdenInternamiento>{
 
     public Boolean incCantOrderXProd(OrdenInternamientoXProducto object);
 
-    public OrdenInternamientoXProducto getOrderProd(Producto id);
+    public OrdenInternamientoXProducto getOrderProd(Producto id, Integer quantity);
     
 }

@@ -41,6 +41,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyVetoException;
+import java.io.File;
 import java.util.Calendar;
 import java.util.Set;
 import java.util.logging.Level;
@@ -53,6 +54,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.MenuElement;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import util.Icons;
 import util.InstanceFactory;
 
@@ -93,6 +96,7 @@ public class MainView extends javax.swing.JFrame {
     private Image icon = null;
     private SecurityLogView securiryLog = null;
     public static JFileChooser fc = new JFileChooser();
+    public static JFileChooser reportFc = new JFileChooser();
     private Sesion session= new Sesion();
 
     /**
@@ -104,6 +108,7 @@ public class MainView extends javax.swing.JFrame {
         this.user = user;
         System.out.println(mainPanel);
         desktopPane = mainPanel;
+        setupFileChooser();
         renderUserMenu();
         Icons.setMainIcon(this);
         //inicializar la sesión
@@ -150,6 +155,13 @@ public class MainView extends javax.swing.JFrame {
             }
         }
     }
+    
+    private void setupFileChooser(){
+        reportFc.setDialogTitle("Exportar");
+        FileFilter excelType = new FileNameExtensionFilter("Microsoft Excel Document", "xls");
+        reportFc.setFileFilter(excelType);
+        reportFc.setDialogType(JFileChooser.SAVE_DIALOG);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -176,7 +188,6 @@ public class MainView extends javax.swing.JFrame {
         menuOp = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
-        jMenuItem11 = new javax.swing.JMenuItem();
         menuMaint = new javax.swing.JMenu();
         WarehouseMenu = new javax.swing.JMenuItem();
         RackItem = new javax.swing.JMenuItem();
@@ -266,14 +277,6 @@ public class MainView extends javax.swing.JFrame {
             }
         });
         menuOp.add(jMenuItem4);
-
-        jMenuItem11.setText("Devoluciones");
-        jMenuItem11.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                jMenuItem11MousePressed(evt);
-            }
-        });
-        menuOp.add(jMenuItem11);
 
         menuBar.add(menuOp);
 
@@ -640,23 +643,6 @@ public class MainView extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jMenuItem2MousePressed
 
-    private void jMenuItem11MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem11MousePressed
-        // TODO add your handling code here:
-        if (devolutionView == null || !devolutionView.isShowing()) {
-            devolutionView = new DevolutionView();
-            devolutionView.setVisible(true);
-            mainPanel.add(devolutionView);
-            try {
-                // TODO add your handling code here:
-                devolutionView.setSelected(true);
-
-            } catch (PropertyVetoException ex) {
-                Logger.getLogger(MainView.class
-                        .getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }//GEN-LAST:event_jMenuItem11MousePressed
-
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         // TODO add your handling code here:
         //Tools.closeSession();
@@ -730,6 +716,17 @@ public class MainView extends javax.swing.JFrame {
             mainPanel.add(orderView);
             try {
                 // TODO add your handling code here:
+                orderView.setSelected(true);
+
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        else{
+            try {
+                // TODO add your handling code here:
+                orderView.moveToFront();
                 orderView.setSelected(true);
 
             } catch (PropertyVetoException ex) {
@@ -844,6 +841,17 @@ public class MainView extends javax.swing.JFrame {
             }
 
         }
+        else{
+            try {
+                // TODO add your handling code here:
+                transportUnitView.moveToFront();
+                transportUnitView.setSelected(true);
+
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(MainView.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
     }//GEN-LAST:event_TUFrameMousePressed
 
@@ -874,7 +882,6 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JMenuItem WarehouseMenu;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
-    private javax.swing.JMenuItem jMenuItem11;
     private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem13;
     private javax.swing.JMenuItem jMenuItem14;

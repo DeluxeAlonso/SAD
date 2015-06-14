@@ -16,6 +16,7 @@ import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
 import entity.PedidoParcialXProductoId;
 import entity.Producto;
+import entity.Ubicacion;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -164,11 +165,11 @@ public class OrderRepository implements IOrderRepository{
                 productsToRemove.get(i).setPalletsUbicados(productsToRemove.get(i).getPalletsUbicados() - quantityToRemove.get(i));
                 session.merge(productsToRemove.get(i));
             }
+            //REJECTED
             System.out.println("Cantidad de Rejected Orders " + rejectedOrders.size());
-            ArrayList<Integer>previousRejectedOrdersId = new ArrayList<>();
             for(int i=0;i<rejectedOrders.size();i++){
-                if(!previousRejectedOrdersId.contains(rejectedOrders.get(i).getPedido().getId())){
-                    previousRejectedOrdersId.add(rejectedOrders.get(i).getPedido().getId());
+                if(!previousAcceptedOrdersId.contains(rejectedOrders.get(i).getPedido().getId())){
+                    previousAcceptedOrdersId.add(rejectedOrders.get(i).getPedido().getId());
                     System.out.println("Eliminar pedidos parciales del pedido " + rejectedOrders.get(i).getPedido().getId());
                     ArrayList<PedidoParcial> oldOrders = queryAllLocalPendingPartialOrdersById(rejectedOrders.get(i).getPedido().getId(),session, trns);
                     for(int j=0;j<oldOrders.size();j++){
@@ -453,6 +454,7 @@ public class OrderRepository implements IOrderRepository{
         try {            
             trns=session.beginTransaction();
             for(int i=0;i<pallets.size();i++){
+                pallets.get(i).setUbicacion(null);
                 session.update(pallets.get(i));
             }
             session.update(p.getPedido());
@@ -470,11 +472,13 @@ public class OrderRepository implements IOrderRepository{
     }
     
     public ArrayList<Pallet> getAvailablePalletsByProductId(Integer productId, Session session, Transaction trns){
-        String hql="FROM Pallet WHERE id_producto=:productId and estado=1";
+        String hql="FROM Pallet WHERE id_producto=:productId and estado=1 and (:now<fecha_vencimiento) order by fecha_vencimiento desc";
         ArrayList<Pallet> pallets= new ArrayList<>();  
         try {            
             Query q = session.createQuery(hql);
             q.setParameter("productId", productId);
+            Date date = new Date();
+            q.setDate("now", date);
             pallets = (ArrayList<Pallet>) q.list();          
         } catch (RuntimeException e) {
             if (trns != null) {
@@ -488,6 +492,10 @@ public class OrderRepository implements IOrderRepository{
     public Boolean updatePallets(ArrayList<Pallet> pallets, Session session, Transaction trns) {
         try {            
             for(int i=0;i<pallets.size();i++){
+                Ubicacion spot = pallets.get(i).getUbicacion();
+                spot.setEstado(EntityState.Spots.LIBRE.ordinal());
+                pallets.get(i).setUbicacion(null);
+                session.update(spot);
                 session.update(pallets.get(i));
             }                  
             return true;
@@ -520,6 +528,28 @@ public class OrderRepository implements IOrderRepository{
             e.printStackTrace();
         }
         return partialOrders;
+    }
+
+    @Override
+    public ArrayList<Pedido> queryOrdersByClientId(Integer clientId) {
+        Session session = Tools.getSessionInstance();
+        String hql = "from Pedido where (estado=1 or estado=2) and id_cliente=:id";
+        ArrayList<Pedido> orders = new ArrayList<>();
+        Transaction trns = null;
+        try{
+            trns = session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("id", clientId);
+            orders = (ArrayList<Pedido>) q.list();
+            session.getTransaction().commit();
+        }
+        catch (RuntimeException e){
+            if(trns != null){
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return orders;
     }
 
 }

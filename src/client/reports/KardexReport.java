@@ -20,12 +20,9 @@ import java.awt.event.ItemEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -36,20 +33,16 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
-import jxl.DateCell;
 import jxl.Workbook;
 import jxl.format.Colour;
 import jxl.format.UnderlineStyle;
 import jxl.format.VerticalAlignment;
-import jxl.write.DateTime;
 import jxl.write.Label;
 import jxl.write.WritableCellFormat;
 import jxl.write.WritableFont;
 import jxl.write.WritableImage;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
-import util.EntityState;
 import util.InstanceFactory;
 import util.Strings;
 
@@ -121,6 +114,7 @@ public class KardexReport extends BaseView {
                         sdf.format(kardex.get(0).getFecha()),
                         "Inventario Inicial",
                         "-",
+                        "-",
                         kardex.get(0).getStockInicial(),
                     };
             model.addRow(row);
@@ -128,6 +122,7 @@ public class KardexReport extends BaseView {
                 row = new Object[]{
                     sdf.format(kardexItem.getFecha()),
                     kardexItem.getTipoMovimiento(),
+                    kardexItem.getStockInicial(),
                     kardexItem.getCantidad(),
                     kardexItem.getStockFinal(),
                 };
@@ -137,6 +132,7 @@ public class KardexReport extends BaseView {
             row = new Object[]{
                         sdf.format(kardex.get(kardex.size()-1).getFecha()),
                         "Inventario Final",
+                        "-",
                         "-",
                         kardex.get(kardex.size()-1).getStockFinal(),
                     };
@@ -343,25 +339,20 @@ public class KardexReport extends BaseView {
 
         tblKardex.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Fecha", "Detalle", "Unidades", "Stock final"
+                "Fecha", "Detalle", "Stock inicial", "Unidades", "Stock final"
             }
         ));
         jScrollPane1.setViewportView(tblKardex);
 
         btnExport.setText("Exportar XLS");
         btnExport.setEnabled(false);
-        btnExport.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnExportMousePressed(evt);
-            }
-        });
         btnExport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExportActionPerformed(evt);
@@ -482,86 +473,6 @@ public class KardexReport extends BaseView {
         if(evt.getStateChange() == ItemEvent.SELECTED)
             fillProducts(warehouses.get(comboWarehouseFrom.getSelectedIndex()).getCondicion().getId());
     }//GEN-LAST:event_comboWarehouseFromItemStateChanged
-
-    private void btnExportMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportMousePressed
-        /*
-        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
-        fc.setDialogTitle("Seleccione un archivo");
-        fc.showOpenDialog(this);
-        file = fc.getSelectedFile();
-        System.out.println(file);
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = new Date();
-        try {
-            FileWriter excel = new FileWriter(file);
-            DefaultTableModel model = (DefaultTableModel) tblKardex.getModel();
-            excel.write("\t\t\tKardex\n");
-            excel.write("Emitido\t"+dateFormat.format(date)+"\n");
-            excel.write("Almacen\t"+warehouses.get(comboWarehouseFrom.getSelectedIndex()).getDescripcion()+"\n");
-            excel.write("Producto\t"+products.get(comboProductFrom.getSelectedIndex()).getNombre()+"\n");
-            excel.write("Unidad\tPallets\n");
-            excel.write("Fecha Inicial\t"+dateFormat.format(dtcInitDate.getDate())+"\tFecha Final\t"+dateFormat.format(dtcEndDate.getDate())+"\n\n");
-            
-            for(int i = 0; i < model.getColumnCount(); i++)
-                excel.write(model.getColumnName(i) + "\t");
-            excel.write("\n");
-            for(int i=0; i< model.getRowCount(); i++) {
-                for(int j=0; j < model.getColumnCount(); j++)
-                    excel.write(model.getValueAt(i,j).toString()+"\t");
-                excel.write("\n");
-            }
-            excel.close();
-        } catch (IOException ex) {
-            Logger.getLogger(KardexReport.class.getName()).log(Level.SEVERE, null, ex);
-            //JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir el archivo",Strings.ERROR_KARDEX_TITLE,JOptionPane.ERROR_MESSAGE);
-        }
-        */
-        /*
-        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
-        fc.setDialogTitle("Seleccione un archivo");
-        fc.showOpenDialog(this);
-        file = fc.getSelectedFile();
-        System.out.println(file);
-        Date date = new Date();
-        // Export to XSL 
-        try {
-            File exlFile = file;
-            WritableWorkbook writableWorkbook = Workbook.createWorkbook(exlFile);
- 
-            WritableSheet writableSheet = writableWorkbook.createSheet("Kardex", 0);
-            URL url = getClass().getResource("../../images/warehouse-512-000000.png");
-            java.io.File imageFile = new java.io.File(url.toURI());
-            BufferedImage input = ImageIO.read(imageFile);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(input, "PNG", baos);
-            
-            writableSheet.addImage(new WritableImage(1,1,0.4,1,baos.toByteArray()));
-            writableSheet.setColumnView(1, 26);
-            writableSheet.setColumnView(2, 10);
-            writableSheet.setColumnView(3, 10);
-            writableSheet.setColumnView(4, 10);
-            writableSheet.setColumnView(5, 10);
-            writableSheet.setColumnView(6, 15);
-            writableSheet.setColumnView(7, 15);
-            writableSheet.setColumnView(8, 15);
-            writableSheet.setColumnView(9, 15);
-            writableSheet.setColumnView(10, 15);
-            //Create Cells with contents of different data types.
-            //Also specify the Cell coordinates in the constructor
-            
-            createHeader(writableSheet,date);
-            
-            fillReport(writableSheet);
- 
-            //Write and close the workbook
-            writableWorkbook.write();
-            writableWorkbook.close();
-        } catch (Exception ex) {
-            Logger.getLogger(AvailabilityReport.class.getName()).log(Level.SEVERE, null, ex);
-            //JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir el archivo",Strings.ERROR_KARDEX_TITLE,JOptionPane.ERROR_MESSAGE);
-        }
-        */
-    }//GEN-LAST:event_btnExportMousePressed
 
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
         JOptionPane.setDefaultLocale(new Locale("es", "ES"));

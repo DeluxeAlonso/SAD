@@ -90,10 +90,10 @@ public class InternmentApplication {
         return products;
     }
     
-    public OrdenInternamientoXProducto getOrderProduct(Producto product){
+    public OrdenInternamientoXProducto getOrderProduct(Producto product, Integer quantity){
         OrdenInternamientoXProducto products=null;
         try{
-            products = internmentRepository.getOrderProd(product);
+            products = internmentRepository.getOrderProd(product, quantity);
         }catch(Exception e){
             e.printStackTrace();
         }

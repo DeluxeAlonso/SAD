@@ -27,7 +27,7 @@ public class SessionApplication {
     public ArrayList<Sesion> getSession(Sesion s, Date dateI, Date dateF){
         ArrayList<Sesion> sesions=null;
         try{
-            sesions=sessionRepository.queryBySession(null, dateI, dateF);
+            sesions=sessionRepository.queryBySession(s, dateI, dateF);
         }catch(Exception e){
             e.printStackTrace();
         }

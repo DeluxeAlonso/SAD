@@ -58,7 +58,6 @@ public class ProductView extends BaseView implements MouseListener {
     ArrayList<Producto> products;    
     long aux=0;
     long EAN13=0;
-    JFileChooser fc = new JFileChooser();
     File file = null;
     Border errorBorder = BorderFactory.createLineBorder(Color.RED, 1);
     Border regularBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
