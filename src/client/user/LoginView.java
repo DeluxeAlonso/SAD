@@ -24,21 +24,22 @@ import util.Strings;
  * @author Nevermade
  */
 public class LoginView extends javax.swing.JFrame {
-    
+
     UserApplication userApplication = InstanceFactory.Instance.getInstance("userApplication", UserApplication.class);
     Border errorBorder = BorderFactory.createLineBorder(Color.RED, 1);
     Border regularBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
-    Image icon=null;
+    Image icon = null;
+
     /**
      * Creates new form View
      */
     public LoginView() {
-        
+
         initComponents();
         AppStart.initConfig.start();
         getRootPane().setDefaultButton(loginBtn);
         Icons.setMainIcon(this);
-        
+
     }
 
     /**
@@ -169,57 +170,54 @@ public class LoginView extends javax.swing.JFrame {
     private void login() {
         Usuario user = null;
         if (isValidForm()) {
-            if (!userTxt.getText().equals("root")) {
-                
-                user = userApplication.login(userTxt.getText(), new String(pwTxt.getPassword()));
-                
-                if (user != null) {
-                    if (user.getEstado() == EntityState.Users.ACTIVO.ordinal()) {
-                        new MainView(user).setVisible(true);
-                        dispose();
-                    } else {
-                        JOptionPane.showMessageDialog(this, Strings.ALERT_USER_INACTIVE, "Mensaje", JOptionPane.WARNING_MESSAGE);
-                        userTxt.setText("");
-                        pwTxt.setText("");
-                    }
+
+            user = userApplication.login(userTxt.getText(), new String(pwTxt.getPassword()));
+
+            if (user != null) {
+                if (user.getEstado() == EntityState.Users.ACTIVO.ordinal()) {
+                    new MainView(user).setVisible(true);
+                    dispose();
                 } else {
-                    JOptionPane.showMessageDialog(this, Strings.ALERT_USER_DOES_NOT_EXIST, "Mensaje", JOptionPane.WARNING_MESSAGE);
-                    userTxt.setBorder(errorBorder);
-                    pwTxt.setBorder(errorBorder);
+                    JOptionPane.showMessageDialog(this, Strings.ALERT_USER_INACTIVE, "Mensaje", JOptionPane.WARNING_MESSAGE);
                     userTxt.setText("");
                     pwTxt.setText("");
                 }
             } else {
-                
-                new MainView(user).setVisible(true);
-                dispose();
+                JOptionPane.showMessageDialog(this, Strings.ALERT_USER_DOES_NOT_EXIST, "Mensaje", JOptionPane.WARNING_MESSAGE);
+                userTxt.setBorder(errorBorder);
+                pwTxt.setBorder(errorBorder);
+                userTxt.setText("");
+                pwTxt.setText("");
             }
+
         }
     }
-    
+
     private boolean isValidForm() {
         if (userTxt.getText().length() > 0 && pwTxt.getPassword().length > 0) {
             return true;
         } else {
             if (userTxt.getText().equals("root")) {
                 return true;
-                
+
             };
-            
-            String message="";
-            
+
+            String message = "";
+
             if (userTxt.getText().equals("")) {
-                message+=Strings.ALERT_USER_REQUIRED+"\n";
+                message += Strings.ALERT_USER_REQUIRED + "\n";
                 userTxt.setBorder(errorBorder);
-            }else
+            } else {
                 userTxt.setBorder(regularBorder);
-            if ((new String(pwTxt.getPassword())).equals("")) { 
-                message+=Strings.ALERT_PASSWORD_REQUIRED+"\n";
+            }
+            if ((new String(pwTxt.getPassword())).equals("")) {
+                message += Strings.ALERT_PASSWORD_REQUIRED + "\n";
                 pwTxt.setBorder(errorBorder);
-            }else
+            } else {
                 pwTxt.setBorder(regularBorder);
-            
-            JOptionPane.showMessageDialog(this, message, "Mensaje", JOptionPane.WARNING_MESSAGE);            
+            }
+
+            JOptionPane.showMessageDialog(this, message, "Mensaje", JOptionPane.WARNING_MESSAGE);
         }
         return false;
     }
