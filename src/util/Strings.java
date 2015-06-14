@@ -207,6 +207,14 @@ public class Strings {
     public static final String ERROR_NO_INITIAL_DATE = "Se necesita la fecha inicial";
     public static final String ERROR_NO_FINAL_DATE = "Se necesita la fecha final";
     public static final String ERROR_DATE_PROVIDED="La fecha inicial no puede ser mayor a la fecha final.";
-
+    /*END*/
+    
+    /* Kardex States */
+    public static final String MESSAGE_KARDEX_IN_INTERNMENT = "Ingreso por internamiento";
+    public static final String MESSAGE_KARDEX_IN_ADJUST = "Ingreso por ajuste";
+    public static final String MESSAGE_KARDEX_IN_RETURN = "Ingreso por devolucion";
+    public static final String MESSAGE_KARDEX_OUT_DELIVERY = "Salida por despacho";
+    public static final String MESSAGE_KARDEX_OUT_SMASH = "Salida por rotura";
+    public static final String MESSAGE_KARDEX_OUT_ADJUST = "Salida por ajuste";
     /*END*/
 }
