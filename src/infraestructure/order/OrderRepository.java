@@ -552,4 +552,31 @@ public class OrderRepository implements IOrderRepository{
         return orders;
     }
 
+    @Override
+    public ArrayList<GuiaRemision> queryAllProductsByOrderId(Integer idDelivery, Integer idRemissionGuide, Date startDate, Date endDate) {
+        Session session = Tools.getSessionInstance();
+        String hql = "FROM GuiaRemision WHERE (:idRemissionGuide is null or id=:idRemissionGuide) AND id_despacho in (select d.id from Despacho d where (:idDelivery is null or d.id=:idDelivery) and d.fechaDespacho BETWEEN :dateIni AND :dateEnd)";
+        ArrayList<GuiaRemision> remissionGuides = new ArrayList<>();
+        Transaction trns = null;
+        try{
+            trns = session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("idDelivery", idDelivery);
+            q.setParameter("idRemissionGuide", idRemissionGuide);
+            q.setParameter("dateIni", startDate);
+            q.setParameter("dateEnd", endDate);
+            remissionGuides = (ArrayList<GuiaRemision>) q.list();
+            session.getTransaction().commit();
+        }
+        catch (RuntimeException e){
+            if(trns != null){
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return remissionGuides;
+    }
+    
+    
+
 }
