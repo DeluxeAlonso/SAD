@@ -202,7 +202,7 @@ public class InternmentRepository implements IInternmentRepository {
     
     @Override
     public OrdenInternamientoXProducto getOrderProd(Producto id, Integer quantity) {
-         String hql="FROM OrdenInternamientoXProducto WHERE producto=:id and (cantidad_ingresada >= :quantity)";
+         String hql="FROM OrdenInternamientoXProducto WHERE id_producto=:id and (cantidad_ingresada >= :quantity)";
         ArrayList<OrdenInternamientoXProducto> orden= new ArrayList<>();
         
         Transaction trns = null;
