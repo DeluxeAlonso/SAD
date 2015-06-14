@@ -668,7 +668,7 @@ public class InternmentSelectView extends BaseView {
             ArrayList<Pallet> palletsInter = new ArrayList<Pallet>();
             ArrayList<Pallet> palletsInterAFuncion = new ArrayList<Pallet>();
             for (int i = 0; i < pallets.size(); i++) {
-                if (pallets.get(i).getUbicacion() == null) {
+                if ((pallets.get(i).getUbicacion() == null) && (pallets.get(i).getEstado() != EntityState.Pallets.ELIMINADO.ordinal()) && (pallets.get(i).getEstado() != EntityState.Pallets.VENCIDO.ordinal()) && (pallets.get(i).getEstado() != EntityState.Pallets.ROTO.ordinal())) {
                     palletsInter.add(pallets.get(i));
                 }
             }

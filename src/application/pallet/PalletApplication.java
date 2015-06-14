@@ -194,10 +194,10 @@ public class PalletApplication {
         return pallets;
     }
 
-    public ArrayList<Pallet> queryByParameters(String ean, int almacen, int producto, int internmentOrder, Boolean selected) {
+    public ArrayList<Pallet> queryByParameters(String ean, int almacen, int producto, int internmentOrder, int estado) {
         ArrayList<Pallet> pallets = new ArrayList<>();
         try {
-            pallets = palletRepository.queryByParameters(ean, almacen, producto, internmentOrder, selected);
+            pallets = palletRepository.queryByParameters(ean, almacen, producto, internmentOrder, estado);
         } catch (Exception e) {
             e.printStackTrace();
         }
