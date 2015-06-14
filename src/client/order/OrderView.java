@@ -939,17 +939,26 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     if(reasonCombo.getSelectedIndex() != 0){
             Boolean shouldDelete = false;
             PedidoParcial p = currentPartialOrders.get(partialCombo.getSelectedIndex() -1);
+            ArrayList<Producto> productsToUpdate = new ArrayList<>();
             ArrayList<Pallet> pallets = palletApplication.getPalletsByPartialOrder(p.getId());
             if(reasonCombo.getSelectedIndex() == 1){//PRODUCTOS VENCIDOS
                 for (Iterator<PedidoParcialXProducto> partialProducts = p.getPedidoParcialXProductos().iterator(); partialProducts.hasNext(); ) {
                     PedidoParcialXProducto partialProduct = partialProducts.next();
                     if(partialProduct.getCantidad() > partialProduct.getProducto().getStockLogico())
                         shouldDelete = true;
+                    else{
+                        Producto product = partialProduct.getProducto();
+                        product.setStockLogico(product.getStockLogico() - partialProduct.getCantidad());
+                        productsToUpdate.add(product);
+                    }
                 }
                 if(shouldDelete)
                     p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
-                else
+                else{
                     p.setEstado(EntityState.PartialOrders.NO_ATENDIDO.ordinal());
+                    for(int i=0;i<productsToUpdate.size();i++)
+                        productApplication.update(productsToUpdate.get(i));
+                }
                 for(int i=0;i<pallets.size();i++){
                     Date date = new Date();
                     if(date.after(pallets.get(i).getFechaVencimiento())){
@@ -966,19 +975,10 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                 }
             }
             else if(reasonCombo.getSelectedIndex() == 2){//CLIENTE INSATISFECHO
-                for (Iterator<PedidoParcialXProducto> partialProducts = p.getPedidoParcialXProductos().iterator(); partialProducts.hasNext(); ) {
-                    PedidoParcialXProducto partialProduct = partialProducts.next();
-                    if(partialProduct.getCantidad() > partialProduct.getProducto().getStockLogico())
-                        shouldDelete = true;
-                }
-                if(shouldDelete)
-                    p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
-                else
-                    p.setEstado(EntityState.PartialOrders.NO_ATENDIDO.ordinal());
+                p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
                 for(Iterator<PedidoParcialXProducto> partialOrderDetail = p.getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){
                     PedidoParcialXProducto partial = partialOrderDetail.next();
                     OrdenInternamientoXProducto o = internmentApplication.getOrderProduct(partial.getProducto(), partial.getCantidad());
-                    System.out.println("getprodorder" + o);
                     OrdenInternamiento internmentOrder = o.getOrdenInternamiento();
                     if(o != null){
                         internmentOrder.setEstado(EntityState.InternmentOrders.PENDIENTE.ordinal());
@@ -1001,8 +1001,24 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                     pallets.get(i).setEstado(EntityState.Pallets.CREADO.ordinal());
                     pallets.get(i).setPedidoParcial(null);
                 }
-            }else{//ANULA PEDIDO
-                p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
+            }else{
+                for (Iterator<PedidoParcialXProducto> partialProducts = p.getPedidoParcialXProductos().iterator(); partialProducts.hasNext(); ) {
+                    PedidoParcialXProducto partialProduct = partialProducts.next();
+                    if(partialProduct.getCantidad() > partialProduct.getProducto().getStockLogico())
+                        shouldDelete = true;
+                    else{
+                        Producto product = partialProduct.getProducto();
+                        product.setStockLogico(product.getStockLogico() - partialProduct.getCantidad());
+                        productsToUpdate.add(product);
+                    }
+                }
+                if(shouldDelete)
+                    p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
+                else{
+                    p.setEstado(EntityState.PartialOrders.NO_ATENDIDO.ordinal());
+                    for(int i=0;i<productsToUpdate.size();i++)
+                        productApplication.update(productsToUpdate.get(i));
+                }
                 for(int i=0;i<pallets.size();i++){
                     pallets.get(i).setEstado(EntityState.Pallets.ROTO.ordinal());
                     pallets.get(i).setPedidoParcial(null);
