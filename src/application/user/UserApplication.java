@@ -25,6 +25,8 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
+import util.MailUtil;
+import util.Tools;
 
 /**
  *
@@ -76,6 +78,16 @@ public class UserApplication {
             ex.printStackTrace();
         }
         return user!=null?true:false;
+    }
+    
+    public Usuario getUserByEmail(String correo){
+        Usuario user=null;
+        try {
+            user= userRepository.getUser(correo);            
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return user;
     }
 
     public void createUser(Usuario user) {
@@ -175,6 +187,23 @@ public class UserApplication {
             e.printStackTrace();
         }
         return users;
+    }
+    
+    public String recoverPasswordAndSendEmail(Usuario user){
+        String newPass="";        
+        try {            
+            if(user!=null){
+                newPass=Tools.generatePassword(6);                
+                user.setPassword(encrypt(newPass));
+                userRepository.update(user);
+                MailUtil.sendPasswordRecovery(user, newPass);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return "";
+        } 
+        
+        return newPass;
     }
     
 }

@@ -33,8 +33,9 @@ public class UserRepository implements IUserRepository {
             Query q = session.createQuery(hql);
             q.setParameter("email", email);
             user = (Usuario) q.uniqueResult();
-            if(user!=null)
-                Hibernate.initialize(user.getPerfil());
+            if(user!=null){
+                Hibernate.initialize(user.getPerfil());                
+            }
             session.getTransaction().commit();
         } catch (RuntimeException e) {
             if (trns != null) {

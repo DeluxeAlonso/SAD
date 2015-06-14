@@ -183,5 +183,5 @@ public class EntityState {
     private static String[] spotState = {"Inactivo", "Libre", "Ocupado"};
     private static String[] userState = {" ", "Activo", "Inactivo"};
     private static String[] spotStateLiteral={"Inactivo","Libre","Ocupado"};
-    private static String[] remissionGuideState={"Inactivo","Activo"};
+    private static String[] remissionGuideState={"Inactivo","Activo"};    
 }
