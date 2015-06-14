@@ -173,7 +173,7 @@ public class EntityState {
     private static String[] masters = {"","Almacén", "Guía de Remisión", "Orden de Internamiento", "Pedido", "Perfil", "Usuario", "Despacho", "Kardex"};
     private static String[] partialOrdersState = {"Atendido", "No Atendido", "Anulado"};
     private static String[] ordersState = {"Anulado", "Registrado", "En Curso", "Finalizado"};
-    private static String[] palletsState = {"Creado", "Ubicado", "Despachado", "Eliminado"};
+    private static String[] palletsState = {"Creado", "Ubicado", "Despachado", "Eliminado","Roto", "Vencido"};
     private static String[] internmentOrdersState = {"Registrada", "Internada", "Pendiente"};
     private static String[] transportUnitsState = {"Inactivo", "Activo"};
     private static String[] localsState = {"Inactivo", "Activo"};

@@ -472,11 +472,13 @@ public class OrderRepository implements IOrderRepository{
     }
     
     public ArrayList<Pallet> getAvailablePalletsByProductId(Integer productId, Session session, Transaction trns){
-        String hql="FROM Pallet WHERE id_producto=:productId and estado=1";
+        String hql="FROM Pallet WHERE id_producto=:productId and estado=1 and (:now<fecha_vencimiento) order by fecha_vencimiento desc";
         ArrayList<Pallet> pallets= new ArrayList<>();  
         try {            
             Query q = session.createQuery(hql);
             q.setParameter("productId", productId);
+            Date date = new Date();
+            q.setDate("now", date);
             pallets = (ArrayList<Pallet>) q.list();          
         } catch (RuntimeException e) {
             if (trns != null) {
