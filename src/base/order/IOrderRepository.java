@@ -45,4 +45,6 @@ public interface IOrderRepository extends IRepository<Pedido> {
     public ArrayList<GuiaRemision> queryAllProductsByOrderId(Integer idDelivery, Integer idRemissionGuide, Date startDate, Date endDate);
 
     public Boolean updateSpots(ArrayList<Ubicacion> spots, ArrayList<Pallet>pallets);
+
+    public ArrayList<Despacho> searchDeliveries(Integer idDelivery, Integer IdTransportist, Date startDate, Date endDate);
 }

@@ -196,6 +196,16 @@ public class OrderApplication {
         return remissionGuides;
     }
     
+    public ArrayList<Despacho> searchDeliveries(Integer idDelivery, Integer IdTransportist, Date startDate, Date endDate){
+        ArrayList<Despacho> deliveries = new ArrayList<>();
+        try{
+            deliveries = orderRepository.searchDeliveries(idDelivery, IdTransportist, startDate, endDate);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return deliveries;
+    }
+    
     public Boolean updateSpots(ArrayList<Ubicacion>spots, ArrayList<Pallet>pallets){
         Boolean response = false;
         try {
