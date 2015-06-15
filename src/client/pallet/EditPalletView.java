@@ -91,6 +91,7 @@ public class EditPalletView extends BaseDialogView {
         
         if (p.getEstado() == EntityState.Pallets.DESPACHADO.ordinal()){
             setearDespachado();
+            saveBtn.setEnabled(false);
         }
 
         if (p.getEstado() == EntityState.Pallets.ROTO.ordinal()){
@@ -138,7 +139,7 @@ public class EditPalletView extends BaseDialogView {
             dtcInitDate.setEnabled(true);
             jCheckBox1.setEnabled(true);
             if (p.getOrdenInternamiento() == null)
-                productCombo.setEnabled(true);
+                productCombo.setEnabled(false);
             
             for (String s : stateAux){
                 if ((s.compareTo("Eliminado")!=0) && (s.compareTo("Ubicado")!=0) && (s.compareTo("Despachado")!=0) && (s.compareTo("Vencido")!=0) ){
@@ -153,7 +154,7 @@ public class EditPalletView extends BaseDialogView {
             stateN.clear();
             dtcInitDate.setEnabled(true);
             for (String s : stateAux){
-                if ((s.compareTo("Eliminado")!=0) && (s.compareTo("Despachado")!=0) ){
+                if ((s.compareTo("Eliminado")!=0) && (s.compareTo("Despachado")!=0) && (s.compareTo("Vencido")!=0) ){
                     state.add(s);
                     stateN.add(EntityState.Pallets.valueOf(s.toUpperCase()).ordinal());
                 }        
@@ -188,7 +189,7 @@ public class EditPalletView extends BaseDialogView {
             stateN.clear();            
             dtcInitDate.setEnabled(true);
             for (String s : stateAux){
-                if ((s.compareTo("Ubicado")!=0)&& (s.compareTo("Creado")!=0) &&(s.compareTo("Despachado")!=0)  && (s.compareTo("Eliminado")!=0) && (s.compareTo("Roto")!=0) ){
+                if ((s.compareTo("Ubicado")!=0)&& (s.compareTo("Creado")!=0) &&(s.compareTo("Despachado")!=0)  && (s.compareTo("Eliminado")!=0) ){
                     state.add(s);
                     stateN.add(EntityState.Pallets.valueOf(s.toUpperCase()).ordinal());
                 }        
@@ -493,7 +494,7 @@ public class EditPalletView extends BaseDialogView {
                 break;
             } 
             isChecked = (Boolean) tableFreeSpots.getValueAt(i, 5);
-            if (isChecked){
+            if (isChecked!=null && isChecked){
                 cant++;
                 ubi = ubicaciones.get(i);
             }
@@ -507,36 +508,194 @@ public class EditPalletView extends BaseDialogView {
         Date date = new Date();
         ArrayList<Pallet> palletsInternar = new ArrayList<Pallet>();
         Ubicacion ub = null;
-        if (p.getEstado() == EntityState.Pallets.CREADO.ordinal()){ // Entra con estado CREADO
-            p.setFechaVencimiento(dtcInitDate.getDate());
-            if (p.getOrdenInternamiento() != null){ //Tiene orden de internamiento
-                if (!jCheckBox1.isSelected()){
-                    p.setEstado(stateN.get(jComboBox2.getSelectedIndex()));                            
+        Pallet palletEditado = new Pallet();
+        palletEditado = p;        
+        
+        // SE INTERNARA EL PALLET
+        if ((jCheckBox1.isSelected()) && (palletEditado.getEstado()== EntityState.Pallets.CREADO.ordinal())){ // El estado original es CREADO
+            palletEditado.setEstado(EntityState.Pallets.UBICADO.ordinal());
+            ub = recorrerGrid();
+            if (ub == null){ //selecciono 0 o mas de 1 ubicacion
+                JOptionPane.showMessageDialog(this, "Debe seleccionar sólo una ubicación", "Error para internar pallet", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            } 
+            else { // selecciono solo 1 ubicacion
+               palletEditado.setFechaInternamiento(date);
+               palletEditado.setFechaVencimiento(dtcInitDate.getDate());
+               palletEditado.setUbicacion(ub);
+               
+               ArrayList<Kardex> kardex = kardexApplication.queryByParameters(palletEditado.getUbicacion().getRack().getAlmacen().getId(), palletEditado.getProducto().getId());
+               Kardex internmentKardex = new Kardex();
+               internmentKardex.setAlmacen(palletEditado.getUbicacion().getRack().getAlmacen());
+               internmentKardex.setProducto(palletEditado.getProducto());
+               internmentKardex.setTipoMovimiento("Ingreso");
+               internmentKardex.setCantidad(1);
+               
+                internmentKardex.setFecha(Calendar.getInstance().getTime());
+                if (kardex.size() == 0) {
+                    internmentKardex.setStockInicial(0);
+                } else {
+                    internmentKardex.setStockInicial(kardex.get(0).getStockFinal());
                 }
-                else{
-                    ub = recorrerGrid();
-                    if (ub != null){
-                        p.setUbicacion(ub);
-                    }
-                    p.setEstado(EntityState.Pallets.UBICADO.ordinal());
-                }                
-            }else{ // No tiene orden de internamiento
-                if (!jCheckBox1.isSelected()){
-                    p.setEstado(stateN.get(jComboBox2.getSelectedIndex()));                            
-                }
-                else{
-                    ub = recorrerGrid();
-                    if (ub != null){
-                        p.setUbicacion(ub);
-                    }
-                    p.setEstado(EntityState.Pallets.UBICADO.ordinal());
-                }                
-            }
+                internmentKardex.setStockFinal(internmentKardex.getStockInicial() + 1);
+
+                KardexId kId = new KardexId();
+                kId.setIdAlmacen(palletEditado.getUbicacion().getRack().getAlmacen().getId());
+                kId.setIdProducto(palletEditado.getProducto().getId());
+                internmentKardex.setId(kId);
                 
+                palletsInternar.add(palletEditado);
+                int intern = 0;
+                if (palletEditado.getOrdenInternamiento() == null){
+                    intern = palletApplication.internNPalletsNoOrder(palletsInternar , internmentKardex);
+                }
+                else{
+                    OrdenInternamientoXProducto op=internmentApplication.getProdOrder(palletEditado.getOrdenInternamiento());
+                    intern = palletApplication.internNPallets(palletsInternar ,op , internmentKardex);
+                }
+                if (intern == 1){
+
+                }
+                   
+
+            }    
             
         }
         
+        else if (!(jCheckBox1.isSelected()) && (palletEditado.getEstado()== EntityState.Pallets.CREADO.ordinal())){ // NO se interna pero cambia estado
+            palletEditado.setFechaVencimiento(dtcInitDate.getDate());
+            int x = 0;
+            Producto prod = null;
+            prod = palletEditado.getProducto();
+            if (dtcInitDate.getDate().before(date)){
+                palletEditado.setEstado(EntityState.Pallets.VENCIDO.ordinal());
+                x = 1;
+            }
+                
+            if (stateN.get(jComboBox2.getSelectedIndex()) == EntityState.Pallets.ROTO.ordinal()){
+                palletEditado.setEstado(EntityState.Pallets.ROTO.ordinal());
+                x = 1;
+            }
+                
+            if (x == 1){
+                prod.setPalletsRegistrados(prod.getPalletsRegistrados()- 1);
+                prod.setStockLogico(prod.getStockLogico()-1);
+            }
+            
+            productApplication.update(prod);
+            palletApplication.update(palletEditado);
+
+        }
         
+        // SE LIBERARA EL PALLET
+        else if (palletEditado.getEstado()== EntityState.Pallets.UBICADO.ordinal()){
+               OrdenInternamientoXProducto op = null; 
+            
+               ArrayList<Kardex> kardex = kardexApplication.queryByParameters(palletEditado.getUbicacion().getRack().getAlmacen().getId(), palletEditado.getProducto().getId());
+               Kardex internmentKardex = new Kardex();
+               internmentKardex.setAlmacen(palletEditado.getUbicacion().getRack().getAlmacen());
+               internmentKardex.setProducto(palletEditado.getProducto());
+               internmentKardex.setTipoMovimiento("Salida");
+               internmentKardex.setCantidad(1);
+               
+                internmentKardex.setFecha(Calendar.getInstance().getTime());
+                if (kardex.size() == 0) {
+                    internmentKardex.setStockInicial(0);
+                } else {
+                    internmentKardex.setStockInicial(kardex.get(0).getStockFinal());
+                }
+                internmentKardex.setStockFinal(internmentKardex.getStockInicial()  -1);
+
+                KardexId kId = new KardexId();
+                kId.setIdAlmacen(palletEditado.getUbicacion().getRack().getAlmacen().getId());
+                kId.setIdProducto(palletEditado.getProducto().getId());
+                internmentKardex.setId(kId);
+        
+             if (stateN.get(jComboBox2.getSelectedIndex()) == EntityState.Pallets.CREADO.ordinal()){
+                 palletEditado.setEstado(EntityState.Pallets.CREADO.ordinal());
+                 palletEditado.setFechaVencimiento(dtcInitDate.getDate());
+                 
+                 if (dtcInitDate.getDate().before(date))
+                    palletEditado.setEstado(EntityState.Pallets.VENCIDO.ordinal());
+                 
+                 if (palletEditado.getOrdenInternamiento() != null)
+                    op=internmentApplication.getProdOrder(palletEditado.getOrdenInternamiento());
+                 
+                 palletsInternar.add(palletEditado);
+                 
+                 if (palletEditado.getEstado() == EntityState.Pallets.CREADO.ordinal())
+                     palletApplication.liberarPorCreado(palletsInternar, op, internmentKardex);
+                 else
+                     palletApplication.liberarPorRotoOVencido(palletsInternar, op, internmentKardex);
+             }
+             else if (stateN.get(jComboBox2.getSelectedIndex()) == EntityState.Pallets.ROTO.ordinal()){
+                 palletEditado.setEstado(EntityState.Pallets.ROTO.ordinal());
+                 palletEditado.setFechaVencimiento(dtcInitDate.getDate());
+                 if (palletEditado.getOrdenInternamiento() != null)
+                    op=internmentApplication.getProdOrder(palletEditado.getOrdenInternamiento());
+                 
+                 palletsInternar.add(palletEditado);
+                 palletApplication.liberarPorRotoOVencido(palletsInternar, op, internmentKardex);
+                 
+             }
+             else if (stateN.get(jComboBox2.getSelectedIndex()) == EntityState.Pallets.UBICADO.ordinal()){
+                 palletEditado.setFechaVencimiento(dtcInitDate.getDate());
+                 if (dtcInitDate.getDate().before(date))
+                    palletEditado.setEstado(EntityState.Pallets.VENCIDO.ordinal());
+                 if (palletEditado.getOrdenInternamiento() != null)
+                    op=internmentApplication.getProdOrder(palletEditado.getOrdenInternamiento());
+                 
+                 palletsInternar.add(palletEditado);
+                 palletApplication.liberarPorRotoOVencido(palletsInternar, op, internmentKardex);
+             }
+                
+                
+        }
+        else if (palletEditado.getEstado()== EntityState.Pallets.ROTO.ordinal()){
+            palletEditado.setFechaVencimiento(dtcInitDate.getDate());
+            int x = 0;
+            Producto prod = null;
+            prod = palletEditado.getProducto();
+            if (stateN.get(jComboBox2.getSelectedIndex())==EntityState.Pallets.CREADO.ordinal()){
+                palletEditado.setEstado(EntityState.Pallets.CREADO.ordinal());
+                if (dtcInitDate.getDate().before(date)){
+                    palletEditado.setEstado(EntityState.Pallets.VENCIDO.ordinal());
+                }
+                else{
+                    prod.setPalletsRegistrados(prod.getPalletsRegistrados()+ 1);
+                    prod.setStockLogico(prod.getStockLogico()+1);
+                }
+            }
+            else if (stateN.get(jComboBox2.getSelectedIndex()) == EntityState.Pallets.ROTO.ordinal()){
+                palletEditado.setEstado(EntityState.Pallets.ROTO.ordinal());
+            }
+            productApplication.update(prod);
+            palletApplication.update(palletEditado);
+        }
+        else if (palletEditado.getEstado()== EntityState.Pallets.VENCIDO.ordinal()){
+            palletEditado.setFechaVencimiento(dtcInitDate.getDate());
+            int x = 0;
+            Producto prod = null;
+            prod = palletEditado.getProducto();
+            if (stateN.get(jComboBox2.getSelectedIndex())==EntityState.Pallets.ROTO.ordinal()){
+                palletEditado.setEstado(EntityState.Pallets.ROTO.ordinal());
+            }
+            else if (stateN.get(jComboBox2.getSelectedIndex()) == EntityState.Pallets.VENCIDO.ordinal()){
+                if (dtcInitDate.getDate().after(date)){
+                    palletEditado.setEstado(EntityState.Pallets.CREADO.ordinal());
+                    prod.setPalletsRegistrados(prod.getPalletsRegistrados()+ 1);
+                    prod.setStockLogico(prod.getStockLogico()+1);
+                }
+
+            }
+            productApplication.update(prod);
+            palletApplication.update(palletEditado);
+        }        
+        else if (palletEditado.getEstado()== EntityState.Pallets.DESPACHADO.ordinal()){
+        }
+        
+        JOptionPane.showMessageDialog(this, "Pallet editado correctamente","Mensaje de edición de pallet",JOptionPane.INFORMATION_MESSAGE);
+        this.dispose();
     }//GEN-LAST:event_saveBtnActionPerformed
 
     private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
@@ -551,8 +710,8 @@ public class EditPalletView extends BaseDialogView {
     
     private void jCheckBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox1ItemStateChanged
     Date date = new Date(); 
-    if (dtcInitDate.getDate().before(date))
-        JOptionPane.showMessageDialog(this, "No puede internar un producto con una fecha vencida", "Error fecha vencimiento", JOptionPane.INFORMATION_MESSAGE);
+    if ((dtcInitDate.getDate().before(date)) || (stateN.get(jComboBox2.getSelectedIndex())!= EntityState.Pallets.CREADO.ordinal()))
+        JOptionPane.showMessageDialog(this, "No puede internar un producto si no está registrado o que presente una fecha vencida", "Error para internar pallet", JOptionPane.INFORMATION_MESSAGE);
     else{
         if (jCheckBox1.isSelected()){
             comboWarehouse.setEnabled(true);

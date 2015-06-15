@@ -155,7 +155,7 @@ public class PalletView extends BaseView {
             clearGrid();
             String auxOrdenInternamiento = null;
             DefaultTableModel model = (DefaultTableModel) spotTable.getModel();
-
+            
                 for (Pallet p : pallets){
                     if (p.getOrdenInternamiento()==null)
                         auxOrdenInternamiento = "-";
@@ -166,7 +166,7 @@ public class PalletView extends BaseView {
                         model.addRow(new Object[]{
                         p.getEan128(),
                         p.getProducto().getNombre(),
-                        state.get(p.getEstado()),
+                        state.get(stateN.indexOf(p.getEstado())),
                         p.getFechaVencimiento(),
                         auxOrdenInternamiento,
                         p.getUbicacion().getRack().getAlmacen().getId(),
@@ -180,7 +180,7 @@ public class PalletView extends BaseView {
                         model.addRow(new Object[]{
                         p.getEan128(),
                         p.getProducto().getNombre(),
-                        state.get(p.getEstado()),
+                        state.get(stateN.indexOf(p.getEstado())),
                         p.getFechaVencimiento(),
                         auxOrdenInternamiento,
                         "No ubicado",

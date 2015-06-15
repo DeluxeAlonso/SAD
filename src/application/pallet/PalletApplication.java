@@ -113,6 +113,53 @@ public class PalletApplication {
         return 1;
     } 
     
+    public int liberarPorCreado(ArrayList<Pallet> pallets, OrdenInternamientoXProducto orXProd, Kardex kardex ) {
+        try {
+            
+            palletRepository.liberarPorCreado(pallets,orXProd,kardex);
+            //return object.getId();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+        return 1;                
+    }
+    
+    public ArrayList<Pallet> getPendPalletsFromOrder(int id) {
+        ArrayList<Pallet> pallets = new ArrayList<>();
+        try {
+            pallets = palletRepository.getPendPalletsFromOrder(id);
+            //return object.getId();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return pallets;
+        }
+        return pallets;                                
+    }    
+        public int liberarPorRotoOVencido(ArrayList<Pallet> pallets, OrdenInternamientoXProducto orXProd, Kardex kardex ) {
+        try {
+            
+            palletRepository.liberarPorRotoOVencido(pallets,orXProd,kardex);
+            //return object.getId();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+        return 1;                
+    }
+    
+    public int internNPalletsNoOrder(ArrayList<Pallet> pallets, Kardex kardex ){
+        try {
+            
+            palletRepository.internNPalletsNoOrder(pallets,kardex);
+            //return object.getId();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+        return 1;        
+    }
+    
     public int insertNPallet(ArrayList<Pallet> pallets) {
         try {
             

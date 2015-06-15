@@ -248,6 +248,30 @@ public class PalletRepository implements IPalletRepository{
             return orden; //To change body of generated methods, choose Tools | Templates.
     }
 
+        @Override
+    public ArrayList<Pallet> getPendPalletsFromOrder(int id) {
+        String hql="FROM Pallet p WHERE p.ordenInternamiento.id=:id AND p.estado= :estado";
+        ArrayList<Pallet> orden= new ArrayList<>();
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("id", id);
+            q.setParameter("estado", 0);
+            orden = (ArrayList<Pallet>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+            return orden; //To change body of generated methods, choose Tools | Templates.
+    }
+
+    
     @Override
     public ArrayList<Pallet> queryPalletsByProduct(Integer productId) {
         String hql="FROM Pallet WHERE id_producto=:productId and estado=1";
@@ -627,7 +651,7 @@ public class PalletRepository implements IPalletRepository{
         return 1;
     }
 
-    public int internNPallets(ArrayList<Pallet> pallets, Kardex kardex ) {
+    public int internNPalletsNoOrder(ArrayList<Pallet> pallets, Kardex kardex ) {
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
         try {            
@@ -668,6 +692,145 @@ public class PalletRepository implements IPalletRepository{
         return 1;
     }    
     
+    public int liberarPorCreado(ArrayList<Pallet> pallets, OrdenInternamientoXProducto orXProd, Kardex kardex ) {
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        Almacen alm = null;
+        try {            
+            trns=session.beginTransaction();
+            if (pallets.get(0).getUbicacion()!=null)
+                alm = pallets.get(0).getUbicacion().getRack().getAlmacen();
+            Producto prod = pallets.get(0).getProducto();
+            for (Pallet p : pallets){
+                if (p.getUbicacion() != null){
+                    //Actualizar ubicacion de pallets a null
+                    //actualizar estado en ubicaciones liberado
+                    Ubicacion ub = p.getUbicacion();
+                    ub.setEstado(EntityState.Spots.LIBRE.ordinal());
+                    p.setUbicacion(null);
+                    session.update(p);
+                    session.update(ub);                    
+                }
+            }
+            session.flush(); 
+            
+            //actualizar orden intermientoXproducto. cant ingresada
+            if (orXProd != null){
+                for (Pallet p : pallets){
+                        orXProd.setCantidadIngresada(orXProd.getCantidadIngresada()-pallets.size());
+                        session.update(orXProd);
+                        session.flush(); 
+                }                
+            }
+
+            //cambiar estado si la orden internada disminuyo
+            if (orXProd != null){
+                int x = orXProd.getCantidad();
+                int y = orXProd.getCantidadIngresada();
+                if ((y < x) && (orXProd.getOrdenInternamiento().getEstado() ==EntityState.InternmentOrders.INTERNADA.ordinal())){
+                    orXProd.getOrdenInternamiento().setEstado(EntityState.InternmentOrders.REGISTRADA.ordinal());
+                    session.update(orXProd.getOrdenInternamiento());
+                }
+                session.flush();                
+            }
+            
+            // actualizar pallets registrados y ubicados del producto
+            prod.setPalletsRegistrados(prod.getPalletsRegistrados()+pallets.size());
+            prod.setPalletsUbicados(prod.getPalletsUbicados()- pallets.size());
+            session.update(prod);
+            session.flush(); 
+            //aumentar ubicaciones libres en almacen
+            if (alm != null){
+                alm.setUbicLibres(alm.getUbicLibres()+pallets.size());
+                session.update(alm);
+                session.flush();                
+            }
+            //ingresar entrada en kardex
+            session.save(kardex);
+            session.flush();     
+            session.getTransaction().commit();            
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return -1;
+        } 
+        return 1;
+    }    
+    
+    public int liberarPorRotoOVencido(ArrayList<Pallet> pallets, OrdenInternamientoXProducto orXProd, Kardex kardex ) {
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        Almacen alm = null;
+        try {            
+            trns=session.beginTransaction();
+            if (pallets.get(0).getUbicacion()!= null)
+                alm = pallets.get(0).getUbicacion().getRack().getAlmacen();
+            Producto prod = pallets.get(0).getProducto();
+            for (Pallet p : pallets){
+                if (p.getUbicacion() != null){
+                    //Actualizar ubicacion de pallets a null
+                    //actualizar estado en ubicaciones liberado
+                    Ubicacion ub = p.getUbicacion();
+                    ub.setEstado(EntityState.Spots.LIBRE.ordinal());
+                    p.setUbicacion(null);
+                    session.update(p);
+                    session.update(ub);                    
+                }
+            }
+            session.flush(); 
+
+            
+            //actualizar orden intermientoXproducto. cant ingresada
+            //si estuvo ubicado no debe reducir su cantidad ingresada
+            /* 
+            if (orXProd != null){
+                for (Pallet p : pallets){
+                        orXProd.setCantidadIngresada(orXProd.getCantidadIngresada()-pallets.size());
+                        session.update(orXProd);
+                        session.flush(); 
+                }                
+            }*/
+
+
+            //cambiar estado si la orden internada disminuyo
+            /*if (orXProd != null){
+                int x = orXProd.getCantidad();
+                int y = orXProd.getCantidadIngresada();
+                if ((y < x) && (orXProd.getOrdenInternamiento().getEstado() ==EntityState.InternmentOrders.INTERNADA.ordinal())){
+                    orXProd.getOrdenInternamiento().setEstado(EntityState.InternmentOrders.REGISTRADA.ordinal());
+                    session.update(orXProd.getOrdenInternamiento());
+                }
+                session.flush();                
+            }
+            */
+            
+            // disminuir pallets ubicados y stock logico 
+            //prod.setPalletsRegistrados(prod.getPalletsRegistrados()+pallets.size());
+            prod.setPalletsUbicados(prod.getPalletsUbicados()- pallets.size());
+            prod.setStockLogico(prod.getStockLogico()-pallets.size());
+            session.update(prod);
+            session.flush(); 
+            //aumentar ubicaciones libres en almacen
+            if (alm != null){
+                alm.setUbicLibres(alm.getUbicLibres()+pallets.size());
+                session.update(alm);
+                session.flush();                
+            }
+            //ingresar entrada en kardex
+            session.save(kardex);
+            session.flush();     
+            session.getTransaction().commit();            
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return -1;
+        } 
+        return 1;
+    }    
     
     
     
