@@ -5,8 +5,16 @@
  */
 package client.user;
 
+import application.user.UserApplication;
+import entity.Usuario;
+import java.awt.Color;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import javax.swing.border.Border;
+import util.EntityType;
 import util.Icons;
+import util.InstanceFactory;
 import util.Strings;
 
 /**
@@ -15,12 +23,18 @@ import util.Strings;
  */
 public class ForgotPasswordView extends javax.swing.JFrame {
 
+    UserApplication userApplication = InstanceFactory.Instance.getInstance("userApplication", UserApplication.class);
+    Border errorBorder = BorderFactory.createLineBorder(Color.RED, 1);
+
     /**
      * Creates new form ForgotPasswordForm
      */
     public ForgotPasswordView() {
         initComponents();
         Icons.setMainIcon(this);
+        Icons.setButton(btnChPass, Icons.ICONOS.RESET.ordinal());
+        comboQuestions.setModel(new DefaultComboBoxModel(EntityType.USER_QUESTIONS));
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -32,34 +46,34 @@ public class ForgotPasswordView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        lblQuestion = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox();
+        txtAnswer = new javax.swing.JTextField();
+        comboQuestions = new javax.swing.JComboBox();
         jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        txtEmail = new javax.swing.JTextField();
+        btnChPass = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Olvidé mi contraseña");
         setResizable(false);
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jLabel1.setText("Cuál es su pregunta secreta?");
+        lblQuestion.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        lblQuestion.setText("Cuál es su pregunta secreta?");
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel2.setText("Respuesta:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboQuestions.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel3.setText("Correo:");
 
-        jButton1.setText("Restaurar Contraseña");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnChPass.setText("Restaurar Contraseña");
+        btnChPass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnChPassActionPerformed(evt);
             }
         });
 
@@ -77,25 +91,25 @@ public class ForgotPasswordView extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addGap(96, 96, 96))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(38, 38, 38)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField2)
+                            .addComponent(txtEmail)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField1)
-                            .addComponent(jComboBox1, 0, 252, Short.MAX_VALUE)))
+                            .addComponent(lblQuestion, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtAnswer)
+                            .addComponent(comboQuestions, 0, 252, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jLabel4)))
                 .addContainerGap(38, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btnChPass)
+                .addGap(89, 89, 89))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -105,27 +119,49 @@ public class ForgotPasswordView extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(13, 13, 13)
-                .addComponent(jLabel1)
+                .addComponent(lblQuestion)
                 .addGap(18, 18, 18)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(comboQuestions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21)
                 .addComponent(jLabel2)
                 .addGap(18, 18, 18)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
-                .addComponent(jButton1)
-                .addContainerGap(38, Short.MAX_VALUE))
+                .addComponent(txtAnswer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnChPass)
+                .addContainerGap(46, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnChPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChPassActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(this,Strings.MESSAGE_RECOVER_PASSWORD);
-    }//GEN-LAST:event_jButton1ActionPerformed
+        Usuario user = userApplication.getUserByEmail(txtEmail.getText().trim());
+        if (user != null) {
+            String userQuestion = user.getPreguntaSecreta().getPregunta();
+            String userAnsw = user.getRespuesta().toLowerCase();
+            txtEmail.setBorder(null);
+            if (comboQuestions.getSelectedItem().toString().equals(userQuestion) && txtAnswer.getText().trim().equals(userAnsw)) {
+                if (!userApplication.recoverPasswordAndSendEmail(user).equals("")) {
+                    JOptionPane.showMessageDialog(this, Strings.MESSAGE_RECOVER_PASSWORD);
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se puedo enviar el correo. Asegúrese que el puerto 587 esté habilitado.");
+                }
+                jLabel4MouseClicked(null);
+            } else {
+                comboQuestions.setBorder(errorBorder);
+                txtAnswer.setBorder(errorBorder);
+                JOptionPane.showMessageDialog(this,"La pregunta o la respuesta son incorrectos." , "Mensaje", JOptionPane.WARNING_MESSAGE);
+
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "El correo no está registrado en nuestro sistema.", "Mensaje", JOptionPane.WARNING_MESSAGE);
+            txtEmail.setBorder(errorBorder);
+        }
+
+    }//GEN-LAST:event_btnChPassActionPerformed
 
     private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked
         // TODO add your handling code here:
@@ -136,16 +172,15 @@ public class ForgotPasswordView extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton btnChPass;
+    private javax.swing.JComboBox comboQuestions;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JLabel lblQuestion;
+    private javax.swing.JTextField txtAnswer;
+    private javax.swing.JTextField txtEmail;
     // End of variables declaration//GEN-END:variables
 }

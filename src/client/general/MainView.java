@@ -56,6 +56,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.MenuElement;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import util.Constants;
 import util.Icons;
 import util.InstanceFactory;
 
@@ -112,13 +113,17 @@ public class MainView extends javax.swing.JFrame {
         renderUserMenu();
         Icons.setMainIcon(this);
         //inicializar la sesión
-
-        session.setUsuario(user);
-
-        session.setInicioSesion(Calendar.getInstance().getTime());
+        setSession();
+        
 
     }
-
+    private void setSession(){
+        session.setUsuario(user);
+        session.setInicioSesion(Calendar.getInstance().getTime());
+        session.setIp(Constants.currentIP);
+        session.setMac(Constants.currentMac);
+    }
+    
     private void renderUserMenu() {
         if (user != null) {
             Set actions = profileApplication.getProfileByName(user.getPerfil().getNombrePerfil()).getAccions();

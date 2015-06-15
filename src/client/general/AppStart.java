@@ -15,6 +15,7 @@ import application.session.SessionApplication;
 import application.spot.SpotApplication;
 import application.user.UserApplication;
 import application.warehouse.WarehouseApplication;
+import application.question.QuestionApplication;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -62,6 +63,7 @@ public class AppStart {
             InstanceFactory.Instance.register("productTypeApplication", ProductTypeApplication.class);
             InstanceFactory.Instance.register("logApplication",LogApplication.class);
             InstanceFactory.Instance.register("sessionApplication",SessionApplication.class);
+            InstanceFactory.Instance.register("questionApplication",QuestionApplication.class);
         } catch (Exception ex) {
             Logger.getLogger(AppStart.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -82,6 +84,7 @@ public class AppStart {
         ClientApplication clientApplication = InstanceFactory.Instance.getInstance("clientApplication", ClientApplication.class);
         ProductApplication productApplication = InstanceFactory.Instance.getInstance("productApplication", ProductApplication.class);
         ProductTypeApplication productTypeApplication = InstanceFactory.Instance.getInstance("productTypeApplication", ProductTypeApplication.class);
+        QuestionApplication questionApplication=InstanceFactory.Instance.getInstance("questionApplication", QuestionApplication.class);
         conditionApplication.refreshConditions();
         EntityType.fillConditionNames();
         Icons.loadIcons();
@@ -91,12 +94,14 @@ public class AppStart {
         orderApplication.refreshOrders();
         clientApplication.refreshClients();
         productApplication.refreshProducts();
+        EntityType.fillUserQuestions(questionApplication.getAllQuestions());
 
     }
     
     private void initializeParam(){
         Constants.currentIP=Tools.getCurrentIP();
         Constants.currentMac=Tools.getCurrentMac();
+        
     }
 
 }

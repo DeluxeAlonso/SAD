@@ -275,7 +275,7 @@ public class SecurityLogView extends BaseView {
                 {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Id Objeto", "Tipo", "Ip", "Mac", "Último Usuario Modificado", "Usuario Creador", "Fecha Modificación", "Fecha Creación"
+                "Id Objeto", "Tipo", "IP", "MAC", "Último Usuario Modificado", "Usuario Creador", "Fecha Modificación", "Fecha Creación"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -485,16 +485,23 @@ public class SecurityLogView extends BaseView {
 
         gridSession.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Código Usuario", "Inicio Sesión", "Fin Sesión"
+                "Código Usuario", "Inicio Sesión", "Fin Sesión", "IP", "MAC"
             }
         ));
         jScrollPane2.setViewportView(gridSession);
+        if (gridSession.getColumnModel().getColumnCount() > 0) {
+            gridSession.getColumnModel().getColumn(0).setMinWidth(150);
+            gridSession.getColumnModel().getColumn(1).setMinWidth(120);
+            gridSession.getColumnModel().getColumn(2).setMinWidth(120);
+            gridSession.getColumnModel().getColumn(3).setMinWidth(100);
+            gridSession.getColumnModel().getColumn(4).setMinWidth(100);
+        }
 
         jLabel19.setText("Código Usuario:");
 
@@ -754,7 +761,9 @@ public class SecurityLogView extends BaseView {
                 model.addRow(new Object[]{
                     userId,
                     l.getInicioSesion(),
-                    l.getFinSesion()
+                    l.getFinSesion(),
+                    l.getIp(),
+                    l.getMac()
                 });
             });
         }

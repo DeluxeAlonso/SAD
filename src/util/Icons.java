@@ -39,7 +39,7 @@ public class Icons {
     };
     
     public static String[] getIconNames(){
-         String[] iconNames={"Guardar","Cancelar","Buscar", "Nuevo", "Editar", "Eliminar","Resetear",
+         String[] iconNames={"Guardar","Cancelar","Buscar", "Nuevo", "Editar", "Eliminar","Cambiar contraseña",
              "Despacho","Correr algoritmo","Ver solución"};
          return iconNames;
     }
