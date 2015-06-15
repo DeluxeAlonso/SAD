@@ -1,5 +1,5 @@
 package entity;
-// Generated 13/06/2015 10:34:15 PM by Hibernate Tools 4.3.1
+// Generated 15/06/2015 04:35:07 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -15,6 +15,7 @@ public class GuiaRemision  implements java.io.Serializable {
      private Cliente cliente;
      private Despacho despacho;
      private Integer estado;
+     private Integer ordenVisita;
      private Set pedidoParcials = new HashSet(0);
 
     public GuiaRemision() {
@@ -25,10 +26,11 @@ public class GuiaRemision  implements java.io.Serializable {
         this.cliente = cliente;
         this.despacho = despacho;
     }
-    public GuiaRemision(Cliente cliente, Despacho despacho, Integer estado, Set pedidoParcials) {
+    public GuiaRemision(Cliente cliente, Despacho despacho, Integer estado, Integer ordenVisita, Set pedidoParcials) {
        this.cliente = cliente;
        this.despacho = despacho;
        this.estado = estado;
+       this.ordenVisita = ordenVisita;
        this.pedidoParcials = pedidoParcials;
     }
    
@@ -59,6 +61,13 @@ public class GuiaRemision  implements java.io.Serializable {
     
     public void setEstado(Integer estado) {
         this.estado = estado;
+    }
+    public Integer getOrdenVisita() {
+        return this.ordenVisita;
+    }
+    
+    public void setOrdenVisita(Integer ordenVisita) {
+        this.ordenVisita = ordenVisita;
     }
     public Set getPedidoParcials() {
         return this.pedidoParcials;

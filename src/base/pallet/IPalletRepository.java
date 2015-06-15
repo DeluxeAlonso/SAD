@@ -41,5 +41,9 @@ public interface IPalletRepository extends IRepository<Pallet>{
     public List<Object[]> queryByReportInter(int almacen, Date fechaD, Date fechaH, int tipo);
     public int insertNPallets(ArrayList<Pallet> pallets);
     public int internNPallets(ArrayList<Pallet> pallets, OrdenInternamientoXProducto orXProd, Kardex kardex );
+    public int internNPalletsNoOrder(ArrayList<Pallet> pallets, Kardex kardex );
+    public int liberarPorCreado(ArrayList<Pallet> pallets, OrdenInternamientoXProducto orXProd, Kardex kardex );
+    public int liberarPorRotoOVencido(ArrayList<Pallet> pallets, OrdenInternamientoXProducto orXProd, Kardex kardex );
+    public ArrayList<Pallet> getPendPalletsFromOrder(int id);
     
 }

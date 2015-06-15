@@ -46,6 +46,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -1302,7 +1303,7 @@ public class DeliveryView extends BaseView {
             }
     }
     
-    private void fillReport(WritableSheet writableSheet, ArrayList<GuiaRemision>remissionGuides, int idx){
+    private void fillReport(WritableSheet writableSheet, ArrayList<GuiaRemision>revRemissionGuides, int idx){
         try{
             //Definicion de formatos
             WritableFont rowFont = new WritableFont(WritableFont.createFont("Calibri"),
@@ -1325,27 +1326,23 @@ public class DeliveryView extends BaseView {
              int i=0;
              Object[] row;
              
-           /* ArrayList<GuiaRemision> remissionGuides = new ArrayList<>();
-            GuiaRemision[]remissionArray = new GuiaRemision[revRemissionGuides.size() + 1];
-            int cmbIdx = cmbSolutions.getSelectedIndex();
-            Node[] route = solutions.get(cmbIdx).getNodes()[idx];
-            for(int j=0;j<revRemissionGuides.size();j++){
-                for (int k = 0; k < route.length; k++) {
-                    System.out.println("ID RUTA " +route[k].getPartialOrder().getPedido().getCliente().getId());
-                    System.out.println("ID noruta " +revRemissionGuides.get(j).getCliente().getId());
-                    for(Iterator<PedidoParcial> partialOrderDetail = revRemissionGuides.get(j).getPedidoParcials().iterator(); partialOrderDetail.hasNext();){
-                    PedidoParcial p = partialOrderDetail.next();  
-                        if(p.getPedido().getId() == route[k].getPartialOrder().getPedido().getId())
-                            remissionArray[k]=revRemissionGuides.get(j);
-                    }
-                }
+             int[] orders = new int[revRemissionGuides.size() + 1];
+             for(int j=0;j<orders.length;j++)
+                 orders[j]=j;
+             
+             Arrays.sort(orders);
+             GuiaRemision[]tempGuides = new GuiaRemision[revRemissionGuides.size() + 1];
+             ArrayList<GuiaRemision> remissionGuides = new ArrayList<>();
+             for(int j=0;j<revRemissionGuides.size();j++){
+                 for(int k=0;k<orders.length;k++)
+                     if(revRemissionGuides.get(j).getOrdenVisita()==orders[k])
+                         tempGuides[k]=revRemissionGuides.get(j);
             }
-            for(int j=0;j<remissionArray.length;j++){
-                System.out.println("FINAL " + remissionArray[j]);
-                if(remissionArray[j]!=null)
-                    remissionGuides.add(remissionArray[j]);
-            }*/
             
+             for(int j=0;j<tempGuides.length;j++)
+                 if(tempGuides[j]!=null)
+                    remissionGuides.add(tempGuides[j]);
+ 
              for(GuiaRemision guide : remissionGuides){
                 /*
                 row = new Object[]{

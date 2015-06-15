@@ -109,7 +109,7 @@ public class PalletRepository implements IPalletRepository{
             trns=session.beginTransaction();
             Query q = session.createSQLQuery(hql);
             q.setParameter("spotId", spotId);
-            q.setParameter("state", Pallets.ELIMINADO.ordinal());
+            q.setParameter("state", Pallets.ROTO.ordinal());
             q.executeUpdate();
             session.getTransaction().commit();
             return true;
@@ -226,7 +226,7 @@ public class PalletRepository implements IPalletRepository{
     @Override
     public ArrayList<Pallet> getPalletsFromOrder(int id) {
         String hql="FROM Pallet p WHERE p.ordenInternamiento.id=:id and p.estado=0";
-        ArrayList<Pallet> orden=null;
+        ArrayList<Pallet> orden=new ArrayList<>();
         
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
@@ -242,12 +242,33 @@ public class PalletRepository implements IPalletRepository{
             }
             e.printStackTrace();
         }
-        if (orden.size()==0)
-            return null;
-        else
             return orden; //To change body of generated methods, choose Tools | Templates.
     }
 
+        @Override
+    public ArrayList<Pallet> getPendPalletsFromOrder(int id) {
+        String hql="FROM Pallet p WHERE p.ordenInternamiento.id=:id AND p.estado= :estado";
+        ArrayList<Pallet> orden= new ArrayList<>();
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("id", id);
+            q.setParameter("estado", 0);
+            orden = (ArrayList<Pallet>) q.list();          
+            session.getTransaction().commit();
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+            return orden; //To change body of generated methods, choose Tools | Templates.
+    }
+
+    
     @Override
     public ArrayList<Pallet> queryPalletsByProduct(Integer productId) {
         String hql="FROM Pallet WHERE id_producto=:productId and estado=1";
@@ -318,54 +339,41 @@ public class PalletRepository implements IPalletRepository{
                     "(select r.id from Rack r where (r.almacen.id=:almacen OR :almacen=0)))) AND "+
                     "(a.ean128 like :ean OR :ean = :aux) AND" +
                     "(a.ordenInternamiento.id = :internmentOrder OR :internmentOrder = 0) AND" +
-                    "(a.estado = :estado) AND" +
+                    "(a.estado = :estado OR :estado = -1) AND" +
                     "(a.producto.id = :producto OR :producto = 0) ORDER BY a.ubicacion.rack.almacen.id, a.ubicacion.rack.id, a.ubicacion.lado, a.ubicacion.fila, a.ubicacion.columna";
         
-        String hql2 =  "FROM Pallet a where (a.ubicacion.id in (select u.id from Ubicacion u where u.rack.id in" +
-                    "(select r.id from Rack r where (r.almacen.id=:almacen OR :almacen=0)))) AND "+
-                    "(a.ean128 like :ean OR :ean = :aux) AND" +
-                    "(a.ordenInternamiento.id = :internmentOrder OR :internmentOrder = 0) AND" +
-                    "(a.producto.id = :producto OR :producto = 0) ORDER BY a.ubicacion.rack.almacen.id, a.ubicacion.rack.id, a.ubicacion.lado, a.ubicacion.fila, a.ubicacion.columna";
+        String hql2 = "FROM Pallet a where (a.ubicacion is null) AND "+
+                        "(a.ean128 like :ean OR :ean = :aux) AND" +
+                        "(a.ordenInternamiento.id = :internmentOrder OR :internmentOrder = 0) AND" +
+                        "(a.estado = :estado  OR :estado = -1) AND" +
+                        "(a.producto.id = :producto OR :producto = 0)";
+ 
         
         String hql = null;
         ArrayList<Pallet> pallets=null;
         Transaction trns = null;
         
-        
-        if (estado == -1){
-            hql = hql2;
             Session session = Tools.getSessionInstance();
             try {            
                 trns=session.beginTransaction();
-                Query q = session.createQuery(hql);
+                Query q = session.createQuery(hql1);
+                Query q2 = session.createQuery(hql2);
                 q.setParameter("almacen", almacen);
                 q.setParameter("producto", producto);
                 q.setParameter("ean", "%"+ean+"%");
-                q.setParameter("aux","");
-                q.setParameter("internmentOrder",internmentOrder);
-                pallets = (ArrayList<Pallet>) q.list();          
-                session.getTransaction().commit();
-            } catch (RuntimeException e) {
-                if (trns != null) {
-                    trns.rollback();
-                }
-                e.printStackTrace();
-            }      
-        }
-            
-        else{
-            hql = hql1;
-            Session session = Tools.getSessionInstance();
-            try {            
-                trns=session.beginTransaction();
-                Query q = session.createQuery(hql);
-                q.setParameter("ean", "%"+ean+"%");
-                q.setParameter("almacen", almacen);
-                q.setParameter("producto", producto);
-                q.setParameter("aux","");
-                q.setParameter("internmentOrder",internmentOrder);
                 q.setParameter("estado", estado);
+                q.setParameter("aux","");
+                q.setParameter("internmentOrder",internmentOrder);
+                
+                q2.setParameter("producto", producto);
+                q2.setParameter("ean", "%"+ean+"%");
+                q2.setParameter("aux","");
+                q2.setParameter("estado", estado);
+                q2.setParameter("internmentOrder",internmentOrder);
+
                 pallets = (ArrayList<Pallet>) q.list();          
+                pallets.addAll(q2.list());
+                
                 session.getTransaction().commit();
             } catch (RuntimeException e) {
                 if (trns != null) {
@@ -373,8 +381,10 @@ public class PalletRepository implements IPalletRepository{
                 }
                 e.printStackTrace();
             }
-        }
-
+        
+                  
+            
+            
         return pallets; //To change body of generated methods, choose Tools | Templates.
     }
     
@@ -639,4 +649,187 @@ public class PalletRepository implements IPalletRepository{
         return 1;
     }
 
+    public int internNPalletsNoOrder(ArrayList<Pallet> pallets, Kardex kardex ) {
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try {            
+            trns=session.beginTransaction();
+            Almacen alm = pallets.get(0).getUbicacion().getRack().getAlmacen();
+            Producto prod = pallets.get(0).getProducto();
+            for (Pallet p : pallets){
+                if (p.getUbicacion() != null){
+                    //Actualizar ubicacion de pallets
+                    session.update(p);
+                    //actualizar estado en ubicaciones
+                    Ubicacion ub = p.getUbicacion();
+                    ub.setEstado(EntityState.Spots.OCUPADO.ordinal());
+                    session.update(ub);                    
+                }
+            }
+            session.flush(); 
+            // actualizar pallets registrados y ubicados del producto
+            prod.setPalletsRegistrados(prod.getPalletsRegistrados()-pallets.size());
+            prod.setPalletsUbicados(prod.getPalletsUbicados()+ pallets.size());
+            session.update(prod);
+            session.flush(); 
+            //disminuir ubicaciones libres en almacen
+            alm.setUbicLibres(alm.getUbicLibres()-pallets.size());
+            session.update(alm);
+            session.flush(); 
+            //ingresar entrada en kardex
+            session.save(kardex);
+            session.flush();     
+            session.getTransaction().commit();            
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return -1;
+        } 
+        return 1;
+    }    
+    
+    public int liberarPorCreado(ArrayList<Pallet> pallets, OrdenInternamientoXProducto orXProd, Kardex kardex ) {
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        Almacen alm = null;
+        try {            
+            trns=session.beginTransaction();
+            if (pallets.get(0).getUbicacion()!=null)
+                alm = pallets.get(0).getUbicacion().getRack().getAlmacen();
+            Producto prod = pallets.get(0).getProducto();
+            for (Pallet p : pallets){
+                if (p.getUbicacion() != null){
+                    //Actualizar ubicacion de pallets a null
+                    //actualizar estado en ubicaciones liberado
+                    Ubicacion ub = p.getUbicacion();
+                    ub.setEstado(EntityState.Spots.LIBRE.ordinal());
+                    p.setUbicacion(null);
+                    session.update(p);
+                    session.update(ub);                    
+                }
+            }
+            session.flush(); 
+            
+            //actualizar orden intermientoXproducto. cant ingresada
+            if (orXProd != null){
+                for (Pallet p : pallets){
+                        orXProd.setCantidadIngresada(orXProd.getCantidadIngresada()-pallets.size());
+                        session.update(orXProd);
+                        session.flush(); 
+                }                
+            }
+
+            //cambiar estado si la orden internada disminuyo
+            if (orXProd != null){
+                int x = orXProd.getCantidad();
+                int y = orXProd.getCantidadIngresada();
+                if ((y < x) && (orXProd.getOrdenInternamiento().getEstado() ==EntityState.InternmentOrders.INTERNADA.ordinal())){
+                    orXProd.getOrdenInternamiento().setEstado(EntityState.InternmentOrders.REGISTRADA.ordinal());
+                    session.update(orXProd.getOrdenInternamiento());
+                }
+                session.flush();                
+            }
+            
+            // actualizar pallets registrados y ubicados del producto
+            prod.setPalletsRegistrados(prod.getPalletsRegistrados()+pallets.size());
+            prod.setPalletsUbicados(prod.getPalletsUbicados()- pallets.size());
+            session.update(prod);
+            session.flush(); 
+            //aumentar ubicaciones libres en almacen
+            if (alm != null){
+                alm.setUbicLibres(alm.getUbicLibres()+pallets.size());
+                session.update(alm);
+                session.flush();                
+            }
+            //ingresar entrada en kardex
+            session.save(kardex);
+            session.flush();     
+            session.getTransaction().commit();            
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return -1;
+        } 
+        return 1;
+    }    
+    
+    public int liberarPorRotoOVencido(ArrayList<Pallet> pallets, OrdenInternamientoXProducto orXProd, Kardex kardex ) {
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        Almacen alm = null;
+        try {            
+            trns=session.beginTransaction();
+            if (pallets.get(0).getUbicacion()!= null)
+                alm = pallets.get(0).getUbicacion().getRack().getAlmacen();
+            Producto prod = pallets.get(0).getProducto();
+            for (Pallet p : pallets){
+                if (p.getUbicacion() != null){
+                    //Actualizar ubicacion de pallets a null
+                    //actualizar estado en ubicaciones liberado
+                    Ubicacion ub = p.getUbicacion();
+                    ub.setEstado(EntityState.Spots.LIBRE.ordinal());
+                    p.setUbicacion(null);
+                    session.update(p);
+                    session.update(ub);                    
+                }
+            }
+            session.flush(); 
+
+            
+            //actualizar orden intermientoXproducto. cant ingresada
+            //si estuvo ubicado no debe reducir su cantidad ingresada
+            /* 
+            if (orXProd != null){
+                for (Pallet p : pallets){
+                        orXProd.setCantidadIngresada(orXProd.getCantidadIngresada()-pallets.size());
+                        session.update(orXProd);
+                        session.flush(); 
+                }                
+            }*/
+
+
+            //cambiar estado si la orden internada disminuyo
+            /*if (orXProd != null){
+                int x = orXProd.getCantidad();
+                int y = orXProd.getCantidadIngresada();
+                if ((y < x) && (orXProd.getOrdenInternamiento().getEstado() ==EntityState.InternmentOrders.INTERNADA.ordinal())){
+                    orXProd.getOrdenInternamiento().setEstado(EntityState.InternmentOrders.REGISTRADA.ordinal());
+                    session.update(orXProd.getOrdenInternamiento());
+                }
+                session.flush();                
+            }
+            */
+            
+            // disminuir pallets ubicados y stock logico 
+            //prod.setPalletsRegistrados(prod.getPalletsRegistrados()+pallets.size());
+            prod.setPalletsUbicados(prod.getPalletsUbicados()- pallets.size());
+            prod.setStockLogico(prod.getStockLogico()-pallets.size());
+            session.update(prod);
+            session.flush(); 
+            //aumentar ubicaciones libres en almacen
+            if (alm != null){
+                alm.setUbicLibres(alm.getUbicLibres()+pallets.size());
+                session.update(alm);
+                session.flush();                
+            }
+            //ingresar entrada en kardex
+            session.save(kardex);
+            session.flush();     
+            session.getTransaction().commit();            
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return -1;
+        } 
+        return 1;
+    }    
+    
+    
+    
 }

@@ -205,6 +205,7 @@ public class AlgorithmExecution extends SwingWorker<Solution, String>{
                     guia.setDespacho(despacho);
                     guia.setEstado(1); // <-- set estado
                     guia.setPedidoParcials(new HashSet<>());
+                    guia.setOrdenVisita(guiasRemision.size());
                     guiasRemision.add(guia);
                     customers.put(customer, guia); //para no perder la referencia a la guia
                 }
