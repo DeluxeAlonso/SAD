@@ -226,7 +226,7 @@ public class PalletRepository implements IPalletRepository{
     @Override
     public ArrayList<Pallet> getPalletsFromOrder(int id) {
         String hql="FROM Pallet p WHERE p.ordenInternamiento.id=:id and p.estado=0";
-        ArrayList<Pallet> orden=null;
+        ArrayList<Pallet> orden=new ArrayList<>();
         
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
@@ -242,9 +242,6 @@ public class PalletRepository implements IPalletRepository{
             }
             e.printStackTrace();
         }
-        if (orden.size()==0)
-            return null;
-        else
             return orden; //To change body of generated methods, choose Tools | Templates.
     }
 
