@@ -61,7 +61,15 @@ public class WarehouseApplication {
         
     }
     
-    
+    public boolean isFullRack(Almacen a){
+        try{
+            WarehouseRepository w = new WarehouseRepository();
+            return w.isFullRack(a);
+        }
+        catch (Exception e){
+            return true;
+        }
+    }
     
     public Almacen queryById(int id) {
         Almacen a =null;
@@ -94,5 +102,27 @@ public class WarehouseApplication {
             e.printStackTrace();
         }
         return warehouses;
+    }
+    
+    public int active(Almacen a){
+        try{
+            WarehouseRepository w = new WarehouseRepository();
+            return w.active(a);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return -1;
+        }
+    }
+    
+    public int inactive(Almacen a){
+        try{
+            WarehouseRepository w = new WarehouseRepository();
+            return w.inactive(a);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return -1;
+        }
     }
 }

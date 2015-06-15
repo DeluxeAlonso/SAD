@@ -247,9 +247,10 @@
         <Component class="javax.swing.JTable" name="spotTable">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="9" rowCount="0">
+              <Table columnCount="10" rowCount="0">
                 <Column editable="false" title="EAN128" type="java.lang.String"/>
                 <Column editable="false" title="Producto" type="java.lang.String"/>
+                <Column editable="false" title="Estado" type="java.lang.String"/>
                 <Column editable="false" title="F. Venc." type="java.lang.String"/>
                 <Column editable="false" title="Orden Int." type="java.lang.Integer"/>
                 <Column editable="false" title="Almac&#xe9;n" type="java.lang.String"/>
@@ -262,6 +263,11 @@
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
               <TableColumnModel selectionModel="0">
                 <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                  <Title/>
+                  <Editor/>
+                  <Renderer/>
+                </Column>
+                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
                   <Title/>
                   <Editor/>
                   <Renderer/>

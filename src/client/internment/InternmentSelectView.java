@@ -461,13 +461,17 @@ public class InternmentSelectView extends BaseView {
         for (OrdenInternamiento or : orders) {
             Producto prod = internmentApplication.getProdOrder(or).getProducto();
             ArrayList<Pallet> pal = palletApplication.getPalletsFromOrder(or.getId());
-            x = internmentApplication.getProdOrder(or).getCantidad() - internmentApplication.getProdOrder(or).getCantidadIngresada();
-            model.addRow(new Object[]{
+            //x = internmentApplication.getProdOrder(or).getCantidad() - internmentApplication.getProdOrder(or).getCantidadIngresada();
+            x = pal.size();
+            if (x != 0){
+                model.addRow(new Object[]{
                 or.getId(),
                 prod.getNombre(),
                 pal.get(0).getFechaVencimiento(),
                 x
             });
+            }
+
         }
     }
 
@@ -641,7 +645,7 @@ public class InternmentSelectView extends BaseView {
         int cod = Integer.parseInt(tableInternOrders.getModel().getValueAt(row, 0).toString());
         OrdenInternamiento orden = internmentApplication.queryById(cod);
         Producto prod = internmentApplication.getProdOrder(orden).getProducto();
-        cantAInternar = internmentApplication.getProdOrder(orden).getCantidad() - internmentApplication.getProdOrder(orden).getCantidadIngresada();
+        cantAInternar = palletApplication.getPendPalletsFromOrder(orden.getId()).size();
         txtPendingInterns.setText(Integer.toString(cantAInternar));
         ordenAInternar = orden;
         fillComboWarehouse(prod.getCondicion().getId());

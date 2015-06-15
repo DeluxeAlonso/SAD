@@ -390,40 +390,43 @@ public class EditWarehouseView extends BaseDialogView {
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
         // TODO add your handling code here:
         
-        
-            
-        Calendar cal = Calendar.getInstance();
-        Rack r = new Rack();
-        r.setEstado(EntityState.Racks.ACTIVO.ordinal());
-        r.setFechaRegistro(cal.getTime());
-        r.setAlmacen(a);
-        r.setNumCol(a.getNumColumnas());
-        r.setNumFil(a.getNumFilas());
-        r.setUbicLibres(a.getNumFilas()*a.getNumColumnas()*2);
-        a.getRacks().add(r);
-        for (int j=0;j<a.getNumColumnas();j++){
-            for (int k=0;k<a.getNumFilas();k++){
-                Ubicacion u1 = new Ubicacion();
-                u1.setRack(r);
-                u1.setEstado(EntityState.Spots.LIBRE.ordinal());
-                u1.setColumna(j+1);
-                u1.setFila(k+1);
-                u1.setLado("A");
-                Ubicacion u2 = new Ubicacion();
-                u2.setRack(r);
-                u2.setEstado(EntityState.Spots.LIBRE.ordinal());
-                u2.setColumna(j+1);
-                u2.setFila(k+1);
-                u2.setLado("B");
-                r.getUbicacions().add(u1);
-                r.getUbicacions().add(u2);
+        if (warehouseApplication.isFullRack(a)){
+            JOptionPane.showMessageDialog(this, "No se puede Agregar un Rack pues el almacen alcanzo su maxima capacidad.","Mensaje de mantenimiento de Rack",JOptionPane.WARNING_MESSAGE);
+        }else{
+
+            Calendar cal = Calendar.getInstance();
+            Rack r = new Rack();
+            r.setEstado(EntityState.Racks.ACTIVO.ordinal());
+            r.setFechaRegistro(cal.getTime());
+            r.setAlmacen(a);
+            r.setNumCol(a.getNumColumnas());
+            r.setNumFil(a.getNumFilas());
+            r.setUbicLibres(a.getNumFilas()*a.getNumColumnas()*2);
+            a.getRacks().add(r);
+            for (int j=0;j<a.getNumColumnas();j++){
+                for (int k=0;k<a.getNumFilas();k++){
+                    Ubicacion u1 = new Ubicacion();
+                    u1.setRack(r);
+                    u1.setEstado(EntityState.Spots.LIBRE.ordinal());
+                    u1.setColumna(j+1);
+                    u1.setFila(k+1);
+                    u1.setLado("A");
+                    Ubicacion u2 = new Ubicacion();
+                    u2.setRack(r);
+                    u2.setEstado(EntityState.Spots.LIBRE.ordinal());
+                    u2.setColumna(j+1);
+                    u2.setFila(k+1);
+                    u2.setLado("B");
+                    r.getUbicacions().add(u1);
+                    r.getUbicacions().add(u2);
+                }
             }
+            rackApplication.insert(r);
+
+
+            clearGrid();
+            fillTable(a.getId());
         }
-        rackApplication.insert(r);
-        
-        
-        clearGrid();
-        fillTable(a.getId());
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed

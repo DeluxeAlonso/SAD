@@ -20,6 +20,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
@@ -355,16 +356,22 @@ public class WarehouseView extends BaseView {
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
         // TODO add your handling code here:
+        
         if (deleteBtn.isEnabled()){
-        int sr = usersGrid.getSelectedRow();
-        String idString = usersGrid.getModel().getValueAt(sr, 0).toString();
-        Almacen a = warehouseApplication.queryById(Integer.parseInt(idString));
-        a.setEstado(EntityState.Warehouses.INACTIVO.ordinal());
-        warehouseApplication.update(a);
-        clearGrid();
-        fillTable();
-        editBtn.setEnabled(false);
-        deleteBtn.setEnabled(false);
+            int sr = usersGrid.getSelectedRow();
+            String idString = usersGrid.getModel().getValueAt(sr, 0).toString();
+            Almacen a = warehouseApplication.queryById(Integer.parseInt(idString));
+            int deleteState = warehouseApplication.inactive(a);
+            if (deleteState ==1)
+            {
+                JOptionPane.showMessageDialog(this, "No se puede eliminar este Almacen porque posee ubicaciones OCUPADAS.","Mensaje de mantenimiento de Almacen",JOptionPane.WARNING_MESSAGE);
+            }
+            else{
+                clearGrid();
+                fillTable();
+                editBtn.setEnabled(false);
+                deleteBtn.setEnabled(false);
+            }
         }
     }//GEN-LAST:event_deleteBtnActionPerformed
 

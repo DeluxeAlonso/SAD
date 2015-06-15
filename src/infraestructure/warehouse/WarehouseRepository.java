@@ -16,6 +16,7 @@ import java.util.Set;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import util.EntityState;
 import util.EntityState.Warehouses;
 import util.Tools;
 /**
@@ -175,5 +176,98 @@ public class WarehouseRepository implements IWarehouseRepository{
         }
         return warehouses; //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public int inactive(Almacen a) {
+        
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        //String hql = "UPDATE Ubicacion u SET estado = :state WHERE u.rack.almacen.id=:wareId";
+        String hql = "UPDATE Ubicacion u SET estado = :state WHERE u.rack.id in (Select id from Rack r where r.almacen.id=:wareId)";
+        String hql2 = "UPDATE Rack SET estado = :state WHERE almacen.id = :wareId";
+        long nOcupados=0;
+        long zero=0;
+        String veri = "SELECT count(1) FROM Ubicacion u WHERE u.rack.almacen.id = :wareId AND u.estado = :state";
+        try {            
+            trns=session.beginTransaction();
+            Query q1 = session.createQuery(veri);
+            q1.setParameter("wareId", a.getId());
+            q1.setParameter("state", EntityState.Spots.OCUPADO.ordinal());
+            nOcupados = ((long)q1.uniqueResult());
+            if (nOcupados > 0){
+                session.getTransaction().commit();
+                return 1;
+            }
+            else {
+                a.setEstado(EntityState.Warehouses.INACTIVO.ordinal());
+                session.saveOrUpdate(a);                      
+
+                Query q = session.createQuery(hql);
+                q.setParameter("wareId", a.getId());
+                q.setParameter("state",EntityState.Spots.INACTIVO.ordinal() );
+                q.executeUpdate();
+                Query q2 = session.createQuery(hql2);
+                q2.setParameter("wareId", a.getId());
+                q2.setParameter("state",EntityState.Racks.INACTIVO.ordinal() );
+                q2.executeUpdate();
+                session.getTransaction().commit();
+            
+                return 0;
+            }
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return -1;
+        } 
+    }
     
+    
+    @Override
+    public int active(Almacen a) {
+        a.setEstado(EntityState.Spots.LIBRE.ordinal());
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        String hql = "UPDATE Ubicacion u SET estado = :state WHERE u.rack.almacen.id = :wareId";
+        try {            
+            trns=session.beginTransaction();
+            session.saveOrUpdate(a);                      
+            
+            Query q = session.createQuery(hql);
+            q.setParameter("wareId", a.getId());
+            q.setParameter("state",EntityState.Spots.LIBRE.ordinal() );
+            q.executeUpdate();
+            session.getTransaction().commit();
+            return 0;
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return -1;
+        } 
+    }
+
+    @Override
+    public boolean isFullRack(Almacen a) {
+        long nRacks=0;
+        String hql = "Select count(1) FROM Rack r WHERE r.almacen.id=:wareId";
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try{
+            trns=session.beginTransaction();           
+            
+            Query q = session.createQuery(hql);
+            q.setParameter("wareId", a.getId());
+            nRacks = ((long)q.uniqueResult());
+            session.getTransaction().commit();
+            if (nRacks>=a.getCapacidad()){
+                return true;
+            }else return false;
+        }catch (Exception e){
+            return true;
+        }
+            
+    }
 }
