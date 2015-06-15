@@ -182,8 +182,8 @@ public class WarehouseRepository implements IWarehouseRepository{
         
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
-        String hql = "UPDATE Ubicacion u SET estado = :state WHERE u.rack.almacen.id=:wareId";
-        //String hql = "UPDATE Ubicacion u SET estado = :state WHERE u.rack.id in (Select id from Rack r where r.almacen.id=:wareId)";
+        //String hql = "UPDATE Ubicacion u SET estado = :state WHERE u.rack.almacen.id=:wareId";
+        String hql = "UPDATE Ubicacion u SET estado = :state WHERE u.rack.id in (Select id from Rack r where r.almacen.id=:wareId)";
         String hql2 = "UPDATE Rack SET estado = :state WHERE almacen.id = :wareId";
         long nOcupados=0;
         long zero=0;
