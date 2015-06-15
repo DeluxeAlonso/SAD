@@ -513,13 +513,13 @@ public class PalletRepository implements IPalletRepository{
     @Override
     public List<Object[]> queryByReportInter(int almacen, Date fechaD, Date fechaH, int tipo) {
         String hql="SELECT p.ordenInternamiento.id, p.ubicacion.rack.almacen.descripcion, pro.nombre, pro.tipoProducto.nombre, pro.condicion.nombre, "
-                + "count(1) , p.fechaRegistro "
+                + "count(1) , p.fechaInternamiento "
                 + "FROM Pallet p "
                 + "JOIN p.producto pro "
                 + "WHERE (p.ubicacion.rack.almacen.id = :wareId OR :wareId=0) AND (p.fechaRegistro BETWEEN :dateIni AND :dateEnd)"
                  + " GROUP BY p.ordenInternamiento.id,p.ubicacion.rack.almacen.descripcion, "
                 + "pro.nombre, pro.tipoProducto.nombre, pro.condicion.nombre, "
-                + "p.fechaRegistro" ;
+                + "p.fechaInternamiento" ;
         List<Object[]> list=null;
         //gracias baldeon por enseniarme a usar DAO
         Transaction trns = null;

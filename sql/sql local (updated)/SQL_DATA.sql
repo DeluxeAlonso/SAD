@@ -19,10 +19,11 @@ insert into saddb.accion values (17,"Stock",4);
 insert into saddb.accion values (18,"Guías de remisión",4);
 insert into saddb.accion values (19,"Disponibilidad de almacén",4);
 insert into saddb.accion values (20,"Caducidad de productos",4);
-insert into saddb.accion values (21,"Usuarios y Perfiles",5);
-insert into saddb.accion values (22,"Log",5);
-insert into saddb.accion values (23,"Clientes",6);
-insert into saddb.accion values (24,"Productos",6);
+insert into saddb.accion values (21,"Reporte de internamientos",4);
+insert into saddb.accion values (22,"Usuarios y Perfiles",5);
+insert into saddb.accion values (23,"Log",5);
+insert into saddb.accion values (24,"Clientes",6);
+insert into saddb.accion values (25,"Productos",6);
 -- perfiles
 insert into saddb.perfil value (1,"Administrador","");
 insert into saddb.perfil value (2,"Jefe de almacen","");

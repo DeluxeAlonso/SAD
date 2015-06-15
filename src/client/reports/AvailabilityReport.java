@@ -474,6 +474,7 @@ public class AvailabilityReport extends BaseView {
     public void createHeader(WritableSheet writableSheet, Date date, DateFormat dateFormat){
         
         try{
+            writableSheet.getSettings().setShowGridLines(false);
             Label label0 = new Label(1, 1, "");
             Label label1 = new Label(4, 1, "Reporte de Disponibilidad");
             Label label2 = new Label(7, 1, "Fecha: "+ dateFormat.format(date));
