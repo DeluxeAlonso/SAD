@@ -462,7 +462,7 @@ public class InternmentSelectView extends BaseView {
             Producto prod = internmentApplication.getProdOrder(or).getProducto();
             ArrayList<Pallet> pal = palletApplication.getPalletsFromOrder(or.getId());
             //x = internmentApplication.getProdOrder(or).getCantidad() - internmentApplication.getProdOrder(or).getCantidadIngresada();
-            x = palletApplication.getPendPalletsFromOrder(or.getId()).size();
+            x = pal.size();
             model.addRow(new Object[]{
                 or.getId(),
                 prod.getNombre(),
