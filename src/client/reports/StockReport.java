@@ -406,33 +406,12 @@ public class StockReport extends BaseView {
 
     private void btnExportMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportMousePressed
         JOptionPane.setDefaultLocale(new Locale("es", "ES"));
-        fc.setDialogTitle("Seleccione un archivo");
-        fc.showOpenDialog(this);
-        file = fc.getSelectedFile();
-        System.out.println(file);
+        file = getReportSelectedFile();
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
         /* Export to XSL */
         try {
-            /*
-            FileWriter excel = new FileWriter(file);
-            DefaultTableModel model = (DefaultTableModel) tblKardex.getModel();
-            excel.write("\t\t\tKardex\n");
-            excel.write("Emitido\t"+dateFormat.format(date)+"\n");
-            excel.write("Almacen\t"+warehouses.get(warehouseCombo.getSelectedIndex()).getDescripcion()+"\n");
-            excel.write("Unidad\tPallets\n");
-
             
-            for(int i = 0; i < model.getColumnCount(); i++)
-                excel.write(model.getColumnName(i) + "\t");
-            excel.write("\n");
-            for(int i=0; i< model.getRowCount(); i++) {
-                for(int j=0; j < model.getColumnCount(); j++)
-                    excel.write(model.getValueAt(i,j).toString()+"\t");
-                excel.write("\n");
-            }
-            excel.close();
-                    */
             File exlFile = file;
             WritableWorkbook writableWorkbook = Workbook.createWorkbook(exlFile);
  
@@ -462,7 +441,7 @@ public class StockReport extends BaseView {
             
         } catch (Exception ex) {
             Logger.getLogger(StockReport.class.getName()).log(Level.SEVERE, null, ex);
-            //JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir el archivo",Strings.ERROR_KARDEX_TITLE,JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir el archivo","Error al exportar",JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnExportMousePressed
 

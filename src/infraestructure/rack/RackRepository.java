@@ -181,7 +181,7 @@ public class RackRepository implements IRackRepository{
 
     @Override
     public int inactive(Rack r) {
-        r.setEstado(EntityState.Spots.INACTIVO.ordinal());
+        
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
         String hql = "UPDATE Ubicacion u SET estado = :state WHERE u.rack.id = :rackId";
@@ -199,6 +199,7 @@ public class RackRepository implements IRackRepository{
                 return 1;
             }
             else {
+                r.setEstado(EntityState.Spots.INACTIVO.ordinal());
                 session.saveOrUpdate(r);                      
 
                 Query q = session.createQuery(hql);
