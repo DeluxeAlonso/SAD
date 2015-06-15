@@ -21,6 +21,7 @@ import application.warehouse.WarehouseApplication;
 import client.base.BaseView;
 import client.order.OrderView;
 import client.reports.AvailabilityReport;
+import client.reports.RemissionGuideReport;
 import entity.Almacen;
 import entity.Despacho;
 import entity.GuiaRemision;
@@ -47,9 +48,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -96,6 +99,7 @@ public class DeliveryView extends BaseView {
     ArrayList<Despacho> solutionDeliveries = new ArrayList<Despacho>();
     ArrayList<UnidadTransporte> vehicles = new ArrayList<UnidadTransporte>();
     ArrayList<Solution> solutions = new ArrayList<Solution>();
+    HashMap<Integer, ArrayList<Pallet>> map = new HashMap<Integer, ArrayList<Pallet>>();
     JFileChooser fc = new JFileChooser();
     File file = null;
     Boolean firstRun = true;
@@ -248,7 +252,7 @@ public class DeliveryView extends BaseView {
         for(int i=0;i<currentOrders.size();i++){
             if((Boolean)tableModel.getValueAt(i, 6)){
                 ArrayList<PedidoParcial> tempPartials = 
-                        orderApplication.getPendingPartialOrdersById(currentOrders.get(i).getId());
+                        orderApplication.getNonAttendedPartialOrdersById(currentOrders.get(i).getId());
                 for(int j=0;j<tempPartials.size();j++)
                     partials.add(tempPartials.get(j));
             }
@@ -286,9 +290,7 @@ public class DeliveryView extends BaseView {
             for(int j=0;j<products.size();j++){
                 ArrayList<Pallet> pallets = palletApplication.queryByDeliveryParameters(warehouses.get(i), deliveries, products.get(j));
                 ArrayList<Ubicacion>spots = new ArrayList<>();
-                System.out.println("Pallets " + pallets.size());
                 for(int k=0;k<pallets.size();k++){
-                    System.out.println("Entro a updare");
                     Ubicacion spot = pallets.get(k).getUbicacion();
                     spot.setEstado(EntityState.Spots.LIBRE.ordinal());
                     pallets.get(k).setUbicacion(null);
@@ -301,7 +303,6 @@ public class DeliveryView extends BaseView {
                     Kardex internmentKardex = new Kardex();
                     internmentKardex.setAlmacen(warehouses.get(i));
                     internmentKardex.setProducto(products.get(j));
-                    System.out.println("Insert tipo mov");
                     internmentKardex.setTipoMovimiento(Strings.MESSAGE_KARDEX_OUT_DELIVERY);
                     internmentKardex.setCantidad(pallets.size());
                     internmentKardex.setFecha(Calendar.getInstance().getTime());
@@ -352,8 +353,9 @@ public class DeliveryView extends BaseView {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblRouteDetail = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        warehouseBtn = new javax.swing.JButton();
+        deliveryBtn = new javax.swing.JButton();
+        remissionBtn = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         orderTable = new javax.swing.JTable();
@@ -545,19 +547,27 @@ public class DeliveryView extends BaseView {
             tblRouteDetail.getColumnModel().getColumn(0).setPreferredWidth(30);
         }
 
-        jButton1.setText("Exportar Guia de Almacen");
-        jButton1.setEnabled(false);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        warehouseBtn.setText("Guía de Almacen");
+        warehouseBtn.setEnabled(false);
+        warehouseBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                warehouseBtnActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Exportar Guia de Remision");
-        jButton2.setEnabled(false);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        deliveryBtn.setText("Guía de Despacho");
+        deliveryBtn.setEnabled(false);
+        deliveryBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                deliveryBtnActionPerformed(evt);
+            }
+        });
+
+        remissionBtn.setText("Guías de Remisión");
+        remissionBtn.setEnabled(false);
+        remissionBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                remissionBtnActionPerformed(evt);
             }
         });
 
@@ -572,10 +582,12 @@ public class DeliveryView extends BaseView {
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(warehouseBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2)))
-                .addGap(9, 9, 9))
+                        .addComponent(deliveryBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29)
+                        .addComponent(remissionBtn)))
+                .addGap(9, 10, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -584,8 +596,9 @@ public class DeliveryView extends BaseView {
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton1))
+                    .addComponent(deliveryBtn)
+                    .addComponent(warehouseBtn)
+                    .addComponent(remissionBtn))
                 .addContainerGap())
         );
 
@@ -689,7 +702,7 @@ public class DeliveryView extends BaseView {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(56, Short.MAX_VALUE))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -723,9 +736,15 @@ public class DeliveryView extends BaseView {
                 if(OrderView.orderView != null)
                     OrderView.orderView.verifyOrders();
                 allCheckbox.setSelected(false);
-                jButton1.setEnabled(true);
-                jButton2.setEnabled(true);
-                System.out.println("Tamnho de despachos "+ returnValues.getDespachos().size());
+                warehouseBtn.setEnabled(true);
+                deliveryBtn.setEnabled(true);
+                remissionBtn.setEnabled(true);
+                 ArrayList<Almacen> warehouse = warehouseApplication.queryAll();
+                for(int i=0;i<warehouse.size();i++){
+                    ArrayList<Pallet> pallets = palletApplication.queryByWarehouseParameters(warehouse.get(i), solutionDeliveries);
+                    map.put(warehouse.get(i).getId(), pallets);
+                    System.out.println("SIZE DEL GET " + map.get(warehouse.get(i).getId()).size());
+                }   
                 insertKardex(returnValues.getDespachos());
                 JOptionPane.showMessageDialog(this, Strings.DELIVERY_SUCCESS,
                     Strings.DELIVERY_TITLE,JOptionPane.INFORMATION_MESSAGE);
@@ -838,7 +857,7 @@ public class DeliveryView extends BaseView {
                tableModel.setValueAt(false, i, 6);
     }//GEN-LAST:event_allCheckboxItemStateChanged
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void warehouseBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_warehouseBtnActionPerformed
         file = getReportSelectedFile();
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
@@ -847,7 +866,7 @@ public class DeliveryView extends BaseView {
             WritableWorkbook writableWorkbook = Workbook.createWorkbook(exlFile);
             ArrayList<Almacen> warehouse = warehouseApplication.queryAll();
             for(int i=0;i<warehouse.size();i++){
-                ArrayList<Pallet> pallets = palletApplication.queryByWarehouseParameters(warehouse.get(i), solutionDeliveries);
+                ArrayList<Pallet> pallets = map.get(warehouse.get(i).getId());
                 if(pallets.size()>0){
                     WritableSheet writableSheet = writableWorkbook.createSheet(
                        "Almacen " + warehouse.get(i).getDescripcion(), i);
@@ -860,12 +879,12 @@ public class DeliveryView extends BaseView {
                     writableSheet.addImage(new WritableImage(1,1,0.4,1,baos.toByteArray()));
 
                     writableSheet.setColumnView(1, 10);
-                    writableSheet.setColumnView(2, 35);
-                    writableSheet.setColumnView(3, 25);
-                    writableSheet.setColumnView(4, 20);
-                    writableSheet.setColumnView(5, 20);
-                    writableSheet.setColumnView(6, 20);
-                    writableSheet.setColumnView(7, 15);
+                    writableSheet.setColumnView(2, 50);
+                    writableSheet.setColumnView(3, 35);
+                    writableSheet.setColumnView(4, 10);
+                    writableSheet.setColumnView(5, 10);
+                    writableSheet.setColumnView(6, 10);
+                    writableSheet.setColumnView(7, 10);
                     writableSheet.setColumnView(8, 15);
                     writableSheet.setColumnView(9, 15);
                     writableSheet.setColumnView(10, 15);
@@ -883,13 +902,13 @@ public class DeliveryView extends BaseView {
             //JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir el archivo",Strings.ERROR_KARDEX_TITLE,JOptionPane.ERROR_MESSAGE);
         }
         
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_warehouseBtnActionPerformed
 
      public void createWarehouseHeader(WritableSheet writableSheet, Date date, DateFormat dateFormat, Almacen warehouse){
         
         try{
             Label label0 = new Label(1, 1, "");
-            Label label1 = new Label(4, 1, "Guía de Almacen");
+            Label label1 = new Label(3, 1, "Guía de Almacen");
             Label label2 = new Label(7, 1, "Fecha: "+ dateFormat.format(date));
             Label label3 = new Label(1, 2, "Código: "+ warehouse.getId() );
             Label label4 = new Label(1, 3, "Condición: "+warehouse.getCondicion().getNombre());
@@ -988,7 +1007,7 @@ public class DeliveryView extends BaseView {
             writableSheet.addCell(t7);
         }
             catch(Exception e){
-                
+                e.printStackTrace();
             }
     }
      
@@ -1003,12 +1022,12 @@ public class DeliveryView extends BaseView {
             
             WritableCellFormat parFormat = new WritableCellFormat(rowFont);
              parFormat.setWrap(false);
-             parFormat.setAlignment(Alignment.CENTRE);
+             //parFormat.setAlignment(Alignment.CENTRE);
              parFormat.setBackground(Colour.GREY_25_PERCENT);
              
              
              WritableCellFormat imparFormat = new WritableCellFormat(rowFont);
-             imparFormat.setAlignment(Alignment.CENTRE);
+             //imparFormat.setAlignment(Alignment.CENTRE);
              imparFormat.setWrap(false);
              int col=1;
              int fil=7;
@@ -1065,7 +1084,7 @@ public class DeliveryView extends BaseView {
         }
     }
     
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void deliveryBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deliveryBtnActionPerformed
         file = getReportSelectedFile();
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
@@ -1092,10 +1111,10 @@ public class DeliveryView extends BaseView {
                     writableSheet.addImage(new WritableImage(1,1,0.4,1,baos.toByteArray()));
 
                     writableSheet.setColumnView(1, 10);
-                    writableSheet.setColumnView(2, 15);
-                    writableSheet.setColumnView(3, 15);
-                    writableSheet.setColumnView(4, 20);
-                    writableSheet.setColumnView(5, 20);
+                    writableSheet.setColumnView(2, 20);
+                    writableSheet.setColumnView(3, 20);
+                    writableSheet.setColumnView(4, 35);
+                    writableSheet.setColumnView(5, 35);
                     writableSheet.setColumnView(6, 35);
                     writableSheet.setColumnView(7, 15);
                     writableSheet.setColumnView(8, 15);
@@ -1104,17 +1123,17 @@ public class DeliveryView extends BaseView {
 
                     createHeader(writableSheet,date,dateFormat,transportUnits.get(i));
 
-                   fillReport(writableSheet,remissionGuides);     
+                   fillReport(writableSheet,remissionGuides,i);     
                 }
             }
             writableWorkbook.write();
             writableWorkbook.close();
 
         }catch (Exception ex) {
-            Logger.getLogger(AvailabilityReport.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryView.class.getName()).log(Level.SEVERE, null, ex);
             //JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir el archivo",Strings.ERROR_KARDEX_TITLE,JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_deliveryBtnActionPerformed
 
     private void btnViewLocalsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewLocalsActionPerformed
         HashSet<Local> hsLocals = new HashSet<>();
@@ -1130,11 +1149,61 @@ public class DeliveryView extends BaseView {
         fillRoutesTable();
     }//GEN-LAST:event_cmbSolutionsActionPerformed
 
+    private void remissionBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_remissionBtnActionPerformed
+        file = getReportSelectedFile();
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        try{
+            File exlFile = file;
+            WorkbookSettings ws = new WorkbookSettings();
+            ws.setEncoding("UTF8");
+            WritableWorkbook writableWorkbook = Workbook.createWorkbook(exlFile,ws);
+      
+            ArrayList<GuiaRemision> remissionGuides = transportUnitApplication.getRemissionGuides(null, solutionDeliveries);
+            if(remissionGuides.size()>0){
+                for(int i=0;i<remissionGuides.size();i++){
+                    WritableSheet writableSheet = writableWorkbook.createSheet(
+                       
+                      "Guía " + remissionGuides.get(i).getId().toString(), i);
+                    
+                    URL url = getClass().getResource("../../images/warehouse-512-000000.png");
+                    java.io.File imageFile = new java.io.File(url.toURI());
+                    BufferedImage input = ImageIO.read(imageFile);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ImageIO.write(input, "PNG", baos);
+
+                    writableSheet.addImage(new WritableImage(1,1,0.4,1,baos.toByteArray()));
+
+                    writableSheet.setColumnView(1, 10);
+                    writableSheet.setColumnView(2, 35);
+                    writableSheet.setColumnView(3, 35);
+                    writableSheet.setColumnView(4, 10);
+                    writableSheet.setColumnView(5, 10);
+                    writableSheet.setColumnView(6, 10);
+                    writableSheet.setColumnView(7, 10);
+                    writableSheet.setColumnView(8, 15);
+                    writableSheet.setColumnView(9, 15);
+                    writableSheet.setColumnView(10, 15);
+
+                   createRemissionHeader(writableSheet,date,dateFormat,remissionGuides.get(i));
+
+                   fillRemissionReport(writableSheet,remissionGuides.get(i),i);     
+                }
+            }
+            writableWorkbook.write();
+            writableWorkbook.close();
+
+        }catch (Exception ex) {
+            Logger.getLogger(DeliveryView.class.getName()).log(Level.SEVERE, null, ex);
+            //JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir el archivo",Strings.ERROR_KARDEX_TITLE,JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_remissionBtnActionPerformed
+
     public void createHeader(WritableSheet writableSheet, Date date, DateFormat dateFormat, UnidadTransporte transportUnit){
         
         try{
             Label label0 = new Label(1, 1, "");
-            Label label1 = new Label(4, 1, "Guías de Remision");
+            Label label1 = new Label(4, 1, "Guía de Despacho");
             Label label2 = new Label(7, 1, "Fecha: "+ dateFormat.format(date));
             Label label3 = new Label(1, 2, "Código: "+ transportUnit.getId() );
             Label label4 = new Label(1, 3, "Transportista: "+transportUnit.getTransportista());
@@ -1233,7 +1302,7 @@ public class DeliveryView extends BaseView {
             }
     }
     
-    private void fillReport(WritableSheet writableSheet, ArrayList<GuiaRemision>remissionGuides){
+    private void fillReport(WritableSheet writableSheet, ArrayList<GuiaRemision>remissionGuides, int idx){
         try{
             //Definicion de formatos
             WritableFont rowFont = new WritableFont(WritableFont.createFont("Calibri"),
@@ -1244,17 +1313,39 @@ public class DeliveryView extends BaseView {
             
             WritableCellFormat parFormat = new WritableCellFormat(rowFont);
              parFormat.setWrap(false);
-             parFormat.setAlignment(Alignment.CENTRE);
+             //parFormat.setAlignment(Alignment.CENTRE);
              parFormat.setBackground(Colour.GREY_25_PERCENT);
              
              
              WritableCellFormat imparFormat = new WritableCellFormat(rowFont);
-             imparFormat.setAlignment(Alignment.CENTRE);
+             //imparFormat.setAlignment(Alignment.CENTRE);
              imparFormat.setWrap(false);
              int col=1;
              int fil=7;
              int i=0;
              Object[] row;
+             
+           /* ArrayList<GuiaRemision> remissionGuides = new ArrayList<>();
+            GuiaRemision[]remissionArray = new GuiaRemision[revRemissionGuides.size() + 1];
+            int cmbIdx = cmbSolutions.getSelectedIndex();
+            Node[] route = solutions.get(cmbIdx).getNodes()[idx];
+            for(int j=0;j<revRemissionGuides.size();j++){
+                for (int k = 0; k < route.length; k++) {
+                    System.out.println("ID RUTA " +route[k].getPartialOrder().getPedido().getCliente().getId());
+                    System.out.println("ID noruta " +revRemissionGuides.get(j).getCliente().getId());
+                    for(Iterator<PedidoParcial> partialOrderDetail = revRemissionGuides.get(j).getPedidoParcials().iterator(); partialOrderDetail.hasNext();){
+                    PedidoParcial p = partialOrderDetail.next();  
+                        if(p.getPedido().getId() == route[k].getPartialOrder().getPedido().getId())
+                            remissionArray[k]=revRemissionGuides.get(j);
+                    }
+                }
+            }
+            for(int j=0;j<remissionArray.length;j++){
+                System.out.println("FINAL " + remissionArray[j]);
+                if(remissionArray[j]!=null)
+                    remissionGuides.add(remissionArray[j]);
+            }*/
+            
              for(GuiaRemision guide : remissionGuides){
                 /*
                 row = new Object[]{
@@ -1269,8 +1360,8 @@ public class DeliveryView extends BaseView {
                 Label l2 = new Label(2, fil+i, guide.getCliente().getNombre());
                 Label l3 = new Label(3, fil+i, guide.getCliente().getRuc());
                 Label l4 = new Label(4,fil+i,"");
-                Label l5 = new Label(5,fil+i,"");;
-                Label l6 = new Label(6,fil+i,"");;
+                Label l5 = new Label(5,fil+i,"");
+                Label l6 = new Label(6,fil+i,"");
                 for (Iterator<PedidoParcial> partials =guide.getPedidoParcials().iterator(); partials.hasNext(); ) {
                     PedidoParcial p = partials.next();
                     l4 = new Label(4, fil+i, p.getPedido().getLocal().getNombre());
@@ -1305,7 +1396,7 @@ public class DeliveryView extends BaseView {
             }
    
         }catch (Exception e){
-            
+            e.printStackTrace();
         }
     }
     
@@ -1328,8 +1419,7 @@ public class DeliveryView extends BaseView {
     private javax.swing.JButton btnViewLocals;
     private javax.swing.JButton btnViewSolution;
     private javax.swing.JComboBox cmbSolutions;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton deliveryBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -1343,11 +1433,13 @@ public class DeliveryView extends BaseView {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTable orderTable;
+    private javax.swing.JButton remissionBtn;
     private javax.swing.JSpinner spnHours;
     private javax.swing.JSpinner spnMinutes;
     private javax.swing.JTable tblRouteDetail;
     private javax.swing.JTable tblRoutes;
     private javax.swing.JTextArea txtResult;
+    private javax.swing.JButton warehouseBtn;
     // End of variables declaration//GEN-END:variables
 
     public JProgressBar getjProgressBar() {
@@ -1356,5 +1448,183 @@ public class DeliveryView extends BaseView {
 
     public JTextArea getTxtResult() {
         return txtResult;
+    }
+
+    private void fillRemissionReport(WritableSheet writableSheet, GuiaRemision remissionGuide, int idx) {
+         try{
+            //Definicion de formatos
+            WritableFont rowFont = new WritableFont(WritableFont.createFont("Calibri"),
+             11,
+             WritableFont.NO_BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+             rowFont.setColour(jxl.format.Colour.BLACK);
+            
+            WritableCellFormat parFormat = new WritableCellFormat(rowFont);
+             parFormat.setWrap(false);
+             //parFormat.setAlignment(Alignment.CENTRE);
+             parFormat.setBackground(Colour.GREY_25_PERCENT);
+             
+             
+             WritableCellFormat imparFormat = new WritableCellFormat(rowFont);
+             //imparFormat.setAlignment(Alignment.CENTRE);
+             imparFormat.setWrap(false);
+             int col=1;
+             int fil=8;
+             int i=0;
+             Object[] row;
+             ArrayList<PedidoParcialXProducto> pp = new ArrayList<>();
+             for (Iterator<PedidoParcial> partials =remissionGuide.getPedidoParcials().iterator(); partials.hasNext(); ) {
+                    PedidoParcial p = partials.next();
+                    ArrayList<PedidoParcialXProducto> pxp = orderApplication.queryAllPartialOrderProducts(p.getId());
+                    for(int j=0;j<pxp.size();j++)
+                        pp.add(pxp.get(j));
+             }
+             
+             for(PedidoParcialXProducto product : pp){
+                /*
+                row = new Object[]{
+                    arr[0].toString(),
+                    arr[1].toString(),
+                    arr[2].toString(),
+                    arr[3].toString()
+                };
+                model.addRow(row);
+                        */
+                Number l1 = new Number(1, fil+i,product.getProducto().getId());
+                Label l2 = new Label(2, fil+i, product.getProducto().getNombre());
+                Label l3 = new Label(3, fil+i, product.getProducto().getDescripcion());
+                Number l4 = new Number(4,fil+i,product.getCantidad());
+                Number l5 = new Number(5,fil+i,product.getCantidad() * product.getProducto().getPeso());
+                
+                
+                if (i%2==0){
+                    l1.setCellFormat(imparFormat);
+                    l2.setCellFormat(imparFormat);
+                    l3.setCellFormat(imparFormat);
+                    l4.setCellFormat(imparFormat);
+                    l5.setCellFormat(imparFormat);
+                }else{
+                    l1.setCellFormat(parFormat);
+                    l2.setCellFormat(parFormat);
+                    l3.setCellFormat(parFormat);
+                    l4.setCellFormat(parFormat);
+                    l5.setCellFormat(parFormat);
+                }
+                writableSheet.addCell(l1);
+                writableSheet.addCell(l2);
+                writableSheet.addCell(l3);
+                writableSheet.addCell(l4);
+                writableSheet.addCell(l5);
+                i++;
+            }
+   
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void createRemissionHeader(WritableSheet writableSheet, Date date, DateFormat dateFormat, GuiaRemision get) {
+         try{
+            Label label0 = new Label(1, 1, "");
+            Label label1 = new Label(3, 1, "Guía de Remisión");
+            Label label2 = new Label(4, 1, "Fecha: "+ dateFormat.format(date));
+            Label label3 = new Label(1, 3, "Código: "+ get.getId() );
+            Label label4 = new Label(1, 4, "Transportista: "+get.getDespacho().getUnidadTransporte().getTransportista());
+            Label label5 = new Label(1, 5, "Placa: "+ get.getDespacho().getUnidadTransporte().getPlaca());
+            Label label6 = new Label(4, 3, "Cliente: "+ get.getCliente().getNombre() );
+            Label label7 = new Label(4, 4, "Ruc Cliente: "+get.getCliente().getRuc());
+            WritableFont tittleFont = new WritableFont(WritableFont.createFont("Calibri"),
+             16,
+             WritableFont.BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+             tittleFont.setColour(jxl.format.Colour.RED);
+            
+            WritableCellFormat tittleFormat = new WritableCellFormat(tittleFont);
+             tittleFormat.setWrap(false);
+             tittleFormat.setAlignment(jxl.format.Alignment.CENTRE);
+             tittleFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+             
+             
+             
+             
+             WritableFont headerRFont = new WritableFont(WritableFont.createFont("Calibri"),
+             10,
+             WritableFont.BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+             headerRFont.setColour(jxl.format.Colour.BLACK);
+            
+            WritableCellFormat headerRFormat = new WritableCellFormat(headerRFont);
+             headerRFormat.setWrap(false);
+             headerRFormat.setAlignment(jxl.format.Alignment.RIGHT);
+             headerRFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+             
+             WritableFont headerLFont = new WritableFont(WritableFont.createFont("Calibri"),
+             11,
+             WritableFont.BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+             headerLFont.setColour(jxl.format.Colour.BLACK);
+            
+            WritableCellFormat headerLFormat = new WritableCellFormat(headerLFont);
+             headerLFormat.setWrap(false);
+             headerLFormat.setAlignment(jxl.format.Alignment.LEFT);
+             headerLFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+             
+             
+             
+             //normalFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,
+             //jxl.format.Colour.BLACK);
+            //Add the created Cells to the sheet
+             
+             WritableFont headerTFont = new WritableFont(WritableFont.createFont("Calibri"),
+             WritableFont.DEFAULT_POINT_SIZE,
+             WritableFont.BOLD,  false,
+             UnderlineStyle.NO_UNDERLINE);
+            headerTFont.setColour(jxl.format.Colour.WHITE);
+            
+            WritableCellFormat headerTFormat = new WritableCellFormat(headerTFont);
+             headerTFormat.setWrap(true);
+             headerTFormat.setAlignment(jxl.format.Alignment.CENTRE);
+             headerTFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+             headerTFormat.setWrap(true);
+             headerTFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,
+             jxl.format.Colour.BLACK);
+             headerTFormat.setBackground(Colour.GRAY_80);
+             
+            Label t1 = new Label(1, 7, "Cod. Producto"); 
+            Label t2 = new Label(2, 7, "Nombre"); 
+            Label t3 = new Label(3, 7, "Descripción"); 
+            Label t4 = new Label(4, 7, "Cantidad"); 
+            Label t5 = new Label(5, 7, "Peso"); 
+             t1.setCellFormat(headerTFormat);
+             t2.setCellFormat(headerTFormat);
+             t3.setCellFormat(headerTFormat);
+             t4.setCellFormat(headerTFormat);
+             t5.setCellFormat(headerTFormat);
+             
+             label0.setCellFormat(headerLFormat);
+             label1.setCellFormat(tittleFormat);
+             label2.setCellFormat(headerLFormat);
+             label3.setCellFormat(headerLFormat);
+             label4.setCellFormat(headerLFormat);
+             label5.setCellFormat(headerLFormat);
+             label6.setCellFormat(headerLFormat);
+             label7.setCellFormat(headerLFormat);
+            writableSheet.addCell(label0);
+            writableSheet.addCell(label1);
+            writableSheet.addCell(label2);
+            writableSheet.addCell(label3);
+            writableSheet.addCell(label4);
+            writableSheet.addCell(label5);
+            writableSheet.addCell(label6);
+            writableSheet.addCell(label7);
+            writableSheet.addCell(t1);
+            writableSheet.addCell(t2);
+            writableSheet.addCell(t3);
+            writableSheet.addCell(t4);
+            writableSheet.addCell(t5);
+        }
+            catch(Exception e){
+                
+            }
     }
 }

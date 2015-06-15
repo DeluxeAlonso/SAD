@@ -47,4 +47,6 @@ public interface IOrderRepository extends IRepository<Pedido> {
     public Boolean updateSpots(ArrayList<Ubicacion> spots, ArrayList<Pallet>pallets);
 
     public ArrayList<Despacho> searchDeliveries(Integer idDelivery, Integer IdTransportist, Date startDate, Date endDate);
+
+    public ArrayList<PedidoParcial> queryAllNonAttendedPartialOrdersById(Integer id);
 }

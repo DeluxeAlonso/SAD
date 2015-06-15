@@ -78,6 +78,7 @@ public class OrderRepository implements IOrderRepository{
                     if(!g.getPedidoParcials().isEmpty()){                     
                         g.setDespacho(queryDeliveryById(deliveryId, session, trns));
                         session.save(g);
+                        session.flush();
                     }
                 }
             }
@@ -146,7 +147,8 @@ public class OrderRepository implements IOrderRepository{
                     }else{
                         Integer index = productNamesToRemove.indexOf(p.getProducto().getNombre());
                         quantityToRemove.set(index, quantityToRemove.get(index) + p.getCantidad());
-                    }                 
+                    }
+                    System.out.println(p.getProducto().getId());
                     ArrayList<Pallet> pallets = getAvailablePalletsByProductId(p.getProducto().getId(), session, trns);
                     ArrayList<Pallet> selectedPallets = new ArrayList<>();
                     for(int j=0;j<p.getCantidad();j++){
@@ -161,7 +163,7 @@ public class OrderRepository implements IOrderRepository{
             }
             for(int i=0;i<productNamesToRemove.size();i++){
                 productsToRemove.get(i).setPalletsUbicados(productsToRemove.get(i).getPalletsUbicados() - quantityToRemove.get(i));
-                session.merge(productsToRemove.get(i));
+                session.update(productsToRemove.get(i));
             }
             //REJECTED
             System.out.println("Cantidad de Rejected Orders " + rejectedOrders.size());
@@ -287,7 +289,7 @@ public class OrderRepository implements IOrderRepository{
     
     public ArrayList<PedidoParcial> queryAllLocalPendingPartialOrdersById(Integer id, Session session,Transaction trns){
         //Session session = Tools.getSessionInstance();
-        String hql = "from PedidoParcial where (estado=1 or estado=0) and id_pedido=:id";
+        String hql = "from PedidoParcial where (estado=1) and id_pedido=:id";
         ArrayList<PedidoParcial> partialOrders = new ArrayList<>();
         //Transaction trns = null;
         try{
@@ -468,13 +470,11 @@ public class OrderRepository implements IOrderRepository{
     }
     
     public ArrayList<Pallet> getAvailablePalletsByProductId(Integer productId, Session session, Transaction trns){
-        String hql="FROM Pallet WHERE id_producto=:productId and estado=1 and (:now<fecha_vencimiento) order by fecha_vencimiento desc";
+        String hql="FROM Pallet WHERE id_producto=:productId and estado=1 and (CURDATE()<fecha_vencimiento) order by fecha_vencimiento desc";
         ArrayList<Pallet> pallets= new ArrayList<>();  
         try {            
             Query q = session.createQuery(hql);
             q.setParameter("productId", productId);
-            Date date = new Date();
-            q.setDate("now", date);
             pallets = (ArrayList<Pallet>) q.list();          
         } catch (RuntimeException e) {
             if (trns != null) {
@@ -615,6 +615,29 @@ public class OrderRepository implements IOrderRepository{
             e.printStackTrace();
         }
         return remissionGuides;
+    }
+
+    @Override
+    public ArrayList<PedidoParcial> queryAllNonAttendedPartialOrdersById(Integer id) {
+        Session session = Tools.getSessionInstance();
+        String hql = "from PedidoParcial where (estado=1) and id_pedido=:id";
+        ArrayList<PedidoParcial> partialOrders = new ArrayList<>();
+        Transaction trns = null;
+        try{
+            trns = session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("id", id);
+            partialOrders = (ArrayList<PedidoParcial>) q.list();
+            session.getTransaction().commit();
+        }
+        catch (RuntimeException e){
+            if(trns != null){
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return partialOrders;
+//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     
