@@ -225,7 +225,7 @@ public class PalletRepository implements IPalletRepository{
     
     @Override
     public ArrayList<Pallet> getPalletsFromOrder(int id) {
-        String hql="FROM Pallet p WHERE p.ordenInternamiento.id=:id";
+        String hql="FROM Pallet p WHERE p.ordenInternamiento.id=:id and p.estado=0";
         ArrayList<Pallet> orden=null;
         
         Transaction trns = null;
@@ -296,7 +296,7 @@ public class PalletRepository implements IPalletRepository{
 
     @Override
     public ArrayList<Pallet> queryPalletsByPartialOrder(Integer partialOrderId) {
-        String hql="FROM Pallet WHERE id_pedido_parcial=:partialOrderId";
+        String hql="FROM Pallet WHERE id_pedido_parcial=:partialOrderId and estado=2";
         ArrayList<Pallet> pallets= new ArrayList<>();
         
         Transaction trns = null;
@@ -474,10 +474,11 @@ public class PalletRepository implements IPalletRepository{
     @Override
     public ArrayList<Pallet> queryByDeliveryParameters(Almacen warehouse, ArrayList<Despacho>delivery, Producto product) {
         String hql="from Pallet p where (p.pedidoParcial.id in (select pp.id from PedidoParcial pp where pp.guiaRemision.id in (select g.id from GuiaRemision g where g.despacho.id in (:delivery))) and (p.ubicacion.id in (select u.id from Ubicacion u where u.rack.id in (select r.id from Rack r where r.almacen.id=:warehouse))) and p.producto.id = :product)" ;
-        ArrayList<Pallet> pallets=null;
+        ArrayList<Pallet> pallets = new ArrayList<>();
         ArrayList idList = new ArrayList();
-        for(int i=0;i<delivery.size();i++)
+        for(int i=0;i<delivery.size();i++){
             idList.add(delivery.get(i).getId());
+        }
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
         try {            
@@ -500,7 +501,7 @@ public class PalletRepository implements IPalletRepository{
     @Override
     public ArrayList<Pallet> queryByWarehouseParameters(Almacen warehouse, ArrayList<Despacho> delivery) {
         String hql="from Pallet p where (p.pedidoParcial.id in (select pp.id from PedidoParcial pp where pp.guiaRemision.id in (select g.id from GuiaRemision g where g.despacho.id in (:delivery))) and (p.ubicacion.id in (select u.id from Ubicacion u where u.rack.id in (select r.id from Rack r where r.almacen.id=:warehouse))))" ;
-        ArrayList<Pallet> pallets=null;
+        ArrayList<Pallet> pallets=new ArrayList<>();
         ArrayList idList = new ArrayList();
         for(int i=0;i<delivery.size();i++)
             idList.add(delivery.get(i).getId());

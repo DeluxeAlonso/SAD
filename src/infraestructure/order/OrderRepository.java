@@ -78,6 +78,7 @@ public class OrderRepository implements IOrderRepository{
                     if(!g.getPedidoParcials().isEmpty()){                     
                         g.setDespacho(queryDeliveryById(deliveryId, session, trns));
                         session.save(g);
+                        session.flush();
                     }
                 }
             }
@@ -147,8 +148,7 @@ public class OrderRepository implements IOrderRepository{
                         Integer index = productNamesToRemove.indexOf(p.getProducto().getNombre());
                         quantityToRemove.set(index, quantityToRemove.get(index) + p.getCantidad());
                     }
-                    //p.getProducto().setPalletsUbicados(p.getProducto().getPalletsUbicados() - p.getCantidad());
-                    //session.merge(p.getProducto());                    
+                    System.out.println(p.getProducto().getId());
                     ArrayList<Pallet> pallets = getAvailablePalletsByProductId(p.getProducto().getId(), session, trns);
                     ArrayList<Pallet> selectedPallets = new ArrayList<>();
                     for(int j=0;j<p.getCantidad();j++){
@@ -163,17 +163,15 @@ public class OrderRepository implements IOrderRepository{
             }
             for(int i=0;i<productNamesToRemove.size();i++){
                 productsToRemove.get(i).setPalletsUbicados(productsToRemove.get(i).getPalletsUbicados() - quantityToRemove.get(i));
-                session.merge(productsToRemove.get(i));
+                session.update(productsToRemove.get(i));
             }
             //REJECTED
             System.out.println("Cantidad de Rejected Orders " + rejectedOrders.size());
             for(int i=0;i<rejectedOrders.size();i++){
                 if(!previousAcceptedOrdersId.contains(rejectedOrders.get(i).getPedido().getId())){
                     previousAcceptedOrdersId.add(rejectedOrders.get(i).getPedido().getId());
-                    System.out.println("Eliminar pedidos parciales del pedido " + rejectedOrders.get(i).getPedido().getId());
                     ArrayList<PedidoParcial> oldOrders = queryAllLocalPendingPartialOrdersById(rejectedOrders.get(i).getPedido().getId(),session, trns);
                     for(int j=0;j<oldOrders.size();j++){
-                        System.out.println("Pedido parcial anulado " + oldOrders.get(j));
                         oldOrders.get(j).setEstado(EntityState.PartialOrders.ANULADO.ordinal());
                         session.update(oldOrders.get(j));
                     }
@@ -291,7 +289,7 @@ public class OrderRepository implements IOrderRepository{
     
     public ArrayList<PedidoParcial> queryAllLocalPendingPartialOrdersById(Integer id, Session session,Transaction trns){
         //Session session = Tools.getSessionInstance();
-        String hql = "from PedidoParcial where (estado=1 or estado=0) and id_pedido=:id";
+        String hql = "from PedidoParcial where (estado=1) and id_pedido=:id";
         ArrayList<PedidoParcial> partialOrders = new ArrayList<>();
         //Transaction trns = null;
         try{
@@ -393,7 +391,7 @@ public class OrderRepository implements IOrderRepository{
     @Override
     public ArrayList<Pedido> queryAll() {
         Session session = Tools.getSessionInstance();
-        String hql = "from Pedido where (estado=1 or estado=2) order by id desc";
+        String hql = "from Pedido where (estado=1 or estado=2) order by fecha_vencimiento asc";
         ArrayList<Pedido> orders = new ArrayList<>();
         Transaction trns = null;
         try{
@@ -472,13 +470,11 @@ public class OrderRepository implements IOrderRepository{
     }
     
     public ArrayList<Pallet> getAvailablePalletsByProductId(Integer productId, Session session, Transaction trns){
-        String hql="FROM Pallet WHERE id_producto=:productId and estado=1 and (:now<fecha_vencimiento) order by fecha_vencimiento desc";
+        String hql="FROM Pallet WHERE id_producto=:productId and estado=1 and (CURDATE()<fecha_vencimiento) order by fecha_vencimiento desc";
         ArrayList<Pallet> pallets= new ArrayList<>();  
         try {            
             Query q = session.createQuery(hql);
             q.setParameter("productId", productId);
-            Date date = new Date();
-            q.setDate("now", date);
             pallets = (ArrayList<Pallet>) q.list();          
         } catch (RuntimeException e) {
             if (trns != null) {
@@ -492,10 +488,6 @@ public class OrderRepository implements IOrderRepository{
     public Boolean updatePallets(ArrayList<Pallet> pallets, Session session, Transaction trns) {
         try {            
             for(int i=0;i<pallets.size();i++){
-                Ubicacion spot = pallets.get(i).getUbicacion();
-                spot.setEstado(EntityState.Spots.LIBRE.ordinal());
-                pallets.get(i).setUbicacion(null);
-                session.update(spot);
                 session.update(pallets.get(i));
             }                  
             return true;
@@ -575,6 +567,77 @@ public class OrderRepository implements IOrderRepository{
             e.printStackTrace();
         }
         return remissionGuides;
+    }
+
+    @Override
+    public Boolean updateSpots(ArrayList<Ubicacion> spots , ArrayList<Pallet> pallets) {
+        Session session = Tools.getSessionInstance();
+        Transaction trns = null;
+        try {            
+            trns=session.beginTransaction();
+            for(int i=0;i<spots.size();i++){
+                session.update(spots.get(i));
+            } 
+            for(int i=0;i<pallets.size();i++){
+                session.update(pallets.get(i));
+            }            
+            session.getTransaction().commit();
+            return true;
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public ArrayList<Despacho> searchDeliveries(Integer idDelivery, Integer IdTransportist, Date startDate, Date endDate) {
+        Session session = Tools.getSessionInstance();
+        String hql = "from Despacho d where (:idDelivery is null or d.id=:idDelivery) and (:IdTransportist is null or d.unidadTransporte.id=:IdTransportist) and d.fechaDespacho BETWEEN :dateIni AND :dateEnd";
+        ArrayList<Despacho> remissionGuides = new ArrayList<>();
+        Transaction trns = null;
+        try{
+            trns = session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("idDelivery", idDelivery);
+            q.setParameter("IdTransportist", IdTransportist);
+            q.setParameter("dateIni", startDate);
+            q.setParameter("dateEnd", endDate);
+            remissionGuides = (ArrayList<Despacho>) q.list();
+            session.getTransaction().commit();
+        }
+        catch (RuntimeException e){
+            if(trns != null){
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return remissionGuides;
+    }
+
+    @Override
+    public ArrayList<PedidoParcial> queryAllNonAttendedPartialOrdersById(Integer id) {
+        Session session = Tools.getSessionInstance();
+        String hql = "from PedidoParcial where (estado=1) and id_pedido=:id";
+        ArrayList<PedidoParcial> partialOrders = new ArrayList<>();
+        Transaction trns = null;
+        try{
+            trns = session.beginTransaction();
+            Query q = session.createQuery(hql);
+            q.setParameter("id", id);
+            partialOrders = (ArrayList<PedidoParcial>) q.list();
+            session.getTransaction().commit();
+        }
+        catch (RuntimeException e){
+            if(trns != null){
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return partialOrders;
+//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     

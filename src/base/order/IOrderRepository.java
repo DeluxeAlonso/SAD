@@ -13,6 +13,7 @@ import entity.Pallet;
 import entity.Pedido;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
+import entity.Ubicacion;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -42,4 +43,10 @@ public interface IOrderRepository extends IRepository<Pedido> {
     public ArrayList<Pedido> queryOrdersByClientId(Integer clientId);
 
     public ArrayList<GuiaRemision> queryAllProductsByOrderId(Integer idDelivery, Integer idRemissionGuide, Date startDate, Date endDate);
+
+    public Boolean updateSpots(ArrayList<Ubicacion> spots, ArrayList<Pallet>pallets);
+
+    public ArrayList<Despacho> searchDeliveries(Integer idDelivery, Integer IdTransportist, Date startDate, Date endDate);
+
+    public ArrayList<PedidoParcial> queryAllNonAttendedPartialOrdersById(Integer id);
 }

@@ -1037,11 +1037,15 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                 }else
                 {
                     p.getPedido().setEstado(EntityState.Orders.REGISTRADO.ordinal());
+                    int attandedCount=0;
                     for(int i=0;i<availablePartialOrders.size();i++)
                         if(availablePartialOrders.get(i).getEstado() == EntityState.PartialOrders.ATENDIDO.ordinal()){
-                            p.getPedido().setEstado(EntityState.Orders.EN_CURSO.ordinal());
-                            break;
-                        }   
+                            attandedCount++;
+                        }
+                    if(attandedCount == availablePartialOrders.size())
+                       p.getPedido().setEstado(EntityState.Orders.FINALIZADO.ordinal());
+                    else if(attandedCount>0)
+                       p.getPedido().setEstado(EntityState.Orders.EN_CURSO.ordinal());
                     orderApplication.updateOrder(p.getPedido());
                 }
                 refreshOrders();

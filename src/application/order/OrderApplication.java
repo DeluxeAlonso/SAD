@@ -13,6 +13,7 @@ import entity.Pallet;
 import entity.Pedido;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
+import entity.Ubicacion;
 import infraestructure.order.OrderRepository;
 import java.util.ArrayList;
 import java.util.Date;
@@ -135,6 +136,16 @@ public class OrderApplication {
         return partialOrders;
     }
     
+    public ArrayList<PedidoParcial> getNonAttendedPartialOrdersById(Integer id) {
+        ArrayList<PedidoParcial> partialOrders = new ArrayList<>();
+        try{
+            partialOrders = orderRepository.queryAllNonAttendedPartialOrdersById(id);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return partialOrders;
+    }
+    
     public ArrayList<PedidoParcial> getPartialOrdersByDeliveryId(Despacho delivery){
         ArrayList<PedidoParcial> partialOrders = new ArrayList<>();
         try{
@@ -193,6 +204,26 @@ public class OrderApplication {
             e.printStackTrace();
         }
         return remissionGuides;
+    }
+    
+    public ArrayList<Despacho> searchDeliveries(Integer idDelivery, Integer IdTransportist, Date startDate, Date endDate){
+        ArrayList<Despacho> deliveries = new ArrayList<>();
+        try{
+            deliveries = orderRepository.searchDeliveries(idDelivery, IdTransportist, startDate, endDate);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return deliveries;
+    }
+    
+    public Boolean updateSpots(ArrayList<Ubicacion>spots, ArrayList<Pallet>pallets){
+        Boolean response = false;
+        try {
+            response = orderRepository.updateSpots(spots, pallets);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
     }
         
 }

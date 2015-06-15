@@ -165,7 +165,7 @@ public class TransportUnitRepository implements ITransportUnitRepository{
 
     @Override
     public ArrayList<GuiaRemision> queryRemissionGuides(UnidadTransporte transportUnit, ArrayList<Despacho> deliveries) {
-        String hql="from GuiaRemision g where (g.despacho.id in (select d.id from Despacho d where (d.unidadTransporte.id=:unidad) and d.id in (:delivery)))" ;
+        String hql="from GuiaRemision g where (g.despacho.id in (select d.id from Despacho d where (:unidad is null or d.unidadTransporte.id=:unidad) and d.id in (:delivery)))" ;
         ArrayList<GuiaRemision> remissionGuides= new ArrayList<>();
         ArrayList idList = new ArrayList();
         for(int i=0;i<deliveries.size();i++)
@@ -176,7 +176,10 @@ public class TransportUnitRepository implements ITransportUnitRepository{
             trns=session.beginTransaction();
             Query q = session.createQuery(hql);
             q.setParameterList("delivery", idList);
-            q.setParameter("unidad", transportUnit.getId());
+            if(transportUnit==null)
+                q.setParameter("unidad", null);
+            else
+                q.setParameter("unidad", transportUnit.getId());
             remissionGuides = (ArrayList<GuiaRemision>) q.list();          
             session.getTransaction().commit();
         } catch (RuntimeException e) {

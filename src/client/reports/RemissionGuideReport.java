@@ -6,9 +6,12 @@
 package client.reports;
 
 import application.order.OrderApplication;
+import application.transportunit.TransportUnitApplication;
 import client.base.BaseView;
+import entity.Despacho;
 import entity.GuiaRemision;
 import entity.Ubicacion;
+import entity.UnidadTransporte;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -45,7 +48,11 @@ import util.Strings;
  */
 public class RemissionGuideReport extends BaseView {
     OrderApplication orderApplication = new OrderApplication();
+    TransportUnitApplication transportUnitApplication = new TransportUnitApplication();
     ArrayList<GuiaRemision> remissionGuides = new ArrayList<>();
+    ArrayList<Despacho> deliveries = new ArrayList<>();
+    ArrayList<String> transportistName = new ArrayList<>();
+    ArrayList<UnidadTransporte> transportists = new ArrayList<>();
     File file = null;
     /**
      * Creates new form RemissionGuideReport
@@ -61,14 +68,25 @@ public class RemissionGuideReport extends BaseView {
         dtcEndDate.setDate(new Date());
         dtcInitDate.setMaxSelectableDate(new Date());
         dtcEndDate.setMaxSelectableDate(new Date());
+        fillTransportistCombo();
+    }
+    
+    public void fillTransportistCombo(){
+        transportists = transportUnitApplication.getAllTransportUnits();
+        String[]units = new String[transportists.size() + 2];
+        units[0] = " ";
+        for(int i=0;i<transportists.size();i++)
+            units[i+1] = transportists.get(i).getTransportista();
+        unitCombo.setModel(new javax.swing.DefaultComboBoxModel(units));
     }
 
     public void refreshTable(){ 
         DefaultTableModel tableModel = (DefaultTableModel) remissionTable.getModel();
         tableModel.setRowCount(0);
-        remissionGuides.stream().forEach((_guide) -> {
-            Object[] row = {_guide.getId(), _guide.getDespacho().getId()
-                    , _guide.getCliente().getNombre(),_guide.getCliente().getRuc()};
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        deliveries.stream().forEach((_guide) -> {
+            Object[] row = {_guide.getId(), _guide.getUnidadTransporte().getTransportista()
+                    ,dateFormat.format(_guide.getFechaDespacho())};
             tableModel.addRow(row);
         });
     }
@@ -85,9 +103,8 @@ public class RemissionGuideReport extends BaseView {
         jScrollPane2 = new javax.swing.JScrollPane();
         jEditorPane1 = new javax.swing.JEditorPane();
         jLabel1 = new javax.swing.JLabel();
-        remissionTxt = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
         deliveryTxt = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -97,6 +114,7 @@ public class RemissionGuideReport extends BaseView {
         exportBtn = new javax.swing.JButton();
         dtcInitDate = new com.toedter.calendar.JDateChooser();
         dtcEndDate = new com.toedter.calendar.JDateChooser();
+        unitCombo = new javax.swing.JComboBox();
 
         jScrollPane2.setViewportView(jEditorPane1);
 
@@ -104,15 +122,15 @@ public class RemissionGuideReport extends BaseView {
         setTitle("Guia de Remision");
         setPreferredSize(new java.awt.Dimension(547, 456));
 
-        jLabel1.setText("Codigo:");
+        jLabel1.setText("Despacho:");
 
-        remissionTxt.addActionListener(new java.awt.event.ActionListener() {
+        deliveryTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                remissionTxtActionPerformed(evt);
+                deliveryTxtActionPerformed(evt);
             }
         });
 
-        jLabel2.setText("Despacho:");
+        jLabel2.setText("Transportista:");
 
         jLabel3.setText("Fecha inicial:");
 
@@ -120,17 +138,17 @@ public class RemissionGuideReport extends BaseView {
 
         remissionTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Codigo", "Cod. Despacho", "Cliente", "Ruc"
+                "Codigo", "Transportista", "Fecha"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -138,10 +156,6 @@ public class RemissionGuideReport extends BaseView {
             }
         });
         jScrollPane1.setViewportView(remissionTable);
-        if (remissionTable.getColumnModel().getColumnCount() > 0) {
-            remissionTable.getColumnModel().getColumn(0).setPreferredWidth(7);
-            remissionTable.getColumnModel().getColumn(1).setPreferredWidth(7);
-        }
 
         jButton1.setText("Generar Reporte");
         jButton1.setToolTipText("");
@@ -159,6 +173,8 @@ public class RemissionGuideReport extends BaseView {
             }
         });
 
+        unitCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -167,31 +183,25 @@ public class RemissionGuideReport extends BaseView {
                 .addGap(6, 6, 6)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(32, 32, 32)
-                                .addComponent(jLabel1))
-                            .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(remissionTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(dtcInitDate, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel1))
                         .addGap(12, 12, 12)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(dtcInitDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(deliveryTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(12, 12, 12)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(dtcEndDate, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(deliveryTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jButton1)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel4)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(dtcEndDate, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 0, Short.MAX_VALUE))))
+                                .addComponent(unitCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jButton1))
+                        .addGap(19, 19, 19))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -208,24 +218,26 @@ public class RemissionGuideReport extends BaseView {
                 .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(remissionTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(deliveryTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
-                    .addComponent(deliveryTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(unitCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(dtcInitDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(50, 50, 50))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(dtcEndDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, 0)
-                                .addComponent(dtcEndDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(dtcInitDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton1)
                         .addGap(18, 18, 18)))
@@ -253,23 +265,23 @@ public class RemissionGuideReport extends BaseView {
                 error_message += "Debe ingresar una fecha Final."+"\n";
             }
             if(hasErrors){
-                JOptionPane.showMessageDialog(this, error_message,Strings.ERROR_KARDEX_TITLE,JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, error_message,"Reporte de Despacho",JOptionPane.WARNING_MESSAGE);
                 exportBtn.setEnabled(false);
             }else{
                 Calendar c = Calendar.getInstance(); 
                 c.setTime(dtcEndDate.getDate()); 
                 c.add(Calendar.DATE, 1);
                 Date newInitDate = c.getTime();
-                remissionGuides = orderApplication.searchRemissionGuides(deliveryTxt.getText().isEmpty() ? null : Integer.parseInt(deliveryTxt.getText()),
-                        remissionTxt.getText().isEmpty() ? null : Integer.parseInt(remissionTxt.getText()), dtcInitDate.getDate(), newInitDate);
+                deliveries = orderApplication.searchDeliveries(deliveryTxt.getText().isEmpty() ? null : Integer.parseInt(deliveryTxt.getText()),
+                        unitCombo.getSelectedIndex() == 0 ? null : transportists.get(unitCombo.getSelectedIndex()-1).getId(), dtcInitDate.getDate(), newInitDate);
                 refreshTable();
                 exportBtn.setEnabled(true);
             }
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void remissionTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_remissionTxtActionPerformed
+    private void deliveryTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deliveryTxtActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_remissionTxtActionPerformed
+    }//GEN-LAST:event_deliveryTxtActionPerformed
 
     private void exportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportBtnActionPerformed
         JOptionPane.setDefaultLocale(new Locale("es", "ES"));
@@ -511,6 +523,6 @@ public class RemissionGuideReport extends BaseView {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable remissionTable;
-    private javax.swing.JTextField remissionTxt;
+    private javax.swing.JComboBox unitCombo;
     // End of variables declaration//GEN-END:variables
 }
