@@ -13,6 +13,7 @@ import entity.Pallet;
 import entity.Pedido;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
+import entity.Ubicacion;
 import infraestructure.order.OrderRepository;
 import java.util.ArrayList;
 import java.util.Date;
@@ -193,6 +194,16 @@ public class OrderApplication {
             e.printStackTrace();
         }
         return remissionGuides;
+    }
+    
+    public Boolean updateSpots(ArrayList<Ubicacion>spots, ArrayList<Pallet>pallets){
+        Boolean response = false;
+        try {
+            response = orderRepository.updateSpots(spots, pallets);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
     }
         
 }

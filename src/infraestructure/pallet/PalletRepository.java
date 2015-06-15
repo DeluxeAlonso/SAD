@@ -461,10 +461,14 @@ public class PalletRepository implements IPalletRepository{
     @Override
     public ArrayList<Pallet> queryByDeliveryParameters(Almacen warehouse, ArrayList<Despacho>delivery, Producto product) {
         String hql="from Pallet p where (p.pedidoParcial.id in (select pp.id from PedidoParcial pp where pp.guiaRemision.id in (select g.id from GuiaRemision g where g.despacho.id in (:delivery))) and (p.ubicacion.id in (select u.id from Ubicacion u where u.rack.id in (select r.id from Rack r where r.almacen.id=:warehouse))) and p.producto.id = :product)" ;
-        ArrayList<Pallet> pallets=null;
+        ArrayList<Pallet> pallets = new ArrayList<>();
         ArrayList idList = new ArrayList();
-        for(int i=0;i<delivery.size();i++)
+        System.out.println("Almacen " + warehouse.getId());
+        System.out.println("Producto " + product.getId());
+        for(int i=0;i<delivery.size();i++){
             idList.add(delivery.get(i).getId());
+            System.out.println("Delivery " + delivery.get(i).getId());
+        }
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
         try {            

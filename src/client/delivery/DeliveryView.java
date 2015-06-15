@@ -32,6 +32,7 @@ import entity.Pedido;
 import entity.PedidoParcial;
 import entity.PedidoParcialXProducto;
 import entity.Producto;
+import entity.Ubicacion;
 import entity.UnidadTransporte;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -284,14 +285,25 @@ public class DeliveryView extends BaseView {
         for(int i=0;i<warehouses.size();i++){
             for(int j=0;j<products.size();j++){
                 ArrayList<Pallet> pallets = palletApplication.queryByDeliveryParameters(warehouses.get(i), deliveries, products.get(j));
+                ArrayList<Ubicacion>spots = new ArrayList<>();
+                System.out.println("Pallets " + pallets.size());
+                for(int k=0;k<pallets.size();k++){
+                    System.out.println("Entro a updare");
+                    Ubicacion spot = pallets.get(k).getUbicacion();
+                    spot.setEstado(EntityState.Spots.LIBRE.ordinal());
+                    pallets.get(k).setUbicacion(null);
+                    spots.add(spot);
+                }
+                if(!spots.isEmpty())
+                    orderApplication.updateSpots(spots, pallets);
                 if(!pallets.isEmpty()){
                     ArrayList<Kardex> kardex = kardexApplication.queryByParameters(warehouses.get(i).getId(), products.get(j).getId());
                     Kardex internmentKardex = new Kardex();
                     internmentKardex.setAlmacen(warehouses.get(i));
                     internmentKardex.setProducto(products.get(j));
-                    internmentKardex.setTipoMovimiento("Salida");
+                    System.out.println("Insert tipo mov");
+                    internmentKardex.setTipoMovimiento(Strings.MESSAGE_KARDEX_OUT_DELIVERY);
                     internmentKardex.setCantidad(pallets.size());
-
                     internmentKardex.setFecha(Calendar.getInstance().getTime());
                     if(kardex.size()==0){
                         internmentKardex.setStockInicial(0);
@@ -713,6 +725,7 @@ public class DeliveryView extends BaseView {
                 allCheckbox.setSelected(false);
                 jButton1.setEnabled(true);
                 jButton2.setEnabled(true);
+                System.out.println("Tamnho de despachos "+ returnValues.getDespachos().size());
                 insertKardex(returnValues.getDespachos());
                 JOptionPane.showMessageDialog(this, Strings.DELIVERY_SUCCESS,
                     Strings.DELIVERY_TITLE,JOptionPane.INFORMATION_MESSAGE);
