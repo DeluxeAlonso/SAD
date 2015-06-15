@@ -225,7 +225,7 @@ public class PalletRepository implements IPalletRepository{
     
     @Override
     public ArrayList<Pallet> getPalletsFromOrder(int id) {
-        String hql="FROM Pallet p WHERE p.ordenInternamiento.id=:id";
+        String hql="FROM Pallet p WHERE p.ordenInternamiento.id=:id and p.estado=0";
         ArrayList<Pallet> orden=null;
         
         Transaction trns = null;
@@ -272,7 +272,7 @@ public class PalletRepository implements IPalletRepository{
 
     @Override
     public ArrayList<Pallet> queryPalletsByPartialOrder(Integer partialOrderId) {
-        String hql="FROM Pallet WHERE id_pedido_parcial=:partialOrderId";
+        String hql="FROM Pallet WHERE id_pedido_parcial=:partialOrderId and estado=2";
         ArrayList<Pallet> pallets= new ArrayList<>();
         
         Transaction trns = null;

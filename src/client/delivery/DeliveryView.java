@@ -1204,7 +1204,7 @@ public class DeliveryView extends BaseView {
         try{
             Label label0 = new Label(1, 1, "");
             Label label1 = new Label(4, 1, "Guía de Despacho");
-            Label label2 = new Label(7, 1, "Fecha: "+ dateFormat.format(date));
+            Label label2 = new Label(6, 1, "Fecha: "+ dateFormat.format(date));
             Label label3 = new Label(1, 2, "Código: "+ transportUnit.getId() );
             Label label4 = new Label(1, 3, "Transportista: "+transportUnit.getTransportista());
             Label label5 = new Label(1, 4, "Placa: "+ transportUnit.getPlaca());
