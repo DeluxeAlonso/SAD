@@ -122,6 +122,7 @@ public class EditPalletView extends BaseDialogView {
         
         
         this.productCombo.setSelectedItem(prod.getNombre());
+        fillWarehouseCombo(prod.getCondicion().getId());
         this.dtcInitDate.setDate(p.getFechaVencimiento());
         int x = p.getEstado();
         int y = stateN.indexOf(x);
@@ -714,6 +715,9 @@ public class EditPalletView extends BaseDialogView {
         JOptionPane.showMessageDialog(this, "No puede internar un producto si no está registrado o que presente una fecha vencida", "Error para internar pallet", JOptionPane.INFORMATION_MESSAGE);
     else{
         if (jCheckBox1.isSelected()){
+            Producto p = product.get(productCombo.getSelectedIndex());
+            comboWarehouse.removeAllItems();
+            fillWarehouseCombo(p.getCondicion().getId());
             comboWarehouse.setEnabled(true);
             jComboBox2.setEnabled(false);
             dtcInitDate.setEnabled(false);

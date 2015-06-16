@@ -566,7 +566,27 @@ public class PalletRepository implements IPalletRepository{
             session.flush();
             int startId=pIni.getId();
             String ean128=pIni.getEan128();            
-            pIni.setEan128(ean128+startId);
+            if (startId>999999){//1000000+ 
+                pIni.setEan128(ean128+startId);
+            }
+            else if (startId>99999){//100000+ 
+                pIni.setEan128(ean128+"0"+startId);
+            }            
+            else if (startId>9999){//10000+ 
+                pIni.setEan128(ean128+"00"+startId);
+            }
+            else if (startId>999){//1000+
+                pIni.setEan128(ean128+"000"+startId);
+            }
+            else if (startId>99){//100+
+                pIni.setEan128(ean128+"0000"+startId);
+            }            
+            else if (startId>9){//10+
+                pIni.setEan128(ean128+"00000"+startId);
+            }            
+            else { //0-9
+                pIni.setEan128(ean128+"000000"+startId);
+            }
             session.update(pIni);
             session.flush();
             int cant=pallets.size();
@@ -575,7 +595,27 @@ public class PalletRepository implements IPalletRepository{
                 if(i==0) continue;
                 Pallet p = pallets.get(i);
                 int num=startId+i;
-                p.setEan128(ean128+num);
+                if (num>999999){//1000000+ 
+                    p.setEan128(ean128+num);
+                }
+                else if (num>99999){//100000+ 
+                    p.setEan128(ean128+"0"+num);
+                }                
+                else if (num>9999){//10000+ 
+                    p.setEan128(ean128+"00"+num);
+                }
+                else if (num>999){//1000+
+                    p.setEan128(ean128+"000"+num);
+                }
+                else if (num>99){//100+
+                    p.setEan128(ean128+"0000"+num);
+                }            
+                else if (num>9){//10+
+                    p.setEan128(ean128+"00000"+num);
+                }            
+                else { //0-9
+                    p.setEan128(ean128+"000000"+num);
+                }
                 p.setId(num);
                 session.save(p);
                 if(i%20==0) session.flush();
