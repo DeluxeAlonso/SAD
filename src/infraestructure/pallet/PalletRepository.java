@@ -15,6 +15,7 @@ import entity.Pallet;
 import entity.Producto;
 import entity.Ubicacion;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import org.hibernate.Hibernate;
@@ -829,6 +830,52 @@ public class PalletRepository implements IPalletRepository{
         } 
         return 1;
     }    
+
+    @Override
+    public List<Object[]> queryByReportCaducity(int idType, int time) {
+        String hql="SELECT pro.nombre, pro.tipoProducto.nombre, pro.condicion.nombre, "
+                + "count(1),p.fechaVencimiento "
+                + "FROM Pallet p "
+                + "JOIN p.producto pro "
+                + "WHERE (pro.tipoProducto.id = :typeId OR :typeId=0) AND (p.fechaVencimiento < :fecha OR :fecha is null)"
+                + " GROUP BY pro.nombre, pro.tipoProducto.nombre, pro.condicion.nombre, "
+                + "p.fechaVencimiento ";
+        List<Object[]> list=null;
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        Calendar c = Calendar.getInstance(); 
+        c.setTime(new Date());
+        if (time==0){
+            c.add(Calendar.DATE, 3);
+        }else if (time==1){
+            c.add(Calendar.DATE,7);
+        }else if (time==2){
+            c.add(Calendar.DATE,14);
+        }else if (time==3){
+            c.add(Calendar.MONTH,1);
+        }else if (time==4){
+            c.add(Calendar.MONTH,2);
+        }
+        Date newEndDate = c.getTime();
+        if (time==5)
+            newEndDate=null;
+        try {            
+            trns=session.beginTransaction();
+            
+            Query q = session.createQuery(hql);
+            q.setParameter("typeId", idType);
+            q.setParameter("fecha", newEndDate);
+            list = q.list();          
+            session.getTransaction().commit();
+            
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return list;
+    }
     
     
     
