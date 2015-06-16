@@ -226,10 +226,11 @@ public class WarehouseRepository implements IWarehouseRepository{
     
     @Override
     public int active(Almacen a) {
-        a.setEstado(EntityState.Spots.LIBRE.ordinal());
+        a.setEstado(EntityState.Warehouses.ACTIVO.ordinal());
         Transaction trns = null;
         Session session = Tools.getSessionInstance();
-        String hql = "UPDATE Ubicacion u SET estado = :state WHERE u.rack.almacen.id = :wareId";
+        String hql = "UPDATE Ubicacion u SET estado = :state WHERE u.rack.id in (Select id from Rack where almacen.id = :wareId)";
+        String hql1 = "UPDATE Rack r SET estado = :state WHERE r.almacen.id =:wareId";
         try {            
             trns=session.beginTransaction();
             session.saveOrUpdate(a);                      
@@ -238,6 +239,11 @@ public class WarehouseRepository implements IWarehouseRepository{
             q.setParameter("wareId", a.getId());
             q.setParameter("state",EntityState.Spots.LIBRE.ordinal() );
             q.executeUpdate();
+            
+            Query q1 = session.createQuery(hql1);
+            q1.setParameter("wareId", a.getId());
+            q1.setParameter("state",EntityState.Racks.ACTIVO.ordinal() );
+            q1.executeUpdate();
             session.getTransaction().commit();
             return 0;
         } catch (RuntimeException e) {
@@ -267,6 +273,49 @@ public class WarehouseRepository implements IWarehouseRepository{
             }else return false;
         }catch (Exception e){
             return true;
+        }
+            
+    }
+    
+    
+    public boolean isOcupy(Almacen a) {
+        long nRacks=0;
+        String hql = "Select count(1) FROM Ubicacion u WHERE u.rack.almacen.id=:wareId AND u.estado =:state";
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try{
+            trns=session.beginTransaction();           
+            
+            Query q = session.createQuery(hql);
+            q.setParameter("wareId", a.getId());
+            q.setParameter("state", EntityState.Spots.OCUPADO.ordinal());
+            nRacks = ((long)q.uniqueResult());
+            session.getTransaction().commit();
+            if (nRacks>0){
+                return true;
+            }else return false;
+        }catch (Exception e){
+            return true;
+        }
+            
+    }
+    
+    public long getNumberRacks(Almacen a) {
+        long nRacks=0;
+        String hql = "Select count(1) FROM Rack r WHERE r.almacen.id=:wareId";
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        try{
+            trns=session.beginTransaction();           
+            
+            Query q = session.createQuery(hql);
+            q.setParameter("wareId", a.getId());
+            nRacks = ((long)q.uniqueResult());
+            session.getTransaction().commit();
+            return nRacks;
+        }catch (Exception e){
+            session.getTransaction().commit();
+            return -1;
         }
             
     }

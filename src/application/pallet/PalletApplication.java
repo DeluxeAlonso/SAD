@@ -29,7 +29,18 @@ public class PalletApplication {
     public PalletApplication() {
         this.palletRepository = new PalletRepository();
     }
-
+    
+    public List<Object[]> queryByReportCaducity(int idType, int time){
+        List<Object[]> pallets = null;
+        try {
+            pallets = palletRepository.queryByReportCaducity(idType,time);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pallets;
+        
+    }
+    
     public ArrayList<Pallet> queryPalletsByRack(int rackId) {
         ArrayList<Pallet> pallets = null;
         try {

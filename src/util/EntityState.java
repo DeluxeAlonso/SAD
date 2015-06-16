@@ -41,7 +41,7 @@ public class EntityState {
     
     public static enum Warehouses {
 
-        INACTIVO, ACTIVO, EN_REVISION
+        INACTIVO, ACTIVO
     };
 
     public static String[] getWarehousesState() {
@@ -179,7 +179,7 @@ public class EntityState {
     private static String[] localsState = {"Inactivo", "Activo"};
     private static String[] racksState = {"Inactivo", "Activo", "En_revision", "Lleno"};
     private static String[] clientsState = {"Inactivo", "Activo"};
-    private static String[] warehousesState = {"Inactivo", "Activo", "En_revision"};
+    private static String[] warehousesState = {"Inactivo", "Activo"};
     private static String[] spotState = {"Inactivo", "Libre", "Ocupado"};
     private static String[] userState = {" ", "Activo", "Inactivo"};
     private static String[] spotStateLiteral={"Inactivo","Libre","Ocupado"};

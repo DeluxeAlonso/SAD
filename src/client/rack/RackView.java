@@ -62,7 +62,8 @@ public class RackView extends BaseView {
         ladoCombo.setModel(new javax.swing.DefaultComboBoxModel(s));
         //fillTable();
         Icons.setButton(searchBtn, Icons.ICONOS.SEARCH.ordinal());
-        
+        Icons.setButton(activoBtn, Icons.ICONOS.ACTIVE.ordinal());
+        Icons.setButton(inactivoBtn, Icons.ICONOS.INACTIVE.ordinal());
     }
 
     /**
@@ -292,26 +293,24 @@ public class RackView extends BaseView {
 
         getContentPane().add(WarehouseGrid1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 108, -1, 166));
 
-        inactivoBtn.setText("Inactivo");
         inactivoBtn.setEnabled(false);
         inactivoBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inactivoBtnActionPerformed(evt);
             }
         });
-        getContentPane().add(inactivoBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(792, 79, -1, -1));
+        getContentPane().add(inactivoBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 80, 40, 20));
 
         jLabel5.setText("Racks:");
         getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 88, -1, -1));
 
-        activoBtn.setText("Activo");
         activoBtn.setEnabled(false);
         activoBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 activoBtnActionPerformed(evt);
             }
         });
-        getContentPane().add(activoBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(719, 79, -1, -1));
+        getContentPane().add(activoBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 80, 40, 20));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Busqueda de Rack por Almacen"));
 

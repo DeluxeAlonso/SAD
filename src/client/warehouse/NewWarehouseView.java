@@ -485,7 +485,16 @@ public class NewWarehouseView extends BaseDialogView {
             condicionCombo.setBorder(errorBorder);
             errorFlag = true;
         }
-        
+        if (errorFlag==false){
+            int capa = Integer.parseInt(capacityTxt.getText());
+            int rack = Integer.parseInt(racksTxt.getText());
+                    
+            if (rack>capa){
+                error_message += "El numero de racks a crear debe ser menor o igual que la capacidad."+"\n";
+                racksTxt.setBorder(errorBorder);
+                errorFlag = true;        
+            }
+        }
         if (errorFlag==true)
         JOptionPane.showMessageDialog(this, error_message,"Mensaje de insercion de almacen",JOptionPane.WARNING_MESSAGE);
         
