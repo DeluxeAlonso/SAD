@@ -7,6 +7,7 @@ package client.base;
 
 import client.general.MainView;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
@@ -20,6 +21,8 @@ public abstract class BaseDialogView extends javax.swing.JDialog{
     protected Border errorBorder = BorderFactory.createLineBorder(Color.RED, 1);
     protected Border regularBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
     protected String error_message;
+    protected Cursor waitCursor = new Cursor(Cursor.WAIT_CURSOR);
+    protected Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
     
     public BaseDialogView(java.awt.Frame parent, boolean modal){
         super(parent, modal);
@@ -40,4 +43,12 @@ public abstract class BaseDialogView extends javax.swing.JDialog{
     private void formWindowClosing(java.awt.event.WindowEvent evt){
         this.dispose();
     }
+    
+        protected void startLoader(){
+        setCursor(waitCursor);
+    }
+    protected void stopLoader(){
+        setCursor(defaultCursor);
+    }
+    
 }
