@@ -192,7 +192,7 @@ public class DeliveryView extends BaseView {
         Node[] route = solutions.get(cmbIdx).getNodes()[idx];
         for (int j = 0; j < route.length; j++) {
             model.addRow(new Object[]{
-                j,
+                j+1,
                 route[j].getPartialOrder().getPedido().getCliente().getNombre(),
                 route[j].getPartialOrder().getPedido().getLocal().getDescripcion(),
                 route[j].getPartialOrder().getPedido().getLocal().getDireccion(),
@@ -229,7 +229,7 @@ public class DeliveryView extends BaseView {
             int minutes = (seconds - hours * 3600) / 60;
             String totalTime = "" + hours + "h " + minutes + "m";
             model.addRow(new Object[]{
-                i,
+                i+1,
                 vehiculos.get(i).getPlaca(),
                 vehiculos.get(i).getTransportista(),
                 totalTime,
