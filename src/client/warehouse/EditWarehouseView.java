@@ -40,6 +40,8 @@ public class EditWarehouseView extends BaseDialogView {
     SpotApplication spotApplication=InstanceFactory.Instance.getInstance("spotApplication", SpotApplication.class);
     Almacen a =null;
     Border regularBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
+    ArrayList<Rack> racks= new ArrayList<Rack>();
+    int condicionIni = 0;
     /**
      * Creates new form NewWarehouse
      */
@@ -63,6 +65,15 @@ public class EditWarehouseView extends BaseDialogView {
         this.setTitle("Editar Almacen");
         this.condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(EntityType.CONDITIONS_NAMES));
         this.a = a;
+        if (a.getEstado()==EntityState.Warehouses.INACTIVO.ordinal()){
+            descTxt.setEnabled(false);
+            capacityTxt.setEnabled(false);
+            condicionCombo.setEnabled(false);
+            addBtn.setEnabled(false);
+            activeBtn.setEnabled(false);
+            deleteBtn.setEnabled(false);
+        }
+        condicionIni=a.getCondicion().getId();
         fillFields();
         clearGrid();
         fillTable(a.getId());
@@ -70,11 +81,12 @@ public class EditWarehouseView extends BaseDialogView {
         Icons.setButton(deleteBtn, Icons.ICONOS.DELETE.ordinal());
         Icons.setButton(saveBtn, Icons.ICONOS.SAVE.ordinal());
         Icons.setButton(cancelBtn, Icons.ICONOS.CANCEL.ordinal());
+        Icons.setButton(activeBtn, Icons.ICONOS.ACTIVE.ordinal());
     }
     
     public void fillTable(int id) {
         DefaultTableModel model = (DefaultTableModel) rackTable.getModel();
-        ArrayList<Rack> racks = rackApplication.queryAllByWarehouse(id);
+        racks = rackApplication.queryAllByWarehouse(id);
 
         for (Rack r : racks) {
             String estado = "Desconocido";
@@ -121,6 +133,7 @@ public class EditWarehouseView extends BaseDialogView {
     private void clearBorders(){
         capacityTxt.setBorder(regularBorder);
         descTxt.setBorder(regularBorder);
+        condicionCombo.setBorder(regularBorder);
     }
     
     @SuppressWarnings("unchecked")
@@ -143,6 +156,8 @@ public class EditWarehouseView extends BaseDialogView {
         idTxt = new javax.swing.JTextField();
         deleteBtn = new javax.swing.JButton();
         addBtn = new javax.swing.JButton();
+        activeBtn = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Nuevo Almacen");
@@ -156,7 +171,6 @@ public class EditWarehouseView extends BaseDialogView {
         jLabel3.setText("Condicion:");
 
         condicionCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        condicionCombo.setEnabled(false);
 
         jLabel2.setText("Capacidad:");
 
@@ -199,6 +213,9 @@ public class EditWarehouseView extends BaseDialogView {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 rackTableMouseClicked(evt);
             }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                rackTableMousePressed(evt);
+            }
         });
         jScrollPane1.setViewportView(rackTable);
         if (rackTable.getColumnModel().getColumnCount() > 0) {
@@ -227,50 +244,62 @@ public class EditWarehouseView extends BaseDialogView {
             }
         });
 
+        activeBtn.setEnabled(false);
+        activeBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                activeBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel2)
-                                            .addComponent(jLabel1))
-                                        .addGap(6, 6, 6))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(jLabel6)
-                                        .addGap(2, 2, 2)))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(descTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(capacityTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jLabel4))
-                                    .addComponent(idTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(addBtn)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(deleteBtn)
-                                .addGap(12, 12, 12))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(126, 126, 126)
+                        .addGap(100, 100, 100)
                         .addComponent(saveBtn)
-                        .addGap(18, 18, 18)
-                        .addComponent(cancelBtn)))
+                        .addGap(41, 41, 41)
+                        .addComponent(cancelBtn))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel1))
+                                .addGap(6, 6, 6))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addGap(2, 2, 2)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(descTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(capacityTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel4))
+                            .addComponent(idTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel5)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(addBtn)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(activeBtn)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(deleteBtn))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(13, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -292,18 +321,28 @@ public class EditWarehouseView extends BaseDialogView {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(39, 39, 39)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
-                    .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cancelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(saveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 44, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(activeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(11, 11, 11)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cancelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(saveBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(181, 181, 181)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(174, Short.MAX_VALUE)))
         );
 
         pack();
@@ -342,34 +381,41 @@ public class EditWarehouseView extends BaseDialogView {
                 error_message += "La capacidad de un almacen debe ser mayor que 0 racks."+"\n";
                 capacityTxt.setBorder(errorBorder);
                 errorFlag = true;                
+            }else if (capA<warehouseApplication.getNumberRacks(a)){
+                error_message += "La capacidad debe ser mayor al numero de racks existentes."+"\n";
+                capacityTxt.setBorder(errorBorder);
+                errorFlag = true;                
             }
         }
         if (condicionCombo.getSelectedIndex()==0){
             error_message += Strings.ERROR_CONDICION_WAREHOUSE_REQUIRED+"\n";
             condicionCombo.setBorder(errorBorder);
             errorFlag = true;
+        }else{
+            if (warehouseApplication.isOcupy(a)){
+                if (condicionCombo.getSelectedIndex()!=condicionIni){
+                    error_message += "Este almacen tiene Pallets almacenados en otra condicion."+"\n";
+                    condicionCombo.setBorder(errorBorder);
+                    errorFlag = true;
+                }
+            }
         }
         if (!errorFlag){
         
-        Calendar cal = Calendar.getInstance();
         int capa = Integer.parseInt(this.capacityTxt.getText());
         if (capa!=0)
         {
             a.setCapacidad(capa);
         }
-        int area = Integer.parseInt(a.getArea().toString());
-        if (area!=0)
-        {
-            a.setArea(area);
-        }
+        
         //int uLibres = Integer.parseInt(this.racksTxt.getText());
         
-        a.setUbicLibres(capa);
         
-        a.setCondicion(conditionApplication.getConditionInstance(condicionCombo.getSelectedItem().toString()));
+        
         a.setDescripcion(descTxt.getText());
         warehouseApplication.update(a);
         JOptionPane.showMessageDialog(this, "Se actualizo la información del almacen correctamente.");
+        clearBorders();
         }else
         {
             JOptionPane.showMessageDialog(this, error_message,"Mensaje de actualizacion de almacen",JOptionPane.WARNING_MESSAGE);
@@ -435,18 +481,44 @@ public class EditWarehouseView extends BaseDialogView {
         String idString = rackTable.getModel().getValueAt(sr, 0).toString();
         Rack r = rackApplication.queryById(Integer.parseInt(idString));
         int verificacion = rackApplication.inactive(r);
-        if (verificacion ==1){
-            JOptionPane.showMessageDialog(this, "No se puede eliminar este Rack porque esta OCUPADO.","Mensaje de mantenimiento de Rack",JOptionPane.WARNING_MESSAGE);
+        if (verificacion >0){
+            JOptionPane.showMessageDialog(this, "No se puede eliminar este Rack porque esta OCUPADO.","Mensaje de mantenimiento de Almacen",JOptionPane.WARNING_MESSAGE);
         }
         clearGrid();
         fillTable(a.getId());
         deleteBtn.setEnabled(false);
+        activeBtn.setEnabled(false);
     }//GEN-LAST:event_deleteBtnActionPerformed
 
     private void rackTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rackTableMouseClicked
         // TODO add your handling code here:
-        deleteBtn.setEnabled(true);
+        
     }//GEN-LAST:event_rackTableMouseClicked
+
+    private void activeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activeBtnActionPerformed
+        // TODO add your handling code here:
+        if (racks.get(rackTable.getSelectedRow()).getEstado()==EntityState.Warehouses.ACTIVO.ordinal()){
+            JOptionPane.showMessageDialog(this, "Este Rack ya se encuentra ACTIVO.","Mensaje de mantenimiento de Almacen",JOptionPane.WARNING_MESSAGE);
+        }else{
+            rackApplication.active(racks.get(rackTable.getSelectedRow()));
+            clearGrid();
+            
+            fillTable(a.getId());
+            deleteBtn.setEnabled(false);
+            activeBtn.setEnabled(false);
+        }
+    }//GEN-LAST:event_activeBtnActionPerformed
+
+    private void rackTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rackTableMousePressed
+        // TODO add your handling code here:
+        if (a.getEstado()==EntityState.Warehouses.INACTIVO.ordinal()){
+            deleteBtn.setEnabled(false);
+            activeBtn.setEnabled(false);
+        }else {
+            deleteBtn.setEnabled(true);
+            activeBtn.setEnabled(true);
+        }
+    }//GEN-LAST:event_rackTableMousePressed
 
     /**
      * @param args the command line arguments
@@ -454,6 +526,7 @@ public class EditWarehouseView extends BaseDialogView {
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton activeBtn;
     private javax.swing.JButton addBtn;
     private javax.swing.JButton cancelBtn;
     private javax.swing.JTextField capacityTxt;
@@ -468,6 +541,7 @@ public class EditWarehouseView extends BaseDialogView {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable rackTable;
     private javax.swing.JButton saveBtn;
     // End of variables declaration//GEN-END:variables

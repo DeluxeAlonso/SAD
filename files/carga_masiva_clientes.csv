@@ -1,88 +1,72 @@
-30,,,,
-Market Guide,12345678901,2,,
--11.832386,-77.1444295,Local 1 de Market Guide,Descripcion,Av. 225 Santa Rosa
--11.8394138,-77.1314789,Local 2 de Market Guide,Descripcion,Av. Los cedros Santa Rosa
-Metro,12345678902,1,,
--11.8338706,-77.1157081,Local 1 de Metro,Descripcion,Cruce Playa hermosa con Copacabana Puente Piedra
-Plaza Vea,12345678903,1,,
--11.8746166,-77.0913113,Local 1 de Plaza Vea,Descripcion,Calle Pucalipa Puente Piedra
-Totus,12345678904,3,,
--11.8392807,-77.153477,Local 1 de Totus,Descripcion,Av. 150 Ventanilla
--11.8332692,-77.16494,Local 2 de Totus,Descripcion,Av. 190 Ventanilla
--11.8500743,-77.1546326,Local 3 de Totus,Descripcion,Av. Camino del inca izquierdo Ventanilla
-Santa Isabel,12345678905,2,,
--11.8502026,-77.1363733,Local 1 de Santa Isabel,Descripcion,Av. 200 Ventanilla
--11.8332713,-77.137918,Local 2 de Santa Isabel,Descripcion,Av. Los arquitectos Ventanilla
-Inkafarma,12345678906,1,,
--11.8273794,-77.134278,Local 1 de Inkafarma,Descripcion,Av. Mexico Ventanilla
-Mifarma,12345678907,4,,
--11.8299473,-77.1299877,Local 1 de Mifarma,Descripcion,Av. Bolivia Ventanilla
--11.8290201,-77.1227624,Local 2 de Mifarma,Descripcion,Calle 19 Ventanilla
--11.8328884,-77.1201308,Local 3 de Mifarma,Descripcion,Calle 12 Ventanilla
--11.8490312,-77.0840853,Local 4 de Mifarma,Descripcion,El Rancho de copacabana Puente Piedra
-Vivanda,12345678908,5,,
--11.8406354,-77.070795,Local 1 de Vivanda,Descripcion,San Pedro 5ta Etapa Puente Piedra
--11.8298164,-77.0720452,Local 2 de Vivanda,Descripcion,Av. Las lomas de Carabayllo
--11.8291519,-77.0475661,Local 3 de Vivanda,Descripcion,Av. Las lomas de Carabayllo
--11.858879,-77.0109339,Local 4 de Vivanda,Descripcion,Av. Universitaria Carabayllo
--11.8207401,-77.0467008,Local 5 de Vivanda,Descripcion,Av. Nuevo milenio Carabayllo
-Radioshack,12345678909,2,,
--12.0922395,-77.070573,Local 1 de Radioshark,Descripcion,Av. Sucre Magdalena del mar
--12.0785927,-77.0657406,Local 2 de Radioshark,Descripcion,Av. Sucre Pueblo Libre
-Ripley,12345678910,6,,
--12.0718526,-77.0719614,Local 1 de Ripley,Descripcion,Av. Simon Bolivar Pueblo Libre
--12.0599891,-77.0588253,Local 2 de Ripley,Descripcion,Av. Tingo Maria Cercado de Lima
--12.0508901,-77.0427199,Local 3 de Ripley,Descripcion,Av. Alfonso Ugarte Cercado de Lima
--12.0486238,-77.0010667,Local 4 de Ripley,Descripcion,Av. Jose Riva Aguero El Agustino
--12.0440633,-76.9590139,Local 5 de Ripley,Descripcion,Av. Colectora Industrial Santa Anita
--12.0390368,-76.9331283,Local 6 de Ripley,Descripcion,Carretera Central Santa Anita
-Bodega Paola,12345678911,1,,
--12.0693051,-76.9516628,Local 1 de Bodega Paola,Descripcion,Av. Javier Prado Este La Molina
-Bodega El rey de la papa,12345678912,1,,
--12.0797931,-76.9545606,Local 1 de Bodega El rey de la papa,Descripcion,Av. Alameda del corregidor La Molina
-Bodega El tio choclo,12345678913,1,,
--12.1371962,-76.9949771,Local 1 de Bodega El tio choclo,Descripcion,Av. Santiago de Surco
-Bodega El tata,12345678914,2,,
--12.1394019,-77.0175869,Local 1 de Bodega El tata,Descripcion,Av. Republica de Panama Barranco
--12.1301439,-77.0293081,Local 2 de Bodega El tata,Descripcion,Av. Jose Larco Miraflores
-Saga Falabella,12345678915,2,,
--12.1810654,-77.0108343,Local 1 de Saga Falabella,Descripcion,Av. Defensores del Morro Chorrillos
--12.1969921,-76.9999024,Local 2 de Saga Falabella,Descripcion,Av. Huaylas Chorrillos
-Tupia consultores,12345678916,1,,
--12.2061675,-77.0123964,Local 1 de Tupia consultores,Descripcion,Av. Alameda los Cedros Chorrillos
-Bombo clap,12345678917,1,,
--12.1942267,-76.9546529,Local 1 de Bombo clap,Descripcion,Av. Micaela Bastidas Villa El Salvador
-Bodega Soñaras con el panda,12345678918,1,,
--12.1868117,-76.92693,Local 1 de Bodega Soñaras con el panda,Descripcion,Av. 27 de Diciembre Villa Maria del Triunfo
-Bodega La trika,12345678919,1,,
--12.2281471,-76.9213081,Local 1 de Bodega La trika,Descripcion,Av. Separadora Industrial Villa El Salvador
-Tetrix,12345678920,4,,
--12.216538,-76.905731,Local 1 de Tetrix,Descripcion,Av. Atocongo Villa El Salvador
--12.1960842,-77.0254134,Local 2 de Tetrix,Descripcion,Av. Principal Chorrillos
--12.168279,-77.0280684,Local 3 de Tetrix,Descripcion,Bajada Huaylas Chorrillos
--12.145791,-77.0071107,Local 4 de Tetrix,Descripcion,Jr. Teniente Diego Ferre Surco
-Prisma,12345678921,3,,
--12.0389447,-76.9534584,Local 1 de Prisma,Descripcion,Av. Huarochiri Santa Anita
--12.0364675,-76.9953158,Local 2 de Prisma,Descripcion,Av. Ferrocarril El Agustino
--12.0435114,-77.112613,Local 3 de Prisma,Descripcion,Av. De la alameda Santa Rosa Callao
-Bodega Peru campeon,12345678922,3,,
--12.0275841,-77.0635674,Local 1 de Bodega Peru campeon,Descripcion,Av. Jose Granda Rimac
--12.0103575,-77.070454,Local 2 de Bodega Peru campeon,Descripcion,Av. Tomas Valle San Martin de Porres
--11.9935183,-77.0666403,Local 3 de Bodega Peru campeon,Descripcion,Av. Manuel Gonzales Prada San Martin de Porres
-Bar Reymond Manco,12345678923,2,,
--12.0113839,-77.1046398,Local 1 de Bar Reymond Manco,Descripcion,Av. Boca Negra Carmen de la Legua
--11.9959416,-77.1002025,Local 2 de Bar Reymond Manco,Descripcion,Av. Santa Rosa San Martin de Porres
-Bar Los Jotitas,12345678924,1,,
--12.0695599,-77.1031711,Local 1 de Bar Los Jotitas,Descripcion,Av. de los Precursores San Miguel
-Yield Bar,12345678925,1,,
--12.051051,-77.0345586,Local 1 de Yield Bar,Descripcion,Jiron Ocoña Lima
-Plaza San Miguel,12345678926,1,,
--12.0936085,-76.9948407,Local 1 de Plaza San Miguel,Descripcion,Av. San Borja Norte San Borja
-La Rambla,12345678927,1,,
--12.0711824,-77.0443513,Local 1 de La Rambla,Descripcion,Av. Talara Jesus Maria
-Wong,12345678928,1,,
--12.0652873,-77.0123981,Local 1 de Wong,Descripcion,Av. Aviacion La Victoria
-Plaza Lima Norte,12345678929,1,,
--12.005572,-77.059012,Local 1 de Plaza Lima Norte,Descripcion,Av. Tomas Valle Independencia
-Antigua Taberna Queirolo,12345678930,1,,
--12.0777079,-77.062953,Local 1 de Antigua Taberna Queirolo,Av. Gral Manuel Vivanco Pueblo Libre
+25,,,,,,
+Market Guide,12345678901,2,,,,
+-11.832386,-77.1444295,Local 1 de Market Guide,Descripcion,Av. 225 Santa Rosa,,
+-11.8394138,-77.1314789,Local 2 de Market Guide,Descripcion,Av. Los cedros Santa Rosa,,
+Metro,12345678902,1,,,,
+-11.8338706,-77.1157081,Local 1 de Metro,Descripcion,Cruce Playa hermosa con Copacabana Puente Piedra,,
+Plaza Vea,12345678903,1,,,,
+-11.8746166,-77.0913113,Local 1 de Plaza Vea,Descripcion,Calle Pucalipa Puente Piedra,,
+Inkafarma,12345678906,1,,,,
+-11.8273794,-77.134278,Local 1 de Inkafarma,Descripcion,Av. Mexico Ventanilla,,
+Mifarma,12345678907,4,,,,
+-11.8299473,-77.1299877,Local 1 de Mifarma,Descripcion,Av. Bolivia Ventanilla,,
+-11.8290201,-77.1227624,Local 2 de Mifarma,Descripcion,Calle 19 Ventanilla,,
+-11.8328884,-77.1201308,Local 3 de Mifarma,Descripcion,Calle 12 Ventanilla,,
+-11.8490312,-77.0840853,Local 4 de Mifarma,Descripcion,El Rancho de copacabana Puente Piedra,,
+Vivanda,12345678908,5,,,,
+-11.8406354,-77.070795,Local 1 de Vivanda,Descripcion,San Pedro 5ta Etapa Puente Piedra,,
+-11.8298164,-77.0720452,Local 2 de Vivanda,Descripcion,Av. Las lomas de Carabayllo,,
+-11.8291519,-77.0475661,Local 3 de Vivanda,Descripcion,Av. Las lomas de Carabayllo,,
+-11.858879,-77.0109339,Local 4 de Vivanda,Descripcion,Av. Universitaria Carabayllo,,
+-11.8207401,-77.0467008,Local 5 de Vivanda,Descripcion,Av. Nuevo milenio Carabayllo,,
+Radioshack,12345678909,2,,,,
+-12.0922395,-77.070573,Local 1 de Radioshark,Descripcion,Av. Sucre Magdalena del mar,,
+-12.0785927,-77.0657406,Local 2 de Radioshark,Descripcion,Av. Sucre Pueblo Libre,,
+Ripley,12345678910,6,,,,
+-12.0718526,-77.0719614,Local 1 de Ripley,Descripcion,Av. Simon Bolivar Pueblo Libre,,
+-12.0599891,-77.0588253,Local 2 de Ripley,Descripcion,Av. Tingo Maria Cercado de Lima,,
+-12.0508901,-77.0427199,Local 3 de Ripley,Descripcion,Av. Alfonso Ugarte Cercado de Lima,,
+-12.0486238,-77.0010667,Local 4 de Ripley,Descripcion,Av. Jose Riva Aguero El Agustino,,
+-12.0440633,-76.9590139,Local 5 de Ripley,Descripcion,Av. Colectora Industrial Santa Anita,,
+-12.0390368,-76.9331283,Local 6 de Ripley,Descripcion,Carretera Central Santa Anita,,
+Bodega Paola,12345678911,1,,,,
+-12.0693051,-76.9516628,Local 1 de Bodega Paola,Descripcion,Av. Javier Prado Este La Molina,,
+Bodega El rey de la papa,12345678912,1,,,,
+-12.0797931,-76.9545606,Local 1 de Bodega El rey de la papa,Descripcion,Av. Alameda del corregidor La Molina,,
+Bodega El tio choclo,12345678913,1,,,,
+-12.1371962,-76.9949771,Local 1 de Bodega El tio choclo,Descripcion,Av. Santiago de Surco,,
+Bodega El tata,12345678914,2,,,,
+-12.1394019,-77.0175869,Local 1 de Bodega El tata,Descripcion,Av. Republica de Panama Barranco,,
+-12.1301439,-77.0293081,Local 2 de Bodega El tata,Descripcion,Av. Jose Larco Miraflores,,
+Saga Falabella,12345678915,2,,,,
+-12.1810654,-77.0108343,Local 1 de Saga Falabella,Descripcion,Av. Defensores del Morro Chorrillos,,
+-12.1969921,-76.9999024,Local 2 de Saga Falabella,Descripcion,Av. Huaylas Chorrillos,,
+Tupia consultores,12345678916,1,,,,
+-12.2061675,-77.0123964,Local 1 de Tupia consultores,Descripcion,Av. Alameda los Cedros Chorrillos,,
+Bombo clap,12345678917,1,,,,
+-12.1942267,-76.9546529,Local 1 de Bombo clap,Descripcion,Av. Micaela Bastidas Villa El Salvador,,
+Bodega Soñaras con el panda,12345678918,1,,,,
+-12.1868117,-76.92693,Local 1 de Bodega Soñaras con el panda,Descripcion,Av. 27 de Diciembre Villa Maria del Triunfo,,
+Prisma,12345678921,3,,,,
+-12.0389447,-76.9534584,Local 1 de Prisma,Descripcion,Av. Huarochiri Santa Anita,,
+-12.0364675,-76.9953158,Local 2 de Prisma,Descripcion,Av. Ferrocarril El Agustino,,
+-12.0435114,-77.112613,Local 3 de Prisma,Descripcion,Av. De la alameda Santa Rosa Callao,,
+Bodega Peru campeon,12345678922,3,,,,
+-12.0275841,-77.0635674,Local 1 de Bodega Peru campeon,Descripcion,Av. Jose Granda Rimac,,
+-12.0103575,-77.070454,Local 2 de Bodega Peru campeon,Descripcion,Av. Tomas Valle San Martin de Porres,,
+-11.9935183,-77.0666403,Local 3 de Bodega Peru campeon,Descripcion,Av. Manuel Gonzales Prada San Martin de Porres,,
+Bar Reymond Manco,12345678923,2,,,,
+-12.0113839,-77.1046398,Local 1 de Bar Reymond Manco,Descripcion,Av. Boca Negra Carmen de la Legua,,
+-11.9959416,-77.1002025,Local 2 de Bar Reymond Manco,Descripcion,Av. Santa Rosa San Martin de Porres,,
+Bar Los Jotitas,12345678924,1,,,,
+-12.0695599,-77.1031711,Local 1 de Bar Los Jotitas,Descripcion,Av. de los Precursores San Miguel,,
+Yield Bar,12345678925,1,,,,
+-12.051051,-77.0345586,Local 1 de Yield Bar,Descripcion,Jiron Ocoña Lima,,
+Plaza San Miguel,12345678926,1,,,,
+-12.0936085,-76.9948407,Local 1 de Plaza San Miguel,Descripcion,Av. San Borja Norte San Borja,,
+La Rambla,12345678927,1,,,,
+-12.0711824,-77.0443513,Local 1 de La Rambla,Descripcion,Av. Talara Jesus Maria,,
+Plaza Lima Norte,12345678929,1,,,,
+-12.005572,-77.059012,Local 1 de Plaza Lima Norte,Descripcion,Av. Tomas Valle Independencia,,
+Antigua Taberna Queirolo,12345678930,1,,,,
+-12.0777079,-77.062953,Local 1 de Antigua Taberna Queirolo,Descripcion,Av. Gral Manuel Vivanco Pueblo Libre,,

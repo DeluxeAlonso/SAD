@@ -21,4 +21,6 @@ public interface IWarehouseRepository extends IRepository<Almacen>{
     boolean isFullRack(Almacen a);
     int inactive(Almacen a);
     int active(Almacen a);
+    long getNumberRacks(Almacen a);
+    boolean isOcupy(Almacen a);
 }

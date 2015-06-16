@@ -54,6 +54,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CancellationException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -105,6 +106,8 @@ public class DeliveryView extends BaseView {
     File file = null;
     Boolean firstRun = true;
     Informable informable;
+    boolean running = false;
+    public static DeliveryView deliveryView;
     
     /**
      * Creates new form DispatchView
@@ -112,6 +115,7 @@ public class DeliveryView extends BaseView {
     public DeliveryView() {        
         initComponents();
         super.initialize();
+        deliveryView = this;
         Icons.setButton(btnProcess, Icons.ICONOS.APPLY.ordinal());
         Icons.setButton(btnExecuteAlgorithm, Icons.ICONOS.PLAY.ordinal());
         Icons.setButton(btnViewSolution, Icons.ICONOS.DELIVERY.ordinal());
@@ -190,7 +194,7 @@ public class DeliveryView extends BaseView {
         Node[] route = solutions.get(cmbIdx).getNodes()[idx];
         for (int j = 0; j < route.length; j++) {
             model.addRow(new Object[]{
-                j,
+                j+1,
                 route[j].getPartialOrder().getPedido().getCliente().getNombre(),
                 route[j].getPartialOrder().getPedido().getLocal().getDescripcion(),
                 route[j].getPartialOrder().getPedido().getLocal().getDireccion(),
@@ -227,7 +231,7 @@ public class DeliveryView extends BaseView {
             int minutes = (seconds - hours * 3600) / 60;
             String totalTime = "" + hours + "h " + minutes + "m";
             model.addRow(new Object[]{
-                i,
+                i+1,
                 vehiculos.get(i).getPlaca(),
                 vehiculos.get(i).getTransportista(),
                 totalTime,
@@ -421,32 +425,33 @@ public class DeliveryView extends BaseView {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(cmbSolutions, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btnProcess)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(btnExecuteAlgorithm))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel1)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(spnHours, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jLabel2)
+                                    .addGap(6, 6, 6)
+                                    .addComponent(spnMinutes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jLabel3)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btnViewSolution))))
+                        .addComponent(jScrollPane1))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(cmbSolutions, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnProcess)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnExecuteAlgorithm))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(spnHours, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(6, 6, 6)
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(spnMinutes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnViewSolution))))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 504, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(64, 64, 64)
+                        .addGap(36, 36, 36)
                         .addComponent(jProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(10, 10, 10))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -508,7 +513,7 @@ public class DeliveryView extends BaseView {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -666,16 +671,16 @@ public class DeliveryView extends BaseView {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnViewLocals)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(allCheckbox)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnViewLocals)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(allCheckbox))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 15, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -696,14 +701,14 @@ public class DeliveryView extends BaseView {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(55, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -731,29 +736,33 @@ public class DeliveryView extends BaseView {
         if(solutions.get(cmbIdx)!=null && algorithmExecution!=null){
             AlgorithmReturnValues returnValues = algorithmExecution.processOrders(solutions.get(cmbIdx));
             solutionDeliveries = returnValues.getDespachos();
+            startLoader();
             assignRemissionGuides(returnValues.getDespachos());
             if(createPartialOrders(returnValues.getAcceptedOrders(), returnValues.getRejectedOrders())){
-                verifyOrders();
-                if(OrderView.orderView != null)
-                    OrderView.orderView.verifyOrders();
-                allCheckbox.setSelected(false);
-                warehouseBtn.setEnabled(true);
-                deliveryBtn.setEnabled(true);
-                remissionBtn.setEnabled(true);
-                 ArrayList<Almacen> warehouse = warehouseApplication.queryAll();
-                for(int i=0;i<warehouse.size();i++){
-                    ArrayList<Pallet> pallets = palletApplication.queryByWarehouseParameters(warehouse.get(i), solutionDeliveries);
-                    map.put(warehouse.get(i).getId(), pallets);
-                    System.out.println("SIZE DEL GET " + map.get(warehouse.get(i).getId()).size());
-                }   
-                insertKardex(returnValues.getDespachos());
-                JOptionPane.showMessageDialog(this, Strings.DELIVERY_SUCCESS,
-                    Strings.DELIVERY_TITLE,JOptionPane.INFORMATION_MESSAGE);
-                btnProcess.setEnabled(false);
+                    verifyOrders();
+                    if(OrderView.orderView != null)
+                        OrderView.orderView.verifyOrders();
+                    allCheckbox.setSelected(false);
+                    warehouseBtn.setEnabled(true);
+                    deliveryBtn.setEnabled(true);
+                    remissionBtn.setEnabled(true);
+                     ArrayList<Almacen> warehouse = warehouseApplication.queryAll();
+                    for(int i=0;i<warehouse.size();i++){
+                        ArrayList<Pallet> pallets = palletApplication.queryByWarehouseParameters(warehouse.get(i), solutionDeliveries);
+                        map.put(warehouse.get(i).getId(), pallets);
+                        System.out.println("SIZE DEL GET " + map.get(warehouse.get(i).getId()).size());
+                    }   
+                    insertKardex(returnValues.getDespachos());
+                    stopLoader();
+                    JOptionPane.showMessageDialog(this, Strings.DELIVERY_SUCCESS,
+                        Strings.DELIVERY_TITLE,JOptionPane.INFORMATION_MESSAGE);
+                    btnProcess.setEnabled(false);
             }
-            else
+            else{
+                stopLoader();
                 JOptionPane.showMessageDialog(this, Strings.DELIVERY_ERROR,
                     Strings.DELIVERY_TITLE,JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_btnProcessActionPerformed
 
@@ -766,67 +775,81 @@ public class DeliveryView extends BaseView {
     }//GEN-LAST:event_btnViewSolutionActionPerformed
 
     private void btnExecuteAlgorithmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExecuteAlgorithmActionPerformed
-        
-        try{
-            double hours = 3, minutes = 0;
-            hours = (Integer)spnHours.getValue();
-            minutes = (Integer)spnMinutes.getValue();
-            /*if(hours<0 || hours>24 || minutes<0 || minutes>1000){
-                JOptionPane.showMessageDialog(DeliveryView.this, Strings.PARAMETERS_OUT_OF_BOUNDS,
-                                    Strings.PARAMETERS_OUT_OF_BOUNDS_TITLE, JOptionPane.INFORMATION_MESSAGE);
-                return;
-            }*/
-            if(hours==0 && minutes==0){
-                JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_ZERO_TIME,
-                                        Strings.ALGORITHM_ZERO_TIME_TITLE, JOptionPane.INFORMATION_MESSAGE); 
-                return;
-            }
-            ArrayList<PedidoParcial> selectedPartialOrders = getCheckedOrders();
-            if(!selectedPartialOrders.isEmpty()){
-                txtResult.setText("");
-                algorithmExecution = new AlgorithmExecution(this, hours + minutes/60, 
-                        selectedPartialOrders, informable){
-                    @Override
-                    protected void done() {
-                        try {
-                            final Solution solution = get();
-                            if (solution.isEmpty()) {
-                                JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_NO_ROUTES_FOUND,
-                                        Strings.ALGORITHM_NO_ROUTES_FOUND_TITLE, JOptionPane.INFORMATION_MESSAGE);
-                                return;
-                            }
-                            solutions.add(solution);
-                            refreshCombo();
-                            JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_SUCCESS,
-                                    Strings.ALGORITHM_SUCCESS_TITLE, JOptionPane.INFORMATION_MESSAGE);
-                            btnProcess.setEnabled(true);
-
-
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                            JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_ERROR,
-                                    Strings.ALGORITHM_ERROR_TITLE, JOptionPane.INFORMATION_MESSAGE);
-                        }
-                    }
-                };        
-                PropertyChangeListener listener
-                        = new PropertyChangeListener() {
-                            public void propertyChange(PropertyChangeEvent event) {
-                                if ("progress".equals(event.getPropertyName())) {
-                                    jProgressBar.setValue((Integer) event.getNewValue());
+        if(!running){            
+            try{
+                double hours = 3, minutes = 0;
+                hours = (Integer)spnHours.getValue();
+                minutes = (Integer)spnMinutes.getValue();
+                /*if(hours<0 || hours>24 || minutes<0 || minutes>1000){
+                    JOptionPane.showMessageDialog(DeliveryView.this, Strings.PARAMETERS_OUT_OF_BOUNDS,
+                                        Strings.PARAMETERS_OUT_OF_BOUNDS_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }*/
+                if(hours==0 && minutes==0){
+                    JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_ZERO_TIME,
+                                            Strings.ALGORITHM_ZERO_TIME_TITLE, JOptionPane.INFORMATION_MESSAGE); 
+                    return;
+                }
+                ArrayList<PedidoParcial> selectedPartialOrders = getCheckedOrders();
+                if(!selectedPartialOrders.isEmpty()){
+                    txtResult.setText("");
+                    algorithmExecution = new AlgorithmExecution(this, hours + minutes/60, 
+                            selectedPartialOrders, informable){
+                        @Override
+                        protected void done() {
+                            try {
+                                final Solution solution = get();
+                                if (solution.isEmpty()) {
+                                    JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_NO_ROUTES_FOUND,
+                                            Strings.ALGORITHM_NO_ROUTES_FOUND_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                                    return;
                                 }
-                            }
-                        };
-                algorithmExecution.addPropertyChangeListener(listener);
-                algorithmExecution.execute();    
-            }else
-            JOptionPane.showMessageDialog(this, "Debe seleccionar al menos un pedido.",
-                    "Despacho",JOptionPane.WARNING_MESSAGE);
-        }catch(Exception ex){
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, Strings.BAD_PARAMETERS,
-                    Strings.BAD_PARAMETERS_TITLE,JOptionPane.INFORMATION_MESSAGE);
-        }              
+                                solutions.add(solution);
+                                refreshCombo();
+                                JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_SUCCESS,
+                                        Strings.ALGORITHM_SUCCESS_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                                btnProcess.setEnabled(true);
+                                running = false;
+                                btnExecuteAlgorithm.setText("Generar Rutas de Despacho");
+
+                            } catch (CancellationException ex){
+                                JOptionPane.showMessageDialog(DeliveryView.this, "Se ha cancelado la ejecución.",
+                                        Strings.ALGORITHM_SUCCESS_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                                algorithmExecution.cancel(true);
+                                jProgressBar.setValue(0);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                                JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_ERROR,
+                                        Strings.ALGORITHM_ERROR_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                            } 
+                        }
+                    };        
+                    PropertyChangeListener listener
+                            = new PropertyChangeListener() {
+                                public void propertyChange(PropertyChangeEvent event) {
+                                    if ("progress".equals(event.getPropertyName())) {
+                                        jProgressBar.setValue((Integer) event.getNewValue());
+                                    }
+                                }
+                            };
+                    algorithmExecution.addPropertyChangeListener(listener);
+                    algorithmExecution.execute(); 
+                    running = true;
+                    btnExecuteAlgorithm.setText("Cancelar");
+                }else
+                JOptionPane.showMessageDialog(this, "Debe seleccionar al menos un pedido.",
+                        "Despacho",JOptionPane.WARNING_MESSAGE);
+            }catch(Exception ex){
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, Strings.BAD_PARAMETERS,
+                        Strings.BAD_PARAMETERS_TITLE,JOptionPane.INFORMATION_MESSAGE);
+            }   
+        }
+        else{
+            algorithmExecution.cancel(true);
+            running = false;
+            btnExecuteAlgorithm.setText("Generar Rutas de Despacho");
+        }
     }//GEN-LAST:event_btnExecuteAlgorithmActionPerformed
 
     private void btnDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisplayActionPerformed
@@ -878,7 +901,8 @@ public class DeliveryView extends BaseView {
                     ImageIO.write(input, "PNG", baos);
 
                     writableSheet.addImage(new WritableImage(1,1,0.4,1,baos.toByteArray()));
-
+                    writableSheet.getSettings().setShowGridLines(false);
+                    writableSheet.getSettings().setPrintGridLines(false);
                     writableSheet.setColumnView(1, 10);
                     writableSheet.setColumnView(2, 50);
                     writableSheet.setColumnView(3, 35);
@@ -922,7 +946,7 @@ public class DeliveryView extends BaseView {
             
             WritableCellFormat tittleFormat = new WritableCellFormat(tittleFont);
              tittleFormat.setWrap(false);
-             tittleFormat.setAlignment(jxl.format.Alignment.CENTRE);
+             tittleFormat.setAlignment(jxl.format.Alignment.LEFT);
              tittleFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
              
              
@@ -1110,7 +1134,8 @@ public class DeliveryView extends BaseView {
                     ImageIO.write(input, "PNG", baos);
 
                     writableSheet.addImage(new WritableImage(1,1,0.4,1,baos.toByteArray()));
-
+                    writableSheet.getSettings().setShowGridLines(false);
+                    writableSheet.getSettings().setPrintGridLines(false);
                     writableSheet.setColumnView(1, 10);
                     writableSheet.setColumnView(2, 20);
                     writableSheet.setColumnView(3, 20);
@@ -1174,9 +1199,10 @@ public class DeliveryView extends BaseView {
                     ImageIO.write(input, "PNG", baos);
 
                     writableSheet.addImage(new WritableImage(1,1,0.4,1,baos.toByteArray()));
-
+                    writableSheet.getSettings().setShowGridLines(false);
+                    writableSheet.getSettings().setPrintGridLines(false);
                     writableSheet.setColumnView(1, 10);
-                    writableSheet.setColumnView(2, 35);
+                    writableSheet.setColumnView(2, 31);
                     writableSheet.setColumnView(3, 35);
                     writableSheet.setColumnView(4, 10);
                     writableSheet.setColumnView(5, 10);
@@ -1538,7 +1564,7 @@ public class DeliveryView extends BaseView {
             
             WritableCellFormat tittleFormat = new WritableCellFormat(tittleFont);
              tittleFormat.setWrap(false);
-             tittleFormat.setAlignment(jxl.format.Alignment.CENTRE);
+             tittleFormat.setAlignment(jxl.format.Alignment.LEFT);
              tittleFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
              
              
