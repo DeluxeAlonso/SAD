@@ -19,7 +19,7 @@ insert into saddb.accion values (17,"Stock",4);
 insert into saddb.accion values (18,"Despacho",4);
 insert into saddb.accion values (19,"Disponibilidad de almacén",4);
 insert into saddb.accion values (20,"Caducidad de productos",4);
-insert into saddb.accion values (21,"Reporte de internamientos",4);
+insert into saddb.accion values (21,"Internamientos",4);
 insert into saddb.accion values (22,"Usuarios y Perfiles",5);
 insert into saddb.accion values (23,"Log",5);
 insert into saddb.accion values (24,"Clientes",6);
@@ -67,8 +67,9 @@ insert into saddb.perfil_x_accion value(2,18);
 insert into saddb.perfil_x_accion value(2,19);
 insert into saddb.perfil_x_accion value(2,20);
 insert into saddb.perfil_x_accion value(2,21);
-insert into saddb.perfil_x_accion value(2,23);
+insert into saddb.perfil_x_accion value(2,22);
 insert into saddb.perfil_x_accion value(2,24);
+insert into saddb.perfil_x_accion value(2,25);
 
 -- supervisor
 

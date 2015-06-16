@@ -71,7 +71,7 @@ public class AlgorithmExecution extends SwingWorker<Solution, String>{
         this.view = view;
     }
     
-    public Solution start(double maxTravelTime, ArrayList<PedidoParcial>partialOrders){        
+    /*public Solution start(double maxTravelTime, ArrayList<PedidoParcial>partialOrders){        
         
         long ini = System.currentTimeMillis();
         
@@ -145,10 +145,10 @@ public class AlgorithmExecution extends SwingWorker<Solution, String>{
                     algorithm.getTournamentSelectionKValue(), population, 
                     Selection.Options.WORST);
             
-            /*bestSolution = population.getBestSolution();
+            bestSolution = population.getBestSolution();
             System.out.println("Generación: " + i + " child: " + child.getCost() + 
                     " best: " + bestSolution.getCost() + " worst " + population.getSolutions()[replacedSolution].getCost());
-            */
+            
             population.getSolutions()[replacedSolution] = child;
         }
         long end = System.currentTimeMillis();
@@ -174,7 +174,7 @@ public class AlgorithmExecution extends SwingWorker<Solution, String>{
         
         return bestSolution;  
     }
-    
+    */
     public AlgorithmReturnValues processOrders(Solution solution){
         ArrayList<UnidadTransporte> vehicles = problem.getVehicles();               
         
@@ -496,6 +496,9 @@ public class AlgorithmExecution extends SwingWorker<Solution, String>{
             solutions[i].setCost(ObjectiveFunction.getSolutionCost(solutions[i], 
                     algorithm, problem, problem.getProductsStock()));  
             if(n1%100==0) setProgress((i+1) * 50 / n1);
+            if (isCancelled()) {                        
+                return null;
+            }
         }        
         population.setSolutions(solutions);
         
@@ -554,7 +557,9 @@ public class AlgorithmExecution extends SwingWorker<Solution, String>{
             population.getSolutions()[replacedSolution] = child;
             
             if(n%100==0) setProgress(50 + (i+1) * 50 / n);
-            
+            if (isCancelled()) {                        
+                return null;
+            }
         }
         long end = System.currentTimeMillis();
         System.out.println("Grasp algorithm time: " + popTime + "ms");
