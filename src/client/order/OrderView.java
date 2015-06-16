@@ -808,9 +808,9 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
             }
         });
 
-        jLabel14.setText("Devolucion:");
+        jLabel14.setText("Devolución:");
 
-        reasonCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Seleccionar Razon--", "Productos Vencidos", "Disconformidad", "Por Rotura" }));
+        reasonCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Seleccionar Razón--", "Productos Vencidos", "Disconformidad", "Por Rotura" }));
         reasonCombo.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

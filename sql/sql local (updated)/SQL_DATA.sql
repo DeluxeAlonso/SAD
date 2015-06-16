@@ -1,4 +1,4 @@
--- acciones
+﻿-- acciones
 insert into saddb.accion values (1,"Movimientos",null);
 insert into saddb.accion values (2,"Operaciones",null);
 insert into saddb.accion values (3,"Mantenimientos",null);
@@ -16,7 +16,7 @@ insert into saddb.accion values (14,"Pallet",3);
 insert into saddb.accion values (15,"Unidad de transporte",3);
 insert into saddb.accion values (16,"Kardex",4);
 insert into saddb.accion values (17,"Stock",4);
-insert into saddb.accion values (18,"Guías de remisión",4);
+insert into saddb.accion values (18,"Despacho",4);
 insert into saddb.accion values (19,"Disponibilidad de almacén",4);
 insert into saddb.accion values (20,"Caducidad de productos",4);
 insert into saddb.accion values (21,"Usuarios y Perfiles",5);

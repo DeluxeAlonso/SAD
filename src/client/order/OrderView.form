@@ -632,14 +632,14 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel14">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Devolucion:"/>
+        <Property name="text" type="java.lang.String" value="Devoluci&#xf3;n:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JComboBox" name="reasonCombo">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="4">
-            <StringItem index="0" value="--Seleccionar Razon--"/>
+            <StringItem index="0" value="--Seleccionar Raz&#xf3;n--"/>
             <StringItem index="1" value="Productos Vencidos"/>
             <StringItem index="2" value="Disconformidad"/>
             <StringItem index="3" value="Por Rotura"/>

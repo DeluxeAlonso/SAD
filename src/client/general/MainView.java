@@ -344,7 +344,7 @@ public class MainView extends javax.swing.JFrame {
         });
         menuReport.add(jMenuItem13);
 
-        jMenuItem14.setText("Guías De Remisión");
+        jMenuItem14.setText("Despacho");
         jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem14ActionPerformed(evt);
