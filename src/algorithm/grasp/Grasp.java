@@ -191,7 +191,7 @@ public class Grasp {
             arrRoutes.add(arrRoutes2);
         }
 
-        int idx = 0, noInsertion = 0;
+       int idx = 0, noInsertion = 0, nonFullRoutes = routesNo;
 
         while (true) {
             noInsertion++;
@@ -241,14 +241,52 @@ public class Grasp {
                      currentTime + " and to return, we need " + returnCost + " so we need " + 
                      (currentTime + returnCost));*/
                     node[idx] = nextNode;
+                } else{
+                    if(nonFullRoutes==1) break;
+                    Node auxNode = node[idx];
+                    double auxCurrentTime = currentTime[idx];
+                    boolean auxAlreadyInit = alreadyInit[idx];
+                    int auxCurrentCapacity = currentCapacity[idx];
+                    ArrayList<Node> auxArrRoutes = arrRoutes.get(idx);
+                    nonFullRoutes--;
+                    node[idx] = node[nonFullRoutes];
+                    currentTime[idx] = currentTime[nonFullRoutes];
+                    alreadyInit[idx] = alreadyInit[nonFullRoutes];
+                    currentCapacity[idx] = currentCapacity[nonFullRoutes];
+                    arrRoutes.set(idx, arrRoutes.get(nonFullRoutes));
+                    node[nonFullRoutes] = auxNode;
+                    currentTime[nonFullRoutes] = auxCurrentTime;
+                    alreadyInit[nonFullRoutes] = auxAlreadyInit;
+                    currentCapacity[nonFullRoutes] = auxCurrentCapacity;
+                    arrRoutes.set(nonFullRoutes, auxArrRoutes);
                 }
+            } else {
+                if (nonFullRoutes == 1) {
+                    break;
+                }
+                Node auxNode = node[idx];
+                double auxCurrentTime = currentTime[idx];
+                boolean auxAlreadyInit = alreadyInit[idx];
+                int auxCurrentCapacity = currentCapacity[idx];
+                ArrayList<Node> auxArrRoutes = arrRoutes.get(idx);
+                nonFullRoutes--;
+                node[idx] = node[nonFullRoutes];
+                currentTime[idx] = currentTime[nonFullRoutes];
+                alreadyInit[idx] = alreadyInit[nonFullRoutes];
+                currentCapacity[idx] = currentCapacity[nonFullRoutes];
+                arrRoutes.set(idx, arrRoutes.get(nonFullRoutes));
+                node[nonFullRoutes] = auxNode;
+                currentTime[nonFullRoutes] = auxCurrentTime;
+                alreadyInit[nonFullRoutes] = auxAlreadyInit;
+                currentCapacity[nonFullRoutes] = auxCurrentCapacity;
+                arrRoutes.set(nonFullRoutes, auxArrRoutes);
             }
-
-            if (noInsertion == routesNo) {
-                break;
-            }
-            idx = (idx + Randomizer.randomInt(routesNo)) % routesNo;
+            //if(noInsertion==noRoutes)break;
+            idx = (idx + Randomizer.randomInt(nonFullRoutes)) % nonFullRoutes;            
         }
+        
+        
+        
 
         Node[][] routes = new Node[routesNo][];
 
