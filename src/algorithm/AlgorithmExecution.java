@@ -496,6 +496,9 @@ public class AlgorithmExecution extends SwingWorker<Solution, String>{
             solutions[i].setCost(ObjectiveFunction.getSolutionCost(solutions[i], 
                     algorithm, problem, problem.getProductsStock()));  
             if(n1%100==0) setProgress((i+1) * 50 / n1);
+            if (isCancelled()) {                        
+                return null;
+            }
         }        
         population.setSolutions(solutions);
         
@@ -554,7 +557,9 @@ public class AlgorithmExecution extends SwingWorker<Solution, String>{
             population.getSolutions()[replacedSolution] = child;
             
             if(n%100==0) setProgress(50 + (i+1) * 50 / n);
-            
+            if (isCancelled()) {                        
+                return null;
+            }
         }
         long end = System.currentTimeMillis();
         System.out.println("Grasp algorithm time: " + popTime + "ms");

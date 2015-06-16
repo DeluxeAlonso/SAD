@@ -54,6 +54,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CancellationException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -105,6 +106,7 @@ public class DeliveryView extends BaseView {
     File file = null;
     Boolean firstRun = true;
     Informable informable;
+    boolean running = false;
     
     /**
      * Creates new form DispatchView
@@ -421,32 +423,33 @@ public class DeliveryView extends BaseView {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(cmbSolutions, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btnProcess)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(btnExecuteAlgorithm))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel1)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(spnHours, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jLabel2)
+                                    .addGap(6, 6, 6)
+                                    .addComponent(spnMinutes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jLabel3)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btnViewSolution))))
+                        .addComponent(jScrollPane1))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(cmbSolutions, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnProcess)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnExecuteAlgorithm))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(spnHours, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(6, 6, 6)
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(spnMinutes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnViewSolution))))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 504, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(64, 64, 64)
+                        .addGap(36, 36, 36)
                         .addComponent(jProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(10, 10, 10))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -508,7 +511,7 @@ public class DeliveryView extends BaseView {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -666,16 +669,16 @@ public class DeliveryView extends BaseView {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnViewLocals)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(allCheckbox)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnViewLocals)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(allCheckbox))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 15, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -696,14 +699,14 @@ public class DeliveryView extends BaseView {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(55, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -766,67 +769,81 @@ public class DeliveryView extends BaseView {
     }//GEN-LAST:event_btnViewSolutionActionPerformed
 
     private void btnExecuteAlgorithmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExecuteAlgorithmActionPerformed
-        
-        try{
-            double hours = 3, minutes = 0;
-            hours = (Integer)spnHours.getValue();
-            minutes = (Integer)spnMinutes.getValue();
-            /*if(hours<0 || hours>24 || minutes<0 || minutes>1000){
-                JOptionPane.showMessageDialog(DeliveryView.this, Strings.PARAMETERS_OUT_OF_BOUNDS,
-                                    Strings.PARAMETERS_OUT_OF_BOUNDS_TITLE, JOptionPane.INFORMATION_MESSAGE);
-                return;
-            }*/
-            if(hours==0 && minutes==0){
-                JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_ZERO_TIME,
-                                        Strings.ALGORITHM_ZERO_TIME_TITLE, JOptionPane.INFORMATION_MESSAGE); 
-                return;
-            }
-            ArrayList<PedidoParcial> selectedPartialOrders = getCheckedOrders();
-            if(!selectedPartialOrders.isEmpty()){
-                txtResult.setText("");
-                algorithmExecution = new AlgorithmExecution(this, hours + minutes/60, 
-                        selectedPartialOrders, informable){
-                    @Override
-                    protected void done() {
-                        try {
-                            final Solution solution = get();
-                            if (solution.isEmpty()) {
-                                JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_NO_ROUTES_FOUND,
-                                        Strings.ALGORITHM_NO_ROUTES_FOUND_TITLE, JOptionPane.INFORMATION_MESSAGE);
-                                return;
-                            }
-                            solutions.add(solution);
-                            refreshCombo();
-                            JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_SUCCESS,
-                                    Strings.ALGORITHM_SUCCESS_TITLE, JOptionPane.INFORMATION_MESSAGE);
-                            btnProcess.setEnabled(true);
-
-
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                            JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_ERROR,
-                                    Strings.ALGORITHM_ERROR_TITLE, JOptionPane.INFORMATION_MESSAGE);
-                        }
-                    }
-                };        
-                PropertyChangeListener listener
-                        = new PropertyChangeListener() {
-                            public void propertyChange(PropertyChangeEvent event) {
-                                if ("progress".equals(event.getPropertyName())) {
-                                    jProgressBar.setValue((Integer) event.getNewValue());
+        if(!running){            
+            try{
+                double hours = 3, minutes = 0;
+                hours = (Integer)spnHours.getValue();
+                minutes = (Integer)spnMinutes.getValue();
+                /*if(hours<0 || hours>24 || minutes<0 || minutes>1000){
+                    JOptionPane.showMessageDialog(DeliveryView.this, Strings.PARAMETERS_OUT_OF_BOUNDS,
+                                        Strings.PARAMETERS_OUT_OF_BOUNDS_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }*/
+                if(hours==0 && minutes==0){
+                    JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_ZERO_TIME,
+                                            Strings.ALGORITHM_ZERO_TIME_TITLE, JOptionPane.INFORMATION_MESSAGE); 
+                    return;
+                }
+                ArrayList<PedidoParcial> selectedPartialOrders = getCheckedOrders();
+                if(!selectedPartialOrders.isEmpty()){
+                    txtResult.setText("");
+                    algorithmExecution = new AlgorithmExecution(this, hours + minutes/60, 
+                            selectedPartialOrders, informable){
+                        @Override
+                        protected void done() {
+                            try {
+                                final Solution solution = get();
+                                if (solution.isEmpty()) {
+                                    JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_NO_ROUTES_FOUND,
+                                            Strings.ALGORITHM_NO_ROUTES_FOUND_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                                    return;
                                 }
-                            }
-                        };
-                algorithmExecution.addPropertyChangeListener(listener);
-                algorithmExecution.execute();    
-            }else
-            JOptionPane.showMessageDialog(this, "Debe seleccionar al menos un pedido.",
-                    "Despacho",JOptionPane.WARNING_MESSAGE);
-        }catch(Exception ex){
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, Strings.BAD_PARAMETERS,
-                    Strings.BAD_PARAMETERS_TITLE,JOptionPane.INFORMATION_MESSAGE);
-        }              
+                                solutions.add(solution);
+                                refreshCombo();
+                                JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_SUCCESS,
+                                        Strings.ALGORITHM_SUCCESS_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                                btnProcess.setEnabled(true);
+                                running = false;
+                                btnExecuteAlgorithm.setText("Generar Rutas de Despacho");
+
+                            } catch (CancellationException ex){
+                                JOptionPane.showMessageDialog(DeliveryView.this, "Se ha cancelado la ejecución.",
+                                        Strings.ALGORITHM_SUCCESS_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                                algorithmExecution.cancel(true);
+                                jProgressBar.setValue(0);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                                JOptionPane.showMessageDialog(DeliveryView.this, Strings.ALGORITHM_ERROR,
+                                        Strings.ALGORITHM_ERROR_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                            } 
+                        }
+                    };        
+                    PropertyChangeListener listener
+                            = new PropertyChangeListener() {
+                                public void propertyChange(PropertyChangeEvent event) {
+                                    if ("progress".equals(event.getPropertyName())) {
+                                        jProgressBar.setValue((Integer) event.getNewValue());
+                                    }
+                                }
+                            };
+                    algorithmExecution.addPropertyChangeListener(listener);
+                    algorithmExecution.execute(); 
+                    running = true;
+                    btnExecuteAlgorithm.setText("Cancelar");
+                }else
+                JOptionPane.showMessageDialog(this, "Debe seleccionar al menos un pedido.",
+                        "Despacho",JOptionPane.WARNING_MESSAGE);
+            }catch(Exception ex){
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, Strings.BAD_PARAMETERS,
+                        Strings.BAD_PARAMETERS_TITLE,JOptionPane.INFORMATION_MESSAGE);
+            }   
+        }
+        else{
+            algorithmExecution.cancel(true);
+            running = false;
+            btnExecuteAlgorithm.setText("Generar Rutas de Despacho");
+        }
     }//GEN-LAST:event_btnExecuteAlgorithmActionPerformed
 
     private void btnDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisplayActionPerformed
