@@ -39,6 +39,7 @@ public interface IPalletRepository extends IRepository<Pallet>{
 
     public ArrayList<Pallet> queryByWarehouseParameters(Almacen warehouse, ArrayList<Despacho> delivery);
     public List<Object[]> queryByReportInter(int almacen, Date fechaD, Date fechaH, int tipo);
+    public List<Object[]> queryByReportCaducity(int idType, int time);
     public int insertNPallets(ArrayList<Pallet> pallets);
     public int internNPallets(ArrayList<Pallet> pallets, OrdenInternamientoXProducto orXProd, Kardex kardex );
     public int internNPalletsNoOrder(ArrayList<Pallet> pallets, Kardex kardex );

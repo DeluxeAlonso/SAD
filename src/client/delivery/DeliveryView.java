@@ -107,6 +107,7 @@ public class DeliveryView extends BaseView {
     Boolean firstRun = true;
     Informable informable;
     boolean running = false;
+    public static DeliveryView deliveryView;
     
     /**
      * Creates new form DispatchView
@@ -114,6 +115,7 @@ public class DeliveryView extends BaseView {
     public DeliveryView() {        
         initComponents();
         super.initialize();
+        deliveryView = this;
         Icons.setButton(btnProcess, Icons.ICONOS.APPLY.ordinal());
         Icons.setButton(btnExecuteAlgorithm, Icons.ICONOS.PLAY.ordinal());
         Icons.setButton(btnViewSolution, Icons.ICONOS.DELIVERY.ordinal());
@@ -734,29 +736,33 @@ public class DeliveryView extends BaseView {
         if(solutions.get(cmbIdx)!=null && algorithmExecution!=null){
             AlgorithmReturnValues returnValues = algorithmExecution.processOrders(solutions.get(cmbIdx));
             solutionDeliveries = returnValues.getDespachos();
+            startLoader();
             assignRemissionGuides(returnValues.getDespachos());
             if(createPartialOrders(returnValues.getAcceptedOrders(), returnValues.getRejectedOrders())){
-                verifyOrders();
-                if(OrderView.orderView != null)
-                    OrderView.orderView.verifyOrders();
-                allCheckbox.setSelected(false);
-                warehouseBtn.setEnabled(true);
-                deliveryBtn.setEnabled(true);
-                remissionBtn.setEnabled(true);
-                 ArrayList<Almacen> warehouse = warehouseApplication.queryAll();
-                for(int i=0;i<warehouse.size();i++){
-                    ArrayList<Pallet> pallets = palletApplication.queryByWarehouseParameters(warehouse.get(i), solutionDeliveries);
-                    map.put(warehouse.get(i).getId(), pallets);
-                    System.out.println("SIZE DEL GET " + map.get(warehouse.get(i).getId()).size());
-                }   
-                insertKardex(returnValues.getDespachos());
-                JOptionPane.showMessageDialog(this, Strings.DELIVERY_SUCCESS,
-                    Strings.DELIVERY_TITLE,JOptionPane.INFORMATION_MESSAGE);
-                btnProcess.setEnabled(false);
+                    verifyOrders();
+                    if(OrderView.orderView != null)
+                        OrderView.orderView.verifyOrders();
+                    allCheckbox.setSelected(false);
+                    warehouseBtn.setEnabled(true);
+                    deliveryBtn.setEnabled(true);
+                    remissionBtn.setEnabled(true);
+                     ArrayList<Almacen> warehouse = warehouseApplication.queryAll();
+                    for(int i=0;i<warehouse.size();i++){
+                        ArrayList<Pallet> pallets = palletApplication.queryByWarehouseParameters(warehouse.get(i), solutionDeliveries);
+                        map.put(warehouse.get(i).getId(), pallets);
+                        System.out.println("SIZE DEL GET " + map.get(warehouse.get(i).getId()).size());
+                    }   
+                    insertKardex(returnValues.getDespachos());
+                    stopLoader();
+                    JOptionPane.showMessageDialog(this, Strings.DELIVERY_SUCCESS,
+                        Strings.DELIVERY_TITLE,JOptionPane.INFORMATION_MESSAGE);
+                    btnProcess.setEnabled(false);
             }
-            else
+            else{
+                stopLoader();
                 JOptionPane.showMessageDialog(this, Strings.DELIVERY_ERROR,
                     Strings.DELIVERY_TITLE,JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_btnProcessActionPerformed
 
@@ -895,7 +901,8 @@ public class DeliveryView extends BaseView {
                     ImageIO.write(input, "PNG", baos);
 
                     writableSheet.addImage(new WritableImage(1,1,0.4,1,baos.toByteArray()));
-
+                    writableSheet.getSettings().setShowGridLines(false);
+                    writableSheet.getSettings().setPrintGridLines(false);
                     writableSheet.setColumnView(1, 10);
                     writableSheet.setColumnView(2, 50);
                     writableSheet.setColumnView(3, 35);
@@ -939,7 +946,7 @@ public class DeliveryView extends BaseView {
             
             WritableCellFormat tittleFormat = new WritableCellFormat(tittleFont);
              tittleFormat.setWrap(false);
-             tittleFormat.setAlignment(jxl.format.Alignment.CENTRE);
+             tittleFormat.setAlignment(jxl.format.Alignment.LEFT);
              tittleFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
              
              
@@ -1127,7 +1134,8 @@ public class DeliveryView extends BaseView {
                     ImageIO.write(input, "PNG", baos);
 
                     writableSheet.addImage(new WritableImage(1,1,0.4,1,baos.toByteArray()));
-
+                    writableSheet.getSettings().setShowGridLines(false);
+                    writableSheet.getSettings().setPrintGridLines(false);
                     writableSheet.setColumnView(1, 10);
                     writableSheet.setColumnView(2, 20);
                     writableSheet.setColumnView(3, 20);
@@ -1191,9 +1199,10 @@ public class DeliveryView extends BaseView {
                     ImageIO.write(input, "PNG", baos);
 
                     writableSheet.addImage(new WritableImage(1,1,0.4,1,baos.toByteArray()));
-
+                    writableSheet.getSettings().setShowGridLines(false);
+                    writableSheet.getSettings().setPrintGridLines(false);
                     writableSheet.setColumnView(1, 10);
-                    writableSheet.setColumnView(2, 35);
+                    writableSheet.setColumnView(2, 31);
                     writableSheet.setColumnView(3, 35);
                     writableSheet.setColumnView(4, 10);
                     writableSheet.setColumnView(5, 10);
@@ -1555,7 +1564,7 @@ public class DeliveryView extends BaseView {
             
             WritableCellFormat tittleFormat = new WritableCellFormat(tittleFont);
              tittleFormat.setWrap(false);
-             tittleFormat.setAlignment(jxl.format.Alignment.CENTRE);
+             tittleFormat.setAlignment(jxl.format.Alignment.LEFT);
              tittleFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
              
              

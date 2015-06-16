@@ -72,8 +72,8 @@ ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
         initialize();
         Icons.setButton(saveTxt, Icons.ICONOS.SAVE.ordinal());
         Icons.setButton(saveTxt1, Icons.ICONOS.CANCEL.ordinal());
-        jComboBox2.removeAllItems();
-        jComboBox2.setEnabled(false);
+        warehouseCombo.removeAllItems();
+        warehouseCombo.setEnabled(false);
         fillProductCombo();
         
     }
@@ -88,13 +88,13 @@ ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        productCombo = new javax.swing.JComboBox();
         dtcInitDate = new com.toedter.calendar.JDateChooser();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox();
+        warehouseCombo = new javax.swing.JComboBox();
         saveTxt = new javax.swing.JButton();
         saveTxt1 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
@@ -103,15 +103,15 @@ ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
 
         jLabel1.setText("Producto: ");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox1.addItemListener(new java.awt.event.ItemListener() {
+        productCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        productCombo.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jComboBox1ItemStateChanged(evt);
+                productComboItemStateChanged(evt);
             }
         });
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        productCombo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                productComboActionPerformed(evt);
             }
         });
 
@@ -151,15 +151,15 @@ ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
 
         jLabel3.setText("Almacén:");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox2.addItemListener(new java.awt.event.ItemListener() {
+        warehouseCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        warehouseCombo.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jComboBox2ItemStateChanged(evt);
+                warehouseComboItemStateChanged(evt);
             }
         });
-        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+        warehouseCombo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox2ActionPerformed(evt);
+                warehouseComboActionPerformed(evt);
             }
         });
 
@@ -184,7 +184,7 @@ ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(57, 57, 57)
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -193,22 +193,22 @@ ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(15, 15, 15)
-                                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(productCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(18, 18, 18)
                                         .addComponent(dtcInitDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                 .addGap(39, 39, 39)
                                 .addComponent(jLabel3)
                                 .addGap(18, 18, 18)
-                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(warehouseCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(149, 149, 149)
+                        .addGap(57, 57, 57)
                         .addComponent(saveTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(134, 134, 134)
+                        .addGap(226, 226, 226)
                         .addComponent(saveTxt1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(64, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -216,8 +216,8 @@ ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
                 .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(productCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(warehouseCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -237,48 +237,48 @@ ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+    private void productComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productComboActionPerformed
         // TODO add your handling code here:
         //if (evt.getStateChange() == ItemEvent.SELECTED)
            
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    }//GEN-LAST:event_productComboActionPerformed
 
-    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+    private void warehouseComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_warehouseComboActionPerformed
         // TODO add your handling code here:
        
         
-    }//GEN-LAST:event_jComboBox2ActionPerformed
+    }//GEN-LAST:event_warehouseComboActionPerformed
 
-    private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
+    private void productComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_productComboItemStateChanged
         // TODO add your handling code here:
         clearGrid(jTable1);
-        jComboBox2.removeAllItems();
+        warehouseCombo.removeAllItems();
         if (evt.getStateChange() == ItemEvent.SELECTED){
             int productId=0;
-            if (jComboBox1.getSelectedIndex()>0)
-                productId = product.get(jComboBox1.getSelectedIndex()-1).getId();        
+            if (productCombo.getSelectedIndex()>0)
+                productId = product.get(productCombo.getSelectedIndex()-1).getId();        
             else
                 productId = 0;
 
             if (productId > 0 ){
                 fillWarehouseCombo(product.get(productId-1).getCondicion().getId());
-                jComboBox2.setEnabled(true);
+                warehouseCombo.setEnabled(true);
             }
             else {
-                jComboBox2.setEnabled(false);
+                warehouseCombo.setEnabled(false);
                 warehouses.clear();
             }
         }
         
-    }//GEN-LAST:event_jComboBox1ItemStateChanged
+    }//GEN-LAST:event_productComboItemStateChanged
 
     private boolean hasErrors(){
         boolean errorFlag = false;
         Date date = new Date();
         String error_message = "Errores:\n";
-        if (jComboBox1.getSelectedIndex()==0){
+        if (productCombo.getSelectedIndex()==0){
             error_message += "Debe seleccionar un producto\n";
-            jComboBox1.setBorder(errorBorder);
+            productCombo.setBorder(errorBorder);
             errorFlag=true;
         }
         /*if (jComboBox2.getSelectedIndex()==0){
@@ -287,29 +287,33 @@ ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
             errorFlag=true;
         }*/
         if (dtcInitDate.getDate() == null ){
-            error_message += "Debe seleccionar una Fecha\n";
+            error_message += "Debe seleccionar una fecha\n";
             dtcInitDate.setBorder(errorBorder);
             errorFlag=true;
         }
         else if (dtcInitDate.getDate().compareTo(date) <0){
-            error_message += "Debe seleccionar una Fecha superior\n";
+            error_message += "Debe seleccionar una fecha superior\n";
             dtcInitDate.setBorder(errorBorder);
             errorFlag=true;
         }
         
-        if (errorFlag==true)
+        if (errorFlag==true){
             JOptionPane.showMessageDialog(this, error_message,"Mensaje de creación de pallet",JOptionPane.WARNING_MESSAGE);
+            if (warehouseCombo.getItemCount()> 0)
+                warehouseCombo.setSelectedIndex(0);
+        }
+            
         
         return errorFlag;
     }
     
     
-    private void jComboBox2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox2ItemStateChanged
+    private void warehouseComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_warehouseComboItemStateChanged
         // TODO add your handling code here:
         if (evt.getStateChange() == ItemEvent.SELECTED){
              Almacen alm = new Almacen();
-            if (jComboBox2.getSelectedIndex()>0){
-                alm = warehouses.get(jComboBox2.getSelectedIndex()-1);
+            if (warehouseCombo.getSelectedIndex()>0){
+                alm = warehouses.get(warehouseCombo.getSelectedIndex()-1);
                 fillFreeSpots(alm);
             }
             else
@@ -317,11 +321,11 @@ ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
         }
         
         
-    }//GEN-LAST:event_jComboBox2ItemStateChanged
+    }//GEN-LAST:event_warehouseComboItemStateChanged
 
     public void clearBorders(){
-        jComboBox1.setBorder(regularBorder);
-        jComboBox2.setBorder(regularBorder);
+        productCombo.setBorder(regularBorder);
+        warehouseCombo.setBorder(regularBorder);
         dtcInitDate.setBorder(regularBorder);
         jTable1.setBorder(regularBorder);
             
@@ -330,6 +334,8 @@ ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
     
     private void saveTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveTxtActionPerformed
         clearBorders();
+        ArrayList<Pallet> pallets = new ArrayList();
+        ArrayList<Pallet> palletsAInternar = new ArrayList();
         int eanAux=0;
         int cont = 0;
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -351,41 +357,19 @@ ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
             }
             else if (cont == 1){
                 Pallet pallet = new Pallet();
-                pallet.setEstado(EntityState.Pallets.UBICADO.ordinal());
+                pallet.setEstado(EntityState.Pallets.CREADO.ordinal());
                 pallet.setFechaRegistro(date);
                 pallet.setFechaVencimiento(dtcInitDate.getDate());
-                pallet.setProducto(product.get(jComboBox1.getSelectedIndex()-1));
-                pallet.setUbicacion(u);
+                pallet.setProducto(product.get(productCombo.getSelectedIndex()-1));
                 pallet.setEan128(crearEAN128(pallet.getProducto(),pallet.getFechaVencimiento()));
-                eanAux=palletApplication.insert(pallet);
-                
-                Pallet palletAux = palletApplication.queryById(eanAux);
-                String ean = palletAux.getEan128();
-                ean+=eanAux;
-                palletAux.setEan128(ean);
-                palletApplication.update(palletAux);
-                
-                spotApplication.updateSpotOccupancy(u.getId(), EntityState.Spots.OCUPADO.ordinal());
-                
-                // actualizar pallets registrados y ubicados del producto
-                Producto prod = product.get(jComboBox1.getSelectedIndex()-1);
-                prod.setStockLogico(prod.getStockLogico()+1);
-                prod.setPalletsUbicados(prod.getPalletsUbicados()+1);
-                
-                //prod.setPalletsRegistrados(prod.getPalletsRegistrados());
-                productApplication.update(prod);
-                
-                
-                //disminuir ubicaciones libres en racks y almacen
-                Almacen alm = warehouses.get(jComboBox2.getSelectedIndex()-1);
-                alm.setUbicLibres(alm.getUbicLibres()-1);
-                warehouseApplication.update(alm);
+                pallets.add(pallet);
+                palletApplication.insertNPallet(pallets);
                 
             //ingresar entrada en kardex
-            ArrayList<Kardex> kardex = kardexApplication.queryByParameters(warehouses.get(jComboBox2.getSelectedIndex()-1).getId(), prod.getId());
+            ArrayList<Kardex> kardex = kardexApplication.queryByParameters(warehouses.get(warehouseCombo.getSelectedIndex()-1).getId(), pallet.getProducto().getId());
             Kardex internmentKardex = new Kardex();
-            internmentKardex.setAlmacen(warehouses.get(jComboBox2.getSelectedIndex()-1));
-            internmentKardex.setProducto(prod);
+            internmentKardex.setAlmacen(warehouses.get(warehouseCombo.getSelectedIndex()-1));
+            internmentKardex.setProducto(pallet.getProducto());
             internmentKardex.setTipoMovimiento("Ingreso");
             internmentKardex.setCantidad(1);
             
@@ -398,70 +382,31 @@ ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
             internmentKardex.setStockFinal(internmentKardex.getStockInicial() + 1);
             
             KardexId kId = new KardexId();
-            kId.setIdAlmacen(warehouses.get(jComboBox2.getSelectedIndex()-1).getId());
-            kId.setIdProducto(prod.getId());
+            kId.setIdAlmacen(warehouses.get(warehouseCombo.getSelectedIndex()-1).getId());
+            kId.setIdProducto(pallet.getProducto().getId());
             
             internmentKardex.setId(kId);
             
-            kardexApplication.insert(internmentKardex);
-            //kardexApplication.insertKardexID(kId);
+            pallet.setEstado(EntityState.Pallets.UBICADO.ordinal());
+            pallet.setUbicacion(u);
+            pallet.setFechaInternamiento(date);
+            palletsAInternar.add(pallet);
+
+            palletApplication.internNPalletsNoOrder(palletsAInternar, internmentKardex);
+            JOptionPane.showMessageDialog(this, "Pallet creado exitosamente","Mensaje de creación de pallet",JOptionPane.INFORMATION_MESSAGE);
                 
             }else if (cont == 0){
                 Pallet pallet = new Pallet();
-                pallet.setEstado(EntityState.Pallets.UBICADO.ordinal());
+                pallet.setEstado(EntityState.Pallets.CREADO.ordinal());
                 pallet.setFechaRegistro(date);
                 pallet.setFechaVencimiento(dtcInitDate.getDate());
-                pallet.setProducto(product.get(jComboBox1.getSelectedIndex()-1));
-                //pallet.setUbicacion(u);
+                pallet.setProducto(product.get(productCombo.getSelectedIndex()-1));
                 pallet.setEan128(crearEAN128(pallet.getProducto(),pallet.getFechaVencimiento()));
-                eanAux=palletApplication.insert(pallet);
-                
-                Pallet palletAux = palletApplication.queryById(eanAux);
-                String ean = palletAux.getEan128();
-                ean+=eanAux;
-                palletAux.setEan128(ean);
-                palletApplication.update(palletAux);
-                
-                //spotApplication.updateSpotOccupancy(u.getId(), EntityState.Spots.OCUPADO.ordinal());
-                
-                // actualizar pallets registrados y ubicados del producto
-                Producto prod = product.get(jComboBox1.getSelectedIndex()-1);
-                //prod.setPalletsUbicados(prod.getPalletsUbicados()+1);
-                prod.setPalletsRegistrados(prod.getPalletsRegistrados()+1);
-                productApplication.update(prod);
-                
-                
-                //disminuir ubicaciones libres en racks y almacen
-                //Almacen alm = warehouses.get(jComboBox2.getSelectedIndex()-1);
-                //alm.setUbicLibres(alm.getUbicLibres()-1);
-                //warehouseApplication.update(alm);
-                
-            //ingresar entrada en kardex
-            /*ArrayList<Kardex> kardex = kardexApplication.queryByParameters(warehouses.get(jComboBox2.getSelectedIndex()-1).getId(), prod.getId());
-            Kardex internmentKardex = new Kardex();
-            internmentKardex.setAlmacen(warehouses.get(jComboBox2.getSelectedIndex()-1));
-            internmentKardex.setProducto(prod);
-            internmentKardex.setTipoMovimiento("Ingreso");
-            internmentKardex.setCantidad(1);
-            
-            internmentKardex.setFecha(Calendar.getInstance().getTime());
-            if(kardex.size()==0){
-                internmentKardex.setStockInicial(0);
-            }else{
-                internmentKardex.setStockInicial(kardex.get(0).getStockFinal());
+                pallets.add(pallet);
+                palletApplication.insertNPallet(pallets);
+                JOptionPane.showMessageDialog(this, "Pallet creado exitosamente","Mensaje de creación de pallet",JOptionPane.INFORMATION_MESSAGE);
             }
-            internmentKardex.setStockFinal(internmentKardex.getStockInicial() + 1);
             
-            KardexId kId = new KardexId();
-            kId.setIdAlmacen(warehouses.get(jComboBox2.getSelectedIndex()-1).getId());
-            kId.setIdProducto(prod.getId());
-            
-            internmentKardex.setId(kId);
-            
-            kardexApplication.insert(internmentKardex);
-            //kardexApplication.insertKardexID(kId);
-            */
-            }
         }
         clearGrid(jTable1);
     }//GEN-LAST:event_saveTxtActionPerformed
@@ -512,7 +457,7 @@ ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
             for (int i=0; i < warehouses.size();i++){
                 whNames[i+1]=warehouses.get(i).getDescripcion();
             }
-            jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(whNames));
+            warehouseCombo.setModel(new javax.swing.DefaultComboBoxModel(whNames));
         }
         
     }
@@ -525,7 +470,7 @@ ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
             for (int i=0; i < product.size();i++){
                 prNames[i+1]=product.get(i).getNombre();
             }
-            jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(prNames));
+            productCombo.setModel(new javax.swing.DefaultComboBoxModel(prNames));
         }
         
     }
@@ -535,15 +480,15 @@ ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.toedter.calendar.JDateChooser dtcInitDate;
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JComboBox jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JComboBox productCombo;
     private javax.swing.JButton saveTxt;
     private javax.swing.JButton saveTxt1;
+    private javax.swing.JComboBox warehouseCombo;
     // End of variables declaration//GEN-END:variables
 }

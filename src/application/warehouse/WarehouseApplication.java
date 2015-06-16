@@ -125,4 +125,24 @@ public class WarehouseApplication {
             return -1;
         }
     }
+    public long getNumberRacks(Almacen a) {
+        try{
+            WarehouseRepository w = new WarehouseRepository();
+            return w.getNumberRacks(a);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return -1;
+        }
+    }
+    public boolean isOcupy(Almacen a){
+        try{
+            WarehouseRepository w = new WarehouseRepository();
+            return w.isOcupy(a);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return true;
+        }
+    }
 }

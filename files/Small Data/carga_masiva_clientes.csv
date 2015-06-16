@@ -2,10 +2,6 @@
 Wong,12345678901,2,,
 -11.832386,-77.1444295,Local 1 de Wong,Descripcion,Av. 225 Santa Rosa
 -11.8394138,-77.1314789,Local 2 de Wong,Descripcion,Av. Los cedros Santa Rosa
-Metro,12345678902,1,,
--11.8338706,-77.1157081,Local 1 de Metro,Descripcion,Cruce Playa hermosa con Copacabana Puente Piedra
-Plaza Vea,12345678903,1,,
--11.8746166,-77.0913113,Local 1 de Plaza Vea,Descripcion,Calle Pucalipa Puente Piedra
 Totus,12345678904,3,,
 -11.8392807,-77.153477,Local 1 de Totus,Descripcion,Av. 150 Ventanilla
 -11.8332692,-77.16494,Local 2 de Totus,Descripcion,Av. 190 Ventanilla
@@ -13,3 +9,10 @@ Totus,12345678904,3,,
 Santa Isabel,12345678905,2,,
 -11.8502026,-77.1363733,Local 1 de Santa Isabel,Descripcion,Av. 200 Ventanilla
 -11.8332713,-77.137918,Local 2 de Santa Isabel,Descripcion,Av. Los arquitectos Ventanilla
+Tetrix,12345678920,4,,
+-12.216538,-76.905731,Local 1 de Tetrix,Descripcion,Av. Atocongo Villa El Salvador
+-12.1960842,-77.0254134,Local 2 de Tetrix,Descripcion,Av. Principal Chorrillos
+-12.168279,-77.0280684,Local 3 de Tetrix,Descripcion,Bajada Huaylas Chorrillos
+-12.145791,-77.0071107,Local 4 de Tetrix,Descripcion,Jr. Teniente Diego Ferre Surco
+Bodega La trika,12345678919,1,,
+-12.2281471,-76.9213081,Local 1 de Bodega La trika,Descripcion,Av. Separadora Industrial Villa El Salvador

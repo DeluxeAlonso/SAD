@@ -360,6 +360,11 @@ public class PalletView extends BaseView {
                 return canEdit [columnIndex];
             }
         });
+        spotTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                spotTableMousePressed(evt);
+            }
+        });
         jScrollPane2.setViewportView(spotTable);
         if (spotTable.getColumnModel().getColumnCount() > 0) {
             spotTable.getColumnModel().getColumn(1).setResizable(false);
@@ -412,6 +417,7 @@ public class PalletView extends BaseView {
             EditPalletView editPallet=new EditPalletView((JFrame)SwingUtilities.getWindowAncestor(this),true,palletsGlob.get(spotTable.getSelectedRow()));
             editPallet.setVisible(true);
             clearGrid();
+            editBtn.setEnabled(false);
         }
        
     }//GEN-LAST:event_editBtnMouseClicked
@@ -448,9 +454,18 @@ public class PalletView extends BaseView {
         palletsGlob.clear();
         palletsGlob.addAll(pallets);
         
-        fillTable(pallets);
         
-        editBtn.setEnabled(true);
+        
+            try {
+                startLoader();
+                fillTable(pallets);
+            }
+            finally{
+                stopLoader();
+            }
+        
+        
+        editBtn.setEnabled(false);
         //deleteBtn.setEnabled(true);
         
     }//GEN-LAST:event_searchBtnMouseClicked
@@ -465,6 +480,11 @@ public class PalletView extends BaseView {
         // TODO add your handling code here:
 
     }//GEN-LAST:event_warehouseComboActionPerformed
+
+    private void spotTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_spotTableMousePressed
+        // TODO add your handling code here:
+        editBtn.setEnabled(true);
+    }//GEN-LAST:event_spotTableMousePressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

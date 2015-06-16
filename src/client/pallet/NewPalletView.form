@@ -26,7 +26,7 @@
           <Group type="102" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -36,7 +36,7 @@
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Group type="102" attributes="0">
                                       <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
-                                      <Component id="jComboBox1" min="-2" pref="151" max="-2" attributes="0"/>
+                                      <Component id="productCombo" min="-2" pref="151" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" attributes="0">
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -46,20 +46,20 @@
                               <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
                               <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="jComboBox2" min="-2" pref="106" max="-2" attributes="0"/>
+                              <Component id="warehouseCombo" min="-2" pref="106" max="-2" attributes="0"/>
                           </Group>
                           <Component id="jScrollPane1" min="-2" pref="435" max="-2" attributes="0"/>
                           <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="149" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
                       <Component id="saveTxt" min="-2" pref="55" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="134" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="226" max="-2" attributes="0"/>
                       <Component id="saveTxt1" min="-2" pref="55" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="64" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -69,8 +69,8 @@
               <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jComboBox1" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jComboBox2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="productCombo" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="warehouseCombo" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -98,7 +98,7 @@
         <Property name="text" type="java.lang.String" value="Producto: "/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JComboBox" name="jComboBox1">
+    <Component class="javax.swing.JComboBox" name="productCombo">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="4">
@@ -110,8 +110,8 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jComboBox1ItemStateChanged"/>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBox1ActionPerformed"/>
+        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="productComboItemStateChanged"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="productComboActionPerformed"/>
       </Events>
     </Component>
     <Component class="com.toedter.calendar.JDateChooser" name="dtcInitDate">
@@ -180,7 +180,7 @@
         <Property name="text" type="java.lang.String" value="Almac&#xe9;n:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JComboBox" name="jComboBox2">
+    <Component class="javax.swing.JComboBox" name="warehouseCombo">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="4">
@@ -192,8 +192,8 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jComboBox2ItemStateChanged"/>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBox2ActionPerformed"/>
+        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="warehouseComboItemStateChanged"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="warehouseComboActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="saveTxt">

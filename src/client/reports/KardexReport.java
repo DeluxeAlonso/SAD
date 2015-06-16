@@ -335,6 +335,8 @@ public class KardexReport extends BaseView {
             }
         });
 
+        dtcInitDate.setMaxSelectableDate(new java.util.Date(253370786516000L));
+
         jLabel4.setText("Producto:");
 
         tblKardex.setModel(new javax.swing.table.DefaultTableModel(
@@ -439,7 +441,7 @@ public class KardexReport extends BaseView {
             if(warehouses.size()>0 && products.size()>0){
                 if(dtcInitDate.getDate()==null){
                     hasErrors=true;
-                    //error_message += Strings.ERROR_DATE_INI+"\n";
+                    error_message += Strings.ERROR_DATE_INI+"\n";
                 }
                 if(dtcEndDate.getDate()==null){
                     hasErrors=true;

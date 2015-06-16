@@ -116,7 +116,14 @@ public class InternmentSelectView extends BaseView {
          });
          */
 
-        fillTable();
+            try {
+                startLoader();
+                fillTable();
+            }
+            finally{
+                stopLoader();
+            }
+            
     }
 
     /**
@@ -444,8 +451,8 @@ public class InternmentSelectView extends BaseView {
     public static String crearEAN128(Producto prod, Date fechaV) {
         String ean = "";
         //ean += pallet.getId();
-        ean += "(02)0" + prod.getEan13();
-        ean += "37" + prod.getCantidadProductosEnPallet();
+        ean += "(02)" + prod.getEan13();
+        ean += "(37)" + prod.getCantidadProductosEnPallet();
         DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
         ean += "(17)" + dateFormat.format(fechaV);
         return ean;
@@ -523,7 +530,14 @@ public class InternmentSelectView extends BaseView {
         }
 
         createInternmentOrders(ordenListada);
-        fillTable();
+            try {
+                startLoader();
+                fillTable();
+            }
+            finally{
+                stopLoader();
+            }
+            
 
     }
 
@@ -533,7 +547,16 @@ public class InternmentSelectView extends BaseView {
 
 
     private void btnLoadFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadFileActionPerformed
-        loadFromFile(file.getAbsolutePath());
+        
+            try {
+                startLoader();
+                loadFromFile(file.getAbsolutePath());
+            }
+            finally{
+                stopLoader();
+            }
+            
+        
         file = null;
         btnLoadFile.setEnabled(false);
         jTextField1.setText("");
@@ -731,7 +754,17 @@ public class InternmentSelectView extends BaseView {
                     JOptionPane.showMessageDialog(this, "Por favor seleccione al menos 1 ubicación","Mensaje de internado de pallet",JOptionPane.WARNING_MESSAGE);
                     
             }
-            fillTable();
+            
+            
+            try {
+                startLoader();
+                fillTable();
+            }
+            finally{
+                stopLoader();
+            }
+            
+            
             clearGrid(tableFreeSpots);
             btnIntern.setEnabled(false);
             //jButton3.setEnabled(false);    

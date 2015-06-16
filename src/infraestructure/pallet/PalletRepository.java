@@ -15,6 +15,7 @@ import entity.Pallet;
 import entity.Producto;
 import entity.Ubicacion;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import org.hibernate.Hibernate;
@@ -566,7 +567,27 @@ public class PalletRepository implements IPalletRepository{
             session.flush();
             int startId=pIni.getId();
             String ean128=pIni.getEan128();            
-            pIni.setEan128(ean128+startId);
+            if (startId>999999){//1000000+ 
+                pIni.setEan128(ean128+startId);
+            }
+            else if (startId>99999){//100000+ 
+                pIni.setEan128(ean128+"0"+startId);
+            }            
+            else if (startId>9999){//10000+ 
+                pIni.setEan128(ean128+"00"+startId);
+            }
+            else if (startId>999){//1000+
+                pIni.setEan128(ean128+"000"+startId);
+            }
+            else if (startId>99){//100+
+                pIni.setEan128(ean128+"0000"+startId);
+            }            
+            else if (startId>9){//10+
+                pIni.setEan128(ean128+"00000"+startId);
+            }            
+            else { //0-9
+                pIni.setEan128(ean128+"000000"+startId);
+            }
             session.update(pIni);
             session.flush();
             int cant=pallets.size();
@@ -575,7 +596,27 @@ public class PalletRepository implements IPalletRepository{
                 if(i==0) continue;
                 Pallet p = pallets.get(i);
                 int num=startId+i;
-                p.setEan128(ean128+num);
+                if (num>999999){//1000000+ 
+                    p.setEan128(ean128+num);
+                }
+                else if (num>99999){//100000+ 
+                    p.setEan128(ean128+"0"+num);
+                }                
+                else if (num>9999){//10000+ 
+                    p.setEan128(ean128+"00"+num);
+                }
+                else if (num>999){//1000+
+                    p.setEan128(ean128+"000"+num);
+                }
+                else if (num>99){//100+
+                    p.setEan128(ean128+"0000"+num);
+                }            
+                else if (num>9){//10+
+                    p.setEan128(ean128+"00000"+num);
+                }            
+                else { //0-9
+                    p.setEan128(ean128+"000000"+num);
+                }
                 p.setId(num);
                 session.save(p);
                 if(i%20==0) session.flush();
@@ -829,6 +870,52 @@ public class PalletRepository implements IPalletRepository{
         } 
         return 1;
     }    
+
+    @Override
+    public List<Object[]> queryByReportCaducity(int idType, int time) {
+        String hql="SELECT pro.nombre, pro.tipoProducto.nombre, pro.condicion.nombre, "
+                + "count(1),p.fechaVencimiento "
+                + "FROM Pallet p "
+                + "JOIN p.producto pro "
+                + "WHERE (pro.tipoProducto.id = :typeId OR :typeId=0) AND (p.fechaVencimiento < :fecha OR :fecha is null)"
+                + " GROUP BY pro.nombre, pro.tipoProducto.nombre, pro.condicion.nombre, "
+                + "p.fechaVencimiento ";
+        List<Object[]> list=null;
+        Transaction trns = null;
+        Session session = Tools.getSessionInstance();
+        Calendar c = Calendar.getInstance(); 
+        c.setTime(new Date());
+        if (time==0){
+            c.add(Calendar.DATE, 3);
+        }else if (time==1){
+            c.add(Calendar.DATE,7);
+        }else if (time==2){
+            c.add(Calendar.DATE,14);
+        }else if (time==3){
+            c.add(Calendar.MONTH,1);
+        }else if (time==4){
+            c.add(Calendar.MONTH,2);
+        }
+        Date newEndDate = c.getTime();
+        if (time==5)
+            newEndDate=null;
+        try {            
+            trns=session.beginTransaction();
+            
+            Query q = session.createQuery(hql);
+            q.setParameter("typeId", idType);
+            q.setParameter("fecha", newEndDate);
+            list = q.list();          
+            session.getTransaction().commit();
+            
+        } catch (RuntimeException e) {
+            if (trns != null) {
+                trns.rollback();
+            }
+            e.printStackTrace();
+        }
+        return list;
+    }
     
     
     

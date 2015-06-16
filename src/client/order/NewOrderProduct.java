@@ -493,12 +493,12 @@ public class NewOrderProduct extends BaseDialogView implements MouseListener,Ite
     private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
         if(validFields()){   
             if(createOrder()){
-                JOptionPane.showMessageDialog(this, Strings.MESSAGE_CREATE_ORDER,
-                    Strings.MESSAGE_CREATE_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
                 initializeArrays();
                 refreshOrderProductsTable();
                 refreshProductsToAddTable();
                 OrderView.orderView.refreshOrders();
+                JOptionPane.showMessageDialog(this, Strings.MESSAGE_CREATE_ORDER,
+                    Strings.MESSAGE_CREATE_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
                 this.dispose();
             }
             else{

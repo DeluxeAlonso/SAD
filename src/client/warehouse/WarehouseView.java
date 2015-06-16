@@ -40,6 +40,7 @@ public class WarehouseView extends BaseView {
     SpotApplication spotApplication=InstanceFactory.Instance.getInstance("spotApplication", SpotApplication.class);
     Image img;
     Image img2;
+    ArrayList<Almacen> warehouses;
     /**
      * Creates new form WarehouseForm
      */
@@ -55,7 +56,7 @@ public class WarehouseView extends BaseView {
         Icons.setButton(deleteBtn, Icons.ICONOS.DELETE.ordinal());
         Icons.setButton(editBtn, Icons.ICONOS.MODIFY.ordinal());
         Icons.setButton(searchBtn, Icons.ICONOS.SEARCH.ordinal());
-        
+        Icons.setButton(activeBtn, Icons.ICONOS.ACTIVE.ordinal());
     }
 
     public void calculartam(JButton searchBtn){
@@ -80,7 +81,7 @@ public class WarehouseView extends BaseView {
      */
     public void fillTable() {
         DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();
-        ArrayList<Almacen> warehouses = warehouseApplication.queryAll();
+        warehouses = warehouseApplication.queryAll();
         for (Almacen a : warehouses) {
             String estado = EntityState.getWarehousesState()[a.getEstado()];
             Condicion con = EntityType.getCondition(a.getCondicion().getId());
@@ -96,7 +97,7 @@ public class WarehouseView extends BaseView {
     }
     public void fillTable(int id,int condicion,int  state) {
         DefaultTableModel model = (DefaultTableModel) usersGrid.getModel();
-        ArrayList<Almacen> warehouses = warehouseApplication.queryByParameters(id,condicion,state);
+        warehouses = warehouseApplication.queryByParameters(id,condicion,state);
         for (Almacen a : warehouses) {
 
             Condicion con = EntityType.getCondition(a.getCondicion().getId());
@@ -140,6 +141,7 @@ public class WarehouseView extends BaseView {
         newBtn = new javax.swing.JButton();
         editBtn = new javax.swing.JButton();
         deleteBtn = new javax.swing.JButton();
+        activeBtn = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Almacen");
@@ -225,6 +227,13 @@ public class WarehouseView extends BaseView {
             }
         });
 
+        activeBtn.setEnabled(false);
+        activeBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                activeBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -232,50 +241,60 @@ public class WarehouseView extends BaseView {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jLabel3)
-                            .addGap(18, 18, 18)
-                            .addComponent(EstadoCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(searchBtn))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jLabel1)
-                            .addGap(18, 18, 18)
-                            .addComponent(idTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(30, 30, 30)
-                            .addComponent(jLabel2)
-                            .addGap(18, 18, 18)
-                            .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(18, 18, 18)
+                                .addComponent(EstadoCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(searchBtn))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(18, 18, 18)
+                                .addComponent(idTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(30, 30, 30)
+                                .addComponent(jLabel2)
+                                .addGap(18, 18, 18)
+                                .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 74, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(newBtn)
                         .addGap(18, 18, 18)
                         .addComponent(editBtn)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(activeBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteBtn)))
-                .addGap(23, 94, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(idTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel3)
-                        .addComponent(EstadoCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(searchBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(newBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(editBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(deleteBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(idTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2)
+                            .addComponent(condicionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel3)
+                                .addComponent(EstadoCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(searchBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(newBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(editBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(deleteBtn, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(activeBtn, javax.swing.GroupLayout.Alignment.TRAILING))))
+                .addGap(11, 11, 11))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -322,16 +341,13 @@ public class WarehouseView extends BaseView {
         clearGrid();
         fillTable();
         editBtn.setEnabled(false);
+        activeBtn.setEnabled(false);
         deleteBtn.setEnabled(false);
     }//GEN-LAST:event_editBtnActionPerformed
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
         // TODO add your handling code here:
-        int w = searchBtn.getWidth();
-        int h = searchBtn.getHeight();
-        System.out.println("W:"+w+"");
-        System.out.println("H:"+h+"");
-        //searchBtn.setSize(64, 64);
+        
         clearGrid();
         int idS;
         int condicionS;
@@ -351,6 +367,7 @@ public class WarehouseView extends BaseView {
         
         fillTable(idS,condicionS,state);
         editBtn.setEnabled(false);
+        activeBtn.setEnabled(false);
         deleteBtn.setEnabled(false);
     }//GEN-LAST:event_searchBtnActionPerformed
 
@@ -370,6 +387,7 @@ public class WarehouseView extends BaseView {
                 clearGrid();
                 fillTable();
                 editBtn.setEnabled(false);
+                activeBtn.setEnabled(false);
                 deleteBtn.setEnabled(false);
             }
         }
@@ -378,13 +396,46 @@ public class WarehouseView extends BaseView {
     private void usersGridMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usersGridMousePressed
         // TODO add your handling code here:
         editBtn.setEnabled(true);
+        activeBtn.setEnabled(true);
         deleteBtn.setEnabled(true);
     }//GEN-LAST:event_usersGridMousePressed
+
+    private void activeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activeBtnActionPerformed
+        // TODO add your handling code here:
+        if (warehouses.get(usersGrid.getSelectedRow()).getEstado()==EntityState.Warehouses.ACTIVO.ordinal()){
+            JOptionPane.showMessageDialog(this, "Este almacen ya se encuentra ACTIVO.","Mensaje de mantenimiento de Almacen",JOptionPane.WARNING_MESSAGE);
+        }else{
+            warehouseApplication.active(warehouses.get(usersGrid.getSelectedRow()));
+            clearGrid();
+        int idS;
+        int condicionS;
+        int state;
+        if (idTxt.getText().equals(""))
+            idS=0;
+        else idS=Integer.parseInt(idTxt.getText());
+        
+        if (condicionCombo.getSelectedItem().toString().equals(""))
+            condicionS = 0;
+        else 
+            condicionS=conditionApplication.getConditionInstance(condicionCombo.getSelectedItem().toString()).getId();
+        if (EstadoCombo.getSelectedIndex()==0)
+            state = -1;
+        else
+            state = EstadoCombo.getSelectedIndex()-1;
+        
+        fillTable(idS,condicionS,state);
+        editBtn.setEnabled(false);
+        activeBtn.setEnabled(false);
+        deleteBtn.setEnabled(false);
+        
+        }
+    }//GEN-LAST:event_activeBtnActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox EstadoCombo;
     private javax.swing.JScrollPane WarehouseGrid;
+    private javax.swing.JButton activeBtn;
     private javax.swing.JComboBox condicionCombo;
     private javax.swing.JButton deleteBtn;
     private javax.swing.JButton editBtn;

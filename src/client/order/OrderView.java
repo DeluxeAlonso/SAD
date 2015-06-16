@@ -13,6 +13,7 @@ import application.order.OrderApplication;
 import application.pallet.PalletApplication;
 import application.product.ProductApplication;
 import client.base.BaseView;
+import client.delivery.DeliveryView;
 import client.internment.InternmentSelectView;
 import client.internment.InternmentSelectView.Buffer;
 import entity.Cliente;
@@ -228,21 +229,7 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     
     public void verifyOrders(){
         currentOrders = orderApplication.getAllOrdersWithAllStates();
-        /*for(int i=0;i<currentOrders.size();i++){
-            if(currentOrders.get(i).getEstado() != EntityState.Orders.ANULADO.ordinal()){
-                int attendedCount = 0;
-                ArrayList<PedidoParcial> partialOrders = orderApplication.getPendingPartialOrdersById(currentOrders.get(i).getId());        
-                for(int j=0;j<partialOrders.size();j++)
-                    if(partialOrders.get(j).getEstado() == EntityState.PartialOrders.ATENDIDO.ordinal())
-                        attendedCount++;
-                if(attendedCount == 0)
-                    currentOrders.get(i).setEstado(EntityState.Orders.REGISTRADO.ordinal());
-                if(attendedCount == partialOrders.size())
-                    currentOrders.get(i).setEstado(EntityState.Orders.FINALIZADO.ordinal());
-                orderApplication.updateOrder(currentOrders.get(i));
-            }
-        }*/
-         refreshTable();
+        refreshTable();
     }
     
     /*
@@ -312,9 +299,11 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
         codLocalTxt.setText("");
         direccionTxt.setText("");
         dateTxt.setText("");
+        endDateTxt.setText("");
         partialStatusTxt.setText("");
-        partialCombo.setEditable(false);
+        partialCombo.setEnabled(false);
         reasonCombo.setEnabled(false);
+        
         deletePartialBtn.setEnabled(false);
         if(orderTable.getSelectedRow() == -1)
             refreshAllProductsTable(0);
@@ -336,6 +325,8 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     
     public void refreshOrders(){
         currentOrders = orderApplication.getAllOrdersWithAllStates();
+        if(DeliveryView.deliveryView!=null)
+            DeliveryView.deliveryView.verifyOrders();
         refreshTable();
     }
     
@@ -353,8 +344,9 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
             // Leo la cantidad de clientes que hay en el archivo
             line = br.readLine();
             String[] line_split = line.split(cvsSplitBy);
-            int ordersNum = Integer.parseInt(line_split[0]);
+            int ordersNum = Integer.parseInt(line_split[1]);
             int productsNum;
+            line = br.readLine();
             for(int i=0;i<ordersNum;i++){
                 //Leo un pedido y lo inserto
                 line = br.readLine();
@@ -418,9 +410,6 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
                 }
                 if(!partialProducts.isEmpty())
                     if (!orderApplication.CreateOrder(order, pp, partialProducts, true)){
-                        //JOptionPane.showMessageDialog(this, Strings.LOAD_ORDER_ERROR,Strings.LOAD_ORDER_TITLE,JOptionPane.ERROR_MESSAGE);
-                        //has_errors = true;
-                        //break;
                     }
             }
 	} catch (Exception e) {
@@ -808,9 +797,9 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
             }
         });
 
-        jLabel14.setText("Devolucion:");
+        jLabel14.setText("Devolución:");
 
-        reasonCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Seleccionar Razon--", "Productos Vencidos", "Disconformidad", "Por Rotura" }));
+        reasonCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "--Seleccionar Razón--", "Productos Vencidos", "Disconformidad", "Por Rotura" }));
         reasonCombo.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -874,14 +863,25 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loadBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadBtnActionPerformed
-        loadFile(fileTextField.getText());
+        try {
+                startLoader();
+                loadFile(fileTextField.getText());
+            }
+            finally{
+                stopLoader();
+        }
     }//GEN-LAST:event_loadBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
         int response = JOptionPane.showConfirmDialog(this, Strings.MESSAGE_CONFIRM_DELETE_ORDER,Strings.MESSAGE_DELETE_ORDER_TITLE,JOptionPane.WARNING_MESSAGE);
         if(JOptionPane.OK_OPTION == response){
             Pedido currentOrder = currentOrders.get(currentOrderIndex());
-            deleteOrder(currentOrder);
+            try {
+                startLoader();
+                deleteOrder(currentOrder);
+            }finally{
+                stopLoader();
+            }
             clearDetailFields();
         }
     }//GEN-LAST:event_deleteBtnActionPerformed
@@ -938,121 +938,126 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void deletePartialBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletePartialBtnActionPerformed
-    if(reasonCombo.getSelectedIndex() != 0){
-            Boolean shouldDelete = false;
-            PedidoParcial p = currentPartialOrders.get(partialCombo.getSelectedIndex() -1);
-            ArrayList<Producto> productsToUpdate = new ArrayList<>();
-            ArrayList<Pallet> pallets = palletApplication.getPalletsByPartialOrder(p.getId());
-            if(reasonCombo.getSelectedIndex() == 1){//PRODUCTOS VENCIDOS
-                for (Iterator<PedidoParcialXProducto> partialProducts = p.getPedidoParcialXProductos().iterator(); partialProducts.hasNext(); ) {
-                    PedidoParcialXProducto partialProduct = partialProducts.next();
-                    if(partialProduct.getCantidad() > partialProduct.getProducto().getStockLogico())
-                        shouldDelete = true;
+    try{
+        startLoader();
+        if(reasonCombo.getSelectedIndex() != 0){
+                Boolean shouldDelete = false;
+                PedidoParcial p = currentPartialOrders.get(partialCombo.getSelectedIndex() -1);
+                ArrayList<Producto> productsToUpdate = new ArrayList<>();
+                ArrayList<Pallet> pallets = palletApplication.getPalletsByPartialOrder(p.getId());
+                if(reasonCombo.getSelectedIndex() == 1){//PRODUCTOS VENCIDOS
+                    for (Iterator<PedidoParcialXProducto> partialProducts = p.getPedidoParcialXProductos().iterator(); partialProducts.hasNext(); ) {
+                        PedidoParcialXProducto partialProduct = partialProducts.next();
+                        if(partialProduct.getCantidad() > partialProduct.getProducto().getStockLogico())
+                            shouldDelete = true;
+                        else{
+                            Producto product = partialProduct.getProducto();
+                            product.setStockLogico(product.getStockLogico() - partialProduct.getCantidad());
+                            System.out.println("a quitar de logico " + partialProduct.getCantidad());
+                            productsToUpdate.add(product);
+                        }
+                    }
+                    if(shouldDelete)
+                        p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
                     else{
-                        Producto product = partialProduct.getProducto();
-                        product.setStockLogico(product.getStockLogico() - partialProduct.getCantidad());
-                        System.out.println("a quitar de logico " + partialProduct.getCantidad());
-                        productsToUpdate.add(product);
+                        p.setEstado(EntityState.PartialOrders.NO_ATENDIDO.ordinal());
+                        for(int i=0;i<productsToUpdate.size();i++)
+                            productApplication.update(productsToUpdate.get(i));
+                    }
+                    for(int i=0;i<pallets.size();i++){
+                        Date date = new Date();
+                        if(date.after(pallets.get(i).getFechaVencimiento())){
+                            pallets.get(i).setEstado(EntityState.Pallets.VENCIDO.ordinal());
+                            pallets.get(i).setPedidoParcial(null);
+                        }else{
+                            Producto product = pallets.get(i).getProducto();
+                            product.setStockLogico(product.getStockLogico() + 1);
+                            product.setPalletsRegistrados(product.getPalletsRegistrados() + 1);
+                            productApplication.update(product);
+                            pallets.get(i).setEstado(EntityState.Pallets.CREADO.ordinal());
+                            pallets.get(i).setPedidoParcial(null);
+                        }  
                     }
                 }
-                if(shouldDelete)
+                else if(reasonCombo.getSelectedIndex() == 2){//CLIENTE INSATISFECHO
                     p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
-                else{
-                    p.setEstado(EntityState.PartialOrders.NO_ATENDIDO.ordinal());
-                    for(int i=0;i<productsToUpdate.size();i++)
-                        productApplication.update(productsToUpdate.get(i));
-                }
-                for(int i=0;i<pallets.size();i++){
-                    Date date = new Date();
-                    if(date.after(pallets.get(i).getFechaVencimiento())){
-                        pallets.get(i).setEstado(EntityState.Pallets.VENCIDO.ordinal());
-                        pallets.get(i).setPedidoParcial(null);
-                    }else{
-                        Producto product = pallets.get(i).getProducto();
-                        product.setStockLogico(product.getStockLogico() + 1);
-                        product.setPalletsRegistrados(product.getPalletsRegistrados() + 1);
-                        productApplication.update(product);
+                    for(Iterator<PedidoParcialXProducto> partialOrderDetail = p.getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){
+                        PedidoParcialXProducto partial = partialOrderDetail.next();
+                        OrdenInternamientoXProducto o = internmentApplication.getOrderProduct(partial.getProducto(), partial.getCantidad());
+                        OrdenInternamiento internmentOrder = o.getOrdenInternamiento();
+                        if(o != null){
+                            internmentOrder.setEstado(EntityState.InternmentOrders.PENDIENTE.ordinal());
+                            o.setCantidad(o.getCantidad());
+                            o.setCantidadIngresada(o.getCantidadIngresada() - partial.getCantidad());
+                            o.getProducto().setPalletsRegistrados(o.getProducto().getPalletsRegistrados() + partial.getCantidad());
+                            o.getProducto().setStockLogico(o.getProducto().getStockLogico() + partial.getCantidad());
+                            productApplication.update(o.getProducto());
+                            internmentApplication.update(internmentOrder);
+                            internmentApplication.updateOrdenXProducto(o);
+                        }
+                        else{
+                            Producto product = partial.getProducto();
+                            product.setStockLogico(product.getStockLogico() + partial.getCantidad());
+                            product.setPalletsRegistrados(product.getPalletsRegistrados() + partial.getCantidad());
+                            productApplication.update(product);
+                        }
+                     }
+                    for(int i=0;i<pallets.size();i++){
                         pallets.get(i).setEstado(EntityState.Pallets.CREADO.ordinal());
                         pallets.get(i).setPedidoParcial(null);
-                    }  
-                }
-            }
-            else if(reasonCombo.getSelectedIndex() == 2){//CLIENTE INSATISFECHO
-                p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
-                for(Iterator<PedidoParcialXProducto> partialOrderDetail = p.getPedidoParcialXProductos().iterator(); partialOrderDetail.hasNext();){
-                    PedidoParcialXProducto partial = partialOrderDetail.next();
-                    OrdenInternamientoXProducto o = internmentApplication.getOrderProduct(partial.getProducto(), partial.getCantidad());
-                    OrdenInternamiento internmentOrder = o.getOrdenInternamiento();
-                    if(o != null){
-                        internmentOrder.setEstado(EntityState.InternmentOrders.PENDIENTE.ordinal());
-                        o.setCantidad(o.getCantidad());
-                        o.setCantidadIngresada(o.getCantidadIngresada() - partial.getCantidad());
-                        o.getProducto().setPalletsRegistrados(o.getProducto().getPalletsRegistrados() + partial.getCantidad());
-                        o.getProducto().setStockLogico(o.getProducto().getStockLogico() + partial.getCantidad());
-                        productApplication.update(o.getProducto());
-                        internmentApplication.update(internmentOrder);
-                        internmentApplication.updateOrdenXProducto(o);
                     }
-                    else{
-                        Producto product = partial.getProducto();
-                        product.setStockLogico(product.getStockLogico() + partial.getCantidad());
-                        product.setPalletsRegistrados(product.getPalletsRegistrados() + partial.getCantidad());
-                        productApplication.update(product);
-                    }
-                 }
-                for(int i=0;i<pallets.size();i++){
-                    pallets.get(i).setEstado(EntityState.Pallets.CREADO.ordinal());
-                    pallets.get(i).setPedidoParcial(null);
-                }
-            }else{
-                for (Iterator<PedidoParcialXProducto> partialProducts = p.getPedidoParcialXProductos().iterator(); partialProducts.hasNext(); ) {
-                    PedidoParcialXProducto partialProduct = partialProducts.next();
-                    if(partialProduct.getCantidad() > partialProduct.getProducto().getStockLogico())
-                        shouldDelete = true;
-                    else{
-                        Producto product = partialProduct.getProducto();
-                        product.setStockLogico(product.getStockLogico() - partialProduct.getCantidad());
-                        productsToUpdate.add(product);
-                    }
-                }
-                if(shouldDelete)
-                    p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
-                else{
-                    p.setEstado(EntityState.PartialOrders.NO_ATENDIDO.ordinal());
-                    for(int i=0;i<productsToUpdate.size();i++)
-                        productApplication.update(productsToUpdate.get(i));
-                }
-                for(int i=0;i<pallets.size();i++){
-                    pallets.get(i).setEstado(EntityState.Pallets.ROTO.ordinal());
-                    pallets.get(i).setPedidoParcial(null);
-                }
-            }
-            //Verificamos si al pedido le quedana un pedidos parciales
-            if(orderApplication.updatePartialOrder(p, pallets)){
-                JOptionPane.showMessageDialog(this, Strings.DEVOLUTION_ORDER_SUCCESS,Strings.DEVOLUTION_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
-                ArrayList<PedidoParcial> availablePartialOrders = orderApplication.getPendingPartialOrdersById(p.getPedido().getId());
-                if(availablePartialOrders.isEmpty()){
-                    p.getPedido().setEstado(EntityState.Orders.ANULADO.ordinal());
-                    orderApplication.updateOrder(p.getPedido());
-                }else
-                {
-                    p.getPedido().setEstado(EntityState.Orders.REGISTRADO.ordinal());
-                    int attandedCount=0;
-                    for(int i=0;i<availablePartialOrders.size();i++)
-                        if(availablePartialOrders.get(i).getEstado() == EntityState.PartialOrders.ATENDIDO.ordinal()){
-                            attandedCount++;
+                }else{
+                    for (Iterator<PedidoParcialXProducto> partialProducts = p.getPedidoParcialXProductos().iterator(); partialProducts.hasNext(); ) {
+                        PedidoParcialXProducto partialProduct = partialProducts.next();
+                        if(partialProduct.getCantidad() > partialProduct.getProducto().getStockLogico())
+                            shouldDelete = true;
+                        else{
+                            Producto product = partialProduct.getProducto();
+                            product.setStockLogico(product.getStockLogico() - partialProduct.getCantidad());
+                            productsToUpdate.add(product);
                         }
-                    if(attandedCount == availablePartialOrders.size())
-                       p.getPedido().setEstado(EntityState.Orders.FINALIZADO.ordinal());
-                    else if(attandedCount>0)
-                       p.getPedido().setEstado(EntityState.Orders.EN_CURSO.ordinal());
-                    orderApplication.updateOrder(p.getPedido());
+                    }
+                    if(shouldDelete)
+                        p.setEstado(EntityState.PartialOrders.ANULADO.ordinal());
+                    else{
+                        p.setEstado(EntityState.PartialOrders.NO_ATENDIDO.ordinal());
+                        for(int i=0;i<productsToUpdate.size();i++)
+                            productApplication.update(productsToUpdate.get(i));
+                    }
+                    for(int i=0;i<pallets.size();i++){
+                        pallets.get(i).setEstado(EntityState.Pallets.ROTO.ordinal());
+                        pallets.get(i).setPedidoParcial(null);
+                    }
                 }
-                refreshOrders();
-                clearDetailFields();
+                //Verificamos si al pedido le quedana un pedidos parciales
+                if(orderApplication.updatePartialOrder(p, pallets)){
+                    ArrayList<PedidoParcial> availablePartialOrders = orderApplication.getPendingPartialOrdersById(p.getPedido().getId());
+                    if(availablePartialOrders.isEmpty()){
+                        p.getPedido().setEstado(EntityState.Orders.ANULADO.ordinal());
+                        orderApplication.updateOrder(p.getPedido());
+                    }else
+                    {
+                        p.getPedido().setEstado(EntityState.Orders.REGISTRADO.ordinal());
+                        int attandedCount=0;
+                        for(int i=0;i<availablePartialOrders.size();i++)
+                            if(availablePartialOrders.get(i).getEstado() == EntityState.PartialOrders.ATENDIDO.ordinal()){
+                                attandedCount++;
+                            }
+                        if(attandedCount == availablePartialOrders.size())
+                           p.getPedido().setEstado(EntityState.Orders.FINALIZADO.ordinal());
+                        else if(attandedCount>0)
+                           p.getPedido().setEstado(EntityState.Orders.EN_CURSO.ordinal());
+                        orderApplication.updateOrder(p.getPedido());
+                    }
+                    refreshOrders();
+                    JOptionPane.showMessageDialog(this, Strings.DEVOLUTION_ORDER_SUCCESS,Strings.DEVOLUTION_ORDER_TITLE,JOptionPane.INFORMATION_MESSAGE);
+                    clearDetailFields();
+                }
+                else
+                    JOptionPane.showMessageDialog(this, Strings.DEVOLUTION_ORDER_ERROR,Strings.DEVOLUTION_ORDER_TITLE,JOptionPane.ERROR_MESSAGE);
             }
-            else
-                JOptionPane.showMessageDialog(this, Strings.DEVOLUTION_ORDER_ERROR,Strings.DEVOLUTION_ORDER_TITLE,JOptionPane.ERROR_MESSAGE);
+        }finally{
+            stopLoader();
         }
     }//GEN-LAST:event_deletePartialBtnActionPerformed
 
