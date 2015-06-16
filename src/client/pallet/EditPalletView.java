@@ -596,7 +596,7 @@ public class EditPalletView extends BaseDialogView {
                Kardex internmentKardex = new Kardex();
                internmentKardex.setAlmacen(palletEditado.getUbicacion().getRack().getAlmacen());
                internmentKardex.setProducto(palletEditado.getProducto());
-               internmentKardex.setTipoMovimiento("Salida");
+               internmentKardex.setTipoMovimiento(Strings.MESSAGE_KARDEX_OUT_SMASH);
                internmentKardex.setCantidad(1);
                
                 internmentKardex.setFecha(Calendar.getInstance().getTime());
