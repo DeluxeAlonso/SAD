@@ -107,6 +107,7 @@ public class DeliveryView extends BaseView {
     Boolean firstRun = true;
     Informable informable;
     boolean running = false;
+    public static DeliveryView deliveryView;
     
     /**
      * Creates new form DispatchView
@@ -114,6 +115,7 @@ public class DeliveryView extends BaseView {
     public DeliveryView() {        
         initComponents();
         super.initialize();
+        deliveryView = this;
         Icons.setButton(btnProcess, Icons.ICONOS.APPLY.ordinal());
         Icons.setButton(btnExecuteAlgorithm, Icons.ICONOS.PLAY.ordinal());
         Icons.setButton(btnViewSolution, Icons.ICONOS.DELIVERY.ordinal());
@@ -734,10 +736,9 @@ public class DeliveryView extends BaseView {
         if(solutions.get(cmbIdx)!=null && algorithmExecution!=null){
             AlgorithmReturnValues returnValues = algorithmExecution.processOrders(solutions.get(cmbIdx));
             solutionDeliveries = returnValues.getDespachos();
+            startLoader();
             assignRemissionGuides(returnValues.getDespachos());
             if(createPartialOrders(returnValues.getAcceptedOrders(), returnValues.getRejectedOrders())){
-                try {
-                    startLoader();
                     verifyOrders();
                     if(OrderView.orderView != null)
                         OrderView.orderView.verifyOrders();
@@ -752,16 +753,16 @@ public class DeliveryView extends BaseView {
                         System.out.println("SIZE DEL GET " + map.get(warehouse.get(i).getId()).size());
                     }   
                     insertKardex(returnValues.getDespachos());
+                    stopLoader();
                     JOptionPane.showMessageDialog(this, Strings.DELIVERY_SUCCESS,
                         Strings.DELIVERY_TITLE,JOptionPane.INFORMATION_MESSAGE);
                     btnProcess.setEnabled(false);
-                }finally{
-                stopLoader();
-                }
             }
-            else
+            else{
+                stopLoader();
                 JOptionPane.showMessageDialog(this, Strings.DELIVERY_ERROR,
                     Strings.DELIVERY_TITLE,JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_btnProcessActionPerformed
 
