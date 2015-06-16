@@ -87,7 +87,7 @@ public class Problem {
                     node.setX(pedido.getLocal().getLongitud());
                     node.setY(pedido.getLocal().getLatitud());   
                     
-                    long diff = pedido.getFecha().getTime() - today.getTime();
+                    long diff = pedido.getFechaVencimiento().getTime() - today.getTime();
                     node.setDaysDifference(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS));
                     
                     if(i<batchNumber-1) node.setDemand(vehicleCapacity);

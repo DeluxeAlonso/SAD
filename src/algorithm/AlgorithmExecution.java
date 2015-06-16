@@ -499,6 +499,7 @@ public class AlgorithmExecution extends SwingWorker<Solution, String>{
             if (isCancelled()) {                        
                 return null;
             }
+            //System.out.println("grasp number: " + i + " val: " + solutions[i].getCost());
         }        
         population.setSolutions(solutions);
         
@@ -560,6 +561,8 @@ public class AlgorithmExecution extends SwingWorker<Solution, String>{
             if (isCancelled()) {                        
                 return null;
             }
+            
+            //System.out.println("genetic number: " + i + " val: " + population.getBestSolution().getCost());
         }
         long end = System.currentTimeMillis();
         System.out.println("Grasp algorithm time: " + popTime + "ms");
