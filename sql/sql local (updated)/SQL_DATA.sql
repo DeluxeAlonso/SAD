@@ -51,6 +51,7 @@ insert into saddb.perfil_x_accion value(1,21);
 insert into saddb.perfil_x_accion value(1,22);
 insert into saddb.perfil_x_accion value(1,23);
 insert into saddb.perfil_x_accion value(1,24);
+insert into saddb.perfil_x_accion value(1,25);
 
 -- jefe de almacen
 insert into saddb.perfil_x_accion value(2,7);
