@@ -467,10 +467,11 @@ public class AlgorithmExecution extends SwingWorker<Solution, String>{
         long ini = System.currentTimeMillis();
 
         publish("Inicializando parámetros...");       
-
+        setProgress(0);
+        
         Algorithm algorithm = new Algorithm();
-        algorithm.setNumberOfGenerations(50000);
-        algorithm.setPopulationSize(50000);
+        algorithm.setNumberOfGenerations(10000);
+        algorithm.setPopulationSize(10000);
         algorithm.setTournamentSelectionKValue(50);
         algorithm.setOvercapPenalty(100000);
         algorithm.setOvertimePenalty(100000);
