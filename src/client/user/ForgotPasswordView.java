@@ -143,7 +143,7 @@ public class ForgotPasswordView extends javax.swing.JFrame {
             String userQuestion = user.getPreguntaSecreta().getPregunta();
             String userAnsw = user.getRespuesta().toLowerCase();
             txtEmail.setBorder(null);
-            if (comboQuestions.getSelectedItem().toString().equals(userQuestion) && txtAnswer.getText().trim().equals(userAnsw)) {
+            if (comboQuestions.getSelectedItem().toString().equals(userQuestion) && txtAnswer.getText().trim().toLowerCase().equals(userAnsw)) {
                 if (!userApplication.recoverPasswordAndSendEmail(user).equals("")) {
                     JOptionPane.showMessageDialog(this, Strings.MESSAGE_RECOVER_PASSWORD);
                 } else {
