@@ -37,7 +37,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import jxl.SheetSettings;
 import jxl.Workbook;
+import jxl.WorkbookSettings;
 import jxl.format.Colour;
 import jxl.format.UnderlineStyle;
 import jxl.format.VerticalAlignment;
@@ -413,10 +415,14 @@ public class StockReport extends BaseView {
         try {
             
             File exlFile = file;
-            WritableWorkbook writableWorkbook = Workbook.createWorkbook(exlFile);
- 
+            WorkbookSettings ws = new WorkbookSettings();
+            ws.setEncoding("UTF8");
+            WritableWorkbook writableWorkbook = Workbook.createWorkbook(exlFile,ws);
+            
             WritableSheet writableSheet = writableWorkbook.createSheet(
                     "Reporte de Stock", 0);
+            writableSheet.getSettings().setShowGridLines(false);
+            writableSheet.getSettings().setPrintGridLines(false);
             writableSheet.setColumnView(1, 26);
             writableSheet.setColumnView(2, 15);
             writableSheet.setColumnView(3, 15);
@@ -435,7 +441,9 @@ public class StockReport extends BaseView {
             fillReport(writableSheet);
  
             //Write and close the workbook
+            
             writableWorkbook.write();
+            
             writableWorkbook.close();
             
             

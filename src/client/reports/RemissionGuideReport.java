@@ -291,7 +291,7 @@ public class RemissionGuideReport extends BaseView {
             
             WorkbookSettings ws = new WorkbookSettings();
             ws.setEncoding("UTF8");
-            WritableWorkbook writableWorkbook = Workbook.createWorkbook(exlFile);
+            WritableWorkbook writableWorkbook = Workbook.createWorkbook(exlFile,ws);
  
             WritableSheet writableSheet = writableWorkbook.createSheet(
                     "Guías de Remisión", 0);
