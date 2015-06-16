@@ -501,16 +501,16 @@ public class OrderRepository implements IOrderRepository{
     }
 
     @Override
-    public ArrayList<PedidoParcial> queryAllPartialOrdersByDeliveryId(Despacho delivery) {
+    public ArrayList<Pedido> queryAllPartialOrdersByDeliveryId(Despacho delivery) {
         Session session = Tools.getSessionInstance();
-        String hql = "from PedidoParcial p where p.guiaRemision.id in (select g.id from GuiaRemission where g.despacho.id = :id)";
-        ArrayList<PedidoParcial> partialOrders = new ArrayList<>();
+        String hql = "from Pedido where id in ( select p.pedido.id from PedidoParcial p where p.guiaRemision.id in (select g.id from GuiaRemision g where g.despacho.id = :id))";
+        ArrayList<Pedido> partialOrders = new ArrayList<>();
         Transaction trns = null;
         try{
             trns = session.beginTransaction();
             Query q = session.createQuery(hql);
             q.setParameter("id", delivery.getId());
-            partialOrders = (ArrayList<PedidoParcial>) q.list();
+            partialOrders = (ArrayList<Pedido>) q.list();
             session.getTransaction().commit();
         }
         catch (RuntimeException e){

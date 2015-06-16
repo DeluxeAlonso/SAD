@@ -10,6 +10,8 @@ import application.transportunit.TransportUnitApplication;
 import client.base.BaseView;
 import entity.Despacho;
 import entity.GuiaRemision;
+import entity.Pedido;
+import entity.PedidoParcial;
 import entity.Ubicacion;
 import entity.UnidadTransporte;
 import java.awt.image.BufferedImage;
@@ -41,6 +43,7 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import util.EntityState;
 import util.Strings;
+import jxl.write.Number;
 
 /**
  *
@@ -280,65 +283,63 @@ public class RemissionGuideReport extends BaseView {
     }//GEN-LAST:event_deliveryTxtActionPerformed
 
     private void exportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportBtnActionPerformed
-        JOptionPane.setDefaultLocale(new Locale("es", "ES"));
-        file = getReportSelectedFile();
+         file = getReportSelectedFile();
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
-        /* Export to XSL */
-        try {
-
+        try{
             File exlFile = file;
-            
             WorkbookSettings ws = new WorkbookSettings();
             ws.setEncoding("UTF8");
             WritableWorkbook writableWorkbook = Workbook.createWorkbook(exlFile,ws);
- 
-            WritableSheet writableSheet = writableWorkbook.createSheet(
-                    "Guías de Remisión", 0);
-            URL url = getClass().getResource("../../images/warehouse-512-000000.png");
-            java.io.File imageFile = new java.io.File(url.toURI());
-            BufferedImage input = ImageIO.read(imageFile);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(input, "PNG", baos);
-            //setbackgruound
-            
-            writableSheet.addImage(new WritableImage(1,1,0.4,1,baos.toByteArray()));
-            writableSheet.setColumnView(1, 10);
-            writableSheet.setColumnView(2, 10);
-            writableSheet.setColumnView(3, 25);
-            writableSheet.setColumnView(4, 25);
-            writableSheet.setColumnView(5, 25);
-            writableSheet.setColumnView(6, 15);
-            writableSheet.setColumnView(7, 15);
-            writableSheet.setColumnView(8, 15);
-            writableSheet.setColumnView(9, 15);
-            writableSheet.setColumnView(10, 15);
-            //Create Cells with contents of different data types.
-            //Also specify the Cell coordinates in the constructor
-            
-            createHeader(writableSheet,date,dateFormat);
-            
-            fillReport(writableSheet,dateFormat);
- 
-            //Write and close the workbook
+      
+            if(deliveries.size()>0){
+                for(int i=0;i<deliveries.size();i++){
+                    WritableSheet writableSheet = writableWorkbook.createSheet(
+                       
+                      "Despacho " + deliveries.get(i).getId().toString(), i);
+                    
+                    URL url = getClass().getResource("../../images/warehouse-512-000000.png");
+                    java.io.File imageFile = new java.io.File(url.toURI());
+                    BufferedImage input = ImageIO.read(imageFile);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ImageIO.write(input, "PNG", baos);
+
+                    writableSheet.addImage(new WritableImage(1,1,0.4,1,baos.toByteArray()));
+                    writableSheet.getSettings().setShowGridLines(false);
+                    writableSheet.getSettings().setPrintGridLines(false);
+                    writableSheet.setColumnView(1, 10);
+                    writableSheet.setColumnView(2, 25);
+                    writableSheet.setColumnView(3, 35);
+                    writableSheet.setColumnView(4, 25);
+                    writableSheet.setColumnView(5, 25);
+                    writableSheet.setColumnView(6, 10);
+                    writableSheet.setColumnView(7, 10);
+                    writableSheet.setColumnView(8, 15);
+                    writableSheet.setColumnView(9, 15);
+                    writableSheet.setColumnView(10, 15);
+
+                   createHeader(writableSheet,date,dateFormat,deliveries.get(i));
+
+                   fillReport(writableSheet,dateFormat,deliveries.get(i));     
+                }
+            }
             writableWorkbook.write();
             writableWorkbook.close();
-            
-            
-        } catch (Exception ex) {
-            Logger.getLogger(AvailabilityReport.class.getName()).log(Level.SEVERE, null, ex);
+
+        }catch (Exception ex) {
+            Logger.getLogger(RemissionGuideReport.class.getName()).log(Level.SEVERE, null, ex);
             //JOptionPane.showMessageDialog(this, "Ocurrió un error al abrir el archivo",Strings.ERROR_KARDEX_TITLE,JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_exportBtnActionPerformed
 
-     public void createHeader(WritableSheet writableSheet, Date date, DateFormat dateFormat){
+     public void createHeader(WritableSheet writableSheet, Date date, DateFormat dateFormat ,Despacho delivery){
         
         try{
             Label label0 = new Label(1, 1, "");
-            Label label1 = new Label(4, 1, "Reporte de Guías de Remisión");
-            Label label2 = new Label(7, 1, "Fecha: "+ dateFormat.format(date));
-            Label label3 = new Label(1, 2, "Desde: "+ dateFormat.format(dtcInitDate.getDate()));
-            Label label4 = new Label(1, 3, "Hasta: "+ dateFormat.format(dtcEndDate.getDate()));
+            Label label1 = new Label(3, 1, "Reporte de Despachos");
+            Label label2 = new Label(5, 1, "Fecha de Despacho: "+ dateFormat.format(delivery.getFechaDespacho()));
+            Label label3 = new Label(1, 2, "Transportista: "+ delivery.getUnidadTransporte().getTransportista());
+            Label label4 = new Label(1, 3, "Placa: "+ delivery.getUnidadTransporte().getPlaca());
             WritableFont tittleFont = new WritableFont(WritableFont.createFont("Calibri"),
              16,
              WritableFont.BOLD,  false,
@@ -347,7 +348,7 @@ public class RemissionGuideReport extends BaseView {
             
             WritableCellFormat tittleFormat = new WritableCellFormat(tittleFont);
              tittleFormat.setWrap(false);
-             tittleFormat.setAlignment(jxl.format.Alignment.CENTRE);
+             tittleFormat.setAlignment(jxl.format.Alignment.RIGHT);
              tittleFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
              
              
@@ -396,19 +397,17 @@ public class RemissionGuideReport extends BaseView {
              jxl.format.Colour.BLACK);
              headerTFormat.setBackground(Colour.GRAY_80);
              
-            Label t1 = new Label(1, 6, "Código"); 
-            Label t2 = new Label(2, 6, "Despacho"); 
+            Label t1 = new Label(1, 6, "Pedido"); 
+            Label t2 = new Label(2, 6, "Fecha de Emisión"); 
             Label t3 = new Label(3, 6, "Cliente"); 
             Label t4 = new Label(4, 6, "Ruc"); 
-            Label t5 = new Label(5, 6, "Transportista"); 
-            Label t6 = new Label(6, 6, "Fecha"); 
+            Label t5 = new Label(5, 6, "Local");
              
              t1.setCellFormat(headerTFormat);
              t2.setCellFormat(headerTFormat);
              t3.setCellFormat(headerTFormat);
              t4.setCellFormat(headerTFormat);
              t5.setCellFormat(headerTFormat);
-             t6.setCellFormat(headerTFormat);
              
              label0.setCellFormat(headerLFormat);
              label1.setCellFormat(tittleFormat);
@@ -425,15 +424,13 @@ public class RemissionGuideReport extends BaseView {
             writableSheet.addCell(t3);
             writableSheet.addCell(t4);
             writableSheet.addCell(t5);
-            writableSheet.addCell(t6);
-            
         }
             catch(Exception e){
                 
             }
     }
     
-    private void fillReport(WritableSheet writableSheet, DateFormat dateFormat){
+    private void fillReport(WritableSheet writableSheet, DateFormat dateFormat, Despacho delivery){
         try{
             //Definicion de formatos
             WritableFont rowFont = new WritableFont(WritableFont.createFont("Calibri"),
@@ -445,17 +442,18 @@ public class RemissionGuideReport extends BaseView {
             WritableCellFormat parFormat = new WritableCellFormat(rowFont);
              parFormat.setWrap(false);
              parFormat.setBackground(Colour.GREY_25_PERCENT);
-             parFormat.setAlignment(Alignment.CENTRE);
              
              
              WritableCellFormat imparFormat = new WritableCellFormat(rowFont);
-             imparFormat.setAlignment(Alignment.CENTRE);
              imparFormat.setWrap(false);
              int col=1;
              int fil=7;
              int i=0;
              Object[] row;
-             for(GuiaRemision remissionGuide : remissionGuides){
+             
+             ArrayList<Pedido> orders = orderApplication.getPartialOrdersByDeliveryId(delivery);
+
+             for(Pedido order : orders){
                 /*
                 row = new Object[]{
                     arr[0].toString(),
@@ -465,34 +463,29 @@ public class RemissionGuideReport extends BaseView {
                 };
                 model.addRow(row);
                         */
-                Label l1 = new Label(1, fil+i, remissionGuide.getId().toString());
-                jxl.write.Number l2 = new jxl.write.Number(2, fil+i, remissionGuide.getDespacho().getId());
-                Label l3 = new Label(3, fil+i,remissionGuide.getCliente().getNombre() );
-                Label l4 = new Label(4, fil+i, remissionGuide.getCliente().getRuc());
-                Label l5 = new Label(5, fil+i, remissionGuide.getDespacho().getUnidadTransporte().getTransportista());
-                Label l6 = new Label(6, fil+i, dateFormat.format(remissionGuide.getDespacho().getFechaDespacho())); 
+                Number l1 = new Number(1, fil+i, order.getId());
+                Label l2 = new jxl.write.Label(2, fil+i, dateFormat.format(order.getFecha()));
+                Label l3 = new Label(3, fil+i,order.getCliente().getNombre() );
+                Label l4 = new Label(4, fil+i, order.getCliente().getRuc());
+                Label l5 = new Label(5, fil+i, order.getLocal().getNombre());
                 if (i%2==0){
                     l1.setCellFormat(imparFormat);
                     l2.setCellFormat(imparFormat);
                     l3.setCellFormat(imparFormat);
                     l4.setCellFormat(imparFormat);
                     l5.setCellFormat(imparFormat);
-                    l6.setCellFormat(imparFormat);
                 }else{
                     l1.setCellFormat(parFormat);
                     l2.setCellFormat(parFormat);
                     l3.setCellFormat(parFormat);
                     l4.setCellFormat(parFormat);
-                    l5.setCellFormat(parFormat);
-                    l6.setCellFormat(parFormat);
-                    
+                    l5.setCellFormat(parFormat);               
                 }
                 writableSheet.addCell(l1);
                 writableSheet.addCell(l2);
                 writableSheet.addCell(l3);
                 writableSheet.addCell(l4);
                 writableSheet.addCell(l5);
-                writableSheet.addCell(l6);
                 i++;
             }
                      

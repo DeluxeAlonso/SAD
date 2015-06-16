@@ -874,7 +874,13 @@ public class OrderView extends BaseView implements MouseListener,ItemListener {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loadBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadBtnActionPerformed
-        loadFile(fileTextField.getText());
+        try {
+                startLoader();
+                loadFile(fileTextField.getText());
+            }
+            finally{
+                stopLoader();
+        }
     }//GEN-LAST:event_loadBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed

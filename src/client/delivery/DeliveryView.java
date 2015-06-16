@@ -733,23 +733,28 @@ public class DeliveryView extends BaseView {
             solutionDeliveries = returnValues.getDespachos();
             assignRemissionGuides(returnValues.getDespachos());
             if(createPartialOrders(returnValues.getAcceptedOrders(), returnValues.getRejectedOrders())){
-                verifyOrders();
-                if(OrderView.orderView != null)
-                    OrderView.orderView.verifyOrders();
-                allCheckbox.setSelected(false);
-                warehouseBtn.setEnabled(true);
-                deliveryBtn.setEnabled(true);
-                remissionBtn.setEnabled(true);
-                 ArrayList<Almacen> warehouse = warehouseApplication.queryAll();
-                for(int i=0;i<warehouse.size();i++){
-                    ArrayList<Pallet> pallets = palletApplication.queryByWarehouseParameters(warehouse.get(i), solutionDeliveries);
-                    map.put(warehouse.get(i).getId(), pallets);
-                    System.out.println("SIZE DEL GET " + map.get(warehouse.get(i).getId()).size());
-                }   
-                insertKardex(returnValues.getDespachos());
-                JOptionPane.showMessageDialog(this, Strings.DELIVERY_SUCCESS,
-                    Strings.DELIVERY_TITLE,JOptionPane.INFORMATION_MESSAGE);
-                btnProcess.setEnabled(false);
+                try {
+                    startLoader();
+                    verifyOrders();
+                    if(OrderView.orderView != null)
+                        OrderView.orderView.verifyOrders();
+                    allCheckbox.setSelected(false);
+                    warehouseBtn.setEnabled(true);
+                    deliveryBtn.setEnabled(true);
+                    remissionBtn.setEnabled(true);
+                     ArrayList<Almacen> warehouse = warehouseApplication.queryAll();
+                    for(int i=0;i<warehouse.size();i++){
+                        ArrayList<Pallet> pallets = palletApplication.queryByWarehouseParameters(warehouse.get(i), solutionDeliveries);
+                        map.put(warehouse.get(i).getId(), pallets);
+                        System.out.println("SIZE DEL GET " + map.get(warehouse.get(i).getId()).size());
+                    }   
+                    insertKardex(returnValues.getDespachos());
+                    JOptionPane.showMessageDialog(this, Strings.DELIVERY_SUCCESS,
+                        Strings.DELIVERY_TITLE,JOptionPane.INFORMATION_MESSAGE);
+                    btnProcess.setEnabled(false);
+                }finally{
+                stopLoader();
+                }
             }
             else
                 JOptionPane.showMessageDialog(this, Strings.DELIVERY_ERROR,
@@ -878,7 +883,8 @@ public class DeliveryView extends BaseView {
                     ImageIO.write(input, "PNG", baos);
 
                     writableSheet.addImage(new WritableImage(1,1,0.4,1,baos.toByteArray()));
-
+                    writableSheet.getSettings().setShowGridLines(false);
+                    writableSheet.getSettings().setPrintGridLines(false);
                     writableSheet.setColumnView(1, 10);
                     writableSheet.setColumnView(2, 50);
                     writableSheet.setColumnView(3, 35);
@@ -922,7 +928,7 @@ public class DeliveryView extends BaseView {
             
             WritableCellFormat tittleFormat = new WritableCellFormat(tittleFont);
              tittleFormat.setWrap(false);
-             tittleFormat.setAlignment(jxl.format.Alignment.CENTRE);
+             tittleFormat.setAlignment(jxl.format.Alignment.LEFT);
              tittleFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
              
              
@@ -1110,7 +1116,8 @@ public class DeliveryView extends BaseView {
                     ImageIO.write(input, "PNG", baos);
 
                     writableSheet.addImage(new WritableImage(1,1,0.4,1,baos.toByteArray()));
-
+                    writableSheet.getSettings().setShowGridLines(false);
+                    writableSheet.getSettings().setPrintGridLines(false);
                     writableSheet.setColumnView(1, 10);
                     writableSheet.setColumnView(2, 20);
                     writableSheet.setColumnView(3, 20);
@@ -1174,9 +1181,10 @@ public class DeliveryView extends BaseView {
                     ImageIO.write(input, "PNG", baos);
 
                     writableSheet.addImage(new WritableImage(1,1,0.4,1,baos.toByteArray()));
-
+                    writableSheet.getSettings().setShowGridLines(false);
+                    writableSheet.getSettings().setPrintGridLines(false);
                     writableSheet.setColumnView(1, 10);
-                    writableSheet.setColumnView(2, 35);
+                    writableSheet.setColumnView(2, 31);
                     writableSheet.setColumnView(3, 35);
                     writableSheet.setColumnView(4, 10);
                     writableSheet.setColumnView(5, 10);
@@ -1538,7 +1546,7 @@ public class DeliveryView extends BaseView {
             
             WritableCellFormat tittleFormat = new WritableCellFormat(tittleFont);
              tittleFormat.setWrap(false);
-             tittleFormat.setAlignment(jxl.format.Alignment.CENTRE);
+             tittleFormat.setAlignment(jxl.format.Alignment.LEFT);
              tittleFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
              
              
