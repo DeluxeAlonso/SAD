@@ -492,10 +492,11 @@ public class KardexReport extends BaseView {
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
         try {
             startLoader();
-            JOptionPane.setDefaultLocale(new Locale("es", "ES"));
-            fc.setDialogTitle("Seleccione un archivo");
-            fc.showOpenDialog(this);
-            file = fc.getSelectedFile();
+            //JOptionPane.setDefaultLocale(new Locale("es", "ES"));
+            //fc.setDialogTitle("Seleccione un archivo");
+            //fc.showOpenDialog(this);
+            //file = fc.getSelectedFile();
+            file = getReportSelectedFile();
             System.out.println(file);
             Date date = new Date();
             /* Export to XSL */

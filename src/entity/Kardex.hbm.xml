@@ -28,7 +28,7 @@
             <column name="fecha" length="19" />
         </property>
         <property name="tipoMovimiento" type="string">
-            <column name="tipo_movimiento" length="20" />
+            <column name="tipo_movimiento" length="60" />
         </property>
         <property name="stockInicial" type="java.lang.Integer">
             <column name="stock_inicial" />

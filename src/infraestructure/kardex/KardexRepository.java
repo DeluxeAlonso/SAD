@@ -75,7 +75,7 @@ public class KardexRepository implements IKardexRepository{
         Session session = Tools.getSessionInstance();
         try {            
             trns=session.beginTransaction();
-            session.save(object);                      
+            session.saveOrUpdate(object);                      
             session.getTransaction().commit();
             return object.getId().getId();
         } catch (RuntimeException e) {
