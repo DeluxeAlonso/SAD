@@ -78,7 +78,7 @@ public class Icons {
     public static void setButton(JButton b, int a, int width, int height){
         try{
             img = images.get(a);
-            //ImageIcon img = new ImageIcon("../../images/01_new_16.ico");
+            //ImageIcon img = new ImageIcon("/images/01_new_16.ico");
             img = img.getScaledInstance(width, height,0);
             //cancelBtn.setIcon(img);
             b.setIcon(new ImageIcon(img));
@@ -91,31 +91,31 @@ public class Icons {
     
     public static void loadIcons(){
         try{
-            img = ImageIO.read(URL.class.getResource("../../images/Save.png"));
+            img = ImageIO.read(URL.class.getResource("/images/Save.png"));
             images.add(img);
-            img = ImageIO.read(URL.class.getResource("../../images/Close.png"));
+            img = ImageIO.read(URL.class.getResource("/images/Close.png"));
             images.add(img);
-            img = ImageIO.read(URL.class.getResource("../../images/Zoom.png"));
+            img = ImageIO.read(URL.class.getResource("/images/Zoom.png"));
             images.add(img);
-            img = ImageIO.read(URL.class.getResource("../../images/Create.png"));
+            img = ImageIO.read(URL.class.getResource("/images/Create.png"));
             images.add(img);
-            img = ImageIO.read(URL.class.getResource("../../images/Modify.png"));
+            img = ImageIO.read(URL.class.getResource("/images/Modify.png"));
             images.add(img);
-            img = ImageIO.read(URL.class.getResource("../../images/Delete.png"));
+            img = ImageIO.read(URL.class.getResource("/images/Delete.png"));
             images.add(img);
-            img = ImageIO.read(URL.class.getResource("../../images/Unlock.png"));
+            img = ImageIO.read(URL.class.getResource("/images/Unlock.png"));
             images.add(img);
-            img = ImageIO.read(URL.class.getResource("../../images/Delivery.png"));
+            img = ImageIO.read(URL.class.getResource("/images/Delivery.png"));
             images.add(img);
-            img = ImageIO.read(URL.class.getResource("../../images/Play.png"));
+            img = ImageIO.read(URL.class.getResource("/images/Play.png"));
             images.add(img);
-            img = ImageIO.read(URL.class.getResource("../../images/Apply.png"));
+            img = ImageIO.read(URL.class.getResource("/images/Apply.png"));
             images.add(img);
-            img = ImageIO.read(URL.class.getResource("../../images/OK.png"));
+            img = ImageIO.read(URL.class.getResource("/images/OK.png"));
             images.add(img);
-            img = ImageIO.read(URL.class.getResource("../../images/Delete.png"));
+            img = ImageIO.read(URL.class.getResource("/images/Delete.png"));
             images.add(img);
-            img = ImageIO.read(URL.class.getResource("../../images/warehouse-512-000000.png"));
+            img = ImageIO.read(URL.class.getResource("/images/warehouse-512-000000.png"));
             mainIcon=img;
             
         }catch(Exception e){

@@ -301,7 +301,7 @@ public class InternmentReport extends BaseView {
  
             WritableSheet writableSheet = writableWorkbook.createSheet(
                     "Reporte de internamiento", 0);
-            URL url = getClass().getResource("../../images/warehouse-512-000000.png");
+            URL url = getClass().getResource("/images/warehouse-512-000000.png");
             java.io.File imageFile = new java.io.File(url.toURI());
             BufferedImage input = ImageIO.read(imageFile);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -266,7 +266,7 @@ public class ProductCaducityReport extends BaseView {
             WritableSheet writableSheet = writableWorkbook.createSheet(
                     "Reporte de Caducidad", 0);
             writableSheet.getSettings().setShowGridLines(false);
-            URL url = getClass().getResource("../../images/warehouse-512-000000.png");
+            URL url = getClass().getResource("/images/warehouse-512-000000.png");
             java.io.File imageFile = new java.io.File(url.toURI());
             BufferedImage input = ImageIO.read(imageFile);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

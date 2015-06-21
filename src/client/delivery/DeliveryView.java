@@ -894,7 +894,7 @@ public class DeliveryView extends BaseView {
                 if(pallets.size()>0){
                     WritableSheet writableSheet = writableWorkbook.createSheet(
                        "Almacen " + warehouse.get(i).getDescripcion(), i);
-                    URL url = getClass().getResource("../../images/warehouse-512-000000.png");
+                    URL url = getClass().getResource("/images/warehouse-512-000000.png");
                     java.io.File imageFile = new java.io.File(url.toURI());
                     BufferedImage input = ImageIO.read(imageFile);
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -1127,7 +1127,7 @@ public class DeliveryView extends BaseView {
                        
                        transportUnits.get(i).getTransportista(), i);
                     
-                    URL url = getClass().getResource("../../images/warehouse-512-000000.png");
+                    URL url = getClass().getResource("/images/warehouse-512-000000.png");
                     java.io.File imageFile = new java.io.File(url.toURI());
                     BufferedImage input = ImageIO.read(imageFile);
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -1192,7 +1192,7 @@ public class DeliveryView extends BaseView {
                        
                       "Guía " + remissionGuides.get(i).getId().toString(), i);
                     
-                    URL url = getClass().getResource("../../images/warehouse-512-000000.png");
+                    URL url = getClass().getResource("/images/warehouse-512-000000.png");
                     java.io.File imageFile = new java.io.File(url.toURI());
                     BufferedImage input = ImageIO.read(imageFile);
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();

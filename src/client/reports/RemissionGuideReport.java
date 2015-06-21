@@ -298,7 +298,7 @@ public class RemissionGuideReport extends BaseView {
                        
                       "Despacho " + deliveries.get(i).getId().toString(), i);
                     
-                    URL url = getClass().getResource("../../images/warehouse-512-000000.png");
+                    URL url = getClass().getResource("/images/warehouse-512-000000.png");
                     java.io.File imageFile = new java.io.File(url.toURI());
                     BufferedImage input = ImageIO.read(imageFile);
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
